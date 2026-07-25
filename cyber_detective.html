@@ -76,100 +76,124 @@
             position: relative;
         }
 
-        /* Top Header Bar */
+        /* Minimalist Top Header Bar */
         .game-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 10px 20px;
-            background: #090d16;
-            border-bottom: 2px solid #1e293b;
+            padding: 8px 18px;
+            background: rgba(9, 13, 22, 0.95);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+            gap: 12px;
+            white-space: nowrap;
         }
 
         .header-brand {
             display: flex;
             align-items: center;
             gap: 10px;
-            font-size: 1.15rem;
+            flex-shrink: 0;
+        }
+
+        .brand-logo {
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            border: 1.5px solid var(--neon-cyan);
+            box-shadow: 0 0 10px rgba(56, 189, 248, 0.3);
+        }
+
+        .brand-title {
+            font-size: 1.05rem;
             font-weight: 800;
+            letter-spacing: 0.5px;
             color: var(--neon-cyan);
         }
 
-        .header-brand i { color: var(--neon-yellow); font-size: 1.3rem; }
+        .header-status-group {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            background: rgba(15, 23, 42, 0.7);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            padding: 4px;
+            border-radius: 12px;
+        }
 
-        .student-pill {
+        .status-pill {
+            padding: 5px 12px;
+            border-radius: 8px;
+            font-size: 0.82rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            white-space: nowrap;
+        }
+
+        .status-pill.student {
+            background: rgba(30, 41, 59, 0.8);
+            color: #cbd5e1;
+            border: 1px solid #334155;
+            max-width: 280px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .status-pill.timer {
+            background: rgba(16, 185, 129, 0.12);
+            border: 1px solid rgba(16, 185, 129, 0.4);
+            color: var(--neon-green);
+        }
+
+        .status-pill.score {
+            background: rgba(245, 158, 11, 0.12);
+            border: 1px solid rgba(245, 158, 11, 0.4);
+            color: var(--neon-yellow);
+        }
+
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            flex-shrink: 0;
+        }
+
+        .hdr-btn {
             background: rgba(30, 41, 59, 0.8);
             border: 1px solid #334155;
-            padding: 5px 14px;
-            border-radius: 12px;
-            font-size: 0.85rem;
-            font-weight: 600;
             color: #cbd5e1;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .timer-pill {
-            background: rgba(16, 185, 129, 0.15);
-            border: 1.5px solid var(--neon-green);
-            padding: 5px 12px;
-            border-radius: 12px;
-            font-size: 0.9rem;
-            font-weight: 800;
-            color: var(--neon-green);
-            display: flex;
-            align-items: center;
-            gap: 6px;
-        }
-
-        .score-pill {
-            background: rgba(245, 158, 11, 0.15);
-            border: 1.5px solid var(--neon-yellow);
-            padding: 5px 14px;
-            border-radius: 12px;
-            font-size: 0.95rem;
-            font-weight: 800;
-            color: var(--neon-yellow);
-            display: flex;
-            align-items: center;
-            gap: 6px;
-        }
-
-        .btn-icon {
-            background: #1e293b;
-            border: 1px solid var(--neon-cyan);
-            color: var(--neon-cyan);
-            width: 36px;
-            height: 36px;
-            border-radius: 10px;
+            height: 34px;
+            padding: 0 10px;
+            border-radius: 8px;
             cursor: pointer;
-            display: flex;
+            display: inline-flex;
             justify-content: center;
-            align-items: center;
-            font-size: 0.95rem;
-            transition: all 0.2s;
-        }
-
-        .btn-icon:hover { background: var(--neon-cyan); color: #090d16; }
-
-        .btn-surrender {
-            background: rgba(244, 63, 94, 0.15);
-            border: 1.5px solid var(--neon-magenta);
-            color: var(--neon-magenta);
-            padding: 5px 12px;
-            border-radius: 10px;
-            font-size: 0.82rem;
-            font-weight: 800;
-            cursor: pointer;
-            display: flex;
             align-items: center;
             gap: 6px;
             font-family: var(--font-main);
+            font-size: 0.85rem;
+            font-weight: 700;
+            white-space: nowrap;
+            text-decoration: none;
             transition: all 0.2s;
         }
 
-        .btn-surrender:hover {
+        .hdr-btn:hover {
+            background: #334155;
+            border-color: var(--neon-cyan);
+            color: var(--neon-cyan);
+            transform: translateY(-1px);
+        }
+
+        .hdr-btn.surrender {
+            background: rgba(244, 63, 94, 0.12);
+            border-color: rgba(244, 63, 94, 0.4);
+            color: var(--neon-magenta);
+        }
+
+        .hdr-btn.surrender:hover {
             background: var(--neon-magenta);
             color: #fff;
             box-shadow: 0 0 12px rgba(244, 63, 94, 0.4);
@@ -708,32 +732,35 @@
 
         <!-- Top Header Bar -->
         <header class="game-header">
+            <!-- Left: Brand Logo & Title -->
             <div class="header-brand">
-                <img src="favicon.png" alt="Logo" style="width: 32px; height: 32px; border-radius: 8px; border: 1.5px solid var(--neon-cyan);">
-                <span>CYBER DETECTIVE</span>
+                <img src="favicon.png" alt="Logo" class="brand-logo">
+                <span class="brand-title">CYBER DETECTIVE</span>
             </div>
 
-            <div class="student-pill" id="header-student-name">
-                <i class="fa-solid fa-user-graduate"></i>
-                <span>นักเรียน: ยังไม่ได้ลงทะเบียน</span>
+            <!-- Center: Status Bar Group -->
+            <div class="header-status-group">
+                <div class="status-pill student" id="header-student-name" title="ข้อมูลนักเรียน">
+                    <i class="fa-solid fa-user-graduate"></i>
+                    <span>ยังไม่ได้ลงทะเบียน</span>
+                </div>
+                <div class="status-pill timer" title="เวลาที่ใช้ไป">
+                    <i class="fa-regular fa-clock"></i>
+                    <span id="header-timer">00:00</span>
+                </div>
+                <div class="status-pill score" title="คะแนนปัจจุบัน">
+                    <i class="fa-solid fa-star"></i>
+                    <span id="header-score">0 / 1080</span>
+                </div>
             </div>
 
-            <div class="timer-pill">
-                <i class="fa-regular fa-clock"></i>
-                <span id="header-timer">00:00</span>
-            </div>
-
-            <div class="score-pill">
-                <i class="fa-solid fa-star"></i>
-                <span id="header-score">0 / 1080</span> คะแนน
-            </div>
-
-            <div style="display: flex; gap: 8px; align-items: center;">
-                <a href="/" class="btn-icon" title="กลับหน้าหลัก" style="text-decoration: none;"><i class="fa-solid fa-house"></i></a>
-                <button class="btn-surrender" id="btn-surrender" title="ยอมแพ้และเริ่มต้นใหม่ (กรอกข้อมูลใหม่)"><i class="fa-solid fa-flag"></i> <span>ยอมแพ้ / เริ่มใหม่</span></button>
-                <button class="btn-icon" onclick="window.open('teacher', '_blank')" title="เปิดแผงควบคุมระบบสำหรับครู"><i class="fa-solid fa-chalkboard-user"></i></button>
-                <button class="btn-icon" id="btn-report" title="ดูใบบันทึกคะแนนส่งครู"><i class="fa-solid fa-file-invoice"></i></button>
-                <button class="btn-icon" id="btn-sound" title="เปิด/ปิด เสียง"><i class="fa-solid fa-volume-high" id="sound-icon"></i></button>
+            <!-- Right: Action Buttons Group -->
+            <div class="header-actions">
+                <a href="/" class="hdr-btn" title="กลับหน้าหลัก"><i class="fa-solid fa-house"></i></a>
+                <button class="hdr-btn surrender" id="btn-surrender" title="ยอมแพ้ / เริ่มใหม่"><i class="fa-solid fa-rotate-left"></i><span>เริ่มใหม่</span></button>
+                <button class="hdr-btn" onclick="window.open('teacher', '_blank')" title="แผงควบคุมครู"><i class="fa-solid fa-chalkboard-user"></i></button>
+                <button class="hdr-btn" id="btn-report" title="ใบบันทึกคะแนน"><i class="fa-solid fa-file-invoice"></i></button>
+                <button class="hdr-btn" id="btn-sound" title="เปิด/ปิด เสียง"><i class="fa-solid fa-volume-high" id="sound-icon"></i></button>
             </div>
         </header>
 
@@ -1368,9 +1395,12 @@
         });
 
         function updateStudentHeader() {
-            const fullName = `${state.prefix}${state.firstname} ${state.lastname}`;
-            const fullClass = `${state.room} เลขที่ ${state.no}`;
-            elHeaderStudent.innerHTML = `<i class="fa-solid fa-user-ninja" style="color: var(--neon-yellow);"></i> <span>นามแฝง: <b>${state.alias}</b> (${fullName} ${fullClass})</span>`;
+            if (state.firstname && state.lastname) {
+                const shortStudent = `${state.prefix}${state.firstname} (${state.room} #${state.no})`;
+                elHeaderStudent.innerHTML = `<i class="fa-solid fa-user-ninja" style="color: var(--neon-yellow);"></i> <span><b>${state.alias}</b> (${shortStudent})</span>`;
+            } else {
+                elHeaderStudent.innerHTML = `<i class="fa-solid fa-user-graduate"></i> <span>ยังไม่ได้ลงทะเบียน</span>`;
+            }
             elHeaderScore.textContent = `${state.currentScore} / 1080`;
         }
 
@@ -1799,7 +1829,7 @@
 
                 elHeaderTimer.textContent = "00:00";
                 elHeaderScore.textContent = "0 / 1080";
-                elHeaderStudent.innerHTML = `<i class="fa-solid fa-user-graduate"></i> <span>นักเรียน: ยังไม่ได้ลงทะเบียน</span>`;
+                elHeaderStudent.innerHTML = `<i class="fa-solid fa-user-graduate"></i> <span>ยังไม่ได้ลงทะเบียน</span>`;
 
                 modalRegister.classList.add('active');
                 showToast("🏳️ ยอมแพ้และรีเซ็ตระบบเรียบร้อย กรุณากรอกข้อมูลเพื่อเริ่มทำคดีใหม่");
