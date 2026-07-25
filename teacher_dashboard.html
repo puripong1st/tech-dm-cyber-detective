@@ -433,7 +433,7 @@
 
         <!-- Controls & Filters -->
         <div class="control-bar">
-            <div style="display: flex; gap: 10px; align-items: center;">
+            <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
                 <select class="form-select" id="filter-room">
                     <option value="ALL">แสดงทุกห้องเรียน (ม.3/1 - ม.3/8)</option>
                     <option value="ม.3/1">ม.3/1</option>
@@ -444,6 +444,14 @@
                     <option value="ม.3/6">ม.3/6</option>
                     <option value="ม.3/7">ม.3/7</option>
                     <option value="ม.3/8">ม.3/8</option>
+                </select>
+
+                <select class="form-select" id="filter-sort">
+                    <option value="score-desc">🏆 เรียงตามคะแนนสูงสุด (มาก ➔ น้อย)</option>
+                    <option value="score-asc">📉 เรียงตามคะแนนต่ำสุด (น้อย ➔ มาก)</option>
+                    <option value="time-asc">⏱️ เรียงตามเวลาทำคดีเร็วที่สุด</option>
+                    <option value="room-no">🏫 เรียงตามห้องและเลขที่</option>
+                    <option value="name-asc">👤 เรียงตามชื่อนักเรียน (ก-ฮ)</option>
                 </select>
 
                 <input type="text" class="form-input" id="filter-search" placeholder="🔍 ค้นหานามแฝง / ชื่อนักเรียน...">
@@ -538,8 +546,11 @@
 
         checkAuth();
 
-        // Realtime Subscription
+        // Realtime Subscription & Auto Sync
+        let realtimeInterval = null;
+
         function startRealtimeSubscription() {
+            // 1. BroadcastChannel Listener (Same Window / Cross Tabs)
             try {
                 const bc = new BroadcastChannel('cyber_detective_live');
                 bc.onmessage = (event) => {
@@ -550,19 +561,37 @@
                 };
             } catch(e) {}
 
-            try {
-                const localData = localStorage.getItem('student_live_payload');
-                if (localData) {
-                    const parsed = JSON.parse(localData);
-                    if (parsed && parsed.student_key) {
-                        studentsMap.set(parsed.student_key, parsed);
-                        renderTable();
+            // 2. LocalStorage Sync Function & Cross-Tab Storage Event Listener
+            const checkLocalStorage = () => {
+                try {
+                    const localData = localStorage.getItem('student_live_payload');
+                    if (localData) {
+                        const parsed = JSON.parse(localData);
+                        if (parsed && parsed.student_key) {
+                            studentsMap.set(parsed.student_key, parsed);
+                            renderTable();
+                        }
                     }
-                }
-            } catch(e) {}
+                } catch(e) {}
+            };
+            checkLocalStorage();
 
+            window.addEventListener('storage', (e) => {
+                if (e.key === 'student_live_payload' && e.newValue) {
+                    try {
+                        const parsed = JSON.parse(e.newValue);
+                        if (parsed && parsed.student_key) {
+                            studentsMap.set(parsed.student_key, parsed);
+                            renderTable();
+                        }
+                    } catch(err) {}
+                }
+            });
+
+            // 3. Fetch Initial Data from Supabase
             fetchInitialData();
 
+            // 4. Supabase Realtime Subscription
             if (supabaseClient) {
                 try {
                     supabaseClient
@@ -571,10 +600,20 @@
                             if (payload.new && payload.new.student_key) {
                                 studentsMap.set(payload.new.student_key, payload.new);
                                 renderTable();
+                            } else if (payload.eventType === 'DELETE') {
+                                fetchInitialData();
                             }
                         })
                         .subscribe();
                 } catch(e) {}
+            }
+
+            // 5. Periodic Realtime Refresh Interval (every 3 seconds)
+            if (!realtimeInterval) {
+                realtimeInterval = setInterval(() => {
+                    fetchInitialData();
+                    checkLocalStorage();
+                }, 3000);
             }
         }
 
@@ -583,8 +622,7 @@
             try {
                 const { data, error } = await supabaseClient
                     .from('student_scores')
-                    .select('*')
-                    .order('best_score', { ascending: false });
+                    .select('*');
 
                 if (data && data.length > 0) {
                     data.forEach(s => studentsMap.set(s.student_key, s));
@@ -613,6 +651,7 @@
         function renderTable() {
             const tbody = document.getElementById('table-body');
             const roomFilter = document.getElementById('filter-room').value;
+            const sortMode = document.getElementById('filter-sort').value;
             const searchFilter = document.getElementById('filter-search').value.trim().toLowerCase();
 
             let list = Array.from(studentsMap.values());
@@ -629,11 +668,30 @@
                 );
             }
 
-            // PRIMARY SORT BY HIGHEST BEST_SCORE, SECONDARY BY FASTEST TOTAL_SECONDS!
+            // DYNAMIC SORTING LOGIC
             list.sort((a, b) => {
-                const scoreDiff = (b.best_score || 0) - (a.best_score || 0);
-                if (scoreDiff !== 0) return scoreDiff;
-                return (a.total_seconds || 0) - (b.total_seconds || 0);
+                if (sortMode === 'score-desc') {
+                    const scoreDiff = (b.best_score || 0) - (a.best_score || 0);
+                    if (scoreDiff !== 0) return scoreDiff;
+                    return (a.total_seconds || 0) - (b.total_seconds || 0);
+                } else if (sortMode === 'score-asc') {
+                    const scoreDiff = (a.best_score || 0) - (b.best_score || 0);
+                    if (scoreDiff !== 0) return scoreDiff;
+                    return (a.total_seconds || 0) - (b.total_seconds || 0);
+                } else if (sortMode === 'time-asc') {
+                    const timeDiff = (a.total_seconds || 0) - (b.total_seconds || 0);
+                    if (timeDiff !== 0) return timeDiff;
+                    return (b.best_score || 0) - (a.best_score || 0);
+                } else if (sortMode === 'room-no') {
+                    const roomComp = (a.room || '').localeCompare(b.room || '', 'th');
+                    if (roomComp !== 0) return roomComp;
+                    return (parseInt(a.no) || 0) - (parseInt(b.no) || 0);
+                } else if (sortMode === 'name-asc') {
+                    const nameA = `${a.firstname || ''} ${a.lastname || ''}`;
+                    const nameB = `${b.firstname || ''} ${b.lastname || ''}`;
+                    return nameA.localeCompare(nameB, 'th');
+                }
+                return 0;
             });
 
             document.getElementById('stat-total-students').textContent = `${list.length} คน`;
@@ -729,6 +787,7 @@
         });
 
         document.getElementById('filter-room').addEventListener('change', renderTable);
+        document.getElementById('filter-sort').addEventListener('change', renderTable);
         document.getElementById('filter-search').addEventListener('input', renderTable);
     </script>
 </body>
