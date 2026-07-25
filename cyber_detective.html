@@ -149,6 +149,28 @@
 
         .btn-icon:hover { background: var(--neon-cyan); color: #090d16; }
 
+        .btn-surrender {
+            background: rgba(244, 63, 94, 0.15);
+            border: 1.5px solid var(--neon-magenta);
+            color: var(--neon-magenta);
+            padding: 5px 12px;
+            border-radius: 10px;
+            font-size: 0.82rem;
+            font-weight: 800;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-family: var(--font-main);
+            transition: all 0.2s;
+        }
+
+        .btn-surrender:hover {
+            background: var(--neon-magenta);
+            color: #fff;
+            box-shadow: 0 0 12px rgba(244, 63, 94, 0.4);
+        }
+
         /* Main Workspace Split (2 Columns: Pinned Left Notebook + Right Action Panel) */
         .main-workspace {
             flex: 1;
@@ -633,7 +655,8 @@
                 <span id="header-score">0 / 1080</span> คะแนน
             </div>
 
-            <div style="display: flex; gap: 8px;">
+            <div style="display: flex; gap: 8px; align-items: center;">
+                <button class="btn-surrender" id="btn-surrender" title="ยอมแพ้และเริ่มต้นใหม่ (กรอกข้อมูลใหม่)"><i class="fa-solid fa-flag"></i> <span>ยอมแพ้ / เริ่มใหม่</span></button>
                 <button class="btn-icon" onclick="window.open('teacher', '_blank')" title="เปิดแผงควบคุมระบบสำหรับครู"><i class="fa-solid fa-chalkboard-user"></i></button>
                 <button class="btn-icon" id="btn-report" title="ดูใบบันทึกคะแนนส่งครู"><i class="fa-solid fa-file-invoice"></i></button>
                 <button class="btn-icon" id="btn-sound" title="เปิด/ปิด เสียง"><i class="fa-solid fa-volume-high" id="sound-icon"></i></button>
@@ -1672,6 +1695,44 @@
             if (elRptGrade) elRptGrade.textContent = grade;
             modalReport.classList.add('active');
         }
+
+        /* Surrender & Restart Game Function */
+        function surrenderAndRestart() {
+            if (confirm("คุณต้องการยอมแพ้และเริ่มต้นทำคดีใหม่ใช่หรือไม่?\n\n(คะแนนและเวลาในรอบนี้จะถูกรีเซ็ตใหม่ทั้งหมด เพื่อให้คุณกรอกชื่อ-นามสกุล และเลขที่ใหม่)")) {
+                sound.playFail();
+                if (timerInterval) clearInterval(timerInterval);
+                clearSessionState();
+
+                state.currentScore = 0;
+                state.totalSeconds = 0;
+                state.caseSeconds = 0;
+                state.currentQueueIdx = 0;
+                state.foundClues.clear();
+                state.failedClues.clear();
+                state.currentRoundSolved.clear();
+                state.selectedLaw = null;
+                state.selectedPenalty = null;
+
+                document.getElementById('input-firstname').value = '';
+                document.getElementById('input-lastname').value = '';
+                document.getElementById('input-no').value = '';
+                state.firstname = '';
+                state.lastname = '';
+                state.no = '';
+                localStorage.removeItem('detective_fname');
+                localStorage.removeItem('detective_lname');
+                localStorage.removeItem('detective_no');
+
+                elHeaderTimer.textContent = "00:00";
+                elHeaderScore.textContent = "0 / 1080";
+                elHeaderStudent.innerHTML = `<i class="fa-solid fa-user-graduate"></i> <span>นักเรียน: ยังไม่ได้ลงทะเบียน</span>`;
+
+                modalRegister.classList.add('active');
+                showToast("🏳️ ยอมแพ้และรีเซ็ตระบบเรียบร้อย กรุณากรอกข้อมูลเพื่อเริ่มทำคดีใหม่");
+            }
+        }
+
+        document.getElementById('btn-surrender').addEventListener('click', surrenderAndRestart);
 
         document.getElementById('btn-sound').addEventListener('click', () => {
             sound.muted = !sound.muted;
