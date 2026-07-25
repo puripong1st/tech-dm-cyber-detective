@@ -199,6 +199,45 @@
             box-shadow: 0 0 12px rgba(244, 63, 94, 0.4);
         }
 
+        .hdr-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed !important;
+            transform: none !important;
+            border-color: #475569 !important;
+            color: #94a3b8 !important;
+        }
+
+        .mobile-only {
+            display: none !important;
+        }
+
+        /* Post-Case Knowledge Flashcard */
+        .knowledge-flashcard-box {
+            width: 100%;
+            background: rgba(16, 185, 129, 0.1);
+            border: 1.5px solid var(--neon-green);
+            border-radius: 12px;
+            padding: 12px 16px;
+            margin: 10px 0;
+            text-align: left;
+        }
+
+        .flashcard-title {
+            color: var(--neon-green);
+            font-weight: 800;
+            font-size: 0.9rem;
+            margin-bottom: 6px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .flashcard-body {
+            font-size: 0.85rem;
+            color: #e2e8f0;
+            line-height: 1.55;
+        }
+
         /* Main Workspace Split (2 Columns: Pinned Left Notebook + Right Action Panel) */
         .main-workspace {
             flex: 1;
@@ -207,12 +246,47 @@
             gap: 12px;
             padding: 12px;
             overflow: hidden;
+            position: relative;
         }
 
         @media (max-width: 860px) {
+            .mobile-only {
+                display: inline-flex !important;
+            }
+
             .main-workspace {
                 grid-template-columns: 1fr;
                 overflow-y: auto;
+            }
+
+            .side-notebook {
+                position: fixed;
+                top: 55px;
+                left: 0;
+                width: 320px;
+                height: calc(100vh - 55px);
+                z-index: 1000;
+                background: #090d16;
+                box-shadow: 10px 0 30px rgba(0,0,0,0.8);
+                transition: transform 0.3s ease;
+                transform: translateX(-100%);
+            }
+
+            .side-notebook.open {
+                transform: translateX(0);
+            }
+
+            .btn-close-notebook {
+                position: absolute;
+                top: 12px;
+                right: 12px;
+                background: rgba(255,255,255,0.1);
+                border: 1px solid #475569;
+                color: #fff;
+                width: 28px;
+                height: 28px;
+                border-radius: 6px;
+                cursor: pointer;
             }
         }
 
@@ -756,10 +830,12 @@
 
             <!-- Right: Action Buttons Group -->
             <div class="header-actions">
+                <button class="hdr-btn mobile-only" id="btn-toggle-notebook" title="เปิด/ปิด สมุดโน้ต"><i class="fa-solid fa-book-bookmark"></i></button>
                 <a href="/" class="hdr-btn" title="กลับหน้าหลัก"><i class="fa-solid fa-house"></i></a>
                 <button class="hdr-btn surrender" id="btn-surrender" title="ยอมแพ้ / เริ่มใหม่"><i class="fa-solid fa-rotate-left"></i><span>เริ่มใหม่</span></button>
                 <button class="hdr-btn" onclick="window.open('teacher', '_blank')" title="แผงควบคุมครู"><i class="fa-solid fa-chalkboard-user"></i></button>
                 <button class="hdr-btn" id="btn-report" title="ใบบันทึกคะแนน"><i class="fa-solid fa-file-invoice"></i></button>
+                <button class="hdr-btn" id="btn-music" title="เปิด/ปิด ดนตรี ambient"><i class="fa-solid fa-music" id="music-icon"></i></button>
                 <button class="hdr-btn" id="btn-sound" title="เปิด/ปิด เสียง"><i class="fa-solid fa-volume-high" id="sound-icon"></i></button>
             </div>
         </header>
@@ -768,7 +844,8 @@
         <div class="main-workspace">
 
             <!-- LEFT COLUMN: Pinned Detective Evidence Notebook Panel -->
-            <aside class="side-notebook">
+            <aside class="side-notebook" id="side-notebook-panel">
+                <button class="btn-close-notebook mobile-only" id="btn-close-notebook"><i class="fa-solid fa-xmark"></i></button>
                 <div class="notebook-title">
                     <i class="fa-solid fa-book-bookmark"></i>
                     <span>สมุดโน้ตสายสืบประจำคดี</span>
@@ -968,6 +1045,14 @@
                     +150 คะแนน!
                 </div>
 
+                <!-- Post-Case Knowledge Flashcard -->
+                <div class="knowledge-flashcard-box" id="result-flashcard" style="display: none;">
+                    <div class="flashcard-title"><i class="fa-solid fa-lightbulb"></i> เกร็ดความรู้กฎหมาย (Cyber Law & PDPA Summary)</div>
+                    <div class="flashcard-body" id="flashcard-text">
+                        คำอธิบายสาระสำคัญทางกฎหมายประจำคดี...
+                    </div>
+                </div>
+
                 <button class="btn-action-main" id="btn-next-case">
                     <i class="fa-solid fa-arrow-right"></i> ทำคดีสุ่มถัดไป
                 </button>
@@ -1070,11 +1155,18 @@
         }
         fetchServerConfig();
 
-        /* Web Audio API Sound Synth */
+        /* Web Audio API Cyber Ambient Sound Synth */
         class SoundEngine {
-            constructor() { this.ctx = null; this.muted = false; }
-            init() { if (!this.ctx) this.ctx = new (window.AudioContext || window.webkitAudioContext)(); }
-            playTone(freq, type, duration, delay = 0) {
+            constructor() { 
+                this.ctx = null; 
+                this.muted = false; 
+                this.musicOn = false;
+                this.ambientNodes = null;
+            }
+            init() { 
+                if (!this.ctx) this.ctx = new (window.AudioContext || window.webkitAudioContext)(); 
+            }
+            playTone(freq, type, duration, delay = 0, volume = 0.12) {
                 if (this.muted || !this.ctx) return;
                 setTimeout(() => {
                     try {
@@ -1082,17 +1174,80 @@
                         const gain = this.ctx.createGain();
                         osc.type = type;
                         osc.frequency.setValueAtTime(freq, this.ctx.currentTime);
-                        gain.gain.setValueAtTime(0.12, this.ctx.currentTime);
+                        gain.gain.setValueAtTime(volume, this.ctx.currentTime);
                         gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + duration);
                         osc.connect(gain); gain.connect(this.ctx.destination);
                         osc.start(); osc.stop(this.ctx.currentTime + duration);
                     } catch(e) {}
                 }, delay);
             }
-            playScan() { this.init(); this.playTone(600, 'sine', 0.1); }
+            playType() { this.init(); this.playTone(700 + Math.random() * 300, 'square', 0.03, 0, 0.04); }
+            playScan() { 
+                if (this.muted) return;
+                this.init(); 
+                try {
+                    const osc = this.ctx.createOscillator();
+                    const gain = this.ctx.createGain();
+                    osc.type = 'sawtooth';
+                    osc.frequency.setValueAtTime(300, this.ctx.currentTime);
+                    osc.frequency.exponentialRampToValueAtTime(1100, this.ctx.currentTime + 0.25);
+                    gain.gain.setValueAtTime(0.06, this.ctx.currentTime);
+                    gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + 0.25);
+                    osc.connect(gain); gain.connect(this.ctx.destination);
+                    osc.start(); osc.stop(this.ctx.currentTime + 0.25);
+                } catch(e) {}
+            }
+            playGavel() { 
+                this.init(); 
+                this.playTone(110, 'sine', 0.3, 0, 0.25); 
+                this.playTone(70, 'triangle', 0.4, 40, 0.3); 
+            }
             playOk() { this.init(); this.playTone(523, 'sine', 0.1); this.playTone(659, 'sine', 0.15, 80); }
             playFail() { this.init(); this.playTone(220, 'triangle', 0.25); }
             playWin() { this.init(); this.playTone(523, 'triangle', 0.1, 0); this.playTone(659, 'triangle', 0.1, 100); this.playTone(783, 'triangle', 0.2, 200); }
+
+            startAmbient() {
+                if (this.muted || !this.musicOn || this.ambientNodes) return;
+                this.init();
+                try {
+                    const osc1 = this.ctx.createOscillator();
+                    const osc2 = this.ctx.createOscillator();
+                    const filter = this.ctx.createBiquadFilter();
+                    const gain = this.ctx.createGain();
+
+                    osc1.type = 'sine'; osc1.frequency.value = 110; // A2 note
+                    osc2.type = 'triangle'; osc2.frequency.value = 164.81; // E3 note
+
+                    filter.type = 'lowpass';
+                    filter.frequency.value = 350;
+
+                    gain.gain.setValueAtTime(0.025, this.ctx.currentTime);
+
+                    osc1.connect(filter);
+                    osc2.connect(filter);
+                    filter.connect(gain);
+                    gain.connect(this.ctx.destination);
+
+                    osc1.start();
+                    osc2.start();
+                    this.ambientNodes = { osc1, osc2, gain };
+                } catch(e) {}
+            }
+            stopAmbient() {
+                if (this.ambientNodes) {
+                    try {
+                        this.ambientNodes.osc1.stop();
+                        this.ambientNodes.osc2.stop();
+                    } catch(e) {}
+                    this.ambientNodes = null;
+                }
+            }
+            toggleMusic() {
+                this.musicOn = !this.musicOn;
+                if (!this.musicOn) this.stopAmbient();
+                else this.startAmbient();
+                return this.musicOn;
+            }
         }
 
         const sound = new SoundEngine();
@@ -1313,17 +1468,21 @@
             document.getElementById('input-alias').value = r;
         });
 
-        /* Fisher-Yates Non-Repeating Random Deck Generator */
+        /* Fisher-Yates Non-Repeating Smart Deck Rotation Generator */
         function createRandomCaseQueue() {
             state.currentRoundSolved.clear();
-            let available = window.CASES.filter(c => !state.solvedCaseIds.has(c.id));
-            if (available.length === 0) {
+            let unplayed = window.CASES.filter(c => !state.solvedCaseIds.has(c.id));
+
+            if (unplayed.length < 6) {
+                // If fewer than 6 unplayed cases remain, take all remaining unplayed cases and top up from reset pool!
+                const remaining = [...unplayed];
                 state.solvedCaseIds.clear();
-                localStorage.setItem('detective_solved_ids', '[]');
-                available = [...window.CASES];
+                localStorage.setItem('detective_solved_cases', '[]');
+                const fillPool = shuffleArray(window.CASES.filter(c => !remaining.some(r => r.id === c.id)));
+                unplayed = [...remaining, ...fillPool];
             }
 
-            const queue = shuffleArray(available).slice(0, 6);
+            const queue = shuffleArray(unplayed).slice(0, 6);
 
             state.sessionQueue = queue.map(c => ({
                 ...c,
@@ -1646,7 +1805,8 @@
             const isLastCase = state.currentQueueIdx === state.sessionQueue.length - 1;
 
             if (isCorrect) {
-                sound.playWin();
+                sound.playGavel();
+                state.consecutiveWrong = 0;
 
                 let bonusMsg = "+100 คะแนนฐาน";
                 let added = 100;
@@ -1681,6 +1841,15 @@
                 document.getElementById('result-desc').textContent = `ยินดีด้วยสายสืบ ${state.alias}! คุณตัดสินคดีได้ถูกต้องในเวลา ${state.caseSeconds} วินาที`;
                 document.getElementById('result-points-added').textContent = `${bonusMsg} (รวม +${added} คะแนน!)`;
 
+                // Render Post-Case Knowledge Flashcard
+                const flashcardBox = document.getElementById('result-flashcard');
+                const flashcardText = document.getElementById('flashcard-text');
+                if (flashcardBox && flashcardText) {
+                    const takeaway = c.takeaway || `<b>${targetLaw.title}</b>: ${targetLaw.desc}<br>⚖️ <b>บทลงโทษตามกฎหมาย</b>: ${targetPen.title}`;
+                    flashcardText.innerHTML = takeaway;
+                    flashcardBox.style.display = 'block';
+                }
+
                 const btnNext = document.getElementById('btn-next-case');
                 if (isLastCase) {
                     btnNext.innerHTML = `<i class="fa-solid fa-file-certificate"></i> ดูใบบันทึกคะแนนสรุปผลทั้งหมดส่งครู (ภารกิจสำเร็จ)`;
@@ -1694,6 +1863,9 @@
             } else {
                 sound.playFail();
                 
+                const flashcardBox = document.getElementById('result-flashcard');
+                if (flashcardBox) flashcardBox.style.display = 'none';
+
                 let deduction = 0;
                 if (!isLawCorrect) deduction += 30;
                 if (!isPenCorrect) deduction += 30;
@@ -1709,6 +1881,13 @@
                 document.getElementById('result-title').style.color = "var(--neon-magenta)";
                 document.getElementById('result-desc').textContent = "ข้อกฎหมายหรือบทลงโทษที่คุณเลือกยังไม่ถูกต้อง! ลองอ่านโจทย์และวิเคราะห์เบาะแสในสมุดโน้ตใหม่อีกครั้ง";
                 document.getElementById('result-points-added').textContent = `💥 โดนหักคะแนน -${deduction} คะแนน! ลองเลือกใหม่อีกครั้ง`;
+
+                // Anti-Spam Guessing Cooldown Check (3 wrong answers -> 5s lock)
+                state.consecutiveWrong = (state.consecutiveWrong || 0) + 1;
+                if (state.consecutiveWrong >= 3) {
+                    state.consecutiveWrong = 0;
+                    startAntiSpamCooldown();
+                }
 
                 // Reset choice selections so student can re-select!
                 state.selectedLaw = null;
@@ -1729,6 +1908,30 @@
 
             saveSessionState();
         });
+
+        /* Anti-Spam Guessing Cooldown Timer */
+        function startAntiSpamCooldown() {
+            const btnSubmit = document.getElementById('btn-submit-verdict');
+            if (!btnSubmit || state.isCooldown) return;
+            state.isCooldown = true;
+            btnSubmit.disabled = true;
+
+            let secLeft = 5;
+            btnSubmit.innerHTML = `<i class="fa-solid fa-hourglass-half"></i> ล็อกการตอบชั่วคราว (${secLeft}s)...`;
+            showToast("⚠️ คุณตอบผิด 3 ครั้งติดกัน! ระบบล็อกการตอบ 5 วินาที เพื่อให้อ่านโจทย์และวิเคราะห์หลักฐาน");
+
+            const cdInterval = setInterval(() => {
+                secLeft--;
+                if (secLeft > 0) {
+                    btnSubmit.innerHTML = `<i class="fa-solid fa-hourglass-half"></i> ล็อกการตอบชั่วคราว (${secLeft}s)...`;
+                } else {
+                    clearInterval(cdInterval);
+                    state.isCooldown = false;
+                    btnSubmit.disabled = false;
+                    btnSubmit.innerHTML = `<i class="fa-solid fa-handcuffs"></i> ตัดสินคดี & บันทึกคะแนน!`;
+                }
+            }, 1000);
+        }
 
         document.getElementById('btn-next-case').addEventListener('click', () => {
             modalResult.classList.remove('active');
@@ -1758,6 +1961,25 @@
         /* Report Modal */
         document.getElementById('btn-report').addEventListener('click', openReportModal);
         document.getElementById('btn-close-report').addEventListener('click', () => modalReport.classList.remove('active'));
+
+        /* Ambient Music Toggle */
+        document.getElementById('btn-music').addEventListener('click', () => {
+            const isOn = sound.toggleMusic();
+            document.getElementById('music-icon').className = isOn ? "fa-solid fa-music" : "fa-solid fa-volume-xmark";
+            showToast(isOn ? "🎵 เปิดดนตรีประกอบ Cyber Ambient" : "🔇 ปิดดนตรีประกอบ");
+        });
+
+        /* Mobile Collapsible Sidebar Toggle */
+        const sidePanel = document.getElementById('side-notebook-panel');
+        const btnToggleSide = document.getElementById('btn-toggle-notebook');
+        const btnCloseSide = document.getElementById('btn-close-notebook');
+
+        if (btnToggleSide && sidePanel) {
+            btnToggleSide.addEventListener('click', () => sidePanel.classList.toggle('open'));
+        }
+        if (btnCloseSide && sidePanel) {
+            btnCloseSide.addEventListener('click', () => sidePanel.classList.remove('open'));
+        }
 
         function openReportModal() {
             sound.playOk();
