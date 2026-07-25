@@ -48,6 +48,10 @@ app.get('/presentation', (req, res) => {
     res.sendFile(path.join(__dirname, 'presentation.html'));
 });
 
+app.get('/cases', (req, res) => {
+    res.sendFile(path.join(__dirname, 'cases_reference.html'));
+});
+
 // Default Fallback Route
 app.get('*', (req, res) => {
     res.sendFile(path.join(__dirname, 'index.html'));
