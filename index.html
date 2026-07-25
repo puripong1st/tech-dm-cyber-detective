@@ -3,1127 +3,384 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Quest: ภารกิจพิทักษ์ข้อมูลไซเบอร์ (Cyber Law & PDPA)</title>
-    
-    <!-- Google Fonts: Sarabun (Ultra-clean Thai Font) & Press Start 2P (Retro Tag Font) -->
+    <title>ศูนย์รวมสื่อและระบบการเรียนรู้ พ.ร.บ. คอมพิวเตอร์ | Cyber Detective Hub</title>
+
+    <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Sarabun:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    
+    <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700;800;900&family=Sarabun:wght@400;500;600;700&display=swap" rel="stylesheet">
+
     <!-- FontAwesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
     <style>
         :root {
-            --bg-dark: #0b0f19;
-            --bg-card: #182238;
-            --bg-card-hover: #1f2d4a;
-            --bg-box: #0f172a;
-            
+            --bg-dark: #050711;
+            --bg-card: rgba(15, 23, 42, 0.75);
             --neon-cyan: #38bdf8;
+            --neon-green: #10b981;
+            --neon-yellow: #f59e0b;
             --neon-magenta: #f43f5e;
-            --neon-green: #4ade80;
-            --neon-yellow: #fbbf24;
-            --neon-purple: #c084fc;
-            
-            --text-title: #ffffff;
-            --text-body: #f1f5f9;
-            --text-sub: #cbd5e1;
-            
-            --font-thai: 'Sarabun', -apple-system, BlinkMacSystemFont, sans-serif;
-            --font-pixel: 'Press Start 2P', monospace;
+            --neon-purple: #a855f7;
+            --font-main: 'Kanit', 'Sarabun', sans-serif;
         }
 
         * {
             box-sizing: border-box;
             margin: 0;
             padding: 0;
-            user-select: none;
         }
 
         body {
             background-color: var(--bg-dark);
-            color: var(--text-body);
-            font-family: var(--font-thai);
-            height: 100vh;
-            overflow: hidden;
+            color: #f8fafc;
+            font-family: var(--font-main);
+            min-height: 100vh;
             display: flex;
-            justify-content: center;
+            flex-direction: column;
+            justify-content: space-between;
             align-items: center;
-            font-size: 16px;
-            -webkit-font-smoothing: antialiased;
+            padding: 40px 20px;
+            position: relative;
+            overflow-x: hidden;
+            background-image: 
+                radial-gradient(circle at 15% 15%, rgba(56, 189, 248, 0.12) 0%, transparent 45%),
+                radial-gradient(circle at 85% 85%, rgba(168, 85, 247, 0.12) 0%, transparent 45%),
+                radial-gradient(circle at 50% 50%, rgba(16, 185, 129, 0.08) 0%, transparent 60%);
         }
 
-        /* Canvas Background Animation */
-        #bg-canvas {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: 1;
-            opacity: 0.25;
-        }
-
-        /* Scanline Overlay */
-        .scanlines {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
+        /* Subtle Cyber Grid Animation Overlay */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: 
+                linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+            background-size: 40px 40px;
+            z-index: 0;
             pointer-events: none;
-            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.3) 50%);
-            background-size: 100% 4px;
-            z-index: 99;
-            opacity: 0.3;
         }
 
-        /* App Container Shell */
-        .app-container {
-            position: relative;
-            z-index: 10;
-            width: 96%;
-            max-width: 1280px;
-            height: 94vh;
-            display: flex;
-            flex-direction: column;
-            background: rgba(15, 23, 42, 0.95);
-            border: 2px solid var(--neon-cyan);
-            border-radius: 12px;
-            box-shadow: 0 0 25px rgba(56, 189, 248, 0.25);
-            overflow: hidden;
-        }
-
-        /* Header Bar */
-        .game-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 12px 24px;
-            background: #0f172a;
-            border-bottom: 2px solid #1e293b;
-            font-family: var(--font-thai);
-        }
-
-        .player-info {
-            display: flex;
-            align-items: center;
-            gap: 14px;
-        }
-
-        .avatar-box {
-            width: 42px;
-            height: 42px;
-            border: 2px solid var(--neon-magenta);
-            border-radius: 8px;
-            background: rgba(244, 63, 94, 0.15);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            color: var(--neon-magenta);
-            font-size: 1.3rem;
-        }
-
-        .player-name {
-            font-size: 1rem;
-            font-weight: 700;
-            color: var(--neon-cyan);
-            font-family: var(--font-thai);
-        }
-
-        .hp-bar-container {
-            width: 160px;
-            height: 10px;
-            background: #334155;
-            border-radius: 5px;
-            margin-top: 4px;
-            overflow: hidden;
-        }
-
-        .hp-bar-fill {
-            height: 100%;
-            background: linear-gradient(90deg, var(--neon-cyan), var(--neon-green));
-            width: 12.5%;
-            transition: width 0.3s ease;
-        }
-
-        .stage-indicator {
-            font-family: var(--font-pixel);
-            font-size: 0.8rem;
-            color: var(--neon-yellow);
-        }
-
-        .header-controls {
-            display: flex;
-            gap: 10px;
-        }
-
-        .icon-btn {
-            background: #1e293b;
-            border: 1px solid var(--neon-cyan);
-            color: var(--neon-cyan);
-            width: 36px;
-            height: 36px;
-            border-radius: 6px;
-            cursor: pointer;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            font-size: 1rem;
-            transition: all 0.2s;
-        }
-
-        .icon-btn:hover {
-            background: var(--neon-cyan);
-            color: #0f172a;
-        }
-
-        /* Slide Viewport */
-        .slide-viewport {
-            flex: 1;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .slide {
-            position: absolute;
-            top: 0;
-            left: 0;
+        .main-container {
             width: 100%;
-            height: 100%;
-            padding: 24px 36px;
-            opacity: 0;
-            visibility: hidden;
-            transform: translateX(30px);
-            transition: all 0.3s ease;
-            display: flex;
-            flex-direction: column;
-            justify-content: flex-start;
+            max-width: 1140px;
             z-index: 1;
-            overflow-y: auto;
-            font-family: var(--font-thai);
-        }
-
-        .slide.active {
-            opacity: 1;
-            visibility: visible;
-            transform: translateX(0);
-            z-index: 2;
-        }
-
-        .slide.exit-left {
-            opacity: 0;
-            visibility: hidden;
-            transform: translateX(-30px);
-        }
-
-        /* Typography Override for Total Consistency */
-        h1, h2, h3, h4, h5, h6, p, span, div {
-            font-family: var(--font-thai);
-        }
-
-        .slide-tag {
-            font-family: var(--font-pixel) !important;
-            font-size: 0.75rem;
-            color: var(--neon-magenta);
-            letter-spacing: 2px;
-            margin-bottom: 6px;
-        }
-
-        .slide-title {
-            font-size: 1.9rem;
-            font-weight: 800;
-            color: var(--text-title);
-            margin-bottom: 16px;
-            line-height: 1.3;
-        }
-
-        .slide-title span.cyan { color: var(--neon-cyan); }
-        .slide-title span.magenta { color: var(--neon-magenta); }
-        .slide-title span.yellow { color: var(--neon-yellow); }
-        .slide-title span.green { color: var(--neon-green); }
-
-        /* Dialog Box */
-        .dialog-box {
-            background: var(--bg-card);
-            border: 2px solid var(--neon-cyan);
-            border-radius: 10px;
-            padding: 20px 24px;
-            margin-bottom: 16px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
-        }
-
-        .dialog-box.magenta { border-color: var(--neon-magenta); }
-        .dialog-box.yellow { border-color: var(--neon-yellow); }
-
-        .dialog-text {
-            font-size: 1.15rem;
-            line-height: 1.7;
-            color: var(--text-body);
-            font-weight: 500;
-        }
-
-        /* Caution Box */
-        .caution-box {
-            background: rgba(244, 63, 94, 0.12);
-            border: 2px solid var(--neon-magenta);
-            border-radius: 10px;
-            padding: 16px 20px;
             display: flex;
-            align-items: flex-start;
+            flex-direction: column;
+            align-items: center;
+            gap: 48px;
+        }
+
+        /* Hero Header */
+        .hero-section {
+            text-align: center;
+            max-width: 800px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
             gap: 16px;
         }
 
-        .caution-icon {
-            font-size: 1.5rem;
-            color: var(--neon-magenta);
-            margin-top: 2px;
-        }
-
-        .caution-text {
-            font-size: 1.05rem;
-            color: #fecdd3;
-            line-height: 1.6;
-        }
-
-        /* Clean Horizontal Penalty List (Slide 3 & Slide 4) */
-        .penalty-list {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-            width: 100%;
-        }
-
-        .penalty-row {
-            background: var(--bg-card);
-            border: 2px solid #334155;
-            border-left: 6px solid var(--neon-magenta);
-            border-radius: 8px;
-            padding: 12px 18px;
-            display: grid;
-            grid-template-columns: 54px 1fr auto;
-            align-items: center;
-            gap: 16px;
-            transition: all 0.2s ease;
-        }
-
-        .penalty-row:hover {
-            background: var(--bg-card-hover);
-            border-color: var(--neon-magenta);
-            transform: translateX(4px);
-        }
-
-        .row-num {
-            font-family: var(--font-pixel) !important;
-            font-size: 0.85rem;
-            color: #ffffff;
-            background: rgba(244, 63, 94, 0.25);
-            border: 1px solid var(--neon-magenta);
-            padding: 6px 10px;
-            border-radius: 6px;
-            text-align: center;
-        }
-
-        .row-content {
-            display: flex;
-            flex-direction: column;
-        }
-
-        .row-title {
-            font-size: 1.2rem;
-            font-weight: 700;
-            color: #ffffff;
-            margin-bottom: 2px;
-        }
-
-        .row-desc {
-            font-size: 1rem;
-            color: var(--text-sub);
-        }
-
-        .row-badge {
-            font-size: 0.98rem;
-            font-weight: 700;
-            color: var(--neon-yellow);
-            background: #0f172a;
-            border: 1.5px solid var(--neon-yellow);
-            padding: 8px 14px;
-            border-radius: 6px;
-            text-align: center;
-            line-height: 1.4;
-            white-space: nowrap;
-        }
-
-        /* 2x2 Grid Layout for Slide 5 & Slide 7 */
-        .grid-2x2 {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 14px;
-            width: 100%;
-        }
-
-        .grid-card {
-            background: var(--bg-card);
-            border: 2px solid #334155;
-            border-left: 6px solid var(--neon-green);
-            border-radius: 8px;
-            padding: 18px 20px;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-            transition: all 0.2s ease;
-        }
-
-        .grid-card:hover {
-            background: var(--bg-card-hover);
-            transform: translateY(-2px);
-        }
-
-        .card-top {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            margin-bottom: 8px;
-        }
-
-        .card-title-text {
-            font-size: 1.25rem;
-            font-weight: 700;
-            color: #ffffff;
-        }
-
-        .card-body-text {
-            font-size: 1.05rem;
-            color: var(--text-body);
-            line-height: 1.6;
-        }
-
-        /* Slide 6: Items Layout */
-        .item-box-container {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 18px;
-            margin-top: 5px;
-        }
-
-        .item-category {
-            background: var(--bg-card);
-            border: 2px solid #334155;
-            border-radius: 10px;
-            padding: 20px;
-        }
-
-        .item-category.rare {
-            border-color: var(--neon-magenta);
-            background: rgba(244, 63, 94, 0.06);
-        }
-
-        .category-header {
-            font-size: 1.3rem;
-            font-weight: 700;
-            margin-bottom: 14px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .item-tags {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
-        }
-
-        .tag-pill {
-            background: #0f172a;
-            border: 1px solid #475569;
-            padding: 8px 16px;
-            border-radius: 20px;
-            font-size: 1rem;
-            font-weight: 500;
-            color: #ffffff;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .rare .tag-pill {
-            border-color: var(--neon-magenta);
-            background: rgba(244, 63, 94, 0.15);
-            color: #ffffff;
-        }
-
-        /* Center Screens (Slide 1 & Slide 8) */
-        .center-screen {
-            text-align: center;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            height: 100%;
-            padding: 20px;
-        }
-
-        .game-logo {
-            font-family: var(--font-pixel) !important;
-            font-size: 1rem;
-            color: var(--neon-cyan);
-            margin-bottom: 16px;
-        }
-
-        .main-title {
-            font-size: 2.8rem;
-            font-weight: 800;
-            line-height: 1.25;
-            color: #ffffff;
-            margin-bottom: 24px;
-        }
-
-        .start-btn {
-            margin-top: 25px;
-            font-family: var(--font-pixel) !important;
-            font-size: 1.1rem;
-            padding: 18px 44px;
-            background: linear-gradient(135deg, var(--neon-magenta), var(--neon-purple));
-            color: #ffffff;
-            border: 2px solid #ffffff;
-            border-radius: 8px;
-            cursor: pointer;
-            box-shadow: 0 0 20px rgba(244, 63, 94, 0.4);
-            transition: all 0.2s;
-        }
-
-        .start-btn:hover {
-            transform: scale(1.05);
-            box-shadow: 0 0 30px rgba(244, 63, 94, 0.7);
-        }
-
-        .victory-banner {
-            font-family: var(--font-pixel) !important;
-            font-size: 2.2rem;
-            color: var(--neon-yellow);
-            margin-bottom: 20px;
-        }
-
-        /* Footer Bar */
-        .game-footer {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 14px 24px;
-            background: #0f172a;
-            border-top: 2px solid #1e293b;
-        }
-
-        .nav-buttons {
-            display: flex;
-            gap: 14px;
-        }
-
-        .nav-btn {
-            font-family: var(--font-thai);
-            font-size: 1.05rem;
-            font-weight: 700;
-            padding: 10px 24px;
-            background: #1e293b;
-            border: 2px solid var(--neon-cyan);
-            color: var(--neon-cyan);
-            border-radius: 6px;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            transition: all 0.2s;
-        }
-
-        .nav-btn:hover:not(:disabled) {
-            background: var(--neon-cyan);
-            color: #0f172a;
-        }
-
-        .nav-btn:disabled {
-            opacity: 0.35;
-            cursor: not-allowed;
-            border-color: #475569;
-            color: #94a3b8;
-        }
-
-        .nav-btn.next-btn {
-            border-color: var(--neon-magenta);
-            color: var(--neon-magenta);
-        }
-
-        .nav-btn.next-btn:hover:not(:disabled) {
-            background: var(--neon-magenta);
-            color: #ffffff;
-        }
-
-        .progress-dots {
-            display: flex;
-            gap: 10px;
-        }
-
-        .dot {
-            width: 12px;
-            height: 12px;
-            border-radius: 3px;
-            background: #334155;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-
-        .dot.active {
-            background: var(--neon-cyan);
-            transform: scale(1.25);
-        }
-
-        .boss-badge {
-            background: linear-gradient(90deg, #f43f5e, #c084fc);
-            color: #ffffff;
-            font-family: var(--font-pixel) !important;
-            font-size: 0.75rem;
-            padding: 6px 14px;
-            border-radius: 4px;
+        .badge-tag {
             display: inline-flex;
             align-items: center;
             gap: 8px;
-            margin-bottom: 10px;
+            background: rgba(56, 189, 248, 0.12);
+            border: 1.5px solid rgba(56, 189, 248, 0.4);
+            color: var(--neon-cyan);
+            padding: 8px 18px;
+            border-radius: 30px;
+            font-size: 0.9rem;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            box-shadow: 0 0 20px rgba(56, 189, 248, 0.2);
         }
 
-        /* Responsive */
-        @media (max-width: 1024px) {
-            .penalty-row {
-                grid-template-columns: 50px 1fr;
+        .hero-title {
+            font-size: 2.8rem;
+            font-weight: 900;
+            line-height: 1.2;
+            background: linear-gradient(135deg, #ffffff 30%, var(--neon-cyan) 70%, var(--neon-purple) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+        }
+
+        .hero-desc {
+            font-size: 1.15rem;
+            color: #94a3b8;
+            font-weight: 400;
+            line-height: 1.6;
+            max-width: 680px;
+        }
+
+        /* Hub Web Selection Grid */
+        .hub-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 28px;
+            width: 100%;
+        }
+
+        /* Web Card */
+        .web-card {
+            position: relative;
+            background: var(--bg-card);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 2px solid rgba(255, 255, 255, 0.08);
+            border-radius: 24px;
+            padding: 32px 28px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            gap: 24px;
+            text-decoration: none;
+            color: inherit;
+            transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+            overflow: hidden;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+        }
+
+        .web-card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; height: 4px;
+            background: var(--card-glow, var(--neon-cyan));
+            opacity: 0.8;
+            transition: height 0.35s ease, opacity 0.35s ease;
+        }
+
+        .web-card:hover {
+            transform: translateY(-8px) scale(1.02);
+            border-color: var(--card-glow, var(--neon-cyan));
+            box-shadow: 0 25px 50px -10px var(--card-shadow, rgba(56, 189, 248, 0.3));
+        }
+
+        .web-card:hover::before {
+            height: 6px;
+            opacity: 1;
+        }
+
+        /* Card Elements */
+        .card-header-box {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+        }
+
+        .card-icon {
+            width: 64px;
+            height: 64px;
+            border-radius: 18px;
+            background: rgba(15, 23, 42, 0.9);
+            border: 1.5px solid var(--card-glow, var(--neon-cyan));
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 1.8rem;
+            color: var(--card-glow, var(--neon-cyan));
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
+            transition: transform 0.3s ease;
+        }
+
+        .web-card:hover .card-icon {
+            transform: rotate(-6deg) scale(1.1);
+        }
+
+        .card-tag {
+            font-size: 0.78rem;
+            font-weight: 800;
+            padding: 5px 12px;
+            border-radius: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: var(--card-glow, var(--neon-cyan));
+        }
+
+        .card-body {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .card-title {
+            font-size: 1.45rem;
+            font-weight: 800;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .card-desc {
+            font-size: 0.95rem;
+            color: #cbd5e1;
+            line-height: 1.6;
+            font-weight: 400;
+        }
+
+        .card-footer {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding-top: 16px;
+            border-top: 1px solid rgba(255, 255, 255, 0.08);
+            font-weight: 700;
+            font-size: 0.95rem;
+            color: var(--card-glow, var(--neon-cyan));
+        }
+
+        .card-footer-btn {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: gap 0.2s ease;
+        }
+
+        .web-card:hover .card-footer-btn {
+            gap: 14px;
+        }
+
+        /* Specific Theme Colors per Card */
+        .card-detective {
+            --card-glow: var(--neon-cyan);
+            --card-shadow: rgba(56, 189, 248, 0.35);
+        }
+
+        .card-teacher {
+            --card-glow: var(--neon-green);
+            --card-shadow: rgba(16, 185, 129, 0.35);
+        }
+
+        .card-presentation {
+            --card-glow: var(--neon-purple);
+            --card-shadow: rgba(168, 85, 247, 0.35);
+        }
+
+        /* Footer */
+        footer {
+            margin-top: 40px;
+            text-align: center;
+            color: #64748b;
+            font-size: 0.88rem;
+            z-index: 1;
+        }
+
+        @media (max-width: 768px) {
+            .hero-title {
+                font-size: 2rem;
             }
-            .row-badge {
-                grid-column: 1 / -1;
-                text-align: left;
-                white-space: normal;
-            }
-            .grid-2x2, .item-box-container {
+            .hub-grid {
                 grid-template-columns: 1fr;
             }
-            .main-title { font-size: 2.2rem; }
-            .slide-title { font-size: 1.5rem; }
-            .slide { padding: 18px 20px; }
         }
     </style>
 </head>
 <body>
 
-    <!-- Background Canvas -->
-    <canvas id="bg-canvas"></canvas>
-    <div class="scanlines"></div>
+    <div class="main-container">
 
-    <!-- Main Game Shell -->
-    <div class="app-container">
-        
-        <!-- Top Header Bar -->
-        <header class="game-header">
-            <div class="player-info">
-                <div class="avatar-box">
-                    <i class="fa-solid fa-user-shield"></i>
-                </div>
-                <div>
-                    <div class="player-name">PLAYER: M.3 HERO</div>
-                    <div class="hp-bar-container">
-                        <div class="hp-bar-fill" id="hp-bar"></div>
-                    </div>
-                </div>
+        <!-- Hero Section -->
+        <header class="hero-section">
+            <div class="badge-tag">
+                <i class="fa-solid fa-shield-halved"></i>
+                <span>CYBER LAW EDUCATIONAL PLATFORM</span>
             </div>
-
-            <div class="stage-indicator" id="stage-text">STAGE 1 / 8</div>
-
-            <div class="header-controls">
-                <button class="icon-btn" id="sfx-toggle" title="เปิด/ปิด เสียง">
-                    <i class="fa-solid fa-volume-high"></i>
-                </button>
-                <button class="icon-btn" id="fullscreen-toggle" title="เต็มจอ">
-                    <i class="fa-solid fa-expand"></i>
-                </button>
-            </div>
+            <h1 class="hero-title">ระบบสื่อการเรียนรู้ & สืบคดีกฎหมายคอมพิวเตอร์</h1>
+            <p class="hero-desc">
+                เลือกเข้าสู่ระบบบทเรียน เกมสืบคดีจำลอง หรือแดชบอร์ดสรุปผลคะแนนเรียลไทม์สำหรับครูผู้สอน
+            </p>
         </header>
 
-        <!-- Slide Viewport -->
-        <main class="slide-viewport">
+        <!-- Web Application Selection Grid -->
+        <main class="hub-grid">
 
-            <!-- Slide 1: Title -->
-            <section class="slide active" id="slide-1">
-                <div class="center-screen">
-                    <div class="game-logo"><i class="fa-solid fa-shield-halved"></i> SYSTEM QUEST INITIATED</div>
-                    <h1 class="main-title">
-                        Quest: ภารกิจพิทักษ์ข้อมูลไซเบอร์<br>
-                        <span class="cyan">(Cyber Law & PDPA)</span>
-                    </h1>
-                    <div class="dialog-box magenta" style="max-width: 700px;">
-                        <p class="dialog-text" style="text-align: center;">
-                            🎮 "ผู้กล้า ม.3 ทุกคน จงเตรียมพร้อมอัปเกรดความรู้ เพื่อเอาชีวิตรอดในโลกออนไลน์!"
-                        </p>
+            <!-- Card 1: Cyber Detective Game -->
+            <a href="cyber_detective.html" class="web-card card-detective">
+                <div class="card-header-box">
+                    <div class="card-icon">
+                        <i class="fa-solid fa-user-ninja"></i>
                     </div>
-                    <button class="start-btn" onclick="nextSlide()">
-                        <i class="fa-solid fa-play"></i> PRESS START
-                    </button>
+                    <span class="card-tag">สำหรับนักเรียน</span>
                 </div>
-            </section>
-
-            <!-- Slide 2: Intro -->
-            <section class="slide" id="slide-2">
-                <div class="slide-tag">MAIN STORY // ORIGIN</div>
-                <h2 class="slide-title">ทำไมโลกไซเบอร์ <span class="cyan">ต้องมีกฎหมาย?</span></h2>
-                
-                <div class="dialog-box">
-                    <p class="dialog-text">
-                        เพราะเทคโนโลยีสารสนเทศเข้ามามีบทบาทสำคัญต่อชีวิตประจำวันของเราอย่างมาก 
-                        <strong>กฎหมายคอมพิวเตอร์</strong> จึงเป็นเครื่องมือสำคัญในการรักษาความสงบเรียบร้อย สร้างความปลอดภัยในโลกไซเบอร์ 
-                        คุ้มครองสิทธิของผู้ใช้งาน และสนับสนุนให้ทุกคนใช้เทคโนโลยีอย่างมีจริยธรรม
+                <div class="card-body">
+                    <h2 class="card-title">
+                        <span>Cyber Detective Game</span>
+                    </h2>
+                    <p class="card-desc">
+                        เกมสืบคดีจำลองอาชญากรรมทางเทคโนโลยี วิเคราะห์หลักฐาน ไต่สวนผู้สงสัย และวิเคราะห์ฐานความผิดตาม พ.ร.บ. คอมพิวเตอร์
                     </p>
                 </div>
-
-                <div class="caution-box">
-                    <div class="caution-icon"><i class="fa-solid fa-triangle-exclamation"></i></div>
-                    <div class="caution-text">
-                        <strong>💡 Com Sci in Real Life:</strong> 
-                        การโพสต์ข้อความ รูปภาพ หรือความคิดเห็นในโซเชียลมีเดีย ต้องคิดถึงผลกระทบเสมอ! หากโพสต์เนื้อหาที่ไม่เหมาะสม อาจจะได้รับโทษทางกฎหมายตาม พ.ร.บ. คอมพิวเตอร์
+                <div class="card-footer">
+                    <span>เข้าสู่เกมสืบคดี</span>
+                    <div class="card-footer-btn">
+                        <span>เริ่มทำคดี</span>
+                        <i class="fa-solid fa-arrow-right-long"></i>
                     </div>
                 </div>
-            </section>
+            </a>
 
-            <!-- Slide 3: Level 1 - พ.ร.บ.คอมฯ หมวดการแฮก -->
-            <section class="slide" id="slide-3">
-                <div class="slide-tag">LEVEL 1 // HACKING TRAPS</div>
-                <h2 class="slide-title">Level 1: ระวังโดนแบน! <span class="magenta">บทลงโทษ พ.ร.บ.คอมฯ 2550 (แก้ไข 2560)</span></h2>
-                
-                <div class="penalty-list">
-                    <div class="penalty-row">
-                        <div class="row-num">01</div>
-                        <div class="row-content">
-                            <div class="row-title">แอบเข้าระบบคนอื่น</div>
-                            <div class="row-desc">เข้าถึงระบบคอมพิวเตอร์ที่มีมาตรการป้องกันโดยมิชอบ</div>
-                        </div>
-                        <div class="row-badge">⚖️ โทษ: จำคุกไม่เกิน 6 เดือน / ปรับไม่เกิน 10,000 บาท</div>
+            <!-- Card 2: Teacher Realtime Dashboard -->
+            <a href="teacher_dashboard.html" class="web-card card-teacher">
+                <div class="card-header-box">
+                    <div class="card-icon">
+                        <i class="fa-solid fa-chalkboard-user"></i>
                     </div>
-
-                    <div class="penalty-row">
-                        <div class="row-num">02</div>
-                        <div class="row-content">
-                            <div class="row-title">แอบดูข้อมูลคนอื่น</div>
-                            <div class="row-desc">เข้าถึงข้อมูลคอมพิวเตอร์ของผู้อื่นที่มีมาตรการป้องกันไว้</div>
-                        </div>
-                        <div class="row-badge">⚖️ โทษ: จำคุกไม่เกิน 2 ปี / ปรับไม่เกิน 40,000 บาท</div>
-                    </div>
-
-                    <div class="penalty-row">
-                        <div class="row-num">03</div>
-                        <div class="row-content">
-                            <div class="row-title">ดักรับข้อมูลกลางทาง</div>
-                            <div class="row-desc">ดักแชท หรือแอบจับข้อมูลของผู้อื่นขณะส่งผ่านระบบ</div>
-                        </div>
-                        <div class="row-badge">⚖️ โทษ: จำคุกไม่เกิน 3 ปี / ปรับไม่เกิน 60,000 บาท</div>
-                    </div>
-
-                    <div class="penalty-row">
-                        <div class="row-num">04</div>
-                        <div class="row-content">
-                            <div class="row-title">ทำลาย/แก้ไขข้อมูลผู้อื่น</div>
-                            <div class="row-desc">ทำให้เสียหาย ทำลาย แก้ไข หรือดัดแปลงข้อมูลผู้อื่นโดยมิชอบ</div>
-                        </div>
-                        <div class="row-badge">⚖️ โทษ: จำคุกไม่เกิน 5 ปี / ปรับไม่เกิน 100,000 บาท</div>
-                    </div>
-
-                    <div class="penalty-row">
-                        <div class="row-num">05</div>
-                        <div class="row-content">
-                            <div class="row-title">ทำให้ระบบล่ม/ทำงานไม่ได้</div>
-                            <div class="row-desc">ก่อกวน ยิงระบบ (DDoS) ทำให้การทำงานของระบบคอมพิวเตอร์ผู้อื่นถูกระงับ ชะลอ หรือล่ม</div>
-                        </div>
-                        <div class="row-badge">⚖️ โทษ: จำคุกไม่เกิน 5 ปี / ปรับไม่เกิน 100,000 บาท</div>
-                    </div>
+                    <span class="card-tag">สำหรับครูผู้สอน</span>
                 </div>
-            </section>
-
-            <!-- Slide 4: Level 2 - พ.ร.บ.คอมฯ หมวดการโพสต์/หลอกลวง -->
-            <section class="slide" id="slide-4">
-                <div class="slide-tag">LEVEL 2 // FORBIDDEN SKILLS</div>
-                <h2 class="slide-title">Level 2: <span class="magenta">สกิลต้องห้ามในการโพสต์</span></h2>
-                
-                <div class="penalty-list">
-                    <div class="penalty-row">
-                        <div class="row-num">01</div>
-                        <div class="row-content">
-                            <div class="row-title">ส่งสแปมก่อกวน</div>
-                            <div class="row-desc">ส่งอีเมล/ข้อความก่อกวน โดยไม่เปิดโอกาสให้ผู้รับกดยกเลิก (Unsubscribe) ได้โดยง่าย</div>
-                        </div>
-                        <div class="row-badge">⚖️ โทษ: ปรับไม่เกิน 200,000 บาท</div>
-                    </div>
-
-                    <div class="penalty-row">
-                        <div class="row-num">02</div>
-                        <div class="row-content">
-                            <div class="row-title">หลอกลวง / ฟิชชิ่ง / แชร์ข่าวปลอม</div>
-                            <div class="row-desc">ทำฟิชชิ่ง (Phishing) นำเข้าข้อมูลเท็จ หรือแชร์ Fake News ที่สร้างความตื่นตระหนก</div>
-                        </div>
-                        <div class="row-badge">⚖️ โทษ: จำคุกไม่เกิน 5 ปี / ปรับไม่เกิน 100,000 บาท</div>
-                    </div>
-
-                    <div class="penalty-row">
-                        <div class="row-num">03</div>
-                        <div class="row-content">
-                            <div class="row-title">นำเข้าสื่อลามก</div>
-                            <div class="row-desc">นำเข้าข้อมูลคอมพิวเตอร์ที่มีลักษณะลามกอนาจารที่ประชาชนทั่วไปเข้าถึงได้</div>
-                        </div>
-                        <div class="row-badge">⚖️ โทษ: จำคุกไม่เกิน 5 ปี / ปรับไม่เกิน 100,000 บาท</div>
-                    </div>
-
-                    <div class="penalty-row">
-                        <div class="row-num">04</div>
-                        <div class="row-content">
-                            <div class="row-title">ตัดต่อภาพคนอื่นให้เสียหาย</div>
-                            <div class="row-desc">นำภาพผู้อื่นมาตัดต่อ ดัดแปลง แล้วโพสต์ทำให้เสียชื่อเสียง ถูกดูหมิ่น หรืออับอาย</div>
-                        </div>
-                        <div class="row-badge">⚖️ โทษ: จำคุกไม่เกิน 3 ปี / ปรับไม่เกิน 200,000 บาท</div>
-                    </div>
-                </div>
-            </section>
-
-            <!-- Slide 5: Boss Fight - PDPA Intro -->
-            <section class="slide" id="slide-5">
-                <div class="boss-badge"><i class="fa-solid fa-skull"></i> BOSS ENCOUNTER</div>
-                <h2 class="slide-title">Boss Fight: <span class="yellow">ทำความรู้จักเกราะป้องกัน PDPA</span></h2>
-                
-                <div class="dialog-box yellow">
-                    <p class="dialog-text">
-                        🛡️ <strong>PDPA (Personal Data Protection Act)</strong> คือ 
-                        <em>พระราชบัญญัติคุ้มครองข้อมูลส่วนบุคคล พ.ศ. 2562</em><br><br>
-                        กฎหมายที่สร้างมาเพื่อป้องกันการละเมิดข้อมูลส่วนบุคคล ป้องกันไม่ให้ใครเอาข้อมูลเราไปใช้โดยไม่ได้รับความยินยอม 
-                        ช่วยปกป้องเราจากแฮกเกอร์และแก๊งคอลเซ็นเตอร์!
+                <div class="card-body">
+                    <h2 class="card-title">
+                        <span>Teacher Live Dashboard</span>
+                    </h2>
+                    <p class="card-desc">
+                        ระบบแดชบอร์ดเรียลไทม์ ติดตามคะแนน เวลาในการทำคดี และจัดอันดับคะแนนนักเรียน พร้อมระบบส่งออกรายงานสรุป PDF
                     </p>
                 </div>
-
-                <div class="grid-2x2">
-                    <div style="background: var(--bg-card); border: 2px solid var(--neon-cyan); padding: 20px; border-radius: 10px;">
-                        <h4 style="color: var(--neon-cyan); font-size: 1.25rem; font-weight: 700; margin-bottom: 6px;">
-                            <i class="fa-solid fa-shield-virus"></i> ป้องกันการละเมิด
-                        </h4>
-                        <p style="font-size: 1.05rem; color: var(--text-body);">คุ้มครองสิทธิ ไม่ให้ใครแอบเอาข้อมูลส่วนตัวไปขายหรือใช้งานโดยไม่ได้รับอนุญาต</p>
-                    </div>
-
-                    <div style="background: var(--bg-card); border: 2px solid var(--neon-green); padding: 20px; border-radius: 10px;">
-                        <h4 style="color: var(--neon-green); font-size: 1.25rem; font-weight: 700; margin-bottom: 6px;">
-                            <i class="fa-solid fa-lock"></i> มาตรฐานสากล
-                        </h4>
-                        <p style="font-size: 1.05rem; color: var(--text-body);">ถอดแบบมาจากกฎหมายคุ้มครองข้อมูลส่วนบุคคลระดับสากล (GDPR)</p>
+                <div class="card-footer">
+                    <span>เข้าสู่ระบบแดชบอร์ด</span>
+                    <div class="card-footer-btn">
+                        <span>ดูผลคะแนน</span>
+                        <i class="fa-solid fa-arrow-right-long"></i>
                     </div>
                 </div>
-            </section>
+            </a>
 
-            <!-- Slide 6: Item Box - ข้อมูลส่วนบุคคล -->
-            <section class="slide" id="slide-6">
-                <div class="slide-tag">ITEM BOX // INVENTORY</div>
-                <h2 class="slide-title">Item ข้อมูลส่วนตัว <span class="cyan">(ห้ามทำหล่นหาย!)</span></h2>
-                
-                <div class="item-box-container">
-                    <div class="item-category">
-                        <div class="category-header" style="color: var(--neon-cyan);">
-                            <i class="fa-solid fa-box-archive"></i> ข้อมูลทั่วไป (General Data)
-                        </div>
-                        <div class="item-tags">
-                            <span class="tag-pill"><i class="fa-solid fa-id-card"></i> ชื่อ-นามสกุล</span>
-                            <span class="tag-pill"><i class="fa-solid fa-house"></i> ที่อยู่</span>
-                            <span class="tag-pill"><i class="fa-solid fa-phone"></i> เบอร์โทรศัพท์</span>
-                            <span class="tag-pill"><i class="fa-solid fa-image"></i> รูปถ่าย</span>
-                            <span class="tag-pill"><i class="fa-brands fa-line"></i> ไอดีไลน์</span>
-                            <span class="tag-pill"><i class="fa-solid fa-envelope"></i> อีเมล</span>
-                            <span class="tag-pill"><i class="fa-solid fa-user-gear"></i> บัญชีผู้ใช้</span>
-                        </div>
+            <!-- Card 3: Presentation & Learning Content -->
+            <a href="presentation.html" class="web-card card-presentation">
+                <div class="card-header-box">
+                    <div class="card-icon">
+                        <i class="fa-solid fa-book-bookmark"></i>
                     </div>
-
-                    <div class="item-category rare">
-                        <div class="category-header" style="color: var(--neon-magenta);">
-                            <i class="fa-solid fa-gem"></i> Sensitive Data (ไอเทมระดับแรร์!)
-                        </div>
-                        <p style="font-size: 0.95rem; color: #fecdd3; margin-bottom: 14px; font-weight: 500;">
-                            *ข้อมูลอ่อนไหว ต้องระวังเป็นพิเศษหากรั่วไหล!
-                        </p>
-                        <div class="item-tags">
-                            <span class="tag-pill"><i class="fa-solid fa-notes-medical"></i> ประวัติสุขภาพ</span>
-                            <span class="tag-pill"><i class="fa-solid fa-hands-praying"></i> ศาสนา</span>
-                            <span class="tag-pill"><i class="fa-solid fa-dna"></i> เชื้อชาติ</span>
-                            <span class="tag-pill"><i class="fa-solid fa-heart"></i> พฤติกรรมทางเพศ</span>
-                            <span class="tag-pill"><i class="fa-solid fa-fingerprint"></i> ข้อมูลพันธุกรรม / ชีวภาพ</span>
-                        </div>
+                    <span class="card-tag">สื่อบทเรียน</span>
+                </div>
+                <div class="card-body">
+                    <h2 class="card-title">
+                        <span>Cyber Law Presentation</span>
+                    </h2>
+                    <p class="card-desc">
+                        สไลด์เนื้อหาบทเรียนปฏิสัมพันธ์ สรุป พ.ร.บ. คอมพิวเตอร์ มาตราสำคัญ ตัวอย่างกรณีศึกษา และสื่อการสอนครบวงจร
+                    </p>
+                </div>
+                <div class="card-footer">
+                    <span>เข้าสู่เนื้อหาบทเรียน</span>
+                    <div class="card-footer-btn">
+                        <span>เปิดสไลด์</span>
+                        <i class="fa-solid fa-arrow-right-long"></i>
                     </div>
                 </div>
-            </section>
-
-            <!-- Slide 7: Player Skills - สิทธิของเจ้าของข้อมูล -->
-            <section class="slide" id="slide-7">
-                <div class="slide-tag">PLAYER SKILLS // ULTIMATE</div>
-                <h2 class="slide-title">Ultimate Skills: <span class="green">สิทธิของคุณตาม PDPA</span></h2>
-                
-                <div class="grid-2x2">
-                    <div class="grid-card">
-                        <div class="card-top">
-                            <span class="row-num" style="color: #ffffff; background: rgba(74, 222, 128, 0.25); border-color: var(--neon-green);">SK 1</span>
-                            <span class="card-title-text">รับทราบและยินยอม (Consent)</span>
-                        </div>
-                        <div class="card-body-text">ผู้เก็บข้อมูลต้องแจ้งวัตถุประสงค์และขอความยินยอมจากเราก่อนเก็บข้อมูลทุกครั้ง</div>
-                    </div>
-
-                    <div class="grid-card">
-                        <div class="card-top">
-                            <span class="row-num" style="color: #ffffff; background: rgba(74, 222, 128, 0.25); border-color: var(--neon-green);">SK 2</span>
-                            <span class="card-title-text">ขอเข้าถึงข้อมูล (Access)</span>
-                        </div>
-                        <div class="card-body-text">เรามีสิทธิขอดู ขอรับสำเนา หรือตรวจสอบว่ามีการเก็บข้อมูลอะไรของเราไว้บ้าง</div>
-                    </div>
-
-                    <div class="grid-card">
-                        <div class="card-top">
-                            <span class="row-num" style="color: #ffffff; background: rgba(74, 222, 128, 0.25); border-color: var(--neon-green);">SK 3</span>
-                            <span class="card-title-text">คัดค้านและเพิกถอน (Cancel)</span>
-                        </div>
-                        <div class="card-body-text">ถ้ายอมรับไปแล้ว วันไหนไม่อยากให้ใช้ข้อมูลต่อ สามารถถอนความยินยอมได้ทุกเมื่อ</div>
-                    </div>
-
-                    <div class="grid-card">
-                        <div class="card-top">
-                            <span class="row-num" style="color: #ffffff; background: rgba(74, 222, 128, 0.25); border-color: var(--neon-green);">SK 4</span>
-                            <span class="card-title-text">ขอลบข้อมูล (Delete)</span>
-                        </div>
-                        <div class="card-body-text">สั่งให้บริษัทหรือเว็บไซต์ทำการลบ หรือทำลายข้อมูลส่วนตัวของเราทิ้งได้</div>
-                    </div>
-                </div>
-            </section>
-
-            <!-- Slide 8: Mission Complete -->
-            <section class="slide" id="slide-8">
-                <div class="center-screen">
-                    <div class="victory-banner">🏆 MISSION COMPLETE!</div>
-                    <h2 class="slide-title" style="font-size: 2.5rem;">ภารกิจสำเร็จแล้ว!</h2>
-                    
-                    <div class="dialog-box yellow" style="max-width: 720px; margin-top: 15px;">
-                        <p class="dialog-text" style="text-align: center;">
-                            🎉 <strong>ยินดีด้วย! คุณมีภูมิคุ้มกันไซเบอร์แล้ว</strong><br>
-                            อย่าลืมเคารพสิทธิผู้อื่น ไม่ทำผิด พ.ร.บ.คอมฯ และปกป้องข้อมูลส่วนตัวของตัวเองด้วยล่ะ!
-                        </p>
-                    </div>
-
-                    <button class="start-btn" onclick="goToSlide(0)">
-                        <i class="fa-solid fa-rotate-right"></i> REPLAY MISSION
-                    </button>
-                </div>
-            </section>
+            </a>
 
         </main>
 
-        <!-- Footer Bar -->
-        <footer class="game-footer">
-            <div class="nav-buttons">
-                <button class="nav-btn" id="prev-btn" onclick="prevSlide()" disabled>
-                    <i class="fa-solid fa-chevron-left"></i> PREV (ย้อนกลับ)
-                </button>
-            </div>
-
-            <div class="progress-dots" id="dots-container"></div>
-
-            <div class="nav-buttons">
-                <button class="nav-btn next-btn" id="next-btn" onclick="nextSlide()">
-                    NEXT (ต่อไป) <i class="fa-solid fa-chevron-right"></i>
-                </button>
-            </div>
-        </footer>
-
     </div>
 
-    <!-- JS Logic -->
-    <script>
-        let currentSlide = 0;
-        const totalSlides = 8;
-        let soundEnabled = true;
+    <footer>
+        <p>© 2026 Cyber Law Detective & Teacher Platform. All rights reserved.</p>
+    </footer>
 
-        const AudioCtx = window.AudioContext || window.webkitAudioContext;
-        let audioCtx = null;
-
-        function initAudio() {
-            if (!audioCtx) audioCtx = new AudioCtx();
-        }
-
-        function playSound(type) {
-            if (!soundEnabled) return;
-            try {
-                initAudio();
-                const osc = audioCtx.createOscillator();
-                const gain = audioCtx.createGain();
-                osc.connect(gain);
-                gain.connect(audioCtx.destination);
-                const now = audioCtx.currentTime;
-
-                if (type === 'next') {
-                    osc.type = 'sine';
-                    osc.frequency.setValueAtTime(440, now);
-                    osc.frequency.exponentialRampToValueAtTime(880, now + 0.12);
-                    gain.gain.setValueAtTime(0.12, now);
-                    gain.gain.exponentialRampToValueAtTime(0.01, now + 0.12);
-                    osc.start(now);
-                    osc.stop(now + 0.12);
-                } else if (type === 'prev') {
-                    osc.type = 'sine';
-                    osc.frequency.setValueAtTime(660, now);
-                    osc.frequency.exponentialRampToValueAtTime(330, now + 0.12);
-                    gain.gain.setValueAtTime(0.12, now);
-                    gain.gain.exponentialRampToValueAtTime(0.01, now + 0.12);
-                    osc.start(now);
-                    osc.stop(now + 0.12);
-                } else if (type === 'finish') {
-                    osc.type = 'triangle';
-                    osc.frequency.setValueAtTime(523.25, now);
-                    osc.frequency.setValueAtTime(659.25, now + 0.1);
-                    osc.frequency.setValueAtTime(783.99, now + 0.2);
-                    osc.frequency.setValueAtTime(1046.50, now + 0.3);
-                    gain.gain.setValueAtTime(0.2, now);
-                    gain.gain.exponentialRampToValueAtTime(0.01, now + 0.5);
-                    osc.start(now);
-                    osc.stop(now + 0.5);
-                }
-            } catch (e) {}
-        }
-
-        const dotsContainer = document.getElementById('dots-container');
-        for (let i = 0; i < totalSlides; i++) {
-            const dot = document.createElement('div');
-            dot.className = `dot ${i === 0 ? 'active' : ''}`;
-            dot.addEventListener('click', () => goToSlide(i));
-            dotsContainer.appendChild(dot);
-        }
-
-        function updateSlideView() {
-            const slides = document.querySelectorAll('.slide');
-            const dots = document.querySelectorAll('.dot');
-            const hpBar = document.getElementById('hp-bar');
-            const stageText = document.getElementById('stage-text');
-            const prevBtn = document.getElementById('prev-btn');
-            const nextBtn = document.getElementById('next-btn');
-
-            slides.forEach((slide, index) => {
-                slide.classList.remove('active', 'exit-left');
-                if (index === currentSlide) {
-                    slide.classList.add('active');
-                } else if (index < currentSlide) {
-                    slide.classList.add('exit-left');
-                }
-            });
-
-            dots.forEach((dot, index) => {
-                dot.classList.toggle('active', index === currentSlide);
-            });
-
-            const progressPercent = ((currentSlide + 1) / totalSlides) * 100;
-            hpBar.style.width = `${progressPercent}%`;
-            stageText.textContent = `STAGE ${currentSlide + 1} / ${totalSlides}`;
-
-            prevBtn.disabled = currentSlide === 0;
-            if (currentSlide === totalSlides - 1) {
-                nextBtn.innerHTML = `COMPLETE <i class="fa-solid fa-flag-checkered"></i>`;
-            } else {
-                nextBtn.innerHTML = `NEXT (ต่อไป) <i class="fa-solid fa-chevron-right"></i>`;
-            }
-        }
-
-        function nextSlide() {
-            if (currentSlide < totalSlides - 1) {
-                currentSlide++;
-                playSound('next');
-                if (currentSlide === totalSlides - 1) {
-                    setTimeout(() => playSound('finish'), 200);
-                }
-                updateSlideView();
-            }
-        }
-
-        function prevSlide() {
-            if (currentSlide > 0) {
-                currentSlide--;
-                playSound('prev');
-                updateSlideView();
-            }
-        }
-
-        function goToSlide(index) {
-            if (index >= 0 && index < totalSlides && index !== currentSlide) {
-                const dir = index > currentSlide ? 'next' : 'prev';
-                currentSlide = index;
-                playSound(dir);
-                updateSlideView();
-            }
-        }
-
-        document.addEventListener('keydown', (e) => {
-            if (e.key === 'ArrowRight' || e.key === 'Space') {
-                nextSlide();
-            } else if (e.key === 'ArrowLeft') {
-                prevSlide();
-            }
-        });
-
-        const sfxBtn = document.getElementById('sfx-toggle');
-        sfxBtn.addEventListener('click', () => {
-            soundEnabled = !soundEnabled;
-            sfxBtn.innerHTML = soundEnabled ? `<i class="fa-solid fa-volume-high"></i>` : `<i class="fa-solid fa-volume-xmark"></i>`;
-            sfxBtn.style.color = soundEnabled ? 'var(--neon-cyan)' : '#94a3b8';
-        });
-
-        const fullscreenBtn = document.getElementById('fullscreen-toggle');
-        fullscreenBtn.addEventListener('click', () => {
-            if (!document.fullscreenElement) {
-                document.documentElement.requestFullscreen().catch(err => console.log(err));
-            } else {
-                if (document.exitFullscreen) {
-                    document.exitFullscreen();
-                }
-            }
-        });
-
-        // Canvas Particle Background
-        const canvas = document.getElementById('bg-canvas');
-        const ctx = canvas.getContext('2d');
-
-        function resizeCanvas() {
-            canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight;
-        }
-        window.addEventListener('resize', resizeCanvas);
-        resizeCanvas();
-
-        const particles = [];
-        for (let i = 0; i < 35; i++) {
-            particles.push({
-                x: Math.random() * canvas.width,
-                y: Math.random() * canvas.height,
-                size: Math.random() * 2 + 1,
-                speedX: (Math.random() - 0.5) * 0.5,
-                speedY: (Math.random() - 0.5) * 0.5,
-                color: Math.random() > 0.5 ? '#38bdf8' : '#f43f5e'
-            });
-        }
-
-        function drawBackground() {
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            particles.forEach(p => {
-                p.x += p.speedX;
-                p.y += p.speedY;
-
-                if (p.x < 0 || p.x > canvas.width) p.speedX *= -1;
-                if (p.y < 0 || p.y > canvas.height) p.speedY *= -1;
-
-                ctx.fillStyle = p.color;
-                ctx.beginPath();
-                ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
-                ctx.fill();
-            });
-            requestAnimationFrame(drawBackground);
-        }
-
-        drawBackground();
-    </script>
 </body>
 </html>
