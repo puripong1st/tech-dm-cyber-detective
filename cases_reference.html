@@ -634,14 +634,15 @@
             const val = inputPasscode.value.trim();
             let validPass = (val === 'admin123' || val === 'teacher123');
 
-            // Also test API config if available
             try {
-                if (!validPass && window.location.protocol.startsWith('http')) {
-                    const res = await fetch('/api/config');
-                    const config = await res.json();
-                    if (config.teacherPasscode && val === config.teacherPasscode) {
-                        validPass = true;
-                    }
+                if (window.location.protocol.startsWith('http')) {
+                    const res = await fetch('/api/verify-passcode', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ passcode: val })
+                    });
+                    const data = await res.json();
+                    if (data && data.success) validPass = true;
                 }
             } catch(e) {}
 

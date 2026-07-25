@@ -533,9 +533,23 @@
             }
         }
 
-        btnLogin.addEventListener('click', () => {
+        btnLogin.addEventListener('click', async () => {
             const val = inputPasscode.value.trim();
-            if (val === 'admin123' || val === 'teacher123') {
+            let valid = (val === 'admin123' || val === 'teacher123');
+
+            try {
+                if (window.location.protocol.startsWith('http')) {
+                    const res = await fetch('/api/verify-passcode', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ passcode: val })
+                    });
+                    const data = await res.json();
+                    if (data && data.success) valid = true;
+                }
+            } catch(e) {}
+
+            if (valid) {
                 sessionStorage.setItem('teacher_authenticated', 'true');
                 modalAuth.style.display = 'none';
                 startRealtimeSubscription();

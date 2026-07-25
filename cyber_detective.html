@@ -1015,6 +1015,7 @@
             selectedLaw: null,
             selectedPenalty: null,
             solvedCaseIds: new Set(JSON.parse(localStorage.getItem('detective_solved_ids') || '[]')),
+            currentRoundSolved: new Set(),
             pendingClueIdx: null
         };
 
@@ -1070,6 +1071,7 @@
                 currentQueueIdx: state.currentQueueIdx,
                 foundClues: Array.from(state.foundClues),
                 failedClues: Array.from(state.failedClues),
+                currentRoundSolved: Array.from(state.currentRoundSolved),
                 selectedLaw: state.selectedLaw,
                 selectedPenalty: state.selectedPenalty,
                 currentStep: state.currentStep,
@@ -1102,6 +1104,7 @@
                 state.currentQueueIdx = saved.currentQueueIdx || 0;
                 state.foundClues = new Set(saved.foundClues || []);
                 state.failedClues = new Set(saved.failedClues || []);
+                state.currentRoundSolved = new Set(saved.currentRoundSolved || []);
                 state.selectedLaw = saved.selectedLaw || null;
                 state.selectedPenalty = saved.selectedPenalty || null;
                 state.currentStep = saved.currentStep || 1;
@@ -1187,6 +1190,7 @@
 
         /* Fisher-Yates Non-Repeating Random Deck Generator */
         function createRandomCaseQueue() {
+            state.currentRoundSolved.clear();
             let available = window.CASES.filter(c => !state.solvedCaseIds.has(c.id));
             if (available.length === 0) {
                 state.solvedCaseIds.clear();
@@ -1379,6 +1383,8 @@
         }
 
         /* Trigger Forensic Evidence Mini-Game Challenge with Realistic Content Options */
+        let currentMiniGameOptions = [];
+
         function triggerMiniGame(clueIdx) {
             if (state.foundClues.has(clueIdx)) {
                 showToast("🔍 หลักฐานนี้สแกนสำเร็จเรียบร้อยแล้ว!");
@@ -1405,10 +1411,10 @@
                 { correct: false, text: `🔹 <b>ข้อผิดพลาดเครือข่าย:</b> เป็นเพียงเหตุสุดวิสัยของระบบ ไม่มีความผิดใดๆ` }
             ];
 
-            const shuffledOpts = shuffleArray(options);
+            currentMiniGameOptions = shuffleArray(options);
 
-            document.getElementById('minigame-choices').innerHTML = shuffledOpts.map(opt => `
-                <button class="choice-option-card" onclick="answerMiniGame(${opt.correct})">
+            document.getElementById('minigame-choices').innerHTML = currentMiniGameOptions.map((opt, idx) => `
+                <button class="choice-option-card" onclick="answerMiniGame(${idx})">
                     <div class="choice-badge-icon" style="color: var(--neon-cyan);"><i class="fa-solid fa-microscope"></i></div>
                     <div style="text-align: left;">${opt.text}</div>
                 </button>
@@ -1418,9 +1424,11 @@
         }
 
         /* Process Mini-Game Answer */
-        function answerMiniGame(isCorrect) {
+        function answerMiniGame(optIndex) {
             modalMiniGame.classList.remove('active');
             const idx = state.pendingClueIdx;
+            const opt = currentMiniGameOptions[optIndex];
+            const isCorrect = opt ? opt.correct : false;
 
             if (isCorrect) {
                 sound.playOk();
@@ -1513,14 +1521,16 @@
                 else if (state.caseSeconds <= 90) speedBonus = 15;
                 added += speedBonus;
 
-                if (!state.solvedCaseIds.has(c.id)) {
+                if (!state.currentRoundSolved.has(c.id)) {
                     state.currentScore += added;
+                    state.currentRoundSolved.add(c.id);
+                    state.solvedCaseIds.add(c.id);
+                    localStorage.setItem('detective_solved_ids', JSON.stringify(Array.from(state.solvedCaseIds)));
+
                     if (state.currentScore > state.bestScore) {
                         state.bestScore = state.currentScore;
                         localStorage.setItem('detective_best_score', state.bestScore.toString());
                     }
-                    state.solvedCaseIds.add(c.id);
-                    localStorage.setItem('detective_solved_ids', JSON.stringify(Array.from(state.solvedCaseIds)));
                 }
 
                 updateStudentHeader();

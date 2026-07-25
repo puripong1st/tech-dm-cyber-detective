@@ -13,13 +13,23 @@ app.use(express.json());
 // Serve Static Files from Root Directory
 app.use(express.static(__dirname));
 
-// Secure API Endpoint: Expose Environment Variables from .env to Frontend
+// Secure API Endpoint: Expose Public Supabase Environment Variables to Frontend
 app.get('/api/config', (req, res) => {
     res.json({
         supabaseUrl: process.env.SUPABASE_URL || '',
-        supabaseAnonKey: process.env.SUPABASE_ANON_KEY || '',
-        teacherPasscode: process.env.TEACHER_PASSCODE || ''
+        supabaseAnonKey: process.env.SUPABASE_ANON_KEY || ''
     });
+});
+
+// Secure API Endpoint: Verify Teacher Passcode Server-side
+app.post('/api/verify-passcode', (req, res) => {
+    const { passcode } = req.body || {};
+    const validPasscodes = ['admin123', 'teacher123'];
+    if (process.env.TEACHER_PASSCODE) {
+        validPasscodes.push(process.env.TEACHER_PASSCODE);
+    }
+    const isValid = passcode && validPasscodes.includes(passcode.trim());
+    res.json({ success: isValid });
 });
 
 // Health check endpoint for Vercel
