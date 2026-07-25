@@ -1962,6 +1962,49 @@
         document.getElementById('btn-report').addEventListener('click', openReportModal);
         document.getElementById('btn-close-report').addEventListener('click', () => modalReport.classList.remove('active'));
 
+        /* Start Fresh New 6-Case Round Function */
+        function startNewRound() {
+            modalReport.classList.remove('active');
+            modalResult.classList.remove('active');
+            if (timerInterval) clearInterval(timerInterval);
+            clearSessionState();
+
+            state.currentScore = 0;
+            state.totalSeconds = 0;
+            state.caseSeconds = 0;
+            state.currentQueueIdx = 0;
+            state.foundClues.clear();
+            state.failedClues.clear();
+            state.currentRoundSolved.clear();
+            state.selectedLaw = null;
+            state.selectedPenalty = null;
+            state.isCompleted = false;
+            state.consecutiveWrong = 0;
+            state.isCooldown = false;
+
+            elHeaderTimer.textContent = "00:00";
+            elHeaderScore.textContent = "0 / 1080";
+            updateStudentHeader();
+
+            const btnSubmit = document.getElementById('btn-submit-verdict');
+            if (btnSubmit) {
+                btnSubmit.disabled = false;
+                btnSubmit.innerHTML = `<i class="fa-solid fa-handcuffs"></i> ตัดสินคดี & บันทึกคะแนน!`;
+                btnSubmit.style.background = "linear-gradient(135deg, var(--neon-cyan), #0284c7)";
+            }
+
+            createRandomCaseQueue();
+            startTimer();
+            syncToSupabase("กำลังทำคดี");
+            loadCaseFromQueue(0);
+            showToast("🎮 เริ่มต้นทำคดีสุ่มรอบใหม่ 6 คดีเรียบร้อย!");
+        }
+
+        const btnRestartRound = document.getElementById('btn-restart-round');
+        if (btnRestartRound) {
+            btnRestartRound.addEventListener('click', startNewRound);
+        }
+
         /* Ambient Music Toggle */
         document.getElementById('btn-music').addEventListener('click', () => {
             const isOn = sound.toggleMusic();
