@@ -1,5 +1,6 @@
 {
   "version": 2,
+  "cleanUrls": true,
   "builds": [
     {
       "src": "server.js",
@@ -7,9 +8,12 @@
     }
   ],
   "routes": [
-    {
-      "src": "/(.*)",
-      "dest": "server.js"
-    }
+    { "src": "/api/(.*)", "dest": "server.js" },
+    { "src": "/detective", "dest": "cyber_detective.html" },
+    { "src": "/teacher", "dest": "teacher_dashboard.html" },
+    { "src": "/presentation", "dest": "presentation.html" },
+    { "src": "/cases", "dest": "cases_reference.html" },
+    { "handle": "filesystem" },
+    { "src": "/(.*)", "dest": "server.js" }
   ]
 }

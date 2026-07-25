@@ -62,8 +62,13 @@ app.get('/cases', (req, res) => {
     res.sendFile(path.join(__dirname, 'cases_reference.html'));
 });
 
-// Default Fallback Route
+// Default Fallback Route for Single Page Apps & Clean URLs
 app.get('*', (req, res) => {
+    if (req.path.includes('.')) {
+        return res.sendFile(path.join(__dirname, req.path), (err) => {
+            if (err) res.status(404).send('File not found');
+        });
+    }
     res.sendFile(path.join(__dirname, 'index.html'));
 });
 
