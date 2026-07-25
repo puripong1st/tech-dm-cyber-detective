@@ -1020,6 +1020,7 @@
                     </div>
                 </div>
 
+                <button class="btn-action-main" style="background: linear-gradient(135deg, var(--neon-cyan), #0284c7); color: #fff;" id="btn-restart-round"><i class="fa-solid fa-rotate-right"></i> เล่นรอบใหม่ (สุ่มคดีใหม่ 6 คดี)</button>
                 <button class="btn-action-main" style="background: linear-gradient(135deg, var(--neon-green), #059669); color: #fff;" onclick="exportStudentPDF()"><i class="fa-solid fa-print"></i> พิมพ์ / บันทึกไฟล์ส่งครู (PDF)</button>
                 <button class="btn-action-main" style="background: rgba(30,41,59,0.8); border: 1px solid #475569; color: #cbd5e1;" id="btn-close-report">ปิดหน้าต่าง</button>
             </div>
@@ -1620,6 +1621,11 @@
 
         /* Submit Case Verdict */
         document.getElementById('btn-submit-verdict').addEventListener('click', () => {
+            if (state.isCompleted) {
+                startNewRound();
+                return;
+            }
+
             if (!state.selectedPenalty) { sound.playFail(); showToast("⚠️ กรุณากดเลือกอัตราบทลงโทษตามกฎหมายก่อน!"); return; }
 
             const c = state.currentCase;
@@ -1637,23 +1643,28 @@
             const isLawCorrect = targetLaw.correct;
             const isPenCorrect = targetPen.correct;
             const isCorrect = isLawCorrect && isPenCorrect;
-            const isLastCase = (state.currentQueueIdx === state.sessionQueue.length - 1);
+            const isLastCase = state.currentQueueIdx === state.sessionQueue.length - 1;
 
             if (isCorrect) {
                 sound.playWin();
-                
+
+                let bonusMsg = "+100 คะแนนฐาน";
                 let added = 100;
-                let speedBonus = 0;
-                if (state.caseSeconds <= 45) speedBonus = 30;
-                else if (state.caseSeconds <= 90) speedBonus = 15;
-                added += speedBonus;
 
                 if (!state.currentRoundSolved.has(c.id)) {
-                    state.currentScore += added;
                     state.currentRoundSolved.add(c.id);
                     state.solvedCaseIds.add(c.id);
-                    localStorage.setItem('detective_solved_ids', JSON.stringify(Array.from(state.solvedCaseIds)));
+                    localStorage.setItem('detective_solved_cases', JSON.stringify(Array.from(state.solvedCaseIds)));
 
+                    if (state.caseSeconds <= 45) {
+                        added += 30;
+                        bonusMsg = "+100 คะแนนฐาน + โบนัสความไวสูงสุด +30";
+                    } else if (state.caseSeconds <= 90) {
+                        added += 15;
+                        bonusMsg = "+100 คะแนนฐาน + โบนัสความไว +15";
+                    }
+
+                    state.currentScore += added;
                     if (state.currentScore > state.bestScore) {
                         state.bestScore = state.currentScore;
                         localStorage.setItem('detective_best_score', state.bestScore.toString());
@@ -1661,21 +1672,12 @@
                 }
 
                 updateStudentHeader();
-
-                if (isLastCase) {
-                    syncToSupabase("ส่งคดีเรียบร้อย");
-                } else {
-                    syncToSupabase("กำลังทำคดี");
-                }
+                syncToSupabase("กำลังทำคดี");
 
                 document.getElementById('result-icon').textContent = "🏆";
                 document.getElementById('card-result-border').style.borderColor = "var(--neon-green)";
                 document.getElementById('result-title').textContent = "ตัดสินคดีถูกต้องแม่นยำ!";
                 document.getElementById('result-title').style.color = "var(--neon-green)";
-                
-                let bonusMsg = `🎉 ได้รับคะแนนฐาน +100`;
-                if (speedBonus > 0) bonusMsg += ` | ⚡ โบนัสความไว +${speedBonus}`;
-
                 document.getElementById('result-desc').textContent = `ยินดีด้วยสายสืบ ${state.alias}! คุณตัดสินคดีได้ถูกต้องในเวลา ${state.caseSeconds} วินาที`;
                 document.getElementById('result-points-added').textContent = `${bonusMsg} (รวม +${added} คะแนน!)`;
 
