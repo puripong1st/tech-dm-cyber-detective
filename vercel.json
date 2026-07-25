@@ -4,16 +4,24 @@
   "builds": [
     {
       "src": "server.js",
-      "use": "@vercel/node"
+      "use": "@vercel/node",
+      "config": {
+        "includeFiles": [
+          "*.html",
+          "*.js",
+          "*.json",
+          "*.png"
+        ]
+      }
     }
   ],
   "routes": [
     { "src": "/api/(.*)", "dest": "server.js" },
-    { "src": "/detective", "dest": "cyber_detective.html" },
-    { "src": "/teacher", "dest": "teacher_dashboard.html" },
-    { "src": "/presentation", "dest": "presentation.html" },
-    { "src": "/cases", "dest": "cases_reference.html" },
-    { "handle": "filesystem" },
+    { "src": "/detective", "dest": "server.js" },
+    { "src": "/teacher", "dest": "server.js" },
+    { "src": "/presentation", "dest": "server.js" },
+    { "src": "/cases", "dest": "server.js" },
+    { "src": "/cases_data.js", "dest": "server.js" },
     { "src": "/(.*)", "dest": "server.js" }
   ]
 }

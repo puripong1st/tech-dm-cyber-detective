@@ -3,6 +3,9 @@ const path = require('path');
 const cors = require('cors');
 require('dotenv').config();
 
+// Force Vercel Node File Trace (NFT) to bundle cases_data.js in Lambda package
+try { require('./cases_data.js'); } catch(e) {}
+
 const app = express();
 const PORT = process.env.PORT || 3000;
 
@@ -12,6 +15,12 @@ app.use(express.json());
 
 // Serve Static Files from Root Directory
 app.use(express.static(__dirname));
+
+// Explicit Static File Route for cases_data.js (Guarantees HTTP 200 on Vercel)
+app.get('/cases_data.js', (req, res) => {
+    res.setHeader('Content-Type', 'application/javascript');
+    res.sendFile(path.join(__dirname, 'cases_data.js'));
+});
 
 // Secure API Endpoint: Expose Public Supabase Environment Variables to Frontend
 app.get('/api/config', (req, res) => {
@@ -37,8 +46,11 @@ app.get('/api/health', (req, res) => {
     res.json({ status: 'ok', timestamp: new Date().toISOString() });
 });
 
-// Page Routes
+// Page Routes (Clean URLs)
 app.get('/detective', (req, res) => {
+    res.sendFile(path.join(__dirname, 'cyber_detective.html'));
+});
+app.get('/cyber_detective', (req, res) => {
     res.sendFile(path.join(__dirname, 'cyber_detective.html'));
 });
 
@@ -53,6 +65,9 @@ app.get('/survivor', (req, res) => {
 app.get('/teacher', (req, res) => {
     res.sendFile(path.join(__dirname, 'teacher_dashboard.html'));
 });
+app.get('/teacher_dashboard', (req, res) => {
+    res.sendFile(path.join(__dirname, 'teacher_dashboard.html'));
+});
 
 app.get('/presentation', (req, res) => {
     res.sendFile(path.join(__dirname, 'presentation.html'));
@@ -60,6 +75,14 @@ app.get('/presentation', (req, res) => {
 
 app.get('/cases', (req, res) => {
     res.sendFile(path.join(__dirname, 'cases_reference.html'));
+});
+app.get('/cases_reference', (req, res) => {
+    res.sendFile(path.join(__dirname, 'cases_reference.html'));
+});
+
+// Root Route
+app.get('/', (req, res) => {
+    res.sendFile(path.join(__dirname, 'index.html'));
 });
 
 // Default Fallback Route for Single Page Apps & Clean URLs
