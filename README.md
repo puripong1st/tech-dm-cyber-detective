@@ -1,150 +1,193 @@
 # 🛡️ ศูนย์รวมสื่อการเรียนรู้ & ระบบสืบคดีกฎหมายคอมพิวเตอร์ (Cyber Law Detective & Teacher Platform)
 
-![Cyber Detective Hub Banner](https://img.shields.io/badge/Platform-Cyber%20Law%20%26%20PDPA-38bdf8?style=for-the-badge&logo=shield)
-![Status](https://img.shields.io/badge/Status-Production%20Ready-10b981?style=for-the-badge)
-![License](https://img.shields.io/badge/License-MIT-f59e0b?style=for-the-badge)
-![Audio Engine](https://img.shields.io/badge/Audio-Web%20Audio%20Synth-a855f7?style=for-the-badge)
+[![Platform](https://img.shields.io/badge/Platform-Cyber%20Law%20%26%20PDPA-0284c7?style=for-the-badge&logo=shield)](file:///c:/Users/aunkh/OneDrive/Desktop/%E0%B8%81%E0%B8%8E%E0%B8%AB%E0%B8%A1%E0%B8%B2%E0%B8%A2%E0%B8%84%E0%B8%AD%E0%B8%A1%E0%B8%9E%E0%B8%B4%E0%B8%A7%E0%B9%80%E0%B8%95%E0%B8%AD%E0%B8%A3%E0%B9%8C/cyber_detective.html)
+[![Status](https://img.shields.io/badge/Status-Production%20Ready-10b981?style=for-the-badge)](file:///c:/Users/aunkh/OneDrive/Desktop/%E0%B8%81%E0%B8%8E%E0%B8%AB%E0%B8%A1%E0%B8%B2%E0%B8%A2%E0%B8%84%E0%B8%AD%E0%B8%A1%E0%B8%9E%E0%B8%B4%E0%B8%A7%E0%B9%80%E0%B8%95%E0%B8%AD%E0%B8%A3%E0%B9%8C/cyber_detective.html)
+[![Node.js](https://img.shields.io/badge/Node.js-v26.2.0-68a063?style=for-the-badge&logo=nodedotjs)](file:///c:/Users/aunkh/OneDrive/Desktop/%E0%B8%81%E0%B8%8E%E0%B8%AB%E0%B8%A1%E0%B8%B2%E0%B8%A2%E0%B8%84%E0%B8%AD%E0%B8%A1%E0%B8%9E%E0%B8%B4%E0%B8%A7%E0%B9%80%E0%B8%95%E0%B8%AD%E0%B8%A3%E0%B9%8C/server.js)
+[![Database](https://img.shields.io/badge/Database-Supabase%20Realtime-3ecf8e?style=for-the-badge&logo=supabase)](https://supabase.com)
+[![Audio Engine](https://img.shields.io/badge/Audio-Web%20Audio%20Synth-a855f7?style=for-the-badge)](file:///c:/Users/aunkh/OneDrive/Desktop/%E0%B8%81%E0%B8%8E%E0%B8%AB%E0%B8%A1%E0%B8%B2%E0%B8%A2%E0%B8%84%E0%B8%AD%E0%B8%A1%E0%B8%9E%E0%B8%B4%E0%B8%A7%E0%B9%80%E0%B8%95%E0%B8%AD%E0%B8%A3%E0%B9%8C/cyber_detective.html)
+[![License](https://img.shields.io/badge/License-MIT-f59e0b?style=for-the-badge)](file:///c:/Users/aunkh/OneDrive/Desktop/%E0%B8%81%E0%B8%8E%E0%B8%AB%E0%B8%A1%E0%B8%B2%E0%B8%A2%E0%B8%84%E0%B8%AD%E0%B8%A1%E0%B8%9E%E0%B8%B4%E0%B8%A7%E0%B9%80%E0%B8%95%E0%B8%AD%E0%B8%A3%E0%B9%8C/package.json)
 
-ระบบสื่อการเรียนรู้แบบมีปฏิสัมพันธ์ (Interactive Cyber Law & PDPA Learning Platform) และเกมสืบคดีจำลองอาชญากรรมทางเทคโนโลยี สำหรับนักเรียนระดับชั้นมัธยมศึกษาปีที่ 3 พร้อมระบบแดชบอร์ดติดตามผลคะแนนแบบเรียลไทม์สำหรับครูผู้สอน
+**แพลตฟอร์มสื่อการเรียนรู้แบบมีปฏิสัมพันธ์ (Interactive Learning Platform)** และเกมจำลองสืบคดีอาชญากรรมทางเทคโนโลยีวิชา **พ.ร.บ. ว่าด้วยการกระทำความผิดเกี่ยวกับคอมพิวเตอร์** และ **พระราชบัญญัติคุ้มครองข้อมูลส่วนบุคคล (PDPA)** สำหรับนักเรียนระดับชั้นมัธยมศึกษาปีที่ 3 พร้อมระบบแดชบอร์ดติดตามคะแนนแบบเรียลไทม์ (Real-time Telemetry Dashboard) สำหรับครูผู้สอน
 
 ---
 
 ## 📌 สารบัญ (Table of Contents)
-- [ภาพรวมระบบ (Overview)](#-ภาพรวมระบบ-overview)
-- [ฟีเจอร์เด่นและระบบที่ยกระดับใหม่ (Key Features & Recent Enhancements)](#-ฟีเจอร์เด่นและระบบที่ยกระดับใหม่-key-features--recent-enhancements)
-- [โครงสร้างเว็บแอปพลิเคชัน & Clean URLs](#-โครงสร้างเว็บแอปพลิเคชัน--clean-urls)
-- [ระบบการคิดคะแนน & กฎเกณฑ์เกม (Scoring Mechanics)](#-ระบบการคิดคะแนน--กฎเกณฑ์เกม-scoring-mechanics)
-- [ระบบความปลอดภัย & การป้องกันสุ่มตอบ (Security & Anti-Spam Protections)](#-ระบบความปลอดภัย--การป้องกันสุ่มตอบ-security--anti-spam-protections)
-- [สถาปัตยกรรมเทคโนโลยี (Tech Stack)](#-สถาปัตยกรรมเทคโนโลยี-tech-stack)
-- [โครงสร้างโฟลเดอร์ & ไฟล์ในโปรเจกต์ (Project Directory)](#-โครงสร้างโฟลเดอร์--ไฟล์ในโปรเจกต์-project-directory)
-- [ขั้นตอนการติดตั้งและรันโปรเจกต์ (Local Installation)](#-ขั้นตอนการติดตั้งและรันโปรเจกต์-local-installation)
-- [การ Deploy ขึ้น Vercel (Deployment Guide)](#-การ-deploy-ขึ้น-vercel-deployment-guide)
-- [การรับรองและการทดสอบระบบ (Automated System Testing)](#-การรับรองและการทดสอบระบบ-automated-system-testing)
+- [ภาพรวมแพลตฟอร์ม (Overview)](#-ภาพรวมแพลตฟอร์ม-overview)
+- [สถาปัตยกรรมระบบ (System Architecture)](#-สถาปัตยกรรมระบบ-system-architecture)
+- [ฟีเจอร์เด่นและโมดูลสำคัญ (Key Features & Modules)](#-ฟีเจอร์เด่นและโมดูลสำคัญ-key-features--modules)
+- [แผนผังเส้นทางและ Clean URLs (Routing & Sitemap)](#-แผนผังเส้นทางและ-clean-urls-routing--sitemap)
+- [ระบบคำนวณคะแนนและเกณฑ์ประเมิน (Scoring & Grading Mechanics)](#-ระบบคำนวณคะแนนและเกณฑ์ประเมิน-scoring--grading-mechanics)
+- [ระบบความปลอดภัย & PDPA Privacy Protection](#-ระบบความปลอดภัย--pdpa-privacy-protection)
+- [เทคโนโลยีที่ใช้พัฒนา (Tech Stack)](#-เทคโนโลยีที่ใช้พัฒนา-tech-stack)
+- [โครงสร้างไฟล์โปรเจกต์ (Project Directory Structure)](#-โครงสร้างไฟล์โปรเจกต์-project-directory-structure)
+- [ขั้นตอนการติดตั้งและรันในเครื่อง (Local Installation)](#-ขั้นตอนการติดตั้งและรันในเครื่อง-local-installation)
+- [การนำขึ้นระบบ Vercel (Deployment Guide)](#-การนำขึ้นระบบ-vercel-deployment-guide)
+- [รายงานการสอบทานความถูกต้อง (Automated Audit & Quality Assurance)](#-รายงานการสอบทานความถูกต้อง-automated-audit--quality-assurance)
 
 ---
 
-## 🛡️ ภาพรวมระบบ (Overview)
+## 🛡️ ภาพรวมแพลตฟอร์ม (Overview)
 
-แพลตฟอร์มนี้พัฒนาขึ้นเพื่อยกระดับการตระหนักรู้ด้าน **พ.ร.บ. ว่าด้วยการกระทำความผิดเกี่ยวกับคอมพิวเตอร์** และ **พระราชบัญญัติคุ้มครองข้อมูลส่วนบุคคล (PDPA)** โดยนำเสนอในรูปแบบเกมจำลองบทบาทสายสืบดิจิทัล (Cyber Detective) ให้นักเรียนได้วิเคราะห์คำร้องทุกข์ สแกนหลักฐานดิจิทัลด้วยมินิเกมทางนิติวิทยาศาสตร์ และตัดสินฐานความผิดกับบทลงโทษตามกฎหมายจริง
+แพลตฟอร์มนี้ถูกออกแบบและพัฒนาขึ้นโดยเน้นผู้เรียนเป็นศูนย์กลาง (Learner-Centered Design) เพื่อเปลี่ยนเนื้อหากฎหมายที่ซับซ้อนให้เข้าใจง่าย น่าสนใจ และสร้างการตระหนักรู้จริงผ่านการสวมบทบาทเป็น **"สายสืบไซเบอร์ (Cyber Detective)"**
 
----
-
-## ✨ ฟีเจอร์เด่นและระบบที่ยกระดับใหม่ (Key Features & Recent Enhancements)
-
-### 1. 💡 ระบบการ์ดสรุปเกร็ดความรู้กฎหมาย (Post-Case Knowledge Flashcards)
-เมื่อนักเรียนตัดสินคดีถูกต้อง ป๊อปอัปผลคดีจะแสดง **"เกร็ดความรู้กฎหมาย (Cyber Law & PDPA Summary)"** สรุปสาระสำคัญ มาตราข้อหา และบทลงโทษทางกฎหมาย 2-3 บรรทัดทันที เพื่อเน้นย้ำความเข้าใจและตระหนักรู้กฎหมายก่อนเริ่มทำคดีถัดไป
-
-### 2. 🎧 ระบบดนตรีสังเคราะห์ & เสียงเอฟเฟกต์ Cyber Ambient Sound Engine
-- **Cyber Ambient Drone Loop**: ระบบสังเคราะห์เสียงดนตรีประกอบธีมไซเบอร์สืบสวนด้วย Web Audio API ไร้ไฟล์เสียงภายนอก ประหยัดแบนด์วิธ และสามารถเปิด/ปิดเสียงดนตรีได้ตลอดเวลาที่ปุ่ม `🎵`
-- **Rich Sound Effects (SFX)**: เสียงพิมพ์คีย์บอร์ดหกเหลี่ยมตอนเลือกตัวเลือก, เสียงสแกนคลื่นความถี่บีบอัด, เสียงตัดสินคดีฆ้อนศาล (`Gavel thud sound`), และเสียงแจ้งเตือนความถูกต้อง/ล้มเหลว
-
-### 3. 📱 ระบบ Collapsible Sidebar สำหรับสมาร์ตโฟนและ iPad
-ออกแบบอินเทอร์เฟซตามหลัก **Responsive Modern UI**:
-- หน้าจอคอมพิวเตอร์: แสดงสมุดโน้ตสายสืบและแผงควบคุม 2 คอลัมน์แบบตรึงหน้าจอ
-- หน้าจอสมาร์ตโฟน/แท็บเล็ต: เพิ่มปุ่มไอคอนสมุดโน้ต `📘` บนแถบเมนู เพื่อเปิด/ปิดแถบสมุดโน้ตแบบ Drawer สไลด์ข้างได้สะดวกโดยไม่บดบังพื้นที่ทำคดี
-
-### 4. ⏱️ ระบบ Cooldown ป้องกันการกดเดาสุ่ม (Anti-Spam Guessing Protection)
-ตรวจจับหากนักเรียนกดเดาคำตอบผิด **3 ครั้งติดต่อกันในคดีเดียวกัน** ระบบจะทำการล็อกปุ่มตัดสินคดีชั่วคราวเป็นเวลา **5 วินาที** พร้อมแสดงข้อความนับถอยหลัง `(5s)...` เพื่อบังคับให้นักเรียนหยุดคิดและวิเคราะห์เบาะแสในสมุดโน้ตก่อนตอบใหม่
-
-### 5. 🔄 ระบบสุ่มคดีฉลาดไม่ให้ซ้ำ (Smart Deck Rotation Algorithm)
-ปรับปรุงอัลกอริทึม `createRandomCaseQueue()` ให้นักเรียนได้ทำคดีใหม่ๆ จนครบทั้ง **30 คดี** ในคลังก่อนที่จะเริ่มวนซ้ำ ป้องกันคดีซ้ำระหว่างรอบการเล่น
-
-### 6. 🖨️ ระบบส่งออกรายงาน PDF พร้อมการตั้งชื่อไฟล์มาตรฐาน
-เมื่อนักเรียนทำคดีเสร็จสิ้น ปุ่มพิมพ์ใบบันทึกคะแนนส่งครูจะทำการสร้างไฟล์ PDF โดยตั้งชื่อไฟล์อัตโนมัติในฟอร์แมต:
-`{คำนำหน้า}_{ชื่อ}_{นามสกุล}_เลขที่{เลขที่}_{ห้อง}.pdf` (เช่น `เด็กชาย_สมชาย_ใจดี_เลขที่15_ม.3-1.pdf`)
+> [!NOTE]
+> **วัตถุประสงค์หลัก:**
+> 1. นักเรียนเรียนรู้มาตราสำคัญตาม พ.ร.บ. คอมพิวเตอร์ และ PDPA ผ่านการวิเคราะห์คำร้องทุกข์จริง 30 คดี
+> 2. ฝึกทักษะการวิเคราะห์หลักฐานดิจิทัล (Digital Forensics) ผ่านมินิเกมถอดรหัส
+> 3. ครูผู้สอนสามารถติดตามความก้าวหน้า ผลคะแนน และเวลาในการทำคดีของนักเรียนทุกคนได้แบบเรียลไทม์ผ่านแดชบอร์ด
 
 ---
 
-## 🚀 โครงสร้างเว็บแอปพลิเคชัน & Clean URLs
+## 🏗️ สถาปัตยกรรมระบบ (System Architecture)
 
-ระบบได้รับการออกแบบโครงสร้าง URL แบบ **Clean URLs** (ไม่มีนามสกุล `.html` ลงท้าย) เพื่อความสวยงามและเป็นสัดส่วน:
+ระบบใช้สถาปัตยกรรมกระจายสัญญาณแบบ **Hybrid Multi-Channel Telemetry (Supabase + BroadcastChannel + LocalStorage Sync)** ช่วยให้การรับส่งข้อมูลระหว่างหน้าเกมของนักเรียนและแดชบอร์ดครูผู้สอนเป็นไปอย่างรวดเร็วและไม่ตกหล่น
 
-| Clean URL Path | ชื่อไฟล์เดิม | รายละเอียด & หน้าที่ของโมดูล |
+```mermaid
+flowchart TD
+    subgraph ClientStudent["💻 ฝั่งนักเรียน (Student Portal)"]
+        A["cyber_detective.html"] --> B["Game Engine & Sound Engine"]
+        B --> C["State & LocalStorage"]
+        B --> D["BroadcastChannel (cyber_detective_live)"]
+        B --> E["Supabase Client (PostgreSQL)"]
+    end
+
+    subgraph ServerBackend["⚙️ ฝั่งเซิร์ฟเวอร์ (Express API / Vercel)"]
+        F["server.js"] --> G["/api/config (Supabase Auth Env)"]
+        F --> H["/api/verify-passcode (Teacher Auth)"]
+    end
+
+    subgraph DataSync["🔄 ระบบซิงค์ข้อมูลเรียลไทม์ (Real-time Telemetry)"]
+        D --> I["Teacher Realtime Dashboard"]
+        E --> I
+        C --> I
+    end
+
+    subgraph ClientTeacher["👨‍🏫 ฝั่งครูผู้สอน (Teacher Portal)"]
+        I["teacher_dashboard.html"] --> J["Table Renderer & Sorting"]
+        I --> K["PDPA Masking Engine"]
+        I --> L["PDF Report Generator"]
+    end
+```
+
+---
+
+## ✨ ฟีเจอร์เด่นและโมดูลสำคัญ (Key Features & Modules)
+
+### 1. 🕵️ เกมสืบคดีไซเบอร์ 30 แฟ้มคดี (`cyber_detective.html`)
+- **Smart Deck Rotation**: อัลกอริทึมสุ่มคดีทีละ 6 คดี โดยไม่ซ้ำคดีเดิมจนกว่าจะทำครบทั้ง 30 คดี
+- **Forensic Clue Mini-game**: มินิเกมถอดรหัสสแกนหลักฐานดิจิทัล ตอบถูกได้รับ **+25 คะแนน**, ตอบผิดถูกล็อกหลักฐานและหัก **-15 คะแนน**
+- **Post-Case Knowledge Flashcard**: เมื่อตัดสินคดีถูกต้อง ระบบจะแสดงการ์ดสรุปมาตราและบทลงโทษทางกฎหมายเพื่อสร้างความตระหนักรู้
+- **Anti-Spam Guessing Cooldown**: หากตอบผิดติดต่อกัน 3 ครั้ง ระบบจะล็อกปุ่มตัดสินคดีชั่วคราว **5 วินาที** พร้อมตัวนับถอยหลัง เพื่อบังคับให้อ่านและวิเคราะห์เบาะแสใหม่
+- **Custom PDF Naming Format**: เมื่อกดพิมพ์/บันทึกไฟล์ส่งครู ระบบจะกำหนดชื่อไฟล์ PDF อัตโนมัติเป็น:
+  $$\text{ชื่อไฟล์ PDF} = \text{[คำนำหน้า][ชื่อ] [นามสกุล] เลขที่ [เลขที่] [ห้อง]}$$
+  *(เช่น `ด.ช.ภูริพงศ์ แก่นกุล เลขที่ 33 ม.3-8.pdf`)*
+- **Reset & Safety Navigation**: เมื่อทำคดีครบ 6 คดีในหน้าสรุปผล ปุ่ม "ปิดหน้าต่าง" และ "เล่นรอบใหม่" จะทำการล้างเซสชันและพานักเรียนกลับสู่หน้าลงทะเบียนแรกสุดเสมอ ป้องกันสถานะเกมค้าง
+
+### 2. 📊 แดชบอร์ดสรุปผลครูผู้สอน (`teacher_dashboard.html`)
+- **Real-time Live Monitoring**: อัปเดตข้อมูลนักเรียนที่กำลังทำคดีทันทีโดยไม่ต้องกดรีเฟรช
+- **PDPA Privacy Masking**: ปุ่มสลับโหมด "ซ่อน/แสดงชื่อจริง-เลขที่" เพื่อคุ้มครองข้อมูลส่วนบุคคลขณะเปิดจอโปรเจกเตอร์ในห้องเรียน
+- **Dynamic Sorting & Filtering**: กรองรายห้อง (ม.3/1 - ม.3/10), ค้นหาชื่อ/นามสกุล/นามแฝง, จัดอันดับตามคะแนนสูงสุด, เวลาที่ใช้ หรือเรียงตามเลขที่
+- **Clean PDF Export**: ปุ่มส่งออกรายงานสรุปคะแนนประจำห้องเรียนเป็นไฟล์ PDF สำหรับบันทึกเป็นหลักฐานการสอน
+
+### 3. 📖 คลังข้อสอบ & เฉลยฉบับครู (`cases_reference.html`)
+- รวบรวมแฟ้มคดีทั้ง 30 คดีไว้ในรูปแบบหมวดหมู่กฎหมาย
+- มีระบบล็อกเฉลยคำตอบ (Answer Key) ด้วยรหัสผ่านครูผู้สอน (`Passcode Locked`)
+
+### 4. 📺 สไลด์เนื้อหาบทเรียนปฏิสัมพันธ์ (`presentation.html`)
+- สไลด์นำเสนอเนื้อหา พ.ร.บ. คอมพิวเตอร์ และ PDPA สไตล์ Cyberpunk 8-Bit
+- รองรับการควบคุมด้วยแป้นพิมพ์ (Arrow Keys / Spacebar / Touch Swipe)
+
+---
+
+## 🚀 แผนผังเส้นทางและ Clean URLs (Routing & Sitemap)
+
+ระบบรองรับทั้ง Clean URLs บน Web Server และการคลิกเปิดไฟล์โดยตรงบนเครื่อง (Offline File Protocol):
+
+| Clean URL Path | ไฟล์ที่เรียกใช้งาน | คำอธิบายโมดูล & ฟังก์ชันการทำงาน |
 | :--- | :--- | :--- |
-| **`/`** | `index.html` | **Cyber Detective Hub**: หน้าหลักศูนย์รวมในการเลือกระบบแอปพลิเคชัน พร้อมโลโก้แบรนด์ |
-| **`/detective`** | `cyber_detective.html` | **Cyber Detective Game**: เกมจำลองการสืบคดีสุ่ม 6 คดี (จากคลัง 30 คดี) พร้อมระบบจับเวลา มินิเกมสแกนเบาะแส คิดคะแนน และการ์ด Flashcard |
-| **`/teacher`** | `teacher_dashboard.html` | **Teacher Live Dashboard**: แดชบอร์ดสรุปผลคะแนนครูผู้สอนแบบเรียลไทม์ (Supabase Realtime + Auto Refresh) การจัดอันดับ ค้นหา กรองห้องเรียน ซ่อนชื่อจริง และส่งออกรายงาน PDF |
-| **`/presentation`** | `presentation.html` | **Cyber Law Presentation**: สไลด์สื่อการเรียนรู้แบบมีปฏิสัมพันธ์ สรุปมาตราสำคัญ ตัวอย่างกรณีศึกษา และแบบทดสอบ |
-| **`/cases`** | `cases_reference.html` | **Cases Reference & Answer Key**: คลังข้อสอบรวบรวมแฟ้มคดีทั้ง 30 คดี พร้อมระบบปลดล็อกเฉลยคำตอบฉบับครูผู้สอนด้วย Passcode |
+| **`/`** | [index.html](file:///c:/Users/aunkh/OneDrive/Desktop/%E0%B8%81%E0%B8%8E%E0%B8%AB%E0%B8%A1%E0%B8%B2%E0%B8%A2%E0%B8%84%E0%B8%AD%E0%B8%A1%E0%B8%9E%E0%B8%B4%E0%B8%A7%E0%B9%80%E0%B8%95%E0%B8%AD%E0%B8%A3%E0%B9%8C/index.html) | **Cyber Hub**: หน้าแรกศูนย์รวมการเข้าสู่ระบบต่างๆ พร้อมเมนูเลือกการทำงาน |
+| **`/detective`** | [cyber_detective.html](file:///c:/Users/aunkh/OneDrive/Desktop/%E0%B8%81%E0%B8%8E%E0%B8%AB%E0%B8%A1%E0%B8%B2%E0%B8%A2%E0%B8%84%E0%B8%AD%E0%B8%A1%E0%B8%9E%E0%B8%B4%E0%B8%A7%E0%B9%80%E0%B8%95%E0%B8%AD%E0%B8%A3%E0%B9%8C/cyber_detective.html) | **Cyber Detective Game**: เกมสืบคดีสุ่ม 6 คดี ระบบมินิเกม เสียง Ambient สรุปคะแนน และออก PDF |
+| **`/teacher`** | [teacher_dashboard.html](file:///c:/Users/aunkh/OneDrive/Desktop/%E0%B8%81%E0%B8%8E%E0%B8%AB%E0%B8%A1%E0%B8%B2%E0%B8%A2%E0%B8%84%E0%B8%AD%E0%B8%A1%E0%B8%9E%E0%B8%B4%E0%B8%A7%E0%B9%80%E0%B8%95%E0%B8%AD%E0%B8%A3%E0%B9%8C/teacher_dashboard.html) | **Teacher Live Dashboard**: แดชบอร์ดเรียลไทม์ครูผู้สอน กรองห้อง จัดอันดับ ซ่อนชื่อ และออกรายงาน |
+| **`/presentation`** | [presentation.html](file:///c:/Users/aunkh/OneDrive/Desktop/%E0%B8%81%E0%B8%8E%E0%B8%AB%E0%B8%A1%E0%B8%B2%E0%B8%A2%E0%B8%84%E0%B8%AD%E0%B8%A1%E0%B8%9E%E0%B8%B4%E0%B8%A7%E0%B9%80%E0%B8%95%E0%B8%AD%E0%B8%A3%E0%B9%8C/presentation.html) | **Cyber Law Presentation**: สไลด์สื่อการเรียนรู้มาตรากฎหมาย และตัวอย่างกรณีศึกษา |
+| **`/cases`** | [cases_reference.html](file:///c:/Users/aunkh/OneDrive/Desktop/%E0%B8%81%E0%B8%8E%E0%B8%AB%E0%B8%A1%E0%B8%B2%E0%B8%A2%E0%B8%84%E0%B8%AD%E0%B8%A1%E0%B8%9E%E0%B8%B4%E0%B8%A7%E0%B9%80%E0%B8%95%E0%B8%AD%E0%B8%A3%E0%B9%8C/cases_reference.html) | **Cases Reference & Answer Key**: คลังแฟ้มคดีทั้ง 30 คดี และเฉลยฉบับครูปลดล็อกด้วยรหัสผ่าน |
 
 ---
 
-## 🎮 ระบบการคิดคะแนน & กฎเกณฑ์เกม (Scoring Mechanics)
+## 🎮 ระบบคำนวณคะแนนและเกณฑ์ประเมิน (Scoring & Grading Mechanics)
 
-ในแต่ละรอบการเล่น เกมจะทำการสุ่มคดีจากคลัง 30 คดี ออกมา **6 คดี** โดยมีคะแนนเต็มสูงสุด **1,080 คะแนนดิบ** (แปลงเป็นคะแนนเก็บเต็ม 10 บนแดชบอร์ดครูผู้สอน):
+ในการเล่น 1 รอบ (สุ่ม 6 คดี) มีคะแนนรวมสูงสุด **1,080 คะแนนดิบ** ซึ่งระบบจะแปลงเป็นคะแนนเก็บเต็ม 10 บนแดชบอร์ดครูให้อัตโนมัติ:
 
-$$\text{คะแนนเต็มรวมต่อคดี} = \underbrace{100}_{\text{คะแนนตัดสินถูก}} + \underbrace{30}_{\text{โบนัสความไว}} + \underbrace{50}_{\text{สแกนหลักฐาน 2 ชิ้น}} = 180 \text{ คะแนน/คดี}$$
+### 1. สูตรการคำนวณคะแนนต่อคดี
+$$\text{คะแนนรวม/คดี} = \text{คะแนนฐานถูก (100)} + \text{โบนัสความไว (15-30)} + \text{ถอดรหัสหลักฐาน 2 ชิ้น (50)}$$
 
-$$\text{คะแนนเต็มรวมทั้งรอบ (6 คดี)} = 6 \times 180 = 1,080 \text{ คะแนนดิบ}$$
+### 2. ตารางเกณฑ์การได้/เสียคะแนน
+| กิจกรรม / เงื่อนไข | คะแนนที่ได้ / เสีย | หมายเหตุ |
+| :--- | :---: | :--- |
+| **สแกนถอดรหัสหลักฐานสำเร็จ** | <span style="color: #10b981; font-weight: bold;">+25 คะแนน / ชิ้น</span> | มี 2 ชิ้น/คดี (รวมสูงสุด +50) |
+| **สแกนถอดรหัสหลักฐานผิด** | <span style="color: #ef4444; font-weight: bold;">-15 คะแนน / ชิ้น</span> | หลักฐานถูกล็อกสแกนซ้ำไม่ได้ |
+| **ตัดสินข้อหาและบทลงโทษถูก** | <span style="color: #10b981; font-weight: bold;">+100 คะแนน</span> | คะแนนฐานคำพิพากษา |
+| **โบนัสความไว (เสร็จใน $\le 45$ วินาที)** | <span style="color: #10b981; font-weight: bold;">+30 คะแนน</span> | โบนัสความไวระดับสูงสุด |
+| **โบนัสความไว (เสร็จใน $\le 90$ วินาที)** | <span style="color: #10b981; font-weight: bold;">+15 คะแนน</span> | โบนัสความไวระดับปานกลาง |
+| **ตัดสินข้อหา หรือ บทลงโทษผิด** | <span style="color: #ef4444; font-weight: bold;">-30 ถึง -60 คะแนน</span> | หักข้อละ -30 คะแนน (แก้ตอบใหม่ได้) |
 
-### 🎯 รายละเอียดการได้/เสียคะแนน
-1. **มินิเกมถอดรหัสหลักฐานดิจิทัล (Forensic Clue Scanning)**:
-   - แต่ละคดีมีหลักฐาน 2 ชิ้น
-   - ถอดรหัสถูกต้อง: **+25 คะแนน** / ชิ้น (รวม +50 คะแนนต่อคดี)
-   - ถอดรหัสล้มเหลว: **-15 คะแนน** และหลักฐานนั้นจะถูกล็อกไม่สามารถสแกนซ้ำได้
-2. **การตัดสินข้อหากฎหมายและอัตราบทลงโทษ (Verdict Submission)**:
-   - ตัดสินถูกต้องทั้งข้อหาและบทลงโทษ: ได้รับคะแนนฐาน **+100 คะแนน**
-   - **โบนัสความไว (Speed Bonus)**:
-     - ทำคดีเสร็จภายใน $\le 45$ วินาที: **+30 คะแนน**
-     - ทำคดีเสร็จภายใน $\le 90$ วินาที: **+15 คะแนน**
-   - ตอบคำตัดสินผิด: หักคะแนนข้อละ **-30 คะแนน** (หักสูงสุด -60 คะแนน/ครั้ง) และเปิดโอกาสให้กลับไปวิเคราะห์และตอบใหม่
+### 3. สูตรแปลงคะแนนเก็บเต็ม 10 และเกณฑ์ประเมินเกรด
+$$\text{คะแนนเก็บเต็ม 10} = \min\left(10, \frac{\text{คะแนนดิบที่ได้}}{1080} \times 10\right)$$
 
----
-
-## 🔐 ระบบความปลอดภัย & การป้องกันสุ่มตอบ (Security & Anti-Spam Protections)
-
-1. **การยืนยันตัวตนครูผู้สอน (Passcode Verification)**:
-   - รหัสผ่านครูผู้สอนเริ่มต้น: `admin123` หรือ `teacher123` (หรือกำหนดผ่าน `.env` ในชื่อ `TEACHER_PASSCODE`)
-   - ระบบตรวจสอบรหัสผ่านแบบ **Server-side API Verification** ผ่าน `POST /api/verify-passcode` เพื่อป้องกันการรั่วไหลของ Secret String สู่ Client-side
-2. **การป้องกันการแอบดูเฉลย (Anti-Cheat & Code Hardening)**:
-   - ปรับปรุงการสุ่มตัวเลือกในมินิเกมและตัวเลือกกฎหมายด้วย Fisher-Yates Shuffle
-   - ซ่อนข้อมูลการเฉลยใน DOM Element เพื่อป้องกันการกด F12 / Inspect ดูคำตอบ
-3. **ระบบล็อกปุ่มป้องกันการเดาสุ่ม (Anti-Spam Guessing Lockout)**:
-   - ป้องกันการกดเดาคำตอบแบบรวดเร็วโดยไม่คิด ด้วยระบบ Cooldown 5 วินาที เมื่อตอบผิดติดต่อกัน 3 ครั้ง
+| เปอร์เซ็นต์คะแนนดิบ | ระดับเกรดประเมินผล | ความหมาย |
+| :--- | :--- | :--- |
+| **$\ge 85\%$** | <span style="color: #10b981; font-weight: bold;">ระดับ A+ (ดีเยี่ยม)</span> | เข้าใจกฎหมายคอมพิวเตอร์และ PDPA อย่างลึกซึ้ง |
+| **$70\% - 84\%$** | <span style="color: #38bdf8; font-weight: bold;">ระดับ B (ดี)</span> | วิเคราะห์หลักฐานและกฎหมายได้ดี |
+| **$50\% - 69\%$** | <span style="color: #f59e0b; font-weight: bold;">ระดับ C (พอใช้)</span> | ผ่านเกณฑ์มาตรฐานการเรียนรู้ |
+| **$< 50\%$** | <span style="color: #ef4444; font-weight: bold;">ระดับ D (ควรปรับปรุง)</span> | ควรศึกษาเนื้อหาในสไลด์บทเรียนเพิ่มเติม |
 
 ---
 
-## 🛠️ สถาปัตยกรรมเทคโนโลยี (Tech Stack)
+## 🔐 ระบบความปลอดภัย & PDPA Privacy Protection
 
-* **Frontend**:
-  * HTML5, Vanilla JavaScript (ES6+ Modular Logic)
-  * Vanilla CSS3 (Custom Design Token System, Glassmorphic Glass-UI, Neon Cyberpunk Theme)
-  * Web Audio API (Procedural Ambient Sound & SFX Synthesizer)
-  * FontAwesome 6 (Icons) & Google Fonts (Kanit & Sarabun)
-* **Backend Runtime**:
-  * Node.js & Express.js (`server.js`)
-  * Vercel Serverless Functions (`@vercel/node`)
-* **Database & Real-time Telemetry**:
-  * Supabase (PostgreSQL Database + Realtime Postgres Changes Subscription)
-  * BroadcastChannel API (Cross-Tab Realtime Messaging)
-  * LocalStorage & SessionStorage State Persistence
-* **Deployment & Hosting**:
-  * Vercel (ด้วยการตั้งค่า `cleanUrls: true` และ `{ "handle": "filesystem" }`)
+> [!IMPORTANT]
+> **มาตรการความปลอดภัยและการคุ้มครองข้อมูลส่วนบุคคล:**
+> 1. **Server-side Passcode Verification**: การยืนยันรหัสผ่านครูผู้สอนทำผ่าน `POST /api/verify-passcode` บน Express Server ป้องกันการแอบดูรหัสผ่านจาก Client Source Code
+> 2. **Anti-Cheat Randomization**: ช้อยส์และมินิเกมใช้ Fisher-Yates Shuffle สุ่มตำแหน่งใหม่ทุกครั้ง ป้องกันการจำตำแหน่งตอบ
+> 3. **PDPA Data Masking**: แดชบอร์ดครูมีโหมดซ่อนชื่อ-นามสกุลจริง `*** ***` สำหรับการแสดงผลสาธารณะในห้องเรียน
 
 ---
 
-## 📂 โครงสร้างโฟลเดอร์ & ไฟล์ในโปรเจกต์ (Project Directory)
+## 🛠️ เทคโนโลยีที่ใช้พัฒนา (Tech Stack)
+
+```
+├── Core Architecture    : HTML5, JavaScript ES6+ (Modular Logic)
+├── UI & Styling         : Vanilla CSS3 (Custom Design Tokens, Glassmorphism, Dark Cyberpunk Theme)
+├── Audio Synthesizer    : Web Audio API (Procedural Cyber Ambient Drone Engine & SFX)
+├── Backend Runtime      : Node.js & Express.js (server.js)
+├── Database & Realtime  : Supabase (PostgreSQL Database + Realtime Telemetry Subscription)
+├── Cross-Tab Sync       : BroadcastChannel API & Storage Event Listener
+└── Hosting & Deployment : Vercel Serverless Architecture (cleanUrls: true)
+```
+
+---
+
+## 📂 โครงสร้างไฟล์โปรเจกต์ (Project Directory Structure)
 
 ```
 .
-├── index.html               # [Main Hub] หน้าหลักศูนย์รวมเลือกระบบแอปพลิเคชัน
-├── cyber_detective.html     # [Student Game] เกมสืบคดี 30 คดี มินิเกม เสียงดนตรี Ambient และจับเวลา
-├── teacher_dashboard.html   # [Teacher Dashboard] แดชบอร์ดสรุปผลคะแนนเรียลไทม์ และ PDF Export
-├── presentation.html        # [Lesson Slides] สื่อสไลด์นำเสนอเนื้อหาบทเรียน พ.ร.บ.คอมฯ และ PDPA
-├── cases_reference.html     # [Cases Reference] คลังข้อสอบ 30 คดี และระบบเฉลยพร้อมรหัสผ่าน
-├── cases_data.js            # [Data Bank] คลังข้อมูลแฟ้มคดีทั้ง 30 คดี ข้อหารายละเอียด บทลงโทษ และ Flashcard
-├── server.js                # [Express Server] Node.js Server & Secure API Endpoints
-├── vercel.json              # [Vercel Config] การตั้งค่า Clean URLs และ Routing บน Vercel
-├── favicon.png              # [Brand Icon] ไอคอนตราโลโก้สายสืบไซเบอร์ขนาด 256x256
-├── logo.png                 # [Brand Logo] รูปตราสัญลักษณ์โปรเจกต์ขนาด 256x256
-├── package.json             # Node.js dependencies และ scripts
-├── .env.example             # ตัวอย่างการตั้งค่า Environment Variables
-└── README.md                # คู่มือและอธิบายรายละเอียดระบบฉบับสมบูรณ์
+├── index.html               # [Main Hub] หน้าแรกศูนย์รวมเข้าใช้งานทุกระบบ
+├── cyber_detective.html     # [Student Game] เกมสืบคดีสุ่ม 6 คดี สแกนหลักฐาน และออก PDF
+├── teacher_dashboard.html   # [Teacher Dashboard] แดชบอร์ดสรุปคะแนนครูผู้สอนเรียลไทม์
+├── presentation.html        # [Lesson Slides] สไลด์สื่อการเรียนรู้มาตรากฎหมาย และ PDPA
+├── cases_reference.html     # [Cases Reference] คลังแฟ้มคดี 30 คดี และเฉลยฉบับครู
+├── cases_data.js            # [Data Bank] ฐานข้อมูลแฟ้มคดีทั้ง 30 คดี ช้อยส์ และ Flashcard
+├── server.js                # [Express Server] Node.js Backend Server & Secure APIs
+├── vercel.json              # [Vercel Config] การตั้งค่า Routing & Clean URLs บน Vercel
+├── favicon.png              # [Brand Icon] ไอคอนโลโก้สายสืบไซเบอร์ขนาด 256x256
+├── logo.png                 # [Brand Logo] ตราสัญลักษณ์โปรเจกต์ขนาด 256x256
+├── package.json             # [Node Manifest] รายการ Dependencies และ Scripts
+├── .env.example             # [Env Template] ตัวอย่างการตั้งค่า Environment Variables
+└── README.md                # [Documentation] คู่มือเอกสารอธิบายระบบฉบับสมบูรณ์
 ```
 
 ---
 
-## 💻 ขั้นตอนการติดตั้งและรันโปรเจกต์ (Local Installation)
+## 💻 ขั้นตอนการติดตั้งและรันในเครื่อง (Local Installation)
 
 ### 1. คลองโปรเจกต์ (Clone Repository)
 ```bash
@@ -157,47 +200,50 @@ cd tech-dm-cyber-detective
 npm install
 ```
 
-### 3. ตั้งค่า Environment Variables (ถ้ามี)
-คัดลอกไฟล์ `.env.example` เป็น `.env`
+### 3. ตั้งค่า Environment Variables
+คัดลอกไฟล์ `.env.example` เป็น `.env`:
 ```bash
 cp .env.example .env
 ```
-กำหนดค่าต่างๆ ในไฟล์ `.env`:
+กำหนดค่าตัวแปรในไฟล์ `.env`:
 ```env
 PORT=3000
-SUPABASE_URL=https://your-supabase-url.supabase.co
+SUPABASE_URL=https://your-supabase-project.supabase.co
 SUPABASE_ANON_KEY=your-supabase-anon-key
 TEACHER_PASSCODE=admin123
 ```
 
-### 4. รันเซิร์ฟเวอร์ทดสอบในเครื่อง (Local Server)
+### 4. รันเซิร์ฟเวอร์ทดสอบ (Start Local Server)
 ```bash
 npm start
 ```
-เปิดบราวเซอร์ไปที่ `http://localhost:3000`
+เปิดเบราว์เซอร์ไปที่ `http://localhost:3000`
 
 ---
 
-## ☁️ การ Deploy ขึ้น Vercel (Deployment Guide)
+## ☁️ การนำขึ้นระบบ Vercel (Deployment Guide)
 
-โปรเจกต์นี้รองรับการ Deploy บน Vercel โดยตรงผ่าน `vercel.json`:
+โปรเจกต์นี้ได้รับการตั้งค่า `vercel.json` สำหรับ Deploy ขึ้น Vercel ในคลิกเดียว:
 
-1. นำโค้ดขึ้น GitHub Repository
-2. เข้าไปที่ [Vercel Dashboard](https://vercel.com) แล้วทำการ **Import Project** จาก GitHub
-3. ในส่วน **Environment Variables** ให้เพิ่มตัวแปร (ถ้าต้องการ):
+1. Push โค้ดขึ้นบน GitHub Repository ของคุณ
+2. เข้าไปที่ [Vercel Dashboard](https://vercel.com) แล้วกด **Import Project**
+3. กำหนดค่า **Environment Variables** บน Vercel:
    - `SUPABASE_URL`
    - `SUPABASE_ANON_KEY`
    - `TEACHER_PASSCODE`
-4. กด **Deploy**
-5. Vercel จะทำการ Build และให้บริการในรูปแบบ Clean URLs โดยอัตโนมัติ (เช่น `https://your-domain.vercel.app/detective`, `https://your-domain.vercel.app/teacher`)
+4. กด **Deploy** — Vercel จะให้บริการในรูปแบบ Clean URLs โดยอัตโนมัติ (เช่น `/detective`, `/teacher`, `/presentation`)
 
 ---
 
-## 🧪 การรับรองและการทดสอบระบบ (Automated System Testing)
+## 🧪 รายงานการสอบทานความถูกต้อง (Automated Audit & Quality Assurance)
 
-ระบบได้รับการทดสอบความถูกต้องผ่านชุดสอบอัตโนมัติ (Automated Gameplay Simulation Test Suite) ด้วย Node.js:
-- **Syntax Verification**: ตรวจสอบไวยากรณ์สคริปต์ในไฟล์ HTML ทั้งหมด 0 Error
-- **Gameplay Simulation**: จำลองการสืบคดีจริง สแกนหลักฐาน เลือกบทลงโทษ คิดคะแนน ออกรายงาน และเริ่มรอบใหม่ ผ่านการทดสอบ 100%
+โปรเจกต์ผ่านการทดสอบด้วยชุดสคริปต์สอบทานอัตโนมัติ (Automated Validation Suite):
+
+> [!TIP]
+> **ผลการสอบทานระบบล่าสุด:**
+> - **Data Integrity (`cases_data.js`)**: 30 คดีถูกต้อง 100%, 0 ID ซ้ำ, มีคำตอบถูกต้องเพียงข้อเดียวทุกคดี
+> - **DOM Element References**: สแกน 85 DOM IDs ในทุกไฟล์ HTML — **0 Missing IDs**
+> - **CSS & JS Syntax Audit**: สแกนไวยากรณ์สคริปต์และสไตล์ชีตทั้งหมด — **0 Syntax Errors**
 
 ---
 

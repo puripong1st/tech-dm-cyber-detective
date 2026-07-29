@@ -1118,13 +1118,22 @@
 
     <!-- Fully Fixed JavaScript Game Logic with Custom PDF Export Filename Format -->
     <script>
+        function getPrefixAbbrev(p) {
+            if (!p) return '';
+            if (p === 'เด็กชาย') return 'ด.ช.';
+            if (p === 'เด็กหญิง') return 'ด.ญ.';
+            if (p === 'นางสาว') return 'น.ส.';
+            return p;
+        }
+
         function exportStudentPDF() {
             const originalTitle = document.title;
-            const gender = computeGender(state.prefix);
+            const prefixAbbrev = getPrefixAbbrev(state.prefix);
             const roomClean = (state.room || '').replace('/', '-');
-            const pdfFilename = `${gender}_${state.firstname}_${state.lastname}_เลขที่${state.no}_${roomClean}`;
+            const namePart = `${prefixAbbrev}${state.firstname} ${state.lastname}`.trim();
+            const pdfFilename = `${namePart} เลขที่ ${state.no} ${roomClean}`.trim();
             
-            document.title = pdfFilename;
+            document.title = pdfFilename || originalTitle;
             window.print();
             setTimeout(() => { document.title = originalTitle; }, 1200);
         }
@@ -1294,7 +1303,7 @@
             failedClues: new Set(),
             selectedLaw: null,
             selectedPenalty: null,
-            solvedCaseIds: new Set(JSON.parse(localStorage.getItem('detective_solved_ids') || '[]')),
+            solvedCaseIds: new Set(JSON.parse(localStorage.getItem('detective_solved_cases') || localStorage.getItem('detective_solved_ids') || '[]')),
             currentRoundSolved: new Set(),
             pendingClueIdx: null
         };
@@ -1428,6 +1437,7 @@
 
         /* Supabase Telemetry Sync */
         async function syncToSupabase(statusText = "กำลังทำคดี") {
+            if (!state.firstname || !state.lastname || !state.no) return;
             const studentKey = `${state.room}_${state.no}_${state.firstname}_${state.lastname}`;
             const payload = {
                 id: studentKey,
@@ -1721,6 +1731,10 @@
                 sound.playOk();
                 state.foundClues.add(idx);
                 state.currentScore += 25;
+                if (state.currentScore > state.bestScore) {
+                    state.bestScore = state.currentScore;
+                    localStorage.setItem('detective_best_score', state.bestScore.toString());
+                }
                 updateStudentHeader();
                 showToast("🎉 ถอดรหัสหลักฐานสำเร็จ! ได้รับคะแนน +25 และบันทึกเบาะแสลงสมุดเรียบร้อย");
             } else {
@@ -1731,6 +1745,8 @@
                 showToast("💥 ถอดรหัสล้มเหลว! หักคะแนน -15 และหลักฐานนี้ถูกล็อกไม่สามารถสแกนได้แล้ว");
             }
 
+            saveSessionState();
+            syncToSupabase("กำลังทำคดี");
             restoreCaseState();
         }
 
@@ -1781,7 +1797,7 @@
         /* Submit Case Verdict */
         document.getElementById('btn-submit-verdict').addEventListener('click', () => {
             if (state.isCompleted) {
-                startNewRound();
+                resetToRegistrationScreen();
                 return;
             }
 
@@ -1960,10 +1976,10 @@
 
         /* Report Modal */
         document.getElementById('btn-report').addEventListener('click', openReportModal);
-        document.getElementById('btn-close-report').addEventListener('click', () => modalReport.classList.remove('active'));
+        document.getElementById('btn-close-report').addEventListener('click', resetToRegistrationScreen);
 
-        /* Start Fresh New 6-Case Round Function */
-        function startNewRound() {
+        /* Reset Game & Return to Initial Registration Screen */
+        function resetToRegistrationScreen() {
             modalReport.classList.remove('active');
             modalResult.classList.remove('active');
             if (timerInterval) clearInterval(timerInterval);
@@ -1984,25 +2000,27 @@
 
             elHeaderTimer.textContent = "00:00";
             elHeaderScore.textContent = "0 / 1080";
-            updateStudentHeader();
+            document.getElementById('input-firstname').value = '';
+            document.getElementById('input-lastname').value = '';
+            document.getElementById('input-no').value = '';
+            state.firstname = '';
+            state.lastname = '';
+            state.no = '';
+            localStorage.removeItem('detective_fname');
+            localStorage.removeItem('detective_lname');
+            localStorage.removeItem('detective_no');
 
-            const btnSubmit = document.getElementById('btn-submit-verdict');
-            if (btnSubmit) {
-                btnSubmit.disabled = false;
-                btnSubmit.innerHTML = `<i class="fa-solid fa-handcuffs"></i> ตัดสินคดี & บันทึกคะแนน!`;
-                btnSubmit.style.background = "linear-gradient(135deg, var(--neon-cyan), #0284c7)";
-            }
+            elHeaderTimer.textContent = "00:00";
+            elHeaderScore.textContent = "0 / 1080";
+            elHeaderStudent.innerHTML = `<i class="fa-solid fa-user-graduate"></i> <span>ยังไม่ได้ลงทะเบียน</span>`;
 
-            createRandomCaseQueue();
-            startTimer();
-            syncToSupabase("กำลังทำคดี");
-            loadCaseFromQueue(0);
-            showToast("🎮 เริ่มต้นทำคดีสุ่มรอบใหม่ 6 คดีเรียบร้อย!");
+            modalRegister.classList.add('active');
+            showToast("🎮 รีเซ็ตระบบเรียบร้อย กรุณากรอกข้อมูลเพื่อเริ่มทำคดีใหม่");
         }
 
         const btnRestartRound = document.getElementById('btn-restart-round');
         if (btnRestartRound) {
-            btnRestartRound.addEventListener('click', startNewRound);
+            btnRestartRound.addEventListener('click', resetToRegistrationScreen);
         }
 
         /* Ambient Music Toggle */
@@ -2071,35 +2089,7 @@
         function surrenderAndRestart() {
             if (confirm("คุณต้องการยอมแพ้และเริ่มต้นทำคดีใหม่ใช่หรือไม่?\n\n(คะแนนและเวลาในรอบนี้จะถูกรีเซ็ตใหม่ทั้งหมด เพื่อให้คุณกรอกชื่อ-นามสกุล และเลขที่ใหม่)")) {
                 sound.playFail();
-                if (timerInterval) clearInterval(timerInterval);
-                clearSessionState();
-
-                state.currentScore = 0;
-                state.totalSeconds = 0;
-                state.caseSeconds = 0;
-                state.currentQueueIdx = 0;
-                state.foundClues.clear();
-                state.failedClues.clear();
-                state.currentRoundSolved.clear();
-                state.selectedLaw = null;
-                state.selectedPenalty = null;
-
-                document.getElementById('input-firstname').value = '';
-                document.getElementById('input-lastname').value = '';
-                document.getElementById('input-no').value = '';
-                state.firstname = '';
-                state.lastname = '';
-                state.no = '';
-                localStorage.removeItem('detective_fname');
-                localStorage.removeItem('detective_lname');
-                localStorage.removeItem('detective_no');
-
-                elHeaderTimer.textContent = "00:00";
-                elHeaderScore.textContent = "0 / 1080";
-                elHeaderStudent.innerHTML = `<i class="fa-solid fa-user-graduate"></i> <span>ยังไม่ได้ลงทะเบียน</span>`;
-
-                modalRegister.classList.add('active');
-                showToast("🏳️ ยอมแพ้และรีเซ็ตระบบเรียบร้อย กรุณากรอกข้อมูลเพื่อเริ่มทำคดีใหม่");
+                resetToRegistrationScreen();
             }
         }
 

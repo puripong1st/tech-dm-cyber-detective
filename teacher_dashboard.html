@@ -757,7 +757,7 @@
                 }
 
                 const rawScore = s.best_score || 0;
-                const score10 = (Math.round((rawScore / 1080) * 10 * 100) / 100).toFixed(2);
+                const score10 = (Math.min(10, Math.round((rawScore / 1080) * 10 * 100) / 100)).toFixed(2);
 
                 const isDone = (s.status === 'ส่งคดีเรียบร้อย');
                 const statusBadge = isDone ? `
