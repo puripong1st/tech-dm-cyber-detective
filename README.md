@@ -61,6 +61,11 @@
 - ขยายขนาดตัวอักษรกล่องคำร้องทุกข์ (`.brief-box`) เพิ่มเป็น `1.05rem` พร้อมพื้นหลัง Dark Slate เข้ม สัดส่วนเน้นข้อความสว่างชัดเจน (`#f8fafc`) และขอบเรืองแสง Cyan Neon
 - ปรับปรุง CSS `.side-case-title-box` เพิ่มขนาดฟอนต์ `1.2rem` หนา 800 พร้อม Text Shadow Glow ให้โจทย์เด่นชัดสะดุดตา
 
+### 4. 🧩 สถาปัตยกรรมแบบแยกโมดูลไฟล์ (Modular CSS & JavaScript Architecture)
+- **แยกไฟล์สไตล์ชีต (`css/`)**: สกัด inline CSS จากทุกหน้า HTML ออกไปเป็นไฟล์ภายนอก ได้แก่ `css/index.css`, `css/cyber_detective.css`, `css/cases_reference.css`, `css/teacher_dashboard.css` และ `css/presentation.css`
+- **แยกไฟล์สคริปต์ (`js/`)**: สกัด inline JavaScript ออกเป็นไฟล์สคริปต์แยกเดี่ยว ได้แก่ `js/cyber_detective.js`, `js/cases_reference.js`, `js/teacher_dashboard.js` และ `js/presentation.js`
+- **ปรับปรุงคอนฟิก Vercel Deployment**: อัปเดต `vercel.json` ให้รวมโฟลเดอร์ `css/**/*` และ `js/**/*` เพื่อให้การ Deploy บน Serverless Architecture สมบูรณ์ 100%
+
 ---
 
 ## 🛡️ ภาพรวมแพลตฟอร์ม (Overview)
@@ -254,6 +259,17 @@ $$\text{คะแนนเก็บเต็ม 10} = \min\left(10, \frac{\text{
 
 ```
 .
+├── css/                     # [Stylesheets] โฟลเดอร์รวมสไตล์ชีตแยกตามหน้า
+│   ├── index.css            # Custom styles สำหรับหน้าแรกศูนย์รวม
+│   ├── cyber_detective.css  # Styles สำหรับระบบเกมสืบคดีไซเบอร์
+│   ├── cases_reference.css  # Styles สำหรับคลังแฟ้มคดี 30 คดี
+│   ├── teacher_dashboard.css# Styles สำหรับแดชบอร์ดสรุปคะแนนครู
+│   └── presentation.css     # Styles สำหรับสไลด์สื่อการเรียนรู้
+├── js/                      # [Application Scripts] โฟลเดอร์รวมสคริปต์แยกตามหน้า
+│   ├── cyber_detective.js   # สคริปต์ระบบเกมสืบคดี สแกนหลักฐาน สุ่มคดี และ Supabase Sync
+│   ├── cases_reference.js   # สคริปต์ค้นหา กรองคดี และรหัสผ่านครูผู้สอน
+│   ├── teacher_dashboard.js # สคริปต์แดชบอร์ดเรียลไทม์ ซ่อนชื่อ และ Export PDF
+│   └── presentation.js      # สคริปต์สไลด์นำเสนอ ระบบเสียง Web Audio และแอนิเมชัน Canvas
 ├── index.html               # [Main Hub] หน้าแรกศูนย์รวมเข้าใช้งานทุกระบบ
 ├── cyber_detective.html     # [Student Game] เกมสืบคดีสุ่ม 6 คดี สแกนหลักฐาน และออก PDF
 ├── teacher_dashboard.html   # [Teacher Dashboard] แดชบอร์ดสรุปคะแนนครูผู้สอนเรียลไทม์
