@@ -1,3 +1,7 @@
+<div align="center">
+  <img src="assets/github_banner.png" alt="CYBER DETECTIVE Promotional Banner" width="100%" />
+</div>
+
 # 🛡️ ศูนย์รวมสื่อการเรียนรู้ & ระบบสืบคดีกฎหมายคอมพิวเตอร์ (Cyber Law Detective & Teacher Platform)
 
 [![Platform](https://img.shields.io/badge/Platform-Cyber%20Law%20%26%20PDPA-0284c7?style=for-the-badge&logo=shield)](file:///c:/Users/aunkh/OneDrive/Desktop/%E0%B8%81%E0%B8%8E%E0%B8%AB%E0%B8%A1%E0%B8%B2%E0%B8%A2%E0%B8%84%E0%B8%AD%E0%B8%A1%E0%B8%9E%E0%B8%B4%E0%B8%A7%E0%B9%80%E0%B8%95%E0%B8%AD%E0%B8%A3%E0%B9%8C/cyber_detective.html)
