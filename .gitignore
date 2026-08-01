@@ -4,6 +4,8 @@ node_modules/
 *.png
 !favicon.png
 !logo.png
+!assets/*.png
 .vercel/
 *.log
+
 
