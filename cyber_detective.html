@@ -2079,7 +2079,7 @@
                 updateStudentHeader();
                 syncToSupabase("กำลังทำคดี");
 
-                document.getElementById('result-icon').innerHTML = `<div style="font-size: 3.2rem; filter: drop-shadow(0 0 10px rgba(244, 63, 94, 0.65));">❌</div>`;
+                document.getElementById('result-icon').innerHTML = `<img src="assets/mascot_fail.png" style="width: 110px; height: auto; filter: drop-shadow(0 0 14px rgba(244, 63, 94, 0.65)); animation: mascotCuteBob 3.6s ease-in-out infinite alternate;" alt="Sad Crying Mascot">`;
                 document.getElementById('card-result-border').style.borderColor = "var(--neon-magenta)";
                 document.getElementById('result-title').textContent = "คำพิพากษาไม่ถูกต้อง! (โดนหักคะแนน)";
                 document.getElementById('result-title').style.color = "var(--neon-magenta)";
