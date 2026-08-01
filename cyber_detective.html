@@ -1865,56 +1865,41 @@
             restoreCaseState();
         }
 
-        /* Dynamic Side Mascot Switcher & Pop Animation for Articulated SVG Rig */
+        /* Dynamic Side Mascot Switcher & Pop Animation */
         function updateSideMascot(phase, customMsg = null) {
-            const elSvg = document.getElementById('chibi-detective-svg');
-            const elArm = elSvg ? elSvg.querySelector('.chibi-arm-left-joint') : null;
+            const elImg = document.getElementById('side-mascot-img');
+            const elWrapper = document.getElementById('mascot-pop-wrapper') || elImg;
             const elBubble = document.getElementById('side-mascot-bubble');
-            if (!elSvg || !elBubble) return;
+            if (!elImg || !elBubble) return;
 
-            elSvg.classList.remove('phase-pop');
-            void elSvg.offsetWidth; // Trigger reflow for re-animation
-            elSvg.classList.add('phase-pop');
-            setTimeout(() => elSvg.classList.remove('phase-pop'), 500);
-
-            // Hide all props first
-            ['prop-scan', 'prop-law', 'prop-judge', 'prop-win'].forEach(p => {
-                const el = document.getElementById(p);
-                if (el) el.style.display = 'none';
-            });
-
-            // Reset Arm phase classes
-            if (elArm) elArm.className.baseVal = 'chibi-arm-left-joint';
+            if (elWrapper) {
+                elWrapper.classList.remove('phase-pop');
+                void elWrapper.offsetWidth; // Trigger reflow for re-animation
+                elWrapper.classList.add('phase-pop');
+                setTimeout(() => elWrapper.classList.remove('phase-pop'), 500);
+            }
 
             if (phase === 1) {
-                const prop = document.getElementById('prop-scan');
-                if (prop) prop.style.display = 'block';
-                if (elArm) elArm.classList.add('phase-scan');
-                elSvg.style.filter = 'drop-shadow(0 0 14px rgba(56, 189, 248, 0.55))';
+                elImg.src = 'assets/mascot_scan.png';
+                elImg.style.filter = 'drop-shadow(0 0 14px rgba(56, 189, 248, 0.55))';
                 elBubble.style.borderColor = 'var(--neon-cyan)';
                 elBubble.style.setProperty('--bubble-tail', 'var(--neon-cyan)');
                 elBubble.textContent = customMsg || "🔎 ภารกิจขั้นตอนที่ 1: ตรวจสแกนหลักฐานดิจิทัลและบันทึกเบาะแสลงสมุด!";
             } else if (phase === 2) {
-                const prop = document.getElementById('prop-law');
-                if (prop) prop.style.display = 'block';
-                if (elArm) elArm.classList.add('phase-law');
-                elSvg.style.filter = 'drop-shadow(0 0 14px rgba(245, 158, 11, 0.55))';
+                elImg.src = 'assets/mascot_law.png';
+                elImg.style.filter = 'drop-shadow(0 0 14px rgba(245, 158, 11, 0.55))';
                 elBubble.style.borderColor = 'var(--neon-yellow)';
                 elBubble.style.setProperty('--bubble-tail', 'var(--neon-yellow)');
                 elBubble.textContent = customMsg || "📖 ภารกิจขั้นตอนที่ 2: อ่านคำร้องทุกข์ในสมุดโน้ต แล้วเลือกมาตราความผิดด้วยตนเอง!";
             } else if (phase === 3) {
-                const prop = document.getElementById('prop-judge');
-                if (prop) prop.style.display = 'block';
-                if (elArm) elArm.classList.add('phase-judge');
-                elSvg.style.filter = 'drop-shadow(0 0 14px rgba(16, 185, 129, 0.55))';
+                elImg.src = 'assets/mascot_judge.png';
+                elImg.style.filter = 'drop-shadow(0 0 14px rgba(16, 185, 129, 0.55))';
                 elBubble.style.borderColor = 'var(--neon-green)';
                 elBubble.style.setProperty('--bubble-tail', 'var(--neon-green)');
                 elBubble.textContent = customMsg || "⚖️ ภารกิจขั้นตอนที่ 3: ระบุอัตราบทลงโทษตามกฎหมายให้ถูกต้อง เพื่ออนุมัติออกหมายจับ!";
             } else if (phase === 'win') {
-                const prop = document.getElementById('prop-win');
-                if (prop) prop.style.display = 'block';
-                if (elArm) elArm.classList.add('phase-win');
-                elSvg.style.filter = 'drop-shadow(0 0 16px rgba(245, 158, 11, 0.75))';
+                elImg.src = 'assets/mascot_win.png';
+                elImg.style.filter = 'drop-shadow(0 0 16px rgba(245, 158, 11, 0.75))';
                 elBubble.style.borderColor = 'var(--neon-yellow)';
                 elBubble.style.setProperty('--bubble-tail', 'var(--neon-yellow)');
                 elBubble.textContent = customMsg || "🏆 ภารกิจสำเร็จ: สำนวนคดีสมบูรณ์! อนุมัติหมายจับและบันทึกคะแนนเรียบร้อย!";
@@ -1931,13 +1916,33 @@
 
             for (let i = 1; i <= 3; i++) {
                 const pill = document.getElementById(`pill-step-${i}`);
-                pill.classList.remove('active', 'completed');
-                if (i === stepNum) pill.classList.add('active');
-                else if (i < stepNum) pill.classList.add('completed');
+                if (pill) {
+                    pill.classList.remove('active', 'completed');
+                    if (i === stepNum) pill.classList.add('active');
+                    else if (i < stepNum) pill.classList.add('completed');
+                }
             }
             updateSideMascot(stepNum);
             saveSessionState();
         }
+
+        /* Stepper Pill Direct Navigation */
+        ['pill-step-1', 'pill-step-2', 'pill-step-3'].forEach((id, idx) => {
+            const el = document.getElementById(id);
+            if (el) {
+                el.style.cursor = 'pointer';
+                el.addEventListener('click', () => {
+                    const targetStep = idx + 1;
+                    if (targetStep === 3 && !state.selectedLaw) {
+                        sound.playFail();
+                        showToast("⚠️ กรุณากดเลือกข้อกฎหมายในขั้นตอนที่ 2 ก่อน!");
+                        return;
+                    }
+                    sound.playScan();
+                    showStep(targetStep);
+                });
+            }
+        });
 
         document.getElementById('btn-goto-2').addEventListener('click', () => { sound.playScan(); showStep(2); });
         document.getElementById('btn-backto-1').addEventListener('click', () => { sound.playScan(); showStep(1); });
