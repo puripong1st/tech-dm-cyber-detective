@@ -503,6 +503,7 @@
         const DEFAULT_SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inhid2x6cXR2bWp3dWNvcWt5dmhqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQ0NjE3NDEsImV4cCI6MjEwMDAzNzc0MX0.nbIkBfvTZBxBSxxYik3o3gAqlXI8ITGMvof3wvJxA7c";
 
         let supabaseClient = null;
+        let realtimeInterval = null;
 
         function initSupabase() {
             try {
@@ -567,11 +568,6 @@
                 alert("รหัสผ่านครูผู้สอนไม่ถูกต้อง! กรุณาลองใหม่อีกครั้ง");
             }
         });
-
-        checkAuth();
-
-        // Realtime Subscription & Auto Sync
-        let realtimeInterval = null;
 
         function startRealtimeSubscription() {
             // 1. BroadcastChannel Listener (Same Window / Cross Tabs)
@@ -654,6 +650,8 @@
                 }
             } catch(e) {}
         }
+
+        checkAuth();
 
         let isMasked = false;
 
