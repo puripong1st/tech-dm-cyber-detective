@@ -1141,7 +1141,9 @@
         <!-- Case Result Modal -->
         <div class="modal-overlay" id="modal-case-result">
             <div class="modal-card" id="card-result-border">
-                <div style="font-size: 3rem; margin-bottom: 8px;" id="result-icon">🏆</div>
+                <div style="display: flex; justify-content: center; align-items: center; min-height: 100px; margin-bottom: 8px;" id="result-icon">
+                    <img src="assets/mascot_win.png" style="width: 110px; height: auto; filter: drop-shadow(0 0 14px rgba(16, 185, 129, 0.65)); animation: mascotCuteBob 3.6s ease-in-out infinite alternate;" alt="Victory Mascot">
+                </div>
                 <h3 style="font-size: 1.25rem; font-weight: 800;" id="result-title">ตัดสินคดีถูกต้อง!</h3>
                 <div style="font-size: 0.9rem; color: #cbd5e1; margin: 8px 0; line-height: 1.5;" id="result-desc">
                     คุณวิเคราะห์ข้อกฎหมายและบทลงโทษได้ถูกต้องแม่นยำ!
@@ -2036,7 +2038,7 @@
                 updateStudentHeader();
                 syncToSupabase("กำลังทำคดี");
 
-                document.getElementById('result-icon').textContent = "🏆";
+                document.getElementById('result-icon').innerHTML = `<img src="assets/mascot_win.png" style="width: 110px; height: auto; filter: drop-shadow(0 0 14px rgba(16, 185, 129, 0.65)); animation: mascotCuteBob 3.6s ease-in-out infinite alternate;" alt="Victory Mascot">`;
                 document.getElementById('card-result-border').style.borderColor = "var(--neon-green)";
                 document.getElementById('result-title').textContent = "ตัดสินคดีถูกต้องแม่นยำ!";
                 document.getElementById('result-title').style.color = "var(--neon-green)";
@@ -2077,7 +2079,7 @@
                 updateStudentHeader();
                 syncToSupabase("กำลังทำคดี");
 
-                document.getElementById('result-icon').textContent = "❌";
+                document.getElementById('result-icon').innerHTML = `<div style="font-size: 3.2rem; filter: drop-shadow(0 0 10px rgba(244, 63, 94, 0.65));">❌</div>`;
                 document.getElementById('card-result-border').style.borderColor = "var(--neon-magenta)";
                 document.getElementById('result-title').textContent = "คำพิพากษาไม่ถูกต้อง! (โดนหักคะแนน)";
                 document.getElementById('result-title').style.color = "var(--neon-magenta)";
