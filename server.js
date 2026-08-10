@@ -532,6 +532,117 @@ You MUST reply strictly in JSON format. Do not write any markdown backticks outs
     res.json({ success: true, evaluation: fallbackResult, mode: 'fallback_heuristic' });
 });
 
+// Single-Role Realtime Evaluation Endpoint (ทำทีละบทบาท ตรวจทันที)
+app.post('/api/evaluate-role', async (req, res) => {
+    const { playerId, teamName, membersInfo, caseId, caseTitle, role, answer, apiKey: clientApiKey } = req.body || {};
+    
+    if (!caseId || !role || !answer) {
+        return res.status(400).json({ success: false, message: 'ข้อมูลไม่ครบถ้วน' });
+    }
+
+    const ref = CASE_REFERENCES[caseId] || CASE_REFERENCES[1];
+    const apiKey = clientApiKey || process.env.GEMINI_API_KEY || process.env.GOOGLE_AI_KEY;
+
+    let roleNameThai = role === 'legal' ? '1. นักวิเคราะห์กฎหมาย (Legal Analyst)' : role === 'remedy' ? '2. เจ้าหน้าที่บรรเทาภัย (Incident Responder)' : '3. วิศวกรความปลอดภัย (Security Engineer)';
+    let standardRef = role === 'legal' ? `${ref.law} (อัตราโทษ: ${ref.penalty})` : role === 'remedy' ? ref.remedy : ref.prevention;
+
+    // Check gibberish locally
+    const gibberish = isGibberishOrNonsense(answer);
+    if (gibberish) {
+        return res.json({
+            success: true,
+            role,
+            score: 0,
+            feedback: role === 'legal'
+                ? 'ยังไม่สามารถให้คะแนนได้ เนื่องจากข้อความไม่ได้วิเคราะห์พฤติการณ์ความผิดทางไซเบอร์ ขอให้นักสืบย้อนกลับไปดูเหตุการณ์ในการ์ตูนแล้วเชื่อมโยงกับฐานความผิดและโทษทางกฎหมายให้ตรงประเด็น'
+                : role === 'remedy'
+                ? 'ยังไม่สามารถให้คะแนนได้ เนื่องจากไม่ได้ระบุขั้นตอนการระงับเหตุเฉพาะหน้า เมื่อเกิดเหตุฉุกเฉินทางไซเบอร์ต้องพิจารณาวิธีตัดวงจรความเสียหายทันที และระบุผู้มีอำนาจที่จะช่วยระงับเหตุ'
+                : 'ยังไม่สามารถให้คะแนนได้ เนื่องจากยังไม่ได้เสนอแนะระบบหรือเครื่องมือความปลอดภัยทางเทคนิค ลองวิเคราะห์ว่าช่องโหว่ความเสี่ยงในคดีนี้เกิดจากจุดใด แล้วเสนอเทคนิคความปลอดภัยเพื่อปิดช่องโหว่ระยะยาว',
+            mode: 'gibberish_filter'
+        });
+    }
+
+    if (!apiKey) {
+        const fullLocal = evaluateLocally(caseId, { [role]: answer });
+        const resRole = fullLocal[role] || { score: 5, feedback: 'วิเคราะห์ได้ดี' };
+        return res.json({ success: true, role, score: resRole.score, feedback: resRole.feedback, mode: 'heuristic' });
+    }
+
+    const systemPrompt = `You are the "Cyber Law and PDPA Strict Academic Evaluator" for Thai Grade 9 (ม.3) students.
+Evaluate ONE SPECIFIC ROLE: "${roleNameThai}" (Max 10 points).
+STRICT NO-SPOILER RULE: In your feedback, NEVER state the exact section number or give away the exact answer. Instead, explain conceptually WHY and HOW their answer is praised or flawed/missing elements, guiding them to understand the concepts without spoon-feeding section numbers.
+Case Title: ${caseTitle || ref.title}
+Official Reference for this role (CONFIDENTIAL - DO NOT LEAK TO STUDENT): ${standardRef}
+Reply STRICTLY in JSON format:
+{
+  "score": <integer from 0 to 10>,
+  "feedback": "<educational feedback in Thai explaining why and how the answer is praised or missing concepts, without spoilers>"
+}`;
+
+    const candidateModels = ['gemini-flash-latest', 'gemini-3.5-flash', 'gemini-2.5-flash', 'gemini-1.5-flash', 'gemini-pro'];
+    let aiEvaluation = null;
+
+    for (const model of candidateModels) {
+        try {
+            const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`;
+            const response = await fetch(url, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    systemInstruction: { parts: [{ text: systemPrompt }] },
+                    contents: [{ role: 'user', parts: [{ text: `Student Answer for ${roleNameThai}: "${answer}"` }] }],
+                    generationConfig: { responseMimeType: 'application/json', temperature: 0.1 }
+                })
+            });
+
+            if (response.ok) {
+                const data = await response.json();
+                let rawText = data.candidates?.[0]?.content?.parts?.[0]?.text || '';
+                rawText = rawText.replace(/```json/gi, '').replace(/```/g, '').trim();
+                aiEvaluation = JSON.parse(rawText);
+                break;
+            }
+        } catch (err) {
+            console.warn(`Attempt with ${model} failed:`, err.message);
+        }
+    }
+
+    if (aiEvaluation && typeof aiEvaluation.score === 'number') {
+        return res.json({ success: true, role, score: aiEvaluation.score, feedback: aiEvaluation.feedback, mode: 'gemini' });
+    }
+
+    const fullLocal = evaluateLocally(caseId, { [role]: answer });
+    const resRole = fullLocal[role] || { score: 5, feedback: 'วิเคราะห์ได้ดี' };
+    return res.json({ success: true, role, score: resRole.score, feedback: resRole.feedback, mode: 'fallback_heuristic' });
+});
+
+// Endpoint to Save Complete Case Score to Supabase & Realtime Telemetry
+app.post('/api/save-case-score', (req, res) => {
+    const { playerId, teamName, membersInfo, caseId, caseTitle, caseScores, studentAnswers } = req.body || {};
+    if (caseScores) {
+        const legalScore = Number(caseScores.legal?.score || caseScores.legalScore || 0);
+        const remedyScore = Number(caseScores.remedy?.score || caseScores.remedyScore || 0);
+        const securityScore = Number(caseScores.security?.score || caseScores.securityScore || 0);
+        const totalScore = legalScore + remedyScore + securityScore;
+
+        saveToSupabase({
+            playerId,
+            teamName,
+            membersInfo,
+            caseId,
+            caseTitle,
+            studentAnswers: studentAnswers || {},
+            evaluation: {
+                legal: { score: legalScore, feedback: caseScores.legal?.feedback || caseScores.legalFeedback || '' },
+                remedy: { score: remedyScore, feedback: caseScores.remedy?.feedback || caseScores.remedyFeedback || '' },
+                security: { score: securityScore, feedback: caseScores.security?.feedback || caseScores.securityFeedback || '' },
+                total_score: totalScore
+            }
+        });
+    }
+    res.json({ success: true });
+});
+
 // In-memory score cache buffer for fast realtime fallback
 const SERVER_SCORES_CACHE = [];
 
