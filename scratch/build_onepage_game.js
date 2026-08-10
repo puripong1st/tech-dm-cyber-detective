@@ -1,0 +1,1301 @@
+const fs = require('fs');
+const path = require('path');
+
+const targetPath = path.join(__dirname, '..', 'cyber_shield_detective.html');
+
+// Read existing file to preserve full 12 cases data, audio synth, and security shields
+const existing = fs.readFileSync(targetPath, 'utf8');
+
+// Extract ALL_12_CASES data definition from existing file
+const casesMatch = existing.match(/const ALL_12_CASES = \[[\s\S]*?\];/);
+if (!casesMatch) {
+    console.error('Could not extract ALL_12_CASES');
+    process.exit(1);
+}
+const all12CasesCode = casesMatch[0];
+
+const onepageHtml = `<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cyber Shield Detective: ปฏิบัติการสายสืบพิทักษ์ไซเบอร์ (ม.3)</title>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Kanit:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400&family=Sarabun:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=Chakra+Petch:wght@500;600;700;800&display=swap" rel="stylesheet">
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" sizes="256x256" href="favicon.png">
+
+    <!-- FontAwesome 6 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        cyber: {
+                            dark: '#070913',
+                            slate: '#0F172A',
+                            panel: '#1E293B',
+                            cyan: '#06B6D4',
+                            cyanGlow: '#22D3EE',
+                            pink: '#EC4899',
+                            yellow: '#F59E0B',
+                            green: '#10B981',
+                            purple: '#8B5CF6'
+                        }
+                    },
+                    fontFamily: {
+                        kanit: ['Kanit', 'sans-serif'],
+                        sarabun: ['Sarabun', 'sans-serif'],
+                        mono: ['Chakra Petch', 'monospace']
+                    }
+                }
+            }
+        }
+    </script>
+
+    <!-- Confetti JS CDN for Victory Effects -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+    <style>
+        :root {
+            --neon-cyan: #06B6D4;
+            --neon-pink: #EC4899;
+            --neon-yellow: #F59E0B;
+            --neon-green: #10B981;
+            --neon-purple: #8B5CF6;
+        }
+
+        body {
+            background-color: #070913;
+            color: #F8FAFC;
+            font-family: 'Kanit', sans-serif;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        .cyber-grid-bg {
+            background-image: 
+                radial-gradient(circle at 20% 20%, rgba(6, 182, 212, 0.1) 0%, transparent 40%),
+                radial-gradient(circle at 80% 80%, rgba(236, 72, 153, 0.1) 0%, transparent 40%),
+                linear-gradient(rgba(15, 23, 42, 0.7) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(15, 23, 42, 0.7) 1px, transparent 1px);
+            background-size: 100% 100%, 100% 100%, 32px 32px, 32px 32px;
+        }
+
+        .glass-panel {
+            background: rgba(15, 23, 42, 0.88);
+            backdrop-filter: blur(14px);
+            -webkit-backdrop-filter: blur(14px);
+            border: 1px solid rgba(6, 182, 212, 0.25);
+        }
+
+        /* Force dark style on select dropdowns and options */
+        select {
+            color-scheme: dark !important;
+            background-color: #0f172a !important;
+            color: #f8fafc !important;
+        }
+        select option {
+            background-color: #0f172a !important;
+            color: #f8fafc !important;
+            padding: 8px 12px !important;
+        }
+        select option:hover, select option:focus, select option:checked {
+            background-color: #06b6d4 !important;
+            color: #ffffff !important;
+        }
+
+        /* Custom Scrollbars */
+        ::-webkit-scrollbar { width: 5px; height: 5px; }
+        ::-webkit-scrollbar-track { background: rgba(15, 23, 42, 0.6); }
+        ::-webkit-scrollbar-thumb { background: #334155; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #06B6D4; }
+
+        @media print {
+            .no-print { display: none !important; }
+            body { background: white !important; color: black !important; padding: 0 !important; }
+            .print-page { background: white !important; color: black !important; border: none !important; box-shadow: none !important; width: 100% !important; margin: 0 !important; padding: 0 !important; }
+            .print-text-dark { color: #0f172a !important; }
+            .print-table { border: 1px solid #94a3b8 !important; }
+            .print-table th, .print-table td { border: 1px solid #cbd5e1 !important; color: #0f172a !important; }
+            .print-table th { background: #f1f5f9 !important; }
+        }
+    </style>
+</head>
+<body class="cyber-grid-bg antialiased selection:bg-cyan-500 selection:text-black flex flex-col min-h-screen">
+
+    <!-- Anti-Cheat Security Toast Container -->
+    <div id="toast-container" class="fixed top-4 right-4 z-50 flex flex-col gap-2 pointer-events-none"></div>
+
+    <!-- 1. TOP STUDENT NAVBAR (Clean & Focused) -->
+    <header class="glass-panel sticky top-0 z-40 border-b border-cyan-500/30 px-3 py-2 sm:px-6">
+        <div class="max-w-7xl mx-auto flex items-center justify-between gap-2">
+            
+            <!-- Game Brand -->
+            <div class="flex items-center gap-2.5">
+                <img src="favicon.png" alt="Logo" class="w-8 h-8 rounded-lg border border-cyan-400 shadow-md shadow-cyan-500/30 object-cover">
+                <div>
+                    <div class="flex items-center gap-1.5">
+                        <h1 class="text-sm sm:text-base font-extrabold tracking-wider text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-pink-400 to-amber-300 font-mono">
+                            CYBER SHIELD DETECTIVE
+                        </h1>
+                        <span class="text-[10px] px-1.5 py-0.2 rounded bg-pink-500/20 text-pink-300 border border-pink-500/40 font-mono font-bold">v4.5 AI</span>
+                    </div>
+                    <p class="text-[10px] text-slate-400 hidden sm:block">สืบคดีอัตนัย ม.3 — ประเมินผลสดด้วย Google Gemini AI</p>
+                </div>
+            </div>
+
+            <!-- Header Status Pills (Team, Room, Case Progress, Score) -->
+            <div class="flex items-center gap-1.5 sm:gap-3 text-xs font-sarabun">
+                
+                <!-- Team & Room Pill -->
+                <div class="flex items-center gap-1.5 px-2.5 py-1 rounded-xl bg-slate-900/90 border border-slate-700 text-slate-200">
+                    <i class="fa-solid fa-users text-cyan-400 text-xs"></i>
+                    <span id="label-team-name" class="font-semibold text-cyan-300 max-w-[90px] sm:max-w-[150px] truncate">นักสืบ ม.3</span>
+                    <span id="label-room-name" class="px-1.5 py-0.2 rounded bg-purple-500/20 text-purple-300 text-[10px] font-mono border border-purple-500/30 font-bold">ม.3/1</span>
+                </div>
+
+                <!-- Case Counter Pill -->
+                <div class="flex items-center gap-1.5 px-2.5 py-1 rounded-xl bg-slate-900/90 border border-slate-700 text-slate-200 font-mono">
+                    <i class="fa-solid fa-folder-open text-pink-400 text-xs"></i>
+                    <span>คดีที่ <b id="label-current-case" class="text-pink-300">1</b> / 6</span>
+                </div>
+
+                <!-- Total Cumulative Score Pill -->
+                <div class="flex items-center gap-1.5 px-3 py-1 rounded-xl bg-slate-900/90 border border-amber-500/40 text-amber-300 font-mono shadow-sm">
+                    <i class="fa-solid fa-star text-yellow-400 text-xs"></i>
+                    <span>คะแนน: <b id="label-total-score" class="text-yellow-300 text-sm font-bold">0</b> / 180</span>
+                </div>
+
+                <!-- Action Controls (Sound, Reset, Home) -->
+                <div class="flex items-center gap-1">
+                    <button onclick="confirmResetGame()" class="p-1.5 rounded-lg bg-slate-800 hover:bg-red-950/80 border border-slate-700 hover:border-red-500/50 text-slate-300 hover:text-red-300 text-xs transition" title="เริ่มรอบใหม่ (Reset)">
+                        <i class="fa-solid fa-arrows-rotate text-red-400"></i>
+                    </button>
+                    <button id="btn-sound-toggle" onclick="toggleAudio()" class="p-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-300 text-xs transition" title="เปิด/ปิด เสียง">
+                        <i id="sound-icon" class="fa-solid fa-volume-high text-cyan-400"></i>
+                    </button>
+                    <a href="/" class="p-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-300 hover:text-white text-xs transition" title="กลับหน้าหลัก">
+                        <i class="fa-solid fa-house"></i>
+                    </a>
+                </div>
+
+            </div>
+
+        </div>
+    </header>
+
+    <!-- ========================================================================= -->
+    <!-- 2. MAIN SINGLE-PAGE COMPACT WORKSPACE (No-Scroll Layout)                   -->
+    <!-- ========================================================================= -->
+    <main class="max-w-7xl mx-auto w-full p-2.5 sm:p-4 flex-1 flex flex-col justify-start">
+        
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-3.5 items-stretch flex-1">
+
+            <!-- ================================================================= -->
+            <!-- LEFT COLUMN: Compact Case Dossier & 9-Panel Comic (5 Columns)     -->
+            <!-- ================================================================= -->
+            <section class="lg:col-span-5 flex flex-col gap-2.5">
+                
+                <!-- Dossier Header & Complaint Box -->
+                <div class="glass-panel p-3.5 rounded-2xl border border-cyan-500/30 flex flex-col gap-2">
+                    <div class="flex items-center justify-between">
+                        <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-medium bg-cyan-500/10 text-cyan-300 border border-cyan-500/30 font-mono">
+                            <i class="fa-solid fa-fingerprint"></i> DOSSIER #<span id="dossier-case-num">01</span>
+                        </span>
+                        <span id="dossier-category" class="text-[11px] px-2 py-0.5 rounded bg-purple-500/20 text-purple-300 border border-purple-500/30 font-semibold">
+                            พ.ร.บ. คอมพิวเตอร์
+                        </span>
+                    </div>
+
+                    <h2 id="dossier-title" class="text-sm sm:text-base font-bold text-slate-100 leading-snug">
+                        กำลังโหลดข้อมูลแฟ้มคดี...
+                    </h2>
+
+                    <!-- Complaint Summary -->
+                    <div class="bg-slate-900/90 rounded-xl p-2.5 border-l-4 border-cyan-400 text-xs text-slate-300 leading-relaxed">
+                        <div class="font-semibold text-cyan-300 mb-0.5 flex items-center gap-1 text-[11px]">
+                            <i class="fa-solid fa-bullhorn"></i> คำร้องทุกข์จากผู้เสียหาย:
+                        </div>
+                        <p id="dossier-brief" class="line-clamp-3 hover:line-clamp-none transition-all">...</p>
+                    </div>
+                </div>
+
+                <!-- 9-Panel Comic Thumbnail with Zoom Button -->
+                <div class="glass-panel p-3 rounded-2xl border border-cyan-500/30 flex flex-col gap-2 flex-1 justify-between">
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center gap-1.5 text-xs text-slate-200 font-semibold">
+                            <i class="fa-solid fa-film text-pink-400"></i>
+                            <span>หลักฐานการ์ตูน 9 ช่อง</span>
+                        </div>
+                        <button onclick="openComicLightbox()" class="text-[11px] px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-cyan-300 border border-cyan-500/40 flex items-center gap-1 transition">
+                            <i class="fa-solid fa-magnifying-glass-plus"></i> ซูมดูภาพใหญ่
+                        </button>
+                    </div>
+
+                    <!-- Comic Image Thumbnail (Optimized height for one-page fit) -->
+                    <div class="relative group cursor-pointer overflow-hidden rounded-xl border border-slate-700 bg-white/95 shadow-md flex items-center justify-center p-1 max-h-[260px] sm:max-h-[300px]" onclick="openComicLightbox()">
+                        <img id="dossier-comic-img" src="assets/evidence/case_ev_8f3a9b21.png" alt="Comic 9 Panels" class="w-full h-auto max-h-[250px] sm:max-h-[290px] object-contain mx-auto rounded transition duration-200 group-hover:scale-[1.02]">
+                        <div class="absolute inset-0 bg-slate-950/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                            <span class="text-xs text-cyan-300 bg-slate-900/90 px-3 py-1.5 rounded-full border border-cyan-400/50 shadow-lg">
+                                <i class="fa-solid fa-expand mr-1"></i> คลิกเพื่อขยายเต็มจอ
+                            </span>
+                        </div>
+                    </div>
+
+                    <!-- 3-Phase Story Breakdown Buttons -->
+                    <div class="flex flex-col gap-1.5 mt-1">
+                        <div class="grid grid-cols-3 gap-1.5 text-[11px] font-sarabun">
+                            <button onclick="selectStoryPhase(1)" id="phase-tab-1" class="px-2 py-1.5 rounded-lg bg-slate-800/90 border border-cyan-500/40 text-cyan-300 font-semibold transition">
+                                🚩 1. ต้นเหตุ
+                            </button>
+                            <button onclick="selectStoryPhase(2)" id="phase-tab-2" class="px-2 py-1.5 rounded-lg bg-slate-900/60 border border-slate-700 text-slate-400 hover:text-white transition">
+                                💥 2. ผลกระทบ
+                            </button>
+                            <button onclick="selectStoryPhase(3)" id="phase-tab-3" class="px-2 py-1.5 rounded-lg bg-slate-900/60 border border-slate-700 text-slate-400 hover:text-white transition">
+                                ⚖️ 3. คลี่คลาย
+                            </button>
+                        </div>
+                        <div id="story-phase-desc" class="p-2 rounded-xl bg-slate-900/80 border border-slate-800 text-[11px] text-slate-300 leading-relaxed min-h-[42px]">
+                            โหลดเนื้อเรื่องช่วงที่ 1...
+                        </div>
+                    </div>
+
+                </div>
+
+            </section>
+
+            <!-- ================================================================= -->
+            <!-- RIGHT COLUMN: Interactive Single-Role Console (7 Columns)         -->
+            <!-- ================================================================= -->
+            <section class="lg:col-span-7 flex flex-col gap-3">
+                
+                <div class="glass-panel p-4 sm:p-5 rounded-2xl border border-cyan-500/30 flex flex-col gap-3.5 flex-1 justify-between shadow-2xl">
+                    
+                    <!-- 3-Step Interactive Role Stepper at Top -->
+                    <div class="flex flex-col gap-2 border-b border-slate-800 pb-3">
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center gap-2">
+                                <span class="w-6 h-6 rounded-lg bg-cyan-500/20 border border-cyan-400 text-cyan-300 flex items-center justify-center text-xs">
+                                    <i class="fa-solid fa-list-check"></i>
+                                </span>
+                                <h3 class="text-sm font-bold text-slate-100">ขั้นตอนการสืบคดี (ทำทีละบทบาท & ตรวจสดทันที)</h3>
+                            </div>
+                            <span id="case-status-badge" class="text-[11px] px-2.5 py-0.5 rounded-full bg-slate-800 text-amber-300 font-mono border border-slate-700">
+                                กำลังสืบคดี: 0/30 คะแนน
+                            </span>
+                        </div>
+
+                        <!-- Stepper 3 Tabs -->
+                        <div class="grid grid-cols-3 gap-2 text-xs font-sarabun">
+                            
+                            <!-- Role 1 Stepper Tab -->
+                            <button onclick="switchActiveRole('legal')" id="step-tab-legal" class="p-2 rounded-xl bg-amber-500/20 border-2 border-amber-400 text-amber-200 font-bold flex flex-col items-center gap-0.5 transition shadow-sm">
+                                <div class="flex items-center gap-1 text-[11px]">
+                                    <span>👨‍⚖️ 1. กฎหมาย</span>
+                                    <span id="badge-legal-score" class="text-[10px] px-1 rounded bg-amber-500/30 font-mono">0/10</span>
+                                </div>
+                                <span id="status-legal-text" class="text-[10px] text-amber-300 font-normal">กำลังทำ</span>
+                            </button>
+
+                            <!-- Role 2 Stepper Tab -->
+                            <button onclick="switchActiveRole('remedy')" id="step-tab-remedy" class="p-2 rounded-xl bg-slate-900/60 border border-slate-700 text-slate-400 flex flex-col items-center gap-0.5 hover:text-slate-200 transition">
+                                <div class="flex items-center gap-1 text-[11px]">
+                                    <span>🚑 2. บรรเทาภัย</span>
+                                    <span id="badge-remedy-score" class="text-[10px] px-1 rounded bg-slate-800 font-mono">0/10</span>
+                                </div>
+                                <span id="status-remedy-text" class="text-[10px] text-slate-400 font-normal">รอตรวจ</span>
+                            </button>
+
+                            <!-- Role 3 Stepper Tab -->
+                            <button onclick="switchActiveRole('security')" id="step-tab-security" class="p-2 rounded-xl bg-slate-900/60 border border-slate-700 text-slate-400 flex flex-col items-center gap-0.5 hover:text-slate-200 transition">
+                                <div class="flex items-center gap-1 text-[11px]">
+                                    <span>🛡️ 3. ป้องกัน</span>
+                                    <span id="badge-security-score" class="text-[10px] px-1 rounded bg-slate-800 font-mono">0/10</span>
+                                </div>
+                                <span id="status-security-text" class="text-[10px] text-slate-400 font-normal">รอตรวจ</span>
+                            </button>
+
+                        </div>
+                    </div>
+
+                    <!-- ACTIVE ROLE INPUT CARD -->
+                    <div id="active-role-card" class="p-3.5 sm:p-4 rounded-xl bg-slate-900/90 border border-slate-700 flex flex-col gap-3 transition-all">
+                        
+                        <!-- Role Header Title & Guidelines -->
+                        <div class="flex items-center justify-between gap-2 border-b border-slate-800 pb-2.5">
+                            <div class="flex items-center gap-2">
+                                <span id="role-avatar" class="w-8 h-8 rounded-lg bg-amber-500/20 border border-amber-400 text-amber-300 flex items-center justify-center text-base">
+                                    👨‍⚖️
+                                </span>
+                                <div>
+                                    <h4 id="role-title" class="text-xs sm:text-sm font-bold text-amber-300">
+                                        1. บทบาทนักวิเคราะห์กฎหมาย (Legal Analyst)
+                                    </h4>
+                                    <p id="role-desc" class="text-[11px] text-slate-400">
+                                        ระบุฐานความผิดตาม พ.ร.บ.คอมพิวเตอร์ / PDPA และวิเคราะห์อัตราโทษจำคุก/ปรับ
+                                    </p>
+                                </div>
+                            </div>
+                            <span id="role-max-badge" class="text-xs font-mono font-bold text-amber-400 bg-amber-500/20 px-2 py-0.5 rounded border border-amber-500/30 shrink-0">
+                                เต็ม 10 คะแนน
+                            </span>
+                        </div>
+
+                        <!-- Active Textarea -->
+                        <div class="relative flex flex-col gap-1">
+                            <textarea id="active-role-input" rows="4" oninput="handleActiveTextInput()" placeholder="พิมพ์วิเคราะห์คำตอบที่นี่..." class="w-full bg-slate-950/90 border border-slate-700 rounded-xl p-3 text-xs sm:text-sm text-slate-100 placeholder-slate-500 focus:outline-none focus:border-cyan-400 focus:ring-1 focus:ring-cyan-400 font-sarabun transition resize-none"></textarea>
+                            
+                            <!-- Counter & Help Tip -->
+                            <div class="flex items-center justify-between text-[11px] px-1">
+                                <span id="role-tip" class="text-slate-400">
+                                    💡 เกณฑ์: ระบุฐานความผิด + อัตราโทษจำคุก/ปรับ + เหตุผล
+                                </span>
+                                <span id="active-char-count" class="font-mono text-slate-400">
+                                    0 / 20 ตัวอักษร
+                                </span>
+                            </div>
+                        </div>
+
+                        <!-- Action Button for this Single Role -->
+                        <div class="flex items-center justify-between gap-2 pt-1">
+                            <button type="button" onclick="clearActiveRoleDraft()" class="px-3 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-medium transition">
+                                <i class="fa-solid fa-rotate-left mr-1"></i> ล้างคำตอบ
+                            </button>
+
+                            <button type="button" id="btn-submit-active-role" onclick="submitActiveRoleToAI()" disabled class="px-5 py-2 rounded-xl bg-gradient-to-r from-cyan-600 via-pink-600 to-amber-500 hover:from-cyan-500 hover:via-pink-500 hover:to-amber-400 disabled:opacity-40 disabled:cursor-not-allowed text-white text-xs sm:text-sm font-bold shadow-lg shadow-cyan-500/20 flex items-center gap-2 transition transform active:scale-95">
+                                <i class="fa-solid fa-bolt text-yellow-300"></i>
+                                <span id="label-submit-btn">ส่งตรวจบทบาทนี้ (10 คะแนน)</span>
+                            </button>
+                        </div>
+
+                    </div>
+
+                    <!-- INSTANT AI EVALUATION FEEDBACK BOX (Appears immediately after submitting this role) -->
+                    <div id="role-feedback-box" class="hidden p-3.5 sm:p-4 rounded-xl bg-slate-950 border border-emerald-500/40 flex flex-col gap-2.5 transition-all">
+                        
+                        <div class="flex items-center justify-between border-b border-slate-800 pb-2">
+                            <div class="flex items-center gap-2">
+                                <div class="w-6 h-6 rounded-md bg-emerald-500/20 border border-emerald-400 text-emerald-300 flex items-center justify-center text-xs">
+                                    <i class="fa-solid fa-circle-check"></i>
+                                </div>
+                                <span class="text-xs font-bold text-slate-100">ผลการประเมินจาก Google Gemini AI</span>
+                                <span id="role-eval-mode" class="text-[10px] px-1.5 py-0.2 rounded bg-cyan-500/20 text-cyan-300 font-mono">AI Evaluator</span>
+                            </div>
+
+                            <!-- Single Role Score Badge -->
+                            <div class="flex items-center gap-1.5 px-3 py-1 rounded-lg bg-emerald-950/80 border border-emerald-500/40 text-emerald-300 font-mono font-bold text-xs">
+                                <span>คะแนนที่ได้:</span>
+                                <b id="role-eval-score" class="text-yellow-300 text-sm">0</b>
+                                <span class="text-slate-400">/ 10</span>
+                            </div>
+                        </div>
+
+                        <!-- Feedback Content Text -->
+                        <p id="role-eval-feedback" class="text-xs text-slate-200 leading-relaxed font-sarabun bg-slate-900/80 p-3 rounded-lg border border-slate-800">
+                            ...
+                        </p>
+
+                        <!-- Next Step Button Navigation -->
+                        <div class="flex items-center justify-end pt-1">
+                            <button type="button" id="btn-next-role-step" onclick="proceedToNextRoleOrCase()" class="px-5 py-2 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white text-xs sm:text-sm font-bold shadow-lg shadow-emerald-500/20 flex items-center gap-2 transition transform active:scale-95">
+                                <span id="label-next-step-btn">➡️ ไปยังบทบาทที่ 2: บรรเทาภัย</span>
+                                <i class="fa-solid fa-arrow-right"></i>
+                            </button>
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+        </div>
+
+    </main>
+
+    <!-- 3. TEAM REGISTRATION MODAL (Opens on new session) -->
+    <div id="modal-register-team" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/90 backdrop-blur-lg overflow-y-auto">
+        <div class="glass-panel max-w-lg w-full p-6 sm:p-7 rounded-3xl border border-cyan-400/50 shadow-2xl flex flex-col gap-4 relative my-auto">
+            
+            <div class="text-center flex flex-col items-center gap-1.5">
+                <div class="w-14 h-14 rounded-2xl bg-cyan-500/20 border border-cyan-400 text-cyan-300 flex items-center justify-center text-2xl shadow-lg shadow-cyan-500/30">
+                    <i class="fa-solid fa-shield-halved"></i>
+                </div>
+                <h2 class="text-xl sm:text-2xl font-black text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-pink-400 to-amber-300">
+                    CYBER SHIELD DETECTIVE
+                </h2>
+                <p class="text-xs text-slate-300">ยินดีต้อนรับสู่งานสืบคดีไซเบอร์ ม.3! โปรดลงทะเบียนทีมสายสืบเพื่อเริ่มปฏิบัติการ</p>
+            </div>
+
+            <form onsubmit="handleRegisterTeam(event)" class="flex flex-col gap-3.5 font-sarabun text-xs">
+                <!-- Team Name -->
+                <div>
+                    <label class="block font-semibold text-cyan-300 mb-1">🏷️ ชื่อทีมสายสืบ / ชื่อกลุ่ม <span class="text-pink-400">*</span></label>
+                    <input type="text" id="reg-team-name" required placeholder="เช่น ทีมพิทักษ์ไซเบอร์ ม.3/1" class="w-full bg-slate-950 border border-slate-700 rounded-xl px-3.5 py-2 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-cyan-400">
+                </div>
+
+                <!-- Room & Member Count Dropdowns -->
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block font-semibold text-slate-300 mb-1">🏫 ห้องเรียน <span class="text-pink-400">*</span></label>
+                        <select id="reg-room" class="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-cyan-400">
+                            <option value="ม.3/1">ม.3/1</option>
+                            <option value="ม.3/2">ม.3/2</option>
+                            <option value="ม.3/3">ม.3/3</option>
+                            <option value="ม.3/4">ม.3/4</option>
+                            <option value="ม.3/5">ม.3/5</option>
+                            <option value="ม.3/6">ม.3/6</option>
+                            <option value="ม.3/7">ม.3/7</option>
+                            <option value="ม.3/8">ม.3/8</option>
+                            <option value="ม.3/9">ม.3/9</option>
+                            <option value="ม.3/10">ม.3/10</option>
+                            <option value="ม.3/11">ม.3/11</option>
+                            <option value="ม.3/12">ม.3/12</option>
+                            <option value="ม.3/13">ม.3/13</option>
+                            <option value="ม.3/14">ม.3/14</option>
+                            <option value="ม.3/15">ม.3/15</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block font-semibold text-slate-300 mb-1">👥 จำนวนสมาชิก <span class="text-pink-400">*</span></label>
+                        <select id="reg-members-count" onchange="renderMemberInputs(parseInt(this.value))" class="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-cyan-400">
+                            <option value="1">1 คน</option>
+                            <option value="2">2 คน</option>
+                            <option value="3" selected>3 คน (แนะนำ 3 บทบาท)</option>
+                            <option value="4">4 คน</option>
+                            <option value="5">5 คน</option>
+                            <option value="6">6 คน</option>
+                            <option value="7">7 คน</option>
+                            <option value="8">8 คน</option>
+                            <option value="9">9 คน</option>
+                            <option value="10">10 คน</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Dynamic Member Roster -->
+                <div class="flex flex-col gap-2">
+                    <label class="block font-semibold text-cyan-300">
+                        <i class="fa-solid fa-users-gear mr-1"></i> รายชื่อสมาชิก (ระบุเลขที่ คำนำหน้า ชื่อ-นามสกุล) <span class="text-pink-400">*</span>
+                    </label>
+                    <div id="members-inputs-container" class="flex flex-col gap-2 max-h-[220px] overflow-y-auto pr-1">
+                        <!-- Populated by JS -->
+                    </div>
+                </div>
+
+                <button type="submit" class="w-full mt-2 py-3 rounded-xl bg-gradient-to-r from-cyan-600 via-pink-600 to-amber-500 hover:from-cyan-500 hover:via-pink-500 hover:to-amber-400 text-white font-bold text-xs shadow-xl shadow-cyan-500/20 flex items-center justify-center gap-2 transition">
+                    <i class="fa-solid fa-play"></i>
+                    <span>เริ่มภารกิจสืบคดีไซเบอร์</span>
+                </button>
+            </form>
+
+        </div>
+    </div>
+
+    <!-- 4. ENLARGED COMIC LIGHTBOX (For full details view) -->
+    <div id="modal-comic-lightbox" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/95 backdrop-blur-lg" onclick="closeComicLightbox()">
+        <div class="relative max-w-5xl w-full flex flex-col items-center gap-3" onclick="event.stopPropagation()">
+            <div class="w-full flex items-center justify-between text-slate-300 px-2">
+                <span id="lightbox-title" class="text-sm font-semibold text-cyan-300">หลักฐานภาพการ์ตูน 9 ช่อง</span>
+                <button onclick="closeComicLightbox()" class="px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-white text-xs border border-slate-700">
+                    <i class="fa-solid fa-xmark mr-1"></i> ปิด (ESC)
+                </button>
+            </div>
+            <img id="lightbox-comic-img" src="" alt="Enlarged Comic" class="w-auto h-auto max-h-[85vh] max-w-full rounded-xl border border-cyan-500/40 shadow-2xl object-contain bg-white">
+        </div>
+    </div>
+
+    <!-- 5. FINAL CERTIFICATE & GAME SUMMARY MODAL -->
+    <div id="modal-certificate" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/90 backdrop-blur-xl overflow-y-auto">
+        <div class="glass-panel max-w-2xl w-full p-6 sm:p-8 rounded-3xl border-2 border-yellow-400/60 shadow-2xl flex flex-col items-center text-center gap-5 relative my-auto">
+            
+            <div class="w-16 h-16 rounded-2xl bg-yellow-500/20 border border-yellow-400 text-yellow-300 flex items-center justify-center text-3xl shadow-lg shadow-yellow-500/40 animate-bounce">
+                <i class="fa-solid fa-trophy"></i>
+            </div>
+
+            <div>
+                <h2 class="text-2xl font-black text-transparent bg-clip-text bg-gradient-to-r from-yellow-300 via-amber-300 to-cyan-300 font-kanit">
+                    ภารกิจสืบคดีไซเบอร์สำเร็จสมบูรณ์!
+                </h2>
+                <p class="text-xs text-slate-300 mt-1 font-sarabun">ขอแสดงความยินดีกับทีมสายสืบเยาวชนในการไขคดีทั้ง 6 คดีได้อย่างยอดเยี่ยม</p>
+            </div>
+
+            <!-- Score Summary Card -->
+            <div class="w-full p-4 rounded-2xl bg-slate-950/80 border border-yellow-500/40 flex items-center justify-around font-mono">
+                <div>
+                    <div class="text-xs text-slate-400 font-sarabun">ทีมสายสืบ</div>
+                    <div class="text-sm font-bold text-cyan-300 font-kanit" id="cert-team-name">-</div>
+                </div>
+                <div>
+                    <div class="text-xs text-slate-400 font-sarabun">ห้องเรียน</div>
+                    <div class="text-sm font-bold text-purple-300 font-kanit" id="cert-room-name">-</div>
+                </div>
+                <div>
+                    <div class="text-xs text-slate-400 font-sarabun">คะแนนรวมทั้งหมด</div>
+                    <div class="text-xl font-black text-yellow-300 font-mono"><span id="cert-total-score">0</span> / 180</div>
+                </div>
+            </div>
+
+            <div class="flex items-center gap-3 w-full justify-center text-xs font-sarabun">
+                <button onclick="confirmResetGame()" class="px-5 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 transition flex items-center gap-2">
+                    <i class="fa-solid fa-rotate-right"></i> เล่นใหม่อีกรอบ
+                </button>
+                <a href="/" class="px-6 py-2.5 rounded-xl bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-500 hover:to-blue-500 text-white font-bold transition flex items-center gap-2 shadow-lg shadow-cyan-500/20">
+                    <i class="fa-solid fa-house"></i> กลับสู่หน้าหลัก
+                </a>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- ========================================================================= -->
+    <!-- 6. JAVASCRIPT GAME & SINGLE-ROLE REALTIME EVALUATION ENGINE               -->
+    <!-- ========================================================================= -->
+    <script>
+        ${all12CasesCode}
+
+        // --- Role Metadata Definition ---
+        const ROLE_CONFIG = {
+            legal: {
+                name: '1. บทบาทนักวิเคราะห์กฎหมาย (Legal Analyst)',
+                short: '1. กฎหมาย',
+                avatar: '👨‍⚖️',
+                color: 'amber',
+                desc: 'ระบุฐานความผิดตาม พ.ร.บ.คอมพิวเตอร์ / PDPA และวิเคราะห์อัตราโทษจำคุก/ปรับ',
+                placeholder: 'พิมพ์วิเคราะห์ เช่น: การกระทำนี้ผิด พ.ร.บ.คอมพิวเตอร์ มาตรา... อัตราโทษจำคุกไม่เกิน... ปรับไม่เกิน... บาท เพราะว่า...',
+                tip: '💡 เกณฑ์: ระบุฐานความผิด + อัตราโทษจำคุก/ปรับ + วิเคราะห์ความเสียหาย',
+                nextLabel: '➡️ ไปยังบทบาทที่ 2: บรรเทาภัย'
+            },
+            remedy: {
+                name: '2. บทบาทเจ้าหน้าที่บรรเทาภัย (Incident Responder)',
+                short: '2. บรรเทาภัย',
+                avatar: '🚑',
+                color: 'pink',
+                desc: 'ระบุวิธีรับมือเฉพาะหน้าทันทีเพื่อหยุดยั้งความเสียหาย และระบุผู้เกี่ยวข้องที่ต้องแจ้งเหตุ',
+                placeholder: 'พิมพ์แนวทางรับมือ เช่น: ต้องรีบทำตามขั้นตอน... แล้วประสานงานแจ้งเรื่องแก่คุณครู/ผู้ปกครอง/แอดมิน เพื่อ...',
+                tip: '💡 เกณฑ์: ขั้นตอนระงับเหตุทันที + แจ้งใครช่วยเหลือ',
+                nextLabel: '➡️ ไปยังบทบาทที่ 3: วิศวกรความปลอดภัย'
+            },
+            security: {
+                name: '3. บทบาทวิศวกรความปลอดภัย (Security Engineer)',
+                short: '3. ป้องกัน',
+                avatar: '🛡️',
+                color: 'cyan',
+                desc: 'ระบุเครื่องมือทางเทคนิค (เช่น 2FA, SSL, Firewall, SafeSearch) ที่อุดรูรั่วในคดีนี้ระยะยาว',
+                placeholder: 'พิมพ์การตั้งค่าเทคนิค เช่น: แนะนำให้ติดตั้งระบบ... เพื่อบล็อกไม่ให้เกิดเหตุซ้ำ และเยาวชนสามารถตั้งค่าได้โดย...',
+                tip: '💡 เกณฑ์: เครื่องมือเทคนิคตรงคดี + ปิดโอกาสแฮกเกอร์ในระยะยาว',
+                nextLabel: '➡️ สู่คดีถัดไป'
+            }
+        };
+
+        // --- Game State Definition ---
+        const SAVE_KEY = 'CYBER_SHIELD_ONEPAGE_SESSION';
+        let GAME_STATE = {
+            teamName: '',
+            room: 'ม.3/1',
+            membersCount: 3,
+            members: [],
+            sessionCases: [],
+            currentCaseIndex: 0,
+            currentRole: 'legal', // 'legal' | 'remedy' | 'security'
+            caseScores: [], // array of { caseId, answers: { legal, remedy, security }, scores: { legal: {score, feedback}, remedy: {...}, security: {...} }, totalScore }
+            totalScore: 0,
+            soundEnabled: true
+        };
+
+        // --- Web Audio Synthesizer ---
+        let audioCtx = null;
+        function getAudioContext() {
+            if (!audioCtx) {
+                const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+                if (AudioContextClass) audioCtx = new AudioContextClass();
+            }
+            if (audioCtx && audioCtx.state === 'suspended') {
+                audioCtx.resume();
+            }
+            return audioCtx;
+        }
+
+        function playSound(type) {
+            if (!GAME_STATE.soundEnabled) return;
+            try {
+                const ctx = getAudioContext();
+                if (!ctx) return;
+                const now = ctx.currentTime;
+
+                if (type === 'click') {
+                    const osc = ctx.createOscillator();
+                    const gain = ctx.createGain();
+                    osc.type = 'triangle';
+                    osc.frequency.setValueAtTime(440, now);
+                    osc.frequency.exponentialRampToValueAtTime(880, now + 0.05);
+                    gain.gain.setValueAtTime(0.15, now);
+                    gain.gain.linearRampToValueAtTime(0, now + 0.05);
+                    osc.connect(gain);
+                    gain.connect(ctx.destination);
+                    osc.start(now);
+                    osc.stop(now + 0.05);
+                } else if (type === 'success') {
+                    [523.25, 659.25, 783.99, 1046.50].forEach((freq, i) => {
+                        const osc = ctx.createOscillator();
+                        const gain = ctx.createGain();
+                        osc.type = 'sine';
+                        osc.frequency.setValueAtTime(freq, now + (i * 0.08));
+                        gain.gain.setValueAtTime(0.15, now + (i * 0.08));
+                        gain.gain.linearRampToValueAtTime(0, now + (i * 0.08) + 0.2);
+                        osc.connect(gain);
+                        gain.connect(ctx.destination);
+                        osc.start(now + (i * 0.08));
+                        osc.stop(now + (i * 0.08) + 0.2);
+                    });
+                }
+            } catch(e) {}
+        }
+
+        function toggleAudio() {
+            GAME_STATE.soundEnabled = !GAME_STATE.soundEnabled;
+            const icon = document.getElementById('sound-icon');
+            if (GAME_STATE.soundEnabled) {
+                icon.className = 'fa-solid fa-volume-high text-cyan-400';
+                playSound('click');
+            } else {
+                icon.className = 'fa-solid fa-volume-xmark text-slate-500';
+            }
+        }
+
+        function showToast(msg, iconClass = 'fa-solid fa-circle-info text-cyan-400') {
+            const container = document.getElementById('toast-container');
+            const toast = document.createElement('div');
+            toast.className = 'pointer-events-auto flex items-center gap-2.5 px-4 py-2.5 rounded-xl bg-slate-900/95 border border-cyan-500/40 text-slate-100 text-xs shadow-2xl animate-fade-in font-sarabun';
+            toast.innerHTML = \`<i class="\${iconClass}"></i> <span>\${msg}</span>\`;
+            container.appendChild(toast);
+            setTimeout(() => {
+                toast.classList.add('opacity-0', 'transition-opacity', 'duration-300');
+                setTimeout(() => toast.remove(), 300);
+            }, 3000);
+        }
+
+        // --- Anti-Cheat Shield ---
+        window.addEventListener('keydown', (e) => {
+            if (e.key === 'F12' || (e.ctrlKey && e.shiftKey && ['I', 'J', 'C'].includes(e.key.toUpperCase())) || (e.ctrlKey && ['U', 'S'].includes(e.key.toUpperCase()))) {
+                e.preventDefault();
+                showToast('โหมดรักษาความปลอดภัยข้อสอบ: ไม่อนุญาตให้เปิดเครื่องมือตรวจสอบโค้ด', 'fa-solid fa-shield-halved text-pink-400');
+                return false;
+            }
+        });
+        window.addEventListener('contextmenu', (e) => {
+            e.preventDefault();
+            showToast('โหมดรักษาความปลอดภัยข้อสอบ: ไม่อนุญาตให้คลิกขวา', 'fa-solid fa-shield-halved text-cyan-400');
+            return false;
+        });
+
+        // --- Boot & State Initialization ---
+        window.addEventListener('DOMContentLoaded', () => {
+            initGameSession();
+        });
+
+        function initGameSession() {
+            const saved = localStorage.getItem(SAVE_KEY);
+            if (saved) {
+                try {
+                    const parsed = JSON.parse(saved);
+                    if (parsed && parsed.teamName && Array.isArray(parsed.sessionCases) && parsed.sessionCases.length > 0) {
+                        GAME_STATE = parsed;
+                        document.getElementById('modal-register-team').classList.add('hidden');
+                        updateHeaderInfo();
+                        loadCurrentCase();
+                        return;
+                    }
+                } catch(e) {}
+            }
+
+            // If no valid session, open registration modal
+            document.getElementById('modal-register-team').classList.remove('hidden');
+            renderMemberInputs(3);
+        }
+
+        function saveSession() {
+            try {
+                localStorage.setItem(SAVE_KEY, JSON.stringify(GAME_STATE));
+            } catch(e) {}
+        }
+
+        function confirmResetGame() {
+            if (confirm('คุณต้องการรีเซ็ตเพื่อเริ่มเล่นรอบใหม่หรือไม่? (ข้อมูลคะแนนที่ทำไว้จะถูกล้าง)')) {
+                localStorage.removeItem(SAVE_KEY);
+                window.location.reload();
+            }
+        }
+
+        function renderMemberInputs(count) {
+            const container = document.getElementById('members-inputs-container');
+            let html = '';
+            for (let i = 1; i <= count; i++) {
+                let noOptions = '';
+                for (let n = 1; n <= 50; n++) {
+                    noOptions += \`<option value="\${n}" \${n === i ? 'selected' : ''}>เลขที่ \${n}</option>\`;
+                }
+
+                html += \`
+                <div class="p-2 rounded-xl bg-slate-900/90 border border-slate-800 flex items-center gap-2 member-row">
+                    <div class="w-24 shrink-0">
+                        <select class="member-no w-full bg-slate-950 border border-slate-700 rounded-lg px-2 py-1.5 text-xs text-cyan-300 font-mono">
+                            \${noOptions}
+                        </select>
+                    </div>
+                    <div class="w-20 shrink-0">
+                        <select class="member-prefix w-full bg-slate-950 border border-slate-700 rounded-lg px-2 py-1.5 text-xs text-white">
+                            <option value="ด.ช.">ด.ช.</option>
+                            <option value="ด.ญ.">ด.ญ.</option>
+                            <option value="นาย">นาย</option>
+                            <option value="น.ส.">น.ส.</option>
+                        </select>
+                    </div>
+                    <div class="flex-1">
+                        <input type="text" class="member-name w-full bg-slate-950 border border-slate-700 rounded-lg px-2.5 py-1.5 text-xs text-white placeholder-slate-500" placeholder="ชื่อ - นามสกุล" \${i === 1 ? 'required' : ''}>
+                    </div>
+                </div>\`;
+            }
+            container.innerHTML = html;
+        }
+
+        function handleRegisterTeam(e) {
+            e.preventDefault();
+            playSound('click');
+
+            const teamName = document.getElementById('reg-team-name').value.trim();
+            const room = document.getElementById('reg-room').value.trim();
+            const count = parseInt(document.getElementById('reg-members-count').value, 10) || 1;
+
+            if (!teamName) {
+                showToast('กรุณาระบุชื่อทีมสายสืบ', 'fa-solid fa-triangle-exclamation text-yellow-400');
+                return;
+            }
+
+            const rows = document.querySelectorAll('.member-row');
+            const members = [];
+            rows.forEach((row, idx) => {
+                const no = row.querySelector('.member-no')?.value || (idx + 1);
+                const prefix = row.querySelector('.member-prefix')?.value || 'ด.ช.';
+                const name = row.querySelector('.member-name')?.value.trim() || '';
+                if (name) {
+                    members.push({ no: parseInt(no, 10), prefix, name });
+                }
+            });
+
+            if (members.length === 0) {
+                members.push({ no: 1, prefix: 'ด.ช.', name: 'นักสืบตัวแทน' });
+            }
+
+            // Shuffle 6 cases from 12 cases
+            const shuffled = [...ALL_12_CASES].sort(() => 0.5 - Math.random());
+            const sessionCases = shuffled.slice(0, 6);
+
+            GAME_STATE.teamName = teamName;
+            GAME_STATE.room = room;
+            GAME_STATE.membersCount = count;
+            GAME_STATE.members = members;
+            GAME_STATE.sessionCases = sessionCases;
+            GAME_STATE.currentCaseIndex = 0;
+            GAME_STATE.currentRole = 'legal';
+            GAME_STATE.caseScores = sessionCases.map(c => ({
+                caseId: c.id,
+                answers: { legal: '', remedy: '', security: '' },
+                scores: { legal: null, remedy: null, security: null },
+                totalScore: 0
+            }));
+            GAME_STATE.totalScore = 0;
+
+            saveSession();
+            document.getElementById('modal-register-team').classList.add('hidden');
+            updateHeaderInfo();
+            loadCurrentCase();
+            showToast('ลงทะเบียนทีมสำเร็จ! เริ่มสืบคดีที่ 1', 'fa-solid fa-circle-check text-emerald-400');
+        }
+
+        function updateHeaderInfo() {
+            document.getElementById('label-team-name').textContent = GAME_STATE.teamName || 'นักสืบ ม.3';
+            document.getElementById('label-room-name').textContent = GAME_STATE.room || 'ม.3/1';
+            document.getElementById('label-current-case').textContent = GAME_STATE.currentCaseIndex + 1;
+            
+            // Recalculate cumulative total score
+            let total = 0;
+            GAME_STATE.caseScores.forEach(cs => {
+                if (cs && cs.scores) {
+                    if (cs.scores.legal?.score) total += cs.scores.legal.score;
+                    if (cs.scores.remedy?.score) total += cs.scores.remedy.score;
+                    if (cs.scores.security?.score) total += cs.scores.security.score;
+                }
+            });
+            GAME_STATE.totalScore = total;
+            document.getElementById('label-total-score').textContent = total;
+        }
+
+        // --- Load Current Case ---
+        function loadCurrentCase() {
+            const caseItem = GAME_STATE.sessionCases[GAME_STATE.currentCaseIndex];
+            if (!caseItem) return;
+
+            document.getElementById('dossier-case-num').textContent = String(GAME_STATE.currentCaseIndex + 1).padStart(2, '0');
+            document.getElementById('dossier-title').textContent = \`คดี #\${GAME_STATE.currentCaseIndex + 1}: \${caseItem.title}\`;
+            document.getElementById('dossier-brief').textContent = caseItem.brief;
+
+            const comicImg = document.getElementById('dossier-comic-img');
+            comicImg.src = caseItem.image;
+            comicImg.alt = caseItem.title;
+
+            selectStoryPhase(1);
+
+            // Default to legal role or first unscored role
+            const currentScores = GAME_STATE.caseScores[GAME_STATE.currentCaseIndex]?.scores || {};
+            if (!currentScores.legal) {
+                switchActiveRole('legal');
+            } else if (!currentScores.remedy) {
+                switchActiveRole('remedy');
+            } else if (!currentScores.security) {
+                switchActiveRole('security');
+            } else {
+                switchActiveRole('legal');
+            }
+
+            updateStepperUI();
+        }
+
+        function selectStoryPhase(phaseNum) {
+            const caseItem = GAME_STATE.sessionCases[GAME_STATE.currentCaseIndex];
+            if (!caseItem) return;
+
+            [1, 2, 3].forEach(p => {
+                const btn = document.getElementById(\`phase-tab-\${p}\`);
+                if (p === phaseNum) {
+                    btn.className = 'px-2 py-1.5 rounded-lg bg-slate-800/90 border border-cyan-500/40 text-cyan-300 font-semibold transition';
+                } else {
+                    btn.className = 'px-2 py-1.5 rounded-lg bg-slate-900/60 border border-slate-700 text-slate-400 hover:text-white transition';
+                }
+            });
+
+            document.getElementById('story-phase-desc').textContent = caseItem.phases[phaseNum - 1] || '...';
+        }
+
+        // --- Switch Active Role ---
+        function switchActiveRole(roleKey) {
+            GAME_STATE.currentRole = roleKey;
+            const cfg = ROLE_CONFIG[roleKey];
+            if (!cfg) return;
+
+            // Update Active Role Card Info
+            document.getElementById('role-avatar').textContent = cfg.avatar;
+            document.getElementById('role-title').textContent = cfg.name;
+            document.getElementById('role-desc').textContent = cfg.desc;
+            document.getElementById('role-tip').textContent = cfg.tip;
+
+            const textarea = document.getElementById('active-role-input');
+            textarea.placeholder = cfg.placeholder;
+
+            // Load saved answer if any
+            const caseScoreObj = GAME_STATE.caseScores[GAME_STATE.currentCaseIndex];
+            const existingAnswer = caseScoreObj?.answers?.[roleKey] || '';
+            textarea.value = existingAnswer;
+            handleActiveTextInput();
+
+            // Check if already scored
+            const scoredObj = caseScoreObj?.scores?.[roleKey];
+            const feedbackBox = document.getElementById('role-feedback-box');
+            const submitBtn = document.getElementById('btn-submit-active-role');
+
+            if (scoredObj && typeof scoredObj.score === 'number') {
+                // Show feedback box
+                feedbackBox.classList.remove('hidden');
+                document.getElementById('role-eval-score').textContent = scoredObj.score;
+                document.getElementById('role-eval-feedback').textContent = scoredObj.feedback || 'วิเคราะห์ได้ดีมาก';
+                
+                // Update Next Step Button
+                updateNextStepButton(roleKey);
+                submitBtn.classList.add('hidden');
+            } else {
+                feedbackBox.classList.add('hidden');
+                submitBtn.classList.remove('hidden');
+            }
+
+            updateStepperUI();
+        }
+
+        function handleActiveTextInput() {
+            const text = document.getElementById('active-role-input').value.trim();
+            const countLabel = document.getElementById('active-char-count');
+            const submitBtn = document.getElementById('btn-submit-active-role');
+            
+            countLabel.textContent = \`\${text.length} / 20 ตัวอักษร\`;
+            
+            if (text.length >= 20) {
+                countLabel.className = 'font-mono text-emerald-400 font-bold';
+                submitBtn.disabled = false;
+            } else {
+                countLabel.className = 'font-mono text-slate-400';
+                submitBtn.disabled = true;
+            }
+
+            // Save draft to state
+            const currentCaseObj = GAME_STATE.caseScores[GAME_STATE.currentCaseIndex];
+            if (currentCaseObj) {
+                currentCaseObj.answers[GAME_STATE.currentRole] = text;
+                saveSession();
+            }
+        }
+
+        function clearActiveRoleDraft() {
+            document.getElementById('active-role-input').value = '';
+            handleActiveTextInput();
+        }
+
+        function updateStepperUI() {
+            const currentCaseObj = GAME_STATE.caseScores[GAME_STATE.currentCaseIndex];
+            if (!currentCaseObj) return;
+
+            let caseTotal = 0;
+
+            ['legal', 'remedy', 'security'].forEach(r => {
+                const tab = document.getElementById(\`step-tab-\${r}\`);
+                const badgeScore = document.getElementById(\`badge-\${r}-score\`);
+                const statusText = document.getElementById(\`status-\${r}-text\`);
+                const scoredObj = currentCaseObj.scores?.[r];
+
+                if (scoredObj && typeof scoredObj.score === 'number') {
+                    caseTotal += scoredObj.score;
+                    badgeScore.textContent = \`\${scoredObj.score}/10\`;
+                    badgeScore.className = 'text-[10px] px-1.5 rounded bg-emerald-500/30 text-emerald-300 font-mono font-bold';
+                    statusText.textContent = 'ตรวจแล้ว ✅';
+                    statusText.className = 'text-[10px] text-emerald-400 font-medium';
+                } else {
+                    badgeScore.textContent = '0/10';
+                    badgeScore.className = 'text-[10px] px-1.5 rounded bg-slate-800 text-slate-400 font-mono';
+                    statusText.textContent = r === GAME_STATE.currentRole ? 'กำลังทำ ✍️' : 'รอตรวจ';
+                    statusText.className = r === GAME_STATE.currentRole ? 'text-[10px] text-cyan-300 font-bold' : 'text-[10px] text-slate-400 font-normal';
+                }
+
+                if (r === GAME_STATE.currentRole) {
+                    tab.className = 'p-2 rounded-xl bg-cyan-500/20 border-2 border-cyan-400 text-cyan-200 font-bold flex flex-col items-center gap-0.5 transition shadow-md shadow-cyan-500/20';
+                } else {
+                    tab.className = 'p-2 rounded-xl bg-slate-900/60 border border-slate-700 text-slate-400 flex flex-col items-center gap-0.5 hover:text-slate-200 transition';
+                }
+            });
+
+            document.getElementById('case-status-badge').textContent = \`คะแนนคดีนี้: \${caseTotal} / 30\`;
+            currentCaseObj.totalScore = caseTotal;
+            updateHeaderInfo();
+        }
+
+        // --- Single-Role Submission to AI ---
+        async function submitActiveRoleToAI() {
+            const roleKey = GAME_STATE.currentRole;
+            const answer = document.getElementById('active-role-input').value.trim();
+            const caseItem = GAME_STATE.sessionCases[GAME_STATE.currentCaseIndex];
+
+            if (answer.length < 20) {
+                showToast('กรุณาพิมพ์วิเคราะห์อย่างน้อย 20 ตัวอักษร', 'fa-solid fa-triangle-exclamation text-yellow-400');
+                return;
+            }
+
+            const submitBtn = document.getElementById('btn-submit-active-role');
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin mr-1"></i> AI กำลังตรวจวิเคราะห์...';
+
+            playSound('click');
+            showToast('กำลังส่งคำตอบให้ Google Gemini AI ตรวจสอบ...', 'fa-solid fa-wand-magic-sparkles text-cyan-400');
+
+            const membersInfoPayload = JSON.stringify({
+                room: GAME_STATE.room,
+                members: GAME_STATE.members || []
+            });
+
+            try {
+                let evalResult = null;
+
+                if (window.location.protocol.startsWith('http')) {
+                    const res = await fetch('/api/evaluate-role', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            playerId: GAME_STATE.teamName,
+                            teamName: \`\${GAME_STATE.teamName} (\${GAME_STATE.room})\`,
+                            membersInfo: membersInfoPayload,
+                            caseId: caseItem.id,
+                            caseTitle: caseItem.title,
+                            role: roleKey,
+                            answer: answer
+                        })
+                    });
+
+                    if (res.ok) {
+                        const data = await res.json();
+                        if (data && data.success) {
+                            evalResult = data;
+                        }
+                    }
+                }
+
+                if (!evalResult) {
+                    // Fallback heuristic scoring
+                    evalResult = localSingleRoleEvaluation(caseItem, roleKey, answer);
+                }
+
+                // Record Score to State
+                const currentCaseObj = GAME_STATE.caseScores[GAME_STATE.currentCaseIndex];
+                currentCaseObj.scores[roleKey] = {
+                    score: evalResult.score,
+                    feedback: evalResult.feedback
+                };
+
+                saveSession();
+                playSound('success');
+
+                // Display Feedback Box
+                const feedbackBox = document.getElementById('role-feedback-box');
+                feedbackBox.classList.remove('hidden');
+                document.getElementById('role-eval-score').textContent = evalResult.score;
+                document.getElementById('role-eval-feedback').textContent = evalResult.feedback;
+                
+                updateNextStepButton(roleKey);
+                updateStepperUI();
+                submitBtn.classList.add('hidden');
+
+                // Check if all 3 roles are now scored -> sync case score to server & Supabase
+                checkAndSyncCompletedCase();
+
+            } catch(e) {
+                console.error('Submission error:', e);
+                const localFallback = localSingleRoleEvaluation(caseItem, roleKey, answer);
+                const currentCaseObj = GAME_STATE.caseScores[GAME_STATE.currentCaseIndex];
+                currentCaseObj.scores[roleKey] = {
+                    score: localFallback.score,
+                    feedback: localFallback.feedback
+                };
+                saveSession();
+                playSound('success');
+
+                const feedbackBox = document.getElementById('role-feedback-box');
+                feedbackBox.classList.remove('hidden');
+                document.getElementById('role-eval-score').textContent = localFallback.score;
+                document.getElementById('role-eval-feedback').textContent = localFallback.feedback;
+                
+                updateNextStepButton(roleKey);
+                updateStepperUI();
+                submitBtn.classList.add('hidden');
+                checkAndSyncCompletedCase();
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = '<i class="fa-solid fa-bolt text-yellow-300"></i> <span>ส่งตรวจบทบาทนี้ (10 คะแนน)</span>';
+            }
+        }
+
+        function updateNextStepButton(roleKey) {
+            const btnLabel = document.getElementById('label-next-step-btn');
+            const currentCaseObj = GAME_STATE.caseScores[GAME_STATE.currentCaseIndex];
+            const isAllRolesDone = currentCaseObj.scores.legal && currentCaseObj.scores.remedy && currentCaseObj.scores.security;
+            const isLastCase = GAME_STATE.currentCaseIndex >= GAME_STATE.sessionCases.length - 1;
+
+            if (roleKey === 'legal') {
+                btnLabel.textContent = '➡️ ไปยังบทบาทที่ 2: บรรเทาภัย';
+            } else if (roleKey === 'remedy') {
+                btnLabel.textContent = '➡️ ไปยังบทบาทที่ 3: วิศวกรความปลอดภัย';
+            } else if (roleKey === 'security' || isAllRolesDone) {
+                if (isLastCase) {
+                    btnLabel.textContent = '🏆 สรุปผลคดีทั้งหมดและรับเกียรติบัตร';
+                } else {
+                    btnLabel.textContent = \`➡️ สู่คดีถัดไป (คดีที่ \${GAME_STATE.currentCaseIndex + 2} / 6)\`;
+                }
+            }
+        }
+
+        function proceedToNextRoleOrCase() {
+            playSound('click');
+            const currentRole = GAME_STATE.currentRole;
+            const currentCaseObj = GAME_STATE.caseScores[GAME_STATE.currentCaseIndex];
+            const isAllRolesDone = currentCaseObj.scores.legal && currentCaseObj.scores.remedy && currentCaseObj.scores.security;
+            const isLastCase = GAME_STATE.currentCaseIndex >= GAME_STATE.sessionCases.length - 1;
+
+            if (currentRole === 'legal') {
+                switchActiveRole('remedy');
+            } else if (currentRole === 'remedy') {
+                switchActiveRole('security');
+            } else if (currentRole === 'security' || isAllRolesDone) {
+                if (isLastCase) {
+                    openCertificateModal();
+                } else {
+                    GAME_STATE.currentCaseIndex++;
+                    GAME_STATE.currentRole = 'legal';
+                    saveSession();
+                    loadCurrentCase();
+                    showToast(\`เริ่มสืบคดีที่ \${GAME_STATE.currentCaseIndex + 1} / 6\`, 'fa-solid fa-folder-open text-cyan-400');
+                }
+            }
+        }
+
+        async function checkAndSyncCompletedCase() {
+            const currentCaseObj = GAME_STATE.caseScores[GAME_STATE.currentCaseIndex];
+            const caseItem = GAME_STATE.sessionCases[GAME_STATE.currentCaseIndex];
+            if (!currentCaseObj || !currentCaseObj.scores.legal || !currentCaseObj.scores.remedy || !currentCaseObj.scores.security) return;
+
+            const legal = currentCaseObj.scores.legal.score || 0;
+            const remedy = currentCaseObj.scores.remedy.score || 0;
+            const security = currentCaseObj.scores.security.score || 0;
+            const total = legal + remedy + security;
+
+            const membersInfoPayload = JSON.stringify({
+                room: GAME_STATE.room,
+                members: GAME_STATE.members || []
+            });
+
+            // Sync to server
+            if (window.location.protocol.startsWith('http')) {
+                try {
+                    await fetch('/api/save-case-score', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            playerId: GAME_STATE.teamName,
+                            teamName: \`\${GAME_STATE.teamName} (\${GAME_STATE.room})\`,
+                            membersInfo: membersInfoPayload,
+                            caseId: caseItem.id,
+                            caseTitle: caseItem.title,
+                            studentAnswers: currentCaseObj.answers,
+                            caseScores: {
+                                legalScore: legal,
+                                legalFeedback: currentCaseObj.scores.legal.feedback,
+                                remedyScore: remedy,
+                                remedyFeedback: currentCaseObj.scores.remedy.feedback,
+                                securityScore: security,
+                                securityFeedback: currentCaseObj.scores.security.feedback
+                            }
+                        })
+                    });
+                } catch(e) {}
+            }
+
+            // Save to local scores cache and broadcast
+            try {
+                const cacheRaw = localStorage.getItem('CYBER_DETECTIVE_SCORES_CACHE');
+                const cacheList = cacheRaw ? JSON.parse(cacheRaw) : [];
+                cacheList.unshift({
+                    team_name: \`\${GAME_STATE.teamName} (\${GAME_STATE.room})\`,
+                    case_id: caseItem.id,
+                    case_title: caseItem.title,
+                    legal_score: legal,
+                    remedy_score: remedy,
+                    security_score: security,
+                    total_score: total,
+                    members_info: membersInfoPayload,
+                    created_at: new Date().toISOString()
+                });
+                if (cacheList.length > 200) cacheList.pop();
+                localStorage.setItem('CYBER_DETECTIVE_SCORES_CACHE', JSON.stringify(cacheList));
+
+                const bc = new BroadcastChannel('cyber_detective_live');
+                bc.postMessage({ type: 'NEW_SCORE' });
+            } catch(e) {}
+        }
+
+        // --- Local Single Role Evaluation Fallback ---
+        function localSingleRoleEvaluation(caseItem, roleKey, answer) {
+            const clean = answer.trim().toLowerCase();
+            let score = 0;
+            let feedback = '';
+
+            if (roleKey === 'legal') {
+                const hasLaw = (caseItem.keywords_law || []).some(k => clean.includes(k.toLowerCase())) || clean.includes(caseItem.section.toLowerCase());
+                const hasPen = (caseItem.keywords_penalty || []).some(k => clean.includes(k.toLowerCase()));
+
+                if (hasLaw) score += 4;
+                else if (clean.includes("พ.ร.บ") || clean.includes("มาตรา") || clean.includes("pdpa")) score += 2;
+
+                if (hasPen) score += 3;
+                else if (clean.includes("คุก") || clean.includes("ปรับ") || clean.includes("ปี") || clean.includes("บาท")) score += 1.5;
+
+                if (hasLaw && answer.length >= 35) score += 3;
+                else if (hasLaw || hasPen) score += 1.5;
+
+                score = Math.min(10, Math.max(0, score));
+                feedback = hasLaw && hasPen
+                    ? 'วิเคราะห์ฐานความผิดทางกฎหมายและประเมินระดับอัตราโทษได้อย่างแม่นยำ สมเหตุสมผล ครบถ้วนตามพฤติการณ์ของคดี'
+                    : hasLaw
+                    ? 'วิเคราะห์ทิศทางฐานความผิดได้ถูกต้องแล้ว แต่ยังขาดการระบุระดับอัตราโทษ (จำคุก/ปรับ) ที่สะท้อนความร้ายแรงของพฤติการณ์ในคดีนี้ให้ครบถ้วน'
+                    : 'ฐานความผิดที่ระบุยังไม่สอดคล้องกับพฤติการณ์ในคดีนี้ ลองพิจารณาว่าเหตุการณ์นี้เป็นการกระทำต่อตัวระบบ ข้อมูล หรือเป็นการดักรับ/หลอกลวง เพื่อเลือกฐานความผิดให้ตรงจุดยิ่งขึ้น';
+            } else if (roleKey === 'remedy') {
+                const hasRemedy = (caseItem.keywords_remedy || []).some(k => clean.includes(k.toLowerCase()));
+                const hasStakeholder = ["ครู", "ผู้ปกครอง", "พ่อ", "แม่", "ตำรวจ", "แอดมิน", "แพลตฟอร์ม", "ธนาคาร", "ค่ายเกม"].some(s => clean.includes(s));
+
+                if (hasRemedy) score += 5;
+                else if (clean.includes("ลบ") || clean.includes("เปลี่ยน") || clean.includes("แจ้ง") || clean.includes("บล็อก")) score += 2.5;
+
+                if (hasStakeholder) score += 3;
+                else if (clean.includes("บอก") || clean.includes("ช่วย")) score += 1.5;
+
+                if (hasRemedy && answer.length >= 35) score += 2;
+                else if (hasRemedy || hasStakeholder) score += 1;
+
+                score = Math.min(10, Math.max(0, score));
+                feedback = hasRemedy
+                    ? 'ลำดับขั้นตอนการบรรเทาความเสียหายเฉพาะหน้าได้อย่างรวดเร็ว มีสติ และระบุผู้เกี่ยวข้องในการระงับเหตุได้อย่างตรงจุด'
+                    : 'มีแนวคิดการหยุดเหตุเฉพาะหน้าได้ดีแล้ว แต่ควรระบุบุคคลหรือผู้ดูแลระบบที่ต้องประสานงานแจ้งเหตุฉุกเฉินเพิ่มเติม เพื่อให้การช่วยเหลือเกิดขึ้นได้อย่างรวดเร็ว';
+            } else {
+                const hasTool = (caseItem.keywords_security || []).some(k => clean.includes(k.toLowerCase()));
+
+                if (hasTool) score += 5;
+                else if (clean.includes("รหัส") || clean.includes("ระบบ") || clean.includes("ป้องกัน") || clean.includes("ตั้งค่า")) score += 2.5;
+
+                if (hasTool && clean.length >= 35) score += 3;
+                else if (hasTool) score += 1.5;
+
+                if (hasTool && (clean.includes("ทำได้") || clean.includes("ง่าย") || clean.includes("ตั้ง") || clean.includes("เปิด"))) score += 2;
+                else if (hasTool) score += 1;
+
+                score = Math.min(10, Math.max(0, score));
+                feedback = hasTool
+                    ? 'ข้อเสนอแนะด้านวิศวกรรมความปลอดภัยยอดเยี่ยม! เครื่องมือและมาตรการที่เลือกใช้สามารถปิดช่องโหว่ความเสี่ยงของคดีนี้ได้อย่างสมบูรณ์แบบ'
+                    : 'ข้อเสนอแนะด้านความปลอดภัยสามารถเพิ่มความรัดกุมได้อีก โดยระบุฟังก์ชันหรือเครื่องมือทางเทคโนโลยีที่ใช้ป้องกันช่องโหว่ของเหตุการณ์นี้โดยเฉพาะ';
+            }
+
+            return { role: roleKey, score, feedback, mode: 'local_heuristic' };
+        }
+
+        // --- Lightbox Zoom ---
+        function openComicLightbox() {
+            const caseItem = GAME_STATE.sessionCases[GAME_STATE.currentCaseIndex];
+            if (!caseItem) return;
+            document.getElementById('lightbox-comic-img').src = caseItem.image;
+            document.getElementById('lightbox-title').textContent = \`คดี #\${GAME_STATE.currentCaseIndex + 1}: \${caseItem.title}\`;
+            document.getElementById('modal-comic-lightbox').classList.remove('hidden');
+        }
+
+        function closeComicLightbox() {
+            document.getElementById('modal-comic-lightbox').classList.add('hidden');
+        }
+
+        // --- Certificate Modal ---
+        function openCertificateModal() {
+            document.getElementById('cert-team-name').textContent = GAME_STATE.teamName || 'นักสืบ ม.3';
+            document.getElementById('cert-room-name').textContent = GAME_STATE.room || 'ม.3/1';
+            document.getElementById('cert-total-score').textContent = GAME_STATE.totalScore;
+            document.getElementById('modal-certificate').classList.remove('hidden');
+
+            try {
+                if (window.confetti) {
+                    window.confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } });
+                }
+            } catch(e) {}
+        }
+    </script>
+</body>
+</html>`;
+
+fs.writeFileSync(targetPath, onepageHtml, 'utf8');
+console.log('cyber_shield_detective.html updated to Single-Page Instant Role Evaluation layout!');

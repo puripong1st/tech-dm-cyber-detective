@@ -341,12 +341,12 @@
                                     <th class="p-3 border-r border-slate-800">🏷️ ชื่อกลุ่มสายสืบ</th>
                                     <th class="p-3 text-center w-20 border-r border-slate-800">🏫 ห้อง</th>
                                     <th class="p-3 border-r border-slate-800" id="th-members-header">👥 สมาชิกในกลุ่ม (เลขที่ / ชื่อ-นามสกุล)</th>
-                                    <th class="p-3 text-center w-28 border-r border-slate-800">🎮 คดีที่ส่งตรวจ</th>
-                                    <th class="p-3 text-center w-24 border-r border-slate-800">👨‍⚖️ กฎหมาย (10)</th>
-                                    <th class="p-3 text-center w-24 border-r border-slate-800">🚑 บรรเทา (10)</th>
-                                    <th class="p-3 text-center w-24 border-r border-slate-800">🛡️ ป้องกัน (10)</th>
-                                    <th class="p-3 text-right w-28 border-r border-slate-800">⭐ รวม (30)</th>
-                                    <th class="p-3 text-center w-28">⏱️ เวลาที่ส่ง</th>
+                                    <th class="p-3 text-center w-28 border-r border-slate-800">🎮 จำนวนคดี</th>
+                                    <th class="p-3 text-center w-24 border-r border-slate-800">👨‍⚖️ กฎหมาย</th>
+                                    <th class="p-3 text-center w-24 border-r border-slate-800">🚑 บรรเทา</th>
+                                    <th class="p-3 text-center w-24 border-r border-slate-800">🛡️ ป้องกัน</th>
+                                    <th class="p-3 text-right w-28 border-r border-slate-800">⭐ รวม (180)</th>
+                                    <th class="p-3 text-center w-28">⏱️ ส่งล่าสุด</th>
                                 </tr>
                             </thead>
                             <tbody id="scoreboard-tbody" class="divide-y divide-slate-800 text-slate-200">
@@ -943,91 +943,135 @@
             const sortFilter = document.getElementById('filter-sort').value;
             const searchVal = document.getElementById('filter-search').value.trim().toLowerCase();
 
-            let list = [...allScoresData];
+            // Group all submissions by team_name into one aggregated row per team
+            const teamMap = new Map();
+            allScoresData.forEach(item => {
+                const teamKey = item.team_name || item.player_id || 'นักสืบเยาวชน';
+                if (!teamMap.has(teamKey)) teamMap.set(teamKey, []);
+                teamMap.get(teamKey).push(item);
+            });
 
+            let teamRows = [];
+            teamMap.forEach((items, teamKey) => {
+                const firstParsed = parseScoreItem(items[0]);
+                let totalLegal = 0, totalRemedy = 0, totalSecurity = 0;
+                let latestTime = null;
+                const caseNames = [];
+
+                items.forEach(item => {
+                    const p = parseScoreItem(item);
+                    totalLegal += p.legal;
+                    totalRemedy += p.remedy;
+                    totalSecurity += p.security;
+                    if (item.case_title) caseNames.push(item.case_title);
+                    const t = item.created_at ? new Date(item.created_at) : null;
+                    if (t && (!latestTime || t > latestTime)) latestTime = t;
+                });
+
+                teamRows.push({
+                    teamName: teamKey,
+                    room: firstParsed.room,
+                    members: firstParsed.members,
+                    caseCount: items.length,
+                    caseNames,
+                    legal: totalLegal,
+                    remedy: totalRemedy,
+                    security: totalSecurity,
+                    total: totalLegal + totalRemedy + totalSecurity,
+                    latestTime
+                });
+            });
+
+            // Filters
             if (roomFilter !== 'ALL') {
-                list = list.filter(item => {
-                    const parsed = parseScoreItem(item);
-                    return parsed.room === roomFilter || (item.team_name || '').includes(roomFilter);
-                });
+                teamRows = teamRows.filter(r => r.room === roomFilter || r.teamName.includes(roomFilter));
             }
-
             if (searchVal) {
-                list = list.filter(item => {
-                    const parsed = parseScoreItem(item);
-                    const team = (item.team_name || '').toLowerCase();
-                    const caseTitle = (item.case_title || '').toLowerCase();
-                    const membersStr = parsed.members.map(m => `${m.no} ${m.prefix}${m.name}`).join(' ').toLowerCase();
-                    return team.includes(searchVal) || caseTitle.includes(searchVal) || membersStr.includes(searchVal);
+                teamRows = teamRows.filter(r => {
+                    const membersStr = r.members.map(m => `${m.no} ${m.prefix}${m.name}`).join(' ').toLowerCase();
+                    return r.teamName.toLowerCase().includes(searchVal) || membersStr.includes(searchVal) || r.caseNames.join(' ').toLowerCase().includes(searchVal);
                 });
             }
 
-            if (sortFilter === 'score-desc') {
-                list.sort((a, b) => (parseScoreItem(b).total) - (parseScoreItem(a).total));
-            } else if (sortFilter === 'score-asc') {
-                list.sort((a, b) => (parseScoreItem(a).total) - (parseScoreItem(b).total));
-            } else if (sortFilter === 'room-asc') {
-                list.sort((a, b) => parseScoreItem(a).room.localeCompare(parseScoreItem(b).room));
-            } else if (sortFilter === 'time-desc') {
-                list.sort((a, b) => new Date(b.created_at || 0) - new Date(a.created_at || 0));
-            }
+            // Sort
+            if (sortFilter === 'score-desc') teamRows.sort((a, b) => b.total - a.total);
+            else if (sortFilter === 'score-asc') teamRows.sort((a, b) => a.total - b.total);
+            else if (sortFilter === 'room-asc') teamRows.sort((a, b) => a.room.localeCompare(b.room));
+            else if (sortFilter === 'time-desc') teamRows.sort((a, b) => (b.latestTime || 0) - (a.latestTime || 0));
 
-            if (list.length === 0) {
+            if (teamRows.length === 0) {
                 tbody.innerHTML = '<tr><td colspan="10" class="p-8 text-center text-slate-500 font-sarabun">ไม่พบข้อมูลคะแนนตามเงื่อนไขที่เลือก</td></tr>';
                 return;
             }
 
-            tbody.innerHTML = list.map((item, idx) => {
-                const parsed = parseScoreItem(item);
-                
+            tbody.innerHTML = teamRows.map((row, idx) => {
                 let membersDisplay = '-';
-                if (parsed.members.length > 0) {
+                if (row.members.length > 0) {
                     if (displayMode === 'detailed_roster') {
-                        membersDisplay = parsed.members.map(m => `<span class="inline-block px-1.5 py-0.5 rounded bg-slate-800 border border-slate-700 text-[11px] mr-1 mb-1">เลขที่ ${m.no}: ${m.prefix}${m.name}</span>`).join('');
+                        membersDisplay = row.members.map(m => `<span class="inline-block px-1.5 py-0.5 rounded bg-slate-800 border border-slate-700 text-[11px] mr-1 mb-1">เลขที่ ${m.no}: ${m.prefix}${m.name}</span>`).join('');
                     } else {
-                        membersDisplay = `<span class="text-slate-400 font-mono">${parsed.members.length} คน (คลิกโหมดสมาชิกเพื่อดูเลขที่)</span>`;
+                        membersDisplay = `<span class="text-slate-400 font-mono">${row.members.length} คน (คลิกโหมดสมาชิกเพื่อดูเลขที่)</span>`;
                     }
                 }
 
-                const timeStr = item.created_at ? new Date(item.created_at).toLocaleTimeString('th-TH', { hour: '2-digit', minute: '2-digit' }) : '-';
+                const timeStr = row.latestTime ? row.latestTime.toLocaleTimeString('th-TH', { hour: '2-digit', minute: '2-digit' }) : '-';
+                const casesTooltip = row.caseNames.length > 0 ? row.caseNames.map((c, i) => `${i+1}. ${c}`).join('\n') : '-';
+                const pct = row.caseCount > 0 ? Math.round((row.total / (row.caseCount * 30)) * 100) : 0;
+                const scoreColor = pct >= 80 ? 'text-emerald-400' : pct >= 50 ? 'text-yellow-300' : 'text-pink-400';
 
                 return `
                 <tr class="hover:bg-slate-900/60 transition ${idx % 2 === 0 ? 'bg-slate-950/40' : 'bg-slate-900/40'}">
                     <td class="p-3 text-center font-bold text-slate-400 border-r border-slate-800">${idx + 1}</td>
-                    <td class="p-3 font-semibold text-slate-100 border-r border-slate-800 flex items-center gap-2">
-                        <i class="fa-solid fa-users text-purple-400"></i>
-                        <span>${item.team_name || 'นักสืบเยาวชน'}</span>
+                    <td class="p-3 font-semibold text-slate-100 border-r border-slate-800">
+                        <div class="flex items-center gap-2">
+                            <i class="fa-solid fa-users text-purple-400"></i>
+                            <span>${row.teamName}</span>
+                        </div>
                     </td>
-                    <td class="p-3 text-center font-bold text-cyan-300 border-r border-slate-800">${parsed.room}</td>
+                    <td class="p-3 text-center font-bold text-cyan-300 border-r border-slate-800">${row.room}</td>
                     <td class="p-3 border-r border-slate-800">${membersDisplay}</td>
-                    <td class="p-3 text-center text-slate-300 border-r border-slate-800 truncate max-w-[160px]">${item.case_title || `คดี #${item.case_id || '-'}`}</td>
-                    <td class="p-3 text-center font-mono font-bold text-amber-400 border-r border-slate-800">${parsed.legal}</td>
-                    <td class="p-3 text-center font-mono font-bold text-pink-400 border-r border-slate-800">${parsed.remedy}</td>
-                    <td class="p-3 text-center font-mono font-bold text-cyan-400 border-r border-slate-800">${parsed.security}</td>
-                    <td class="p-3 text-right font-mono font-bold text-yellow-300 text-sm border-r border-slate-800">${parsed.total} คะแนน</td>
+                    <td class="p-3 text-center border-r border-slate-800" title="${casesTooltip}">
+                        <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-purple-500/20 text-purple-300 font-mono text-[11px] font-bold border border-purple-500/30">
+                            <i class="fa-solid fa-folder-open"></i> ${row.caseCount} / 6 คดี
+                        </span>
+                    </td>
+                    <td class="p-3 text-center font-mono font-bold text-amber-400 border-r border-slate-800">${row.legal}</td>
+                    <td class="p-3 text-center font-mono font-bold text-pink-400 border-r border-slate-800">${row.remedy}</td>
+                    <td class="p-3 text-center font-mono font-bold text-cyan-400 border-r border-slate-800">${row.security}</td>
+                    <td class="p-3 text-right font-mono font-bold ${scoreColor} text-sm border-r border-slate-800">${row.total} คะแนน</td>
                     <td class="p-3 text-center font-mono text-slate-400">${timeStr}</td>
                 </tr>`;
             }).join('');
         }
 
         function updateStatsCards() {
-            const totalTeams = new Set(allScoresData.map(s => s.team_name || s.player_id)).size;
+            // Group by team for accurate stats
+            const teamMap = new Map();
+            allScoresData.forEach(s => {
+                const key = s.team_name || s.player_id;
+                if (!teamMap.has(key)) teamMap.set(key, []);
+                teamMap.get(key).push(s);
+            });
+
+            const totalTeams = teamMap.size;
             document.getElementById('stat-total-teams').textContent = totalTeams;
             document.getElementById('stat-total-submissions').textContent = allScoresData.length;
 
             const rooms = new Set();
-            let scoreSum = 0;
-            allScoresData.forEach(s => {
-                const parsed = parseScoreItem(s);
-                scoreSum += parsed.total;
-                if (parsed.room && parsed.room.startsWith('ม.3/')) {
-                    rooms.add(parsed.room);
-                }
+            let teamScoreSum = 0;
+            teamMap.forEach((items) => {
+                let teamTotal = 0;
+                items.forEach(s => {
+                    const parsed = parseScoreItem(s);
+                    teamTotal += parsed.total;
+                    if (parsed.room && parsed.room.startsWith('ม.3/')) rooms.add(parsed.room);
+                });
+                teamScoreSum += teamTotal;
             });
 
             document.getElementById('stat-active-rooms').textContent = rooms.size > 0 ? `${rooms.size} ห้อง` : '0 ห้อง';
-            const avg = allScoresData.length > 0 ? (scoreSum / allScoresData.length).toFixed(1) : '0.0';
-            document.getElementById('stat-avg-score').textContent = `${avg} / 30`;
+            const avg = totalTeams > 0 ? (teamScoreSum / totalTeams).toFixed(1) : '0.0';
+            document.getElementById('stat-avg-score').textContent = `${avg} / 180`;
         }
 
         // --- 12 Solutions Rendering ---
