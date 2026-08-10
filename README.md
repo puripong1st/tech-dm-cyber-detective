@@ -207,10 +207,10 @@ npm run dev
 | URL Path | ไฟล์หน้าเว็บ | คำอธิบาย |
 | :--- | :--- | :--- |
 | `/` | `index.html` | ศูนย์รวมสื่อและหน้าหลักเลือกเกม |
-| `/shield_detective`, `/game` | `cyber_shield_detective.html` | **เกมหลัก:** สืบคดีอัตนัย AI + Anti-Cheat (ม.3) |
-| `/detective_v4` | `cyber_detective_v4.html` | เวอร์ชันสืบคดีอัตนัย AI |
-| `/detective` | `cyber_detective.html` | เกมสืบคดีเวอร์ชันช้อยส์เลือกตอบ (v3) |
-| `/teacher` | `teacher_dashboard.html` | แดชบอร์ดสรุปคะแนนเรียลไทม์สำหรับครู |
+| `/shield_detective`, `/game` | `cyber_shield_detective.html` | **เกมหลัก:** Cyber Shield Detective สืบคดีอัตนัย AI + Anti-Cheat (ม.3) |
+| `/shield_teacher`, `/teacher` | `cyber_shield_teacher.html` | **แดชบอร์ดครู:** Realtime Scoreboard, กรองห้อง ม.3/1-15, แฟ้มเฉลย, Export PDF |
+| `/detective` | `cyber_detective.html` | เกมสืบคดีเวอร์ชันเดิม ช้อยส์เลือกตอบ (v3) |
+| `/teacher_dashboard` | `teacher_dashboard.html` | แดชบอร์ดสรุปคะแนนเวอร์ชันเดิม (v3) |
 | `/presentation` | `presentation.html` | สไลด์สรุปเนื้อหา พ.ร.บ.คอมพิวเตอร์ & PDPA |
 | `/cases` | `cases_reference.html` | คลังข้อมูลอ้างอิง 12 คดี |
 
