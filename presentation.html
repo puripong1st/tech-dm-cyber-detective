@@ -1,15 +1,18 @@
 <!DOCTYPE html>
 <html lang="th">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Quest: ภารกิจพิทักษ์ข้อมูลไซเบอร์ (Cyber Law & PDPA)</title>
-    
+
     <!-- Google Fonts: Sarabun (Ultra-clean Thai Font) & Press Start 2P (Retro Tag Font) -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Sarabun:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    
+    <link
+        href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Sarabun:wght@400;500;600;700;800&display=swap"
+        rel="stylesheet">
+
     <!-- Favicon & App Icon (256x256) -->
     <link rel="icon" type="image/png" sizes="256x256" href="favicon.png">
     <link rel="apple-touch-icon" sizes="256x256" href="favicon.png">
@@ -20,6 +23,7 @@
     <!-- Custom App CSS -->
     <link rel="stylesheet" href="css/presentation.css">
 </head>
+
 <body>
 
     <!-- Background Canvas -->
@@ -28,12 +32,13 @@
 
     <!-- Main Game Shell -->
     <div class="app-container">
-        
+
         <!-- Top Header Bar -->
         <header class="game-header">
             <div class="player-info">
                 <div class="avatar-box" style="border: none; background: none;">
-                    <img src="favicon.png" alt="Logo" style="width: 38px; height: 38px; border-radius: 8px; border: 1.5px solid var(--neon-cyan);">
+                    <img src="favicon.png" alt="Logo"
+                        style="width: 38px; height: 38px; border-radius: 8px; border: 1.5px solid var(--neon-cyan);">
                 </div>
                 <div>
                     <div class="player-name">PLAYER: M.3 HERO</div>
@@ -46,7 +51,8 @@
             <div class="stage-indicator" id="stage-text">STAGE 1 / 8</div>
 
             <div class="header-controls">
-                <a href="/" class="icon-btn" title="กลับหน้าหลัก" style="text-decoration: none; display: inline-flex; justify-content: center; align-items: center;">
+                <a href="/" class="icon-btn" title="กลับหน้าหลัก"
+                    style="text-decoration: none; display: inline-flex; justify-content: center; align-items: center;">
                     <i class="fa-solid fa-house"></i>
                 </a>
                 <button class="icon-btn" id="sfx-toggle" title="เปิด/ปิด เสียง">
@@ -84,11 +90,12 @@
             <section class="slide" id="slide-2">
                 <div class="slide-tag">MAIN STORY // ORIGIN</div>
                 <h2 class="slide-title">ทำไมโลกไซเบอร์ <span class="cyan">ต้องมีกฎหมาย?</span></h2>
-                
+
                 <div class="dialog-box">
                     <p class="dialog-text">
-                        เพราะเทคโนโลยีสารสนเทศเข้ามามีบทบาทสำคัญต่อชีวิตประจำวันของเราอย่างมาก 
-                        <strong>กฎหมายคอมพิวเตอร์</strong> จึงเป็นเครื่องมือสำคัญในการรักษาความสงบเรียบร้อย สร้างความปลอดภัยในโลกไซเบอร์ 
+                        เพราะเทคโนโลยีสารสนเทศเข้ามามีบทบาทสำคัญต่อชีวิตประจำวันของเราอย่างมาก
+                        <strong>กฎหมายคอมพิวเตอร์</strong> จึงเป็นเครื่องมือสำคัญในการรักษาความสงบเรียบร้อย
+                        สร้างความปลอดภัยในโลกไซเบอร์
                         คุ้มครองสิทธิของผู้ใช้งาน และสนับสนุนให้ทุกคนใช้เทคโนโลยีอย่างมีจริยธรรม
                     </p>
                 </div>
@@ -96,8 +103,9 @@
                 <div class="caution-box">
                     <div class="caution-icon"><i class="fa-solid fa-triangle-exclamation"></i></div>
                     <div class="caution-text">
-                        <strong>💡 Com Sci in Real Life:</strong> 
-                        การโพสต์ข้อความ รูปภาพ หรือความคิดเห็นในโซเชียลมีเดีย ต้องคิดถึงผลกระทบเสมอ! หากโพสต์เนื้อหาที่ไม่เหมาะสม อาจจะได้รับโทษทางกฎหมายตาม พ.ร.บ. คอมพิวเตอร์
+                        <strong>💡 Com Sci in Real Life:</strong>
+                        การโพสต์ข้อความ รูปภาพ หรือความคิดเห็นในโซเชียลมีเดีย ต้องคิดถึงผลกระทบเสมอ!
+                        หากโพสต์เนื้อหาที่ไม่เหมาะสม อาจจะได้รับโทษทางกฎหมายตาม พ.ร.บ. คอมพิวเตอร์
                     </div>
                 </div>
             </section>
@@ -105,17 +113,20 @@
             <!-- Slide 3: Level 1 - พ.ร.บ.คอมฯ หมวดการแฮก -->
             <section class="slide" id="slide-3">
                 <div class="slide-tag">LEVEL 1 // HACKING TRAPS</div>
-                <h2 class="slide-title">Level 1: ระวังโดนแบน! <span class="magenta">พ.ร.บ.คอมพิวเตอร์ (หมวดการเจาะระบบ & ข้อมูล)</span></h2>
-                
+                <h2 class="slide-title">Level 1: ระวังโดนแบน! <span class="magenta">พ.ร.บ.คอมพิวเตอร์ (หมวดการเจาะระบบ &
+                        ข้อมูล)</span></h2>
+
                 <div class="penalty-list">
                     <div class="penalty-row">
                         <div class="row-num">01</div>
                         <div class="row-content">
                             <div class="row-title-wrap">
-                                <span class="law-pill magenta"><i class="fa-solid fa-scale-balanced"></i> พ.ร.บ.คอมพิวเตอร์ มาตรา 5</span>
+                                <span class="law-pill magenta"><i class="fa-solid fa-scale-balanced"></i>
+                                    พ.ร.บ.คอมพิวเตอร์ มาตรา 5</span>
                                 <span class="row-title">แอบเข้าระบบคนอื่น</span>
                             </div>
-                            <div class="row-desc">เข้าถึงโดยมิชอบซึ่ง <strong>ระบบคอมพิวเตอร์</strong> ที่มีมาตรการป้องกันการเข้าถึง</div>
+                            <div class="row-desc">เข้าถึงโดยมิชอบซึ่ง <strong>ระบบคอมพิวเตอร์</strong>
+                                ที่มีมาตรการป้องกันการเข้าถึง</div>
                         </div>
                         <div class="row-badge">⚖️ โทษ: จำคุกไม่เกิน 6 เดือน / ปรับไม่เกิน 10,000 บาท</div>
                     </div>
@@ -124,10 +135,12 @@
                         <div class="row-num">02</div>
                         <div class="row-content">
                             <div class="row-title-wrap">
-                                <span class="law-pill magenta"><i class="fa-solid fa-scale-balanced"></i> พ.ร.บ.คอมพิวเตอร์ มาตรา 7</span>
+                                <span class="law-pill magenta"><i class="fa-solid fa-scale-balanced"></i>
+                                    พ.ร.บ.คอมพิวเตอร์ มาตรา 7</span>
                                 <span class="row-title">แอบดูข้อมูลคนอื่น</span>
                             </div>
-                            <div class="row-desc">เข้าถึงโดยมิชอบซึ่ง <strong>ข้อมูลคอมพิวเตอร์</strong> ของผู้อื่นที่มีมาตรการป้องกันไว้</div>
+                            <div class="row-desc">เข้าถึงโดยมิชอบซึ่ง <strong>ข้อมูลคอมพิวเตอร์</strong>
+                                ของผู้อื่นที่มีมาตรการป้องกันไว้</div>
                         </div>
                         <div class="row-badge">⚖️ โทษ: จำคุกไม่เกิน 2 ปี / ปรับไม่เกิน 40,000 บาท</div>
                     </div>
@@ -136,7 +149,8 @@
                         <div class="row-num">03</div>
                         <div class="row-content">
                             <div class="row-title-wrap">
-                                <span class="law-pill magenta"><i class="fa-solid fa-scale-balanced"></i> พ.ร.บ.คอมพิวเตอร์ มาตรา 8</span>
+                                <span class="law-pill magenta"><i class="fa-solid fa-scale-balanced"></i>
+                                    พ.ร.บ.คอมพิวเตอร์ มาตรา 8</span>
                                 <span class="row-title">ดักรับข้อมูลกลางทาง</span>
                             </div>
                             <div class="row-desc">ดักแชท ดักจับ หรือขโมยข้อมูลของผู้อื่นขณะส่งผ่านระบบเครือข่าย</div>
@@ -148,10 +162,12 @@
                         <div class="row-num">04</div>
                         <div class="row-content">
                             <div class="row-title-wrap">
-                                <span class="law-pill magenta"><i class="fa-solid fa-scale-balanced"></i> พ.ร.บ.คอมพิวเตอร์ มาตรา 9</span>
+                                <span class="law-pill magenta"><i class="fa-solid fa-scale-balanced"></i>
+                                    พ.ร.บ.คอมพิวเตอร์ มาตรา 9</span>
                                 <span class="row-title">ทำลาย / แก้ไขข้อมูลผู้อื่น</span>
                             </div>
-                            <div class="row-desc">ทำให้เสียหาย ทำลาย แก้ไข ดัดแปลง หรือเปลี่ยนแปลงข้อมูลผู้อื่นโดยมิชอบ</div>
+                            <div class="row-desc">ทำให้เสียหาย ทำลาย แก้ไข ดัดแปลง หรือเปลี่ยนแปลงข้อมูลผู้อื่นโดยมิชอบ
+                            </div>
                         </div>
                         <div class="row-badge">⚖️ โทษ: จำคุกไม่เกิน 5 ปี / ปรับไม่เกิน 100,000 บาท</div>
                     </div>
@@ -160,10 +176,12 @@
                         <div class="row-num">05</div>
                         <div class="row-content">
                             <div class="row-title-wrap">
-                                <span class="law-pill magenta"><i class="fa-solid fa-scale-balanced"></i> พ.ร.บ.คอมพิวเตอร์ มาตรา 10</span>
+                                <span class="law-pill magenta"><i class="fa-solid fa-scale-balanced"></i>
+                                    พ.ร.บ.คอมพิวเตอร์ มาตรา 10</span>
                                 <span class="row-title">ทำให้ระบบล่ม / ทำงานไม่ได้</span>
                             </div>
-                            <div class="row-desc">ก่อกวน ยิงระบบ (DDoS) ทำให้การทำงานของระบบคอมพิวเตอร์ผู้อื่นถูกระงับ ชะลอ หรือล่ม</div>
+                            <div class="row-desc">ก่อกวน ยิงระบบ (DDoS) ทำให้การทำงานของระบบคอมพิวเตอร์ผู้อื่นถูกระงับ
+                                ชะลอ หรือล่ม</div>
                         </div>
                         <div class="row-badge">⚖️ โทษ: จำคุกไม่เกิน 5 ปี / ปรับไม่เกิน 100,000 บาท</div>
                     </div>
@@ -173,17 +191,20 @@
             <!-- Slide 4: Level 2 - พ.ร.บ.คอมฯ หมวดการโพสต์/หลอกลวง -->
             <section class="slide" id="slide-4">
                 <div class="slide-tag">LEVEL 2 // FORBIDDEN SKILLS</div>
-                <h2 class="slide-title">Level 2: <span class="magenta">สกิลต้องห้ามในการโพสต์ (พ.ร.บ.คอมพิวเตอร์)</span></h2>
-                
+                <h2 class="slide-title">Level 2: <span class="magenta">สกิลต้องห้ามในการโพสต์ (พ.ร.บ.คอมพิวเตอร์)</span>
+                </h2>
+
                 <div class="penalty-list">
                     <div class="penalty-row">
                         <div class="row-num">01</div>
                         <div class="row-content">
                             <div class="row-title-wrap">
-                                <span class="law-pill yellow"><i class="fa-solid fa-scale-balanced"></i> พ.ร.บ.คอมพิวเตอร์ มาตรา 11</span>
+                                <span class="law-pill yellow"><i class="fa-solid fa-scale-balanced"></i>
+                                    พ.ร.บ.คอมพิวเตอร์ มาตรา 11</span>
                                 <span class="row-title">ส่งสแปมก่อกวน</span>
                             </div>
-                            <div class="row-desc">ส่งอีเมลหรือข้อความสแปมรบกวน โดยไม่เปิดโอกาสให้ผู้รับกดยกเลิก (Unsubscribe) ได้โดยง่าย</div>
+                            <div class="row-desc">ส่งอีเมลหรือข้อความสแปมรบกวน โดยไม่เปิดโอกาสให้ผู้รับกดยกเลิก
+                                (Unsubscribe) ได้โดยง่าย</div>
                         </div>
                         <div class="row-badge">⚖️ โทษ: ปรับไม่เกิน 200,000 บาท</div>
                     </div>
@@ -192,10 +213,12 @@
                         <div class="row-num">02</div>
                         <div class="row-content">
                             <div class="row-title-wrap">
-                                <span class="law-pill yellow"><i class="fa-solid fa-scale-balanced"></i> พ.ร.บ.คอมพิวเตอร์ มาตรา 14 (1)/(2)</span>
+                                <span class="law-pill yellow"><i class="fa-solid fa-scale-balanced"></i>
+                                    พ.ร.บ.คอมพิวเตอร์ มาตรา 14 (1)/(2)</span>
                                 <span class="row-title">หลอกลวง / ฟิชชิ่ง / แชร์ข่าวปลอม</span>
                             </div>
-                            <div class="row-desc">ทำฟิชชิ่ง (Phishing) นำเข้าข้อมูลเท็จเพื่อฉ้อโกง หรือแชร์ Fake News ที่ก่อความตื่นตระหนก</div>
+                            <div class="row-desc">ทำฟิชชิ่ง (Phishing) นำเข้าข้อมูลเท็จเพื่อฉ้อโกง หรือแชร์ Fake News
+                                ที่ก่อความตื่นตระหนก</div>
                         </div>
                         <div class="row-badge">⚖️ โทษ: จำคุกไม่เกิน 5 ปี / ปรับไม่เกิน 100,000 บาท</div>
                     </div>
@@ -204,10 +227,12 @@
                         <div class="row-num">03</div>
                         <div class="row-content">
                             <div class="row-title-wrap">
-                                <span class="law-pill yellow"><i class="fa-solid fa-scale-balanced"></i> พ.ร.บ.คอมพิวเตอร์ มาตรา 14 (4)</span>
+                                <span class="law-pill yellow"><i class="fa-solid fa-scale-balanced"></i>
+                                    พ.ร.บ.คอมพิวเตอร์ มาตรา 14 (4)</span>
                                 <span class="row-title">นำเข้าสื่อลามก</span>
                             </div>
-                            <div class="row-desc">นำเข้าและเผยแพร่ข้อมูลคอมพิวเตอร์ที่มีลักษณะลามกอนาจารที่ประชาชนทั่วไปเข้าถึงได้</div>
+                            <div class="row-desc">
+                                นำเข้าและเผยแพร่ข้อมูลคอมพิวเตอร์ที่มีลักษณะลามกอนาจารที่ประชาชนทั่วไปเข้าถึงได้</div>
                         </div>
                         <div class="row-badge">⚖️ โทษ: จำคุกไม่เกิน 5 ปี / ปรับไม่เกิน 100,000 บาท</div>
                     </div>
@@ -216,10 +241,12 @@
                         <div class="row-num">04</div>
                         <div class="row-content">
                             <div class="row-title-wrap">
-                                <span class="law-pill yellow"><i class="fa-solid fa-scale-balanced"></i> พ.ร.บ.คอมพิวเตอร์ มาตรา 16</span>
+                                <span class="law-pill yellow"><i class="fa-solid fa-scale-balanced"></i>
+                                    พ.ร.บ.คอมพิวเตอร์ มาตรา 16</span>
                                 <span class="row-title">ตัดต่อภาพคนอื่นให้เสียหาย</span>
                             </div>
-                            <div class="row-desc">นำภาพผู้อื่นมาตัดต่อ ดัดแปลง แล้วโพสต์ทำให้เสียชื่อเสียง ถูกดูหมิ่น เกลียดชัง หรืออับอาย</div>
+                            <div class="row-desc">นำภาพผู้อื่นมาตัดต่อ ดัดแปลง แล้วโพสต์ทำให้เสียชื่อเสียง ถูกดูหมิ่น
+                                เกลียดชัง หรืออับอาย</div>
                         </div>
                         <div class="row-badge">⚖️ โทษ: จำคุกไม่เกิน 3 ปี / ปรับไม่เกิน 200,000 บาท</div>
                     </div>
@@ -230,10 +257,11 @@
             <section class="slide" id="slide-5">
                 <div class="boss-badge"><i class="fa-solid fa-shield-halved"></i> PDPA 101 // กฎหมายคุ้มครองข้อมูล</div>
                 <h2 class="slide-title">PDPA คืออะไร? <span class="yellow">เข้าใจง่ายใน 3 ข้อ</span></h2>
-                
+
                 <div class="dialog-box yellow" style="margin-bottom: 12px; padding: 12px 18px;">
                     <p class="dialog-text" style="font-size: 1.12rem;">
-                        🔑 <strong>สรุปสั้นที่สุด:</strong> <span style="color: #ffffff;">"ห้ามแอบเก็บ • ห้ามแอบใช้ • ห้ามแอบขาย... ถ้าเรายังไม่ได้กดยินยอม!"</span>
+                        🔑 <strong>สรุปสั้นที่สุด:</strong> <span style="color: #ffffff;">"ห้ามแอบเก็บ • ห้ามแอบใช้ •
+                            ห้ามแอบขาย... ถ้าเรายังไม่ได้กดยินยอม!"</span>
                     </p>
                 </div>
 
@@ -243,7 +271,8 @@
                             <i class="fa-solid fa-shield-virus"></i> 1. ปกป้องใคร?
                         </div>
                         <div class="pdpa-pillar-desc">
-                            ปกป้อง<strong>ตัวเราทุกคน</strong> จากแก๊งคอลเซ็นเตอร์, มิจฉาชีพ และสแปม โดยถือว่าข้อมูลเราคือ <strong>ทรัพย์สินของเรา</strong>
+                            ปกป้อง<strong>ตัวเราทุกคน</strong> จากแก๊งคอลเซ็นเตอร์, มิจฉาชีพ และสแปม
+                            โดยถือว่าข้อมูลเราคือ <strong>ทรัพย์สินของเรา</strong>
                         </div>
                     </div>
 
@@ -252,7 +281,8 @@
                             <i class="fa-solid fa-key"></i> 2. กฎเหล็ก (Consent)
                         </div>
                         <div class="pdpa-pillar-desc">
-                            แอปหรือบริษัท <strong>ต้องขอความยินยอม</strong> จากเราก่อนเสมอ และต้องบอกชัดเจนว่าจะเอาข้อมูลไปทำอะไร
+                            แอปหรือบริษัท <strong>ต้องขอความยินยอม</strong> จากเราก่อนเสมอ
+                            และต้องบอกชัดเจนว่าจะเอาข้อมูลไปทำอะไร
                         </div>
                     </div>
 
@@ -261,7 +291,8 @@
                             <i class="fa-solid fa-gavel"></i> 3. บทลงโทษหนัก
                         </div>
                         <div class="pdpa-pillar-desc">
-                            ใครแอบขโมยข้อมูลไปขาย มีโทษปรับทางปกครอง<strong>สูงสุด 5 ล้านบาท</strong> และโทษจำคุกสูงสุด 1 ปี!
+                            ใครแอบขโมยข้อมูลไปขาย มีโทษปรับทางปกครอง<strong>สูงสุด 5 ล้านบาท</strong> และโทษจำคุกสูงสุด
+                            1 ปี!
                         </div>
                     </div>
                 </div>
@@ -269,7 +300,8 @@
                 <div class="speaker-hint-box">
                     <div class="speaker-hint-icon"><i class="fa-solid fa-bullhorn"></i></div>
                     <div class="speaker-hint-text">
-                        <strong>จุดพูดหน้าห้อง:</strong> "พูดง่ายๆ คือ PDPA คือเกราะป้องกันข้อมูลเรา ไม่ให้แอปหรือบริษัทเอาชื่อ เบอร์โทร หรือข้อมูลเราไปขายต่อให้โจรครับ!"
+                        <strong>ประกาศ:</strong> "พูดง่ายๆ คือ PDPA คือเกราะป้องกันข้อมูลเรา ไม่ให้แอปหรือบริษัทเอาชื่อ
+                        เบอร์โทร หรือข้อมูลเราไปขายต่อให้โจรครับ!"
                     </div>
                 </div>
             </section>
@@ -278,7 +310,7 @@
             <section class="slide" id="slide-6">
                 <div class="slide-tag">ITEM CLASSIFICATION // รู้จักข้อมูลของเรา</div>
                 <h2 class="slide-title">ข้อมูลส่วนตัว <span class="cyan">แบ่งเป็น 2 แบบ (ดูง่าย จำง่าย)</span></h2>
-                
+
                 <div class="pdpa-compare-grid">
                     <!-- ข้อมูลทั่วไป -->
                     <div class="pdpa-compare-card general">
@@ -312,8 +344,10 @@
                             ⚠️ <strong>นิยาม:</strong> ข้อมูลลับเฉพาะตัว รั่วแล้วเสียหายรุนแรง!
                         </div>
                         <div class="compare-tag-grid">
-                            <span class="compare-tag-item"><i class="fa-solid fa-heart-pulse"></i> ประวัติสุขภาพ/โรค</span>
-                            <span class="compare-tag-item"><i class="fa-solid fa-fingerprint"></i> ลายนิ้วมือ / Face ID</span>
+                            <span class="compare-tag-item"><i class="fa-solid fa-heart-pulse"></i>
+                                ประวัติสุขภาพ/โรค</span>
+                            <span class="compare-tag-item"><i class="fa-solid fa-fingerprint"></i> ลายนิ้วมือ / Face
+                                ID</span>
                             <span class="compare-tag-item"><i class="fa-solid fa-hands-praying"></i> ศาสนา</span>
                             <span class="compare-tag-item"><i class="fa-solid fa-dna"></i> เชื้อชาติ / เผ่าพันธุ์</span>
                             <span class="compare-tag-item"><i class="fa-solid fa-venus-mars"></i> รสนิยมทางเพศ</span>
@@ -327,7 +361,8 @@
                 <div class="speaker-hint-box">
                     <div class="speaker-hint-icon"><i class="fa-solid fa-bullhorn"></i></div>
                     <div class="speaker-hint-text">
-                        <strong>จุดพูดหน้าห้อง:</strong> "ชี้ให้เพื่อนดู 2 ฝั่งครับ: ฝั่งซ้ายคือข้อมูลติดต่อทั่วไป ส่วนฝั่งขวาคือข้อมูลลับลึก ถ้าหลุดแล้วอันตรายมาก กฎหมายจึงล็อกแน่นหนาครับ"
+                        <strong>ประกาศ:</strong> "ฝั่งซ้ายคือข้อมูลติดต่อทั่วไป ส่วนฝั่งขวาคือข้อมูลลับลึก
+                        ถ้าหลุดแล้วอันตรายมาก กฎหมายจึงล็อกแน่นหนาครับ"
                     </div>
                 </div>
             </section>
@@ -336,7 +371,7 @@
             <section class="slide" id="slide-7">
                 <div class="slide-tag">4 GOLDEN RIGHTS // สิทธิในมือเรา</div>
                 <h2 class="slide-title">4 สิทธิทองคำ <span class="green">จำง่าย 4 คำ "ขอ - ดู - ถอน - ลบ"</span></h2>
-                
+
                 <div class="pdpa-rights-grid">
                     <!-- Right 1: ขอ -->
                     <div class="pdpa-right-card">
@@ -390,7 +425,8 @@
                 <div class="speaker-hint-box">
                     <div class="speaker-hint-icon"><i class="fa-solid fa-bullhorn"></i></div>
                     <div class="speaker-hint-text">
-                        <strong>จุดพูดหน้าห้อง:</strong> "จำง่ายๆ 4 คำครับ: <strong>ขอ (ยินยอม) • ดู (ตรวจเช็ค) • ถอน (ยกเลิก) • ลบ (ทำลายทิ้ง)</strong> สิทธิทั้งหมดนี้อยู่ที่ตัวเราครับ!"
+                        <strong>ประกาศ:</strong> "จำง่ายๆ 4 คำครับ: <strong>ขอ (ยินยอม) • ดู (ตรวจเช็ค) • ถอน
+                            (ยกเลิก) • ลบ (ทำลายทิ้ง)</strong> สิทธิทั้งหมดนี้อยู่ที่ตัวเราครับ!"
                     </div>
                 </div>
             </section>
@@ -400,7 +436,7 @@
                 <div class="center-screen">
                     <div class="victory-banner">🏆 MISSION COMPLETE!</div>
                     <h2 class="slide-title" style="font-size: 2.5rem;">ภารกิจสำเร็จแล้ว!</h2>
-                    
+
                     <div class="dialog-box yellow" style="max-width: 720px; margin-top: 15px;">
                         <p class="dialog-text" style="text-align: center;">
                             🎉 <strong>ยินดีด้วย! คุณมีภูมิคุ้มกันไซเบอร์แล้ว</strong><br>
@@ -439,4 +475,5 @@
     <!-- Page Script -->
     <script src="js/presentation.js"></script>
 </body>
+
 </html>
