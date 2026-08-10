@@ -972,7 +972,7 @@
                 const total = s.total_score || 0;
                 scoreSum += total;
                 if (s.members_info && typeof s.members_info === 'string' && s.members_info.includes('ม.3/')) {
-                    const match = s.members_info.match(/ม.3/d+/);
+                    const match = s.members_info.match(/ม\.3\/\d+/);
                     if (match) rooms.add(match[0]);
                 }
             });
