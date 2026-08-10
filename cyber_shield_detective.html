@@ -351,9 +351,14 @@
 
                         <!-- Action Button for this Single Role -->
                         <div class="flex items-center justify-between gap-2 pt-1">
-                            <button type="button" onclick="clearActiveRoleDraft()" class="px-3 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-medium transition">
+                            <button type="button" id="btn-clear-active-role" onclick="clearActiveRoleDraft()" class="px-3 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-medium transition">
                                 <i class="fa-solid fa-rotate-left mr-1"></i> ล้างคำตอบ
                             </button>
+
+                            <div id="role-locked-badge" class="hidden px-3.5 py-1.5 rounded-xl bg-emerald-500/15 border border-emerald-500/40 text-emerald-300 text-xs font-semibold flex items-center gap-1.5 shadow-sm">
+                                <i class="fa-solid fa-lock text-emerald-400"></i>
+                                <span>ประเมินผลเรียบร้อยแล้ว (ไม่สามารถส่งคำตอบซ้ำได้)</span>
+                            </div>
 
                             <button type="button" id="btn-submit-active-role" onclick="submitActiveRoleToAI()" disabled class="px-5 py-2 rounded-xl bg-gradient-to-r from-cyan-600 via-pink-600 to-amber-500 hover:from-cyan-500 hover:via-pink-500 hover:to-amber-400 disabled:opacity-40 disabled:cursor-not-allowed text-white text-xs sm:text-sm font-bold shadow-lg shadow-cyan-500/20 flex items-center gap-2 transition transform active:scale-95">
                                 <i class="fa-solid fa-bolt text-yellow-300"></i>
@@ -1082,14 +1087,25 @@
             const caseScoreObj = GAME_STATE.caseScores[GAME_STATE.currentCaseIndex];
             const existingAnswer = caseScoreObj?.answers?.[roleKey] || '';
             textarea.value = existingAnswer;
-            handleActiveTextInput();
 
             // Check if already scored
             const scoredObj = caseScoreObj?.scores?.[roleKey];
             const feedbackBox = document.getElementById('role-feedback-box');
             const submitBtn = document.getElementById('btn-submit-active-role');
+            const clearBtn = document.getElementById('btn-clear-active-role');
+            const lockedBadge = document.getElementById('role-locked-badge');
 
             if (scoredObj && typeof scoredObj.score === 'number') {
+                // Permanently lock textarea
+                textarea.readOnly = true;
+                textarea.classList.add('bg-slate-900/60', 'text-slate-300', 'cursor-not-allowed', 'border-emerald-500/40');
+                textarea.classList.remove('bg-slate-950/90', 'text-slate-100', 'border-slate-700');
+
+                // Hide submit and clear buttons, show locked badge
+                if (clearBtn) clearBtn.classList.add('hidden');
+                if (submitBtn) submitBtn.classList.add('hidden');
+                if (lockedBadge) lockedBadge.classList.remove('hidden');
+
                 // Show feedback box
                 feedbackBox.classList.remove('hidden');
                 document.getElementById('role-eval-score').textContent = scoredObj.score;
@@ -1097,39 +1113,61 @@
                 
                 // Update Next Step Button
                 updateNextStepButton(roleKey);
-                submitBtn.classList.add('hidden');
             } else {
+                // Unlock textarea for answering
+                textarea.readOnly = false;
+                textarea.classList.remove('bg-slate-900/60', 'text-slate-300', 'cursor-not-allowed', 'border-emerald-500/40');
+                textarea.classList.add('bg-slate-950/90', 'text-slate-100', 'border-slate-700');
+
+                // Show submit and clear buttons, hide locked badge
+                if (clearBtn) clearBtn.classList.remove('hidden');
+                if (submitBtn) submitBtn.classList.remove('hidden');
+                if (lockedBadge) lockedBadge.classList.add('hidden');
+
                 feedbackBox.classList.add('hidden');
-                submitBtn.classList.remove('hidden');
             }
 
+            handleActiveTextInput();
             updateStepperUI();
         }
 
         function handleActiveTextInput() {
-            const text = document.getElementById('active-role-input').value.trim();
+            const caseScoreObj = GAME_STATE.caseScores[GAME_STATE.currentCaseIndex];
+            const isAlreadyScored = caseScoreObj?.scores?.[GAME_STATE.currentRole] && typeof caseScoreObj.scores[GAME_STATE.currentRole].score === 'number';
+
+            const textarea = document.getElementById('active-role-input');
+            const text = textarea.value.trim();
             const countLabel = document.getElementById('active-char-count');
             const submitBtn = document.getElementById('btn-submit-active-role');
             
             countLabel.textContent = `${text.length} / 20 ตัวอักษร`;
             
-            if (text.length >= 20) {
+            if (isAlreadyScored) {
                 countLabel.className = 'font-mono text-emerald-400 font-bold';
-                submitBtn.disabled = false;
-            } else {
-                countLabel.className = 'font-mono text-slate-400';
-                submitBtn.disabled = true;
+                if (submitBtn) submitBtn.disabled = true;
+                return;
             }
 
-            // Save draft to state
-            const currentCaseObj = GAME_STATE.caseScores[GAME_STATE.currentCaseIndex];
-            if (currentCaseObj) {
-                currentCaseObj.answers[GAME_STATE.currentRole] = text;
+            if (text.length >= 20) {
+                countLabel.className = 'font-mono text-emerald-400 font-bold';
+                if (submitBtn) submitBtn.disabled = false;
+            } else {
+                countLabel.className = 'font-mono text-slate-400';
+                if (submitBtn) submitBtn.disabled = true;
+            }
+
+            // Save draft to state only if not yet scored
+            if (caseScoreObj && !isAlreadyScored) {
+                caseScoreObj.answers[GAME_STATE.currentRole] = text;
                 saveSession();
             }
         }
 
         function clearActiveRoleDraft() {
+            const caseScoreObj = GAME_STATE.caseScores[GAME_STATE.currentCaseIndex];
+            const isAlreadyScored = caseScoreObj?.scores?.[GAME_STATE.currentRole] && typeof caseScoreObj.scores[GAME_STATE.currentRole].score === 'number';
+            if (isAlreadyScored) return; // Prevent clearing if already scored
+
             document.getElementById('active-role-input').value = '';
             handleActiveTextInput();
         }
@@ -1150,7 +1188,7 @@
                     caseTotal += scoredObj.score;
                     badgeScore.textContent = `${scoredObj.score}/10`;
                     badgeScore.className = 'text-[10px] px-1.5 rounded bg-emerald-500/30 text-emerald-300 font-mono font-bold';
-                    statusText.textContent = 'ตรวจแล้ว ✅';
+                    statusText.textContent = 'ตรวจแล้ว 🔒';
                     statusText.className = 'text-[10px] text-emerald-400 font-medium';
                 } else {
                     badgeScore.textContent = '0/10';
@@ -1174,6 +1212,14 @@
         // --- Single-Role Submission to AI ---
         async function submitActiveRoleToAI() {
             const roleKey = GAME_STATE.currentRole;
+            const currentCaseObj = GAME_STATE.caseScores[GAME_STATE.currentCaseIndex];
+
+            // Strict anti-resubmit guard
+            if (currentCaseObj?.scores?.[roleKey] && typeof currentCaseObj.scores[roleKey].score === 'number') {
+                showToast('บทบาทนี้ได้รับการประเมินผลเรียบร้อยแล้ว ไม่สามารถส่งคำตอบซ้ำได้', 'fa-solid fa-lock text-yellow-400');
+                return;
+            }
+
             const answer = document.getElementById('active-role-input').value.trim();
             const caseItem = GAME_STATE.sessionCases[GAME_STATE.currentCaseIndex];
 
@@ -1183,6 +1229,10 @@
             }
 
             const submitBtn = document.getElementById('btn-submit-active-role');
+            const clearBtn = document.getElementById('btn-clear-active-role');
+            const lockedBadge = document.getElementById('role-locked-badge');
+            const textarea = document.getElementById('active-role-input');
+
             submitBtn.disabled = true;
             submitBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin mr-1"></i> AI กำลังตรวจวิเคราะห์...';
 
@@ -1226,7 +1276,6 @@
                 }
 
                 // Record Score to State
-                const currentCaseObj = GAME_STATE.caseScores[GAME_STATE.currentCaseIndex];
                 currentCaseObj.scores[roleKey] = {
                     score: evalResult.score,
                     feedback: evalResult.feedback
@@ -1234,6 +1283,15 @@
 
                 saveSession();
                 playSound('success');
+
+                // Permanently lock input and UI for this role
+                textarea.readOnly = true;
+                textarea.classList.add('bg-slate-900/60', 'text-slate-300', 'cursor-not-allowed', 'border-emerald-500/40');
+                textarea.classList.remove('bg-slate-950/90', 'text-slate-100', 'border-slate-700');
+
+                if (clearBtn) clearBtn.classList.add('hidden');
+                if (submitBtn) submitBtn.classList.add('hidden');
+                if (lockedBadge) lockedBadge.classList.remove('hidden');
 
                 // Display Feedback Box
                 const feedbackBox = document.getElementById('role-feedback-box');
@@ -1243,7 +1301,6 @@
                 
                 updateNextStepButton(roleKey);
                 updateStepperUI();
-                submitBtn.classList.add('hidden');
 
                 // Check if all 3 roles are now scored -> sync case score to server & Supabase
                 checkAndSyncCompletedCase();
@@ -1251,13 +1308,20 @@
             } catch(e) {
                 console.error('Submission error:', e);
                 const localFallback = localSingleRoleEvaluation(caseItem, roleKey, answer);
-                const currentCaseObj = GAME_STATE.caseScores[GAME_STATE.currentCaseIndex];
                 currentCaseObj.scores[roleKey] = {
                     score: localFallback.score,
                     feedback: localFallback.feedback
                 };
                 saveSession();
                 playSound('success');
+
+                textarea.readOnly = true;
+                textarea.classList.add('bg-slate-900/60', 'text-slate-300', 'cursor-not-allowed', 'border-emerald-500/40');
+                textarea.classList.remove('bg-slate-950/90', 'text-slate-100', 'border-slate-700');
+
+                if (clearBtn) clearBtn.classList.add('hidden');
+                if (submitBtn) submitBtn.classList.add('hidden');
+                if (lockedBadge) lockedBadge.classList.remove('hidden');
 
                 const feedbackBox = document.getElementById('role-feedback-box');
                 feedbackBox.classList.remove('hidden');
@@ -1266,11 +1330,7 @@
                 
                 updateNextStepButton(roleKey);
                 updateStepperUI();
-                submitBtn.classList.add('hidden');
                 checkAndSyncCompletedCase();
-            } finally {
-                submitBtn.disabled = false;
-                submitBtn.innerHTML = '<i class="fa-solid fa-bolt text-yellow-300"></i> <span>ส่งตรวจบทบาทนี้ (10 คะแนน)</span>';
             }
         }
 
