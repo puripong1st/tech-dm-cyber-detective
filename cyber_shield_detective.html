@@ -297,12 +297,6 @@
 
                 <!-- Action Buttons Group (Student Only) -->
                 <div class="flex items-center gap-1.5 lg:gap-2">
-                    <!-- Leaderboard Button -->
-                    <button onclick="openLeaderboardModal()" class="px-3 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 border border-slate-700 hover:border-amber-400/50 text-slate-200 hover:text-amber-300 text-xs font-semibold transition flex items-center gap-1.5 shadow-sm" title="ตารางอันดับเรียลไทม์">
-                        <i class="fa-solid fa-trophy text-amber-400"></i>
-                        <span class="hidden sm:inline">ตารางอันดับ</span>
-                    </button>
-
                     <!-- Reset Game Session Button -->
                     <button onclick="confirmResetGame()" class="p-2 rounded-xl bg-slate-800 hover:bg-red-950/80 border border-slate-700 hover:border-red-500/50 text-slate-300 hover:text-red-300 text-xs transition" title="เริ่มรอบใหม่ (Reset)">
                         <i class="fa-solid fa-arrows-rotate text-red-400"></i>
@@ -896,66 +890,6 @@
             <div class="p-3 rounded-xl bg-slate-950 border border-slate-800 text-xs text-slate-400 flex items-center justify-between">
                 <span>💡 หากต้องการเก็บคีย์แบบถาวรในเครื่องเซิร์ฟเวอร์ ให้ใส่ในไฟล์ <code>.env</code>: <code>GEMINI_API_KEY=AIzaSy...</code></span>
                 <button onclick="closeApiKeyModal()" class="px-4 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-medium">ปิดหน้าต่าง</button>
-            </div>
-
-        </div>
-    </div>
-
-    <!-- 4.4 LIVE CLASS LEADERBOARD MODAL -->
-    <div id="modal-leaderboard" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-md">
-        <div class="glass-panel max-w-2xl w-full p-6 rounded-3xl border border-amber-400/40 shadow-2xl flex flex-col gap-4 relative max-h-[85vh] overflow-y-auto">
-            
-            <button onclick="closeLeaderboardModal()" class="absolute top-4 right-4 text-slate-400 hover:text-white p-2 rounded-lg bg-slate-800/80 border border-slate-700 transition">
-                <i class="fa-solid fa-xmark text-lg"></i>
-            </button>
-
-            <div class="flex items-center gap-3 border-b border-slate-800 pb-3">
-                <div class="w-10 h-10 rounded-xl bg-amber-500/20 border border-amber-400 text-amber-300 flex items-center justify-center text-lg">
-                    <i class="fa-solid fa-trophy"></i>
-                </div>
-                <div>
-                    <h3 class="text-lg font-bold text-slate-100">กระดานผู้นำสายสืบไซเบอร์ (Live Leaderboard)</h3>
-                    <p class="text-xs text-slate-400">อัปเดตคะแนนสดของแต่ละกลุ่มผ่านระบบ Supabase Realtime</p>
-                </div>
-            </div>
-
-            <!-- Display Mode Selector (Team only vs Team + Members) -->
-            <div class="flex items-center justify-between bg-slate-900/90 p-2.5 rounded-xl border border-slate-800 text-xs">
-                <span class="text-slate-300 font-medium flex items-center gap-1.5">
-                    <i class="fa-solid fa-sliders text-amber-400"></i> รูปแบบการแสดงผลตาราง:
-                </span>
-                <div class="flex items-center gap-1 bg-slate-950 p-1 rounded-lg border border-slate-700 font-sarabun">
-                    <button id="btn-lb-mode-team" onclick="setLeaderboardDisplayMode('team_only')" class="px-2.5 py-1 rounded-md bg-amber-500 text-black font-bold transition text-xs shadow-sm">
-                        ชื่อกลุ่มอย่างเดียว
-                    </button>
-                    <button id="btn-lb-mode-members" onclick="setLeaderboardDisplayMode('team_and_members')" class="px-2.5 py-1 rounded-md text-slate-400 hover:text-white transition text-xs">
-                        โชว์เลขที่สมาชิกด้วย
-                    </button>
-                </div>
-            </div>
-
-            <!-- Leaderboard Table -->
-            <div class="overflow-x-auto rounded-xl border border-slate-800 bg-slate-950/60">
-                <table class="w-full text-left text-xs text-slate-300">
-                    <thead class="bg-slate-900 text-slate-400 font-semibold border-b border-slate-800">
-                        <tr>
-                            <th class="p-3 text-center w-12">อันดับ</th>
-                            <th class="p-3">ชื่อทีม / นักสืบ</th>
-                            <th class="p-3 text-center">คดีที่ทำ</th>
-                            <th class="p-3 text-right">คะแนนรวม</th>
-                        </tr>
-                    </thead>
-                    <tbody id="leaderboard-tbody" class="divide-y divide-slate-800/60 font-sarabun">
-                        <tr>
-                            <td colspan="4" class="p-6 text-center text-slate-500">กำลังโหลดข้อมูลอันดับ...</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-
-            <div class="flex items-center justify-between text-xs text-slate-400">
-                <span class="flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span> Realtime Active (5s Auto-sync)</span>
-                <button onclick="fetchLeaderboard()" class="text-cyan-400 hover:underline"><i class="fa-solid fa-rotate-right mr-1"></i>รีเฟรช</button>
             </div>
 
         </div>
