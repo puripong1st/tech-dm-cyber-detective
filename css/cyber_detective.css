@@ -589,24 +589,26 @@ body {
     cursor: pointer;
     transition: all 0.2s;
     display: flex;
-    align-items: center;
-    gap: 10px;
+    align-items: flex-start;
+    gap: 12px;
 }
 
 .choice-option-card:hover {
     border-color: var(--neon-cyan);
     background: rgba(56, 189, 248, 0.15);
+    transform: translateY(-1px);
 }
 
 .choice-option-card.selected {
     border-color: var(--neon-green);
-    background: rgba(16, 185, 129, 0.25);
+    background: rgba(16, 185, 129, 0.22);
     color: #fff;
-    box-shadow: 0 0 12px rgba(16, 185, 129, 0.3);
+    box-shadow: 0 0 16px rgba(16, 185, 129, 0.35);
 }
 
 .choice-badge-icon {
-    width: 32px; height: 32px;
+    width: 34px;
+    height: 34px;
     border-radius: 8px;
     background: rgba(30, 41, 59, 0.8);
     display: flex;
@@ -614,6 +616,43 @@ body {
     align-items: center;
     font-size: 1rem;
     color: var(--neon-cyan);
+    flex-shrink: 0;
+    margin-top: 2px;
+}
+
+.choice-text-wrap {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+}
+
+.choice-law-title {
+    font-weight: 700;
+    color: #ffffff;
+    font-size: 0.96rem;
+    line-height: 1.35;
+}
+
+.choice-law-summary {
+    font-size: 0.83rem;
+    font-weight: 500;
+    color: #bae6fd;
+    line-height: 1.45;
+    background: rgba(15, 23, 42, 0.65);
+    border: 1px solid rgba(56, 189, 248, 0.25);
+    border-radius: 6px;
+    padding: 4px 8px;
+    margin-top: 3px;
+    display: flex;
+    align-items: flex-start;
+    gap: 6px;
+}
+
+.choice-law-summary i {
+    color: var(--neon-cyan);
+    font-size: 0.8rem;
+    margin-top: 3px;
     flex-shrink: 0;
 }
 

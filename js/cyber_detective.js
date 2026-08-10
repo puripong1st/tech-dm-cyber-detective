@@ -515,9 +515,9 @@ function restoreCaseState() {
         return `
             <div class="choice-option-card ${isSel ? 'selected' : ''}" id="law-card-${l.id}" onclick="selectLaw('${l.id}')">
                 <div class="choice-badge-icon"><i class="fa-solid fa-scale-balanced"></i></div>
-                <div>
-                    <div style="font-weight: 700; color: #fff;">${l.title}</div>
-                    <div style="font-size: 0.82rem; color: #cbd5e1; margin-top: 2px;">${l.desc}</div>
+                <div class="choice-text-wrap">
+                    <div class="choice-law-title">${l.title}</div>
+                    <div class="choice-law-summary"><i class="fa-solid fa-file-shield"></i> <span><strong>สาระสำคัญ:</strong> ${l.desc}</span></div>
                 </div>
             </div>
         `;
@@ -529,7 +529,9 @@ function restoreCaseState() {
         return `
             <div class="choice-option-card ${isSel ? 'selected' : ''}" id="pen-card-${p.id}" onclick="selectPenalty('${p.id}')">
                 <div class="choice-badge-icon" style="color: var(--neon-magenta);"><i class="fa-solid fa-gavel"></i></div>
-                <div style="font-weight: 700; color: #fff;">${p.title}</div>
+                <div class="choice-text-wrap">
+                    <div class="choice-law-title">${p.title}</div>
+                </div>
             </div>
         `;
     }).join('');
@@ -654,25 +656,29 @@ function updateSideMascot(phase, customMsg = null) {
     }
 
     if (phase === 1) {
-        elImg.src = 'assets/mascot_scan.png';
+        elImg.src = '/assets/mascot_scan.png';
+        elImg.onerror = function() { if (this.src.indexOf('/assets/') !== -1) this.src = 'assets/mascot_scan.png'; };
         elImg.style.filter = 'drop-shadow(0 0 14px rgba(56, 189, 248, 0.55))';
         elBubble.style.borderColor = 'var(--neon-cyan)';
         elBubble.style.setProperty('--bubble-tail', 'var(--neon-cyan)');
         elBubble.textContent = customMsg || "🔎 ภารกิจขั้นตอนที่ 1: ตรวจสแกนหลักฐานดิจิทัลและบันทึกเบาะแสลงสมุด!";
     } else if (phase === 2) {
-        elImg.src = 'assets/mascot_law.png';
+        elImg.src = '/assets/mascot_law.png';
+        elImg.onerror = function() { if (this.src.indexOf('/assets/') !== -1) this.src = 'assets/mascot_law.png'; };
         elImg.style.filter = 'drop-shadow(0 0 14px rgba(245, 158, 11, 0.55))';
         elBubble.style.borderColor = 'var(--neon-yellow)';
         elBubble.style.setProperty('--bubble-tail', 'var(--neon-yellow)');
         elBubble.textContent = customMsg || "📖 ภารกิจขั้นตอนที่ 2: อ่านคำร้องทุกข์ในสมุดโน้ต แล้วเลือกมาตราความผิดด้วยตนเอง!";
     } else if (phase === 3) {
-        elImg.src = 'assets/mascot_judge.png';
+        elImg.src = '/assets/mascot_judge.png';
+        elImg.onerror = function() { if (this.src.indexOf('/assets/') !== -1) this.src = 'assets/mascot_judge.png'; };
         elImg.style.filter = 'drop-shadow(0 0 14px rgba(16, 185, 129, 0.55))';
         elBubble.style.borderColor = 'var(--neon-green)';
         elBubble.style.setProperty('--bubble-tail', 'var(--neon-green)');
         elBubble.textContent = customMsg || "⚖️ ภารกิจขั้นตอนที่ 3: ระบุอัตราบทลงโทษตามกฎหมายให้ถูกต้อง เพื่ออนุมัติออกหมายจับ!";
     } else if (phase === 'win') {
-        elImg.src = 'assets/mascot_win.png';
+        elImg.src = '/assets/mascot_win.png';
+        elImg.onerror = function() { if (this.src.indexOf('/assets/') !== -1) this.src = 'assets/mascot_win.png'; };
         elImg.style.filter = 'drop-shadow(0 0 16px rgba(245, 158, 11, 0.75))';
         elBubble.style.borderColor = 'var(--neon-yellow)';
         elBubble.style.setProperty('--bubble-tail', 'var(--neon-yellow)');
@@ -810,7 +816,7 @@ document.getElementById('btn-submit-verdict').addEventListener('click', () => {
         updateStudentHeader();
         syncToSupabase("กำลังทำคดี");
 
-        document.getElementById('result-icon').innerHTML = `<img src="assets/mascot_win.png" style="width: 110px; height: auto; filter: drop-shadow(0 0 14px rgba(16, 185, 129, 0.65)); animation: mascotCuteBob 3.6s ease-in-out infinite alternate;" alt="Victory Mascot">`;
+        document.getElementById('result-icon').innerHTML = `<img src="/assets/mascot_win.png" onerror="if(this.src.indexOf('/assets/')!==-1)this.src='assets/mascot_win.png';" style="width: 110px; height: auto; filter: drop-shadow(0 0 14px rgba(16, 185, 129, 0.65)); animation: mascotCuteBob 3.6s ease-in-out infinite alternate;" alt="Victory Mascot">`;
         document.getElementById('card-result-border').style.borderColor = "var(--neon-green)";
         document.getElementById('result-title').textContent = "ตัดสินคดีถูกต้องแม่นยำ!";
         document.getElementById('result-title').style.color = "var(--neon-green)";
@@ -851,7 +857,7 @@ document.getElementById('btn-submit-verdict').addEventListener('click', () => {
         updateStudentHeader();
         syncToSupabase("กำลังทำคดี");
 
-        document.getElementById('result-icon').innerHTML = `<img src="assets/mascot_fail.png" style="width: 110px; height: auto; filter: drop-shadow(0 0 14px rgba(244, 63, 94, 0.65)); animation: mascotCuteBob 3.6s ease-in-out infinite alternate;" alt="Sad Crying Mascot">`;
+        document.getElementById('result-icon').innerHTML = `<img src="/assets/mascot_fail.png" onerror="if(this.src.indexOf('/assets/')!==-1)this.src='assets/mascot_fail.png';" style="width: 110px; height: auto; filter: drop-shadow(0 0 14px rgba(244, 63, 94, 0.65)); animation: mascotCuteBob 3.6s ease-in-out infinite alternate;" alt="Sad Crying Mascot">`;
         document.getElementById('card-result-border').style.borderColor = "var(--neon-magenta)";
         document.getElementById('result-title').textContent = "คำพิพากษาไม่ถูกต้อง! (โดนหักคะแนน)";
         document.getElementById('result-title').style.color = "var(--neon-magenta)";

@@ -105,7 +105,7 @@
                 <!-- Standing Cute PNG Chibi Detective Mascot Container -->
                 <div class="mascot-side-container" id="side-mascot-container">
                     <div id="mascot-pop-wrapper" class="mascot-pop-wrapper">
-                        <img src="assets/mascot_scan.png" id="side-mascot-img" class="side-mascot-img" alt="Cute Detective Mascot">
+                        <img src="/assets/mascot_scan.png" onerror="if(this.src.indexOf('/assets/')!==-1)this.src='assets/mascot_scan.png';" id="side-mascot-img" class="side-mascot-img" alt="Cute Detective Mascot">
                     </div>
                     <div class="mascot-speech-bubble" id="side-mascot-bubble">
                         🔎 ภารกิจขั้นตอนที่ 1: ตรวจสแกนหลักฐานดิจิทัลและบันทึกเบาะแสลงสมุด!
@@ -275,7 +275,7 @@
         <div class="modal-overlay" id="modal-case-result">
             <div class="modal-card" id="card-result-border">
                 <div style="display: flex; justify-content: center; align-items: center; min-height: 100px; margin-bottom: 8px;" id="result-icon">
-                    <img src="assets/mascot_win.png" style="width: 110px; height: auto; filter: drop-shadow(0 0 14px rgba(16, 185, 129, 0.65)); animation: mascotCuteBob 3.6s ease-in-out infinite alternate;" alt="Victory Mascot">
+                    <img src="/assets/mascot_win.png" onerror="if(this.src.indexOf('/assets/')!==-1)this.src='assets/mascot_win.png';" style="width: 110px; height: auto; filter: drop-shadow(0 0 14px rgba(16, 185, 129, 0.65)); animation: mascotCuteBob 3.6s ease-in-out infinite alternate;" alt="Victory Mascot">
                 </div>
                 <h3 style="font-size: 1.25rem; font-weight: 800;" id="result-title">ตัดสินคดีถูกต้อง!</h3>
                 <div style="font-size: 0.9rem; color: #cbd5e1; margin: 8px 0; line-height: 1.5;" id="result-desc">

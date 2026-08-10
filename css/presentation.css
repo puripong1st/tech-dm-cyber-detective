@@ -312,22 +312,63 @@ h1, h2, h3, h4, h5, h6, p, span, div {
 .row-content {
     display: flex;
     flex-direction: column;
+    gap: 2px;
+}
+
+.row-title-wrap {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 2px;
 }
 
 .row-title {
     font-size: 1.2rem;
     font-weight: 700;
     color: #ffffff;
-    margin-bottom: 2px;
+}
+
+.law-pill {
+    font-size: 0.8rem;
+    font-weight: 700;
+    padding: 3px 9px;
+    border-radius: 6px;
+    background: rgba(56, 189, 248, 0.15);
+    border: 1px solid var(--neon-cyan);
+    color: var(--neon-cyan);
+    letter-spacing: 0.3px;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.law-pill.magenta {
+    background: rgba(244, 63, 94, 0.15);
+    border-color: var(--neon-magenta);
+    color: #fda4af;
+}
+
+.law-pill.green {
+    background: rgba(74, 222, 128, 0.15);
+    border-color: var(--neon-green);
+    color: var(--neon-green);
+}
+
+.law-pill.yellow {
+    background: rgba(251, 191, 36, 0.15);
+    border-color: var(--neon-yellow);
+    color: var(--neon-yellow);
 }
 
 .row-desc {
-    font-size: 1rem;
+    font-size: 0.98rem;
     color: var(--text-sub);
+    line-height: 1.45;
 }
 
 .row-badge {
-    font-size: 0.98rem;
+    font-size: 0.95rem;
     font-weight: 700;
     color: var(--neon-yellow);
     background: #0f172a;
@@ -339,7 +380,244 @@ h1, h2, h3, h4, h5, h6, p, span, div {
     white-space: nowrap;
 }
 
-/* 2x2 Grid Layout for Slide 5 & Slide 7 */
+/* Speaker Cue Presentation Hint Box */
+.speaker-hint-box {
+    background: rgba(251, 191, 36, 0.12);
+    border: 1.5px solid var(--neon-yellow);
+    border-left: 5px solid var(--neon-yellow);
+    border-radius: 8px;
+    padding: 10px 16px;
+    margin-top: 14px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.speaker-hint-icon {
+    font-size: 1.25rem;
+    color: var(--neon-yellow);
+    flex-shrink: 0;
+}
+
+.speaker-hint-text {
+    font-size: 0.95rem;
+    color: #fef08a;
+    line-height: 1.4;
+}
+
+.speaker-hint-text strong {
+    color: #ffffff;
+}
+
+/* PDPA 3-Column Pillar Cards (Slide 5) */
+.pdpa-3col-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 14px;
+    width: 100%;
+    margin-top: 6px;
+}
+
+.pdpa-pillar-card {
+    background: var(--bg-card);
+    border: 2px solid #334155;
+    border-radius: 10px;
+    padding: 18px 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    transition: all 0.2s ease;
+}
+
+.pdpa-pillar-card:hover {
+    background: var(--bg-card-hover);
+    transform: translateY(-3px);
+}
+
+.pdpa-pillar-card.cyan {
+    border-color: var(--neon-cyan);
+    border-top: 5px solid var(--neon-cyan);
+}
+
+.pdpa-pillar-card.yellow {
+    border-color: var(--neon-yellow);
+    border-top: 5px solid var(--neon-yellow);
+}
+
+.pdpa-pillar-card.magenta {
+    border-color: var(--neon-magenta);
+    border-top: 5px solid var(--neon-magenta);
+}
+
+.pdpa-pillar-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 1.15rem;
+    font-weight: 700;
+}
+
+.pdpa-pillar-card.cyan .pdpa-pillar-header { color: var(--neon-cyan); }
+.pdpa-pillar-card.yellow .pdpa-pillar-header { color: var(--neon-yellow); }
+.pdpa-pillar-card.magenta .pdpa-pillar-header { color: var(--neon-magenta); }
+
+.pdpa-pillar-desc {
+    font-size: 0.96rem;
+    color: var(--text-body);
+    line-height: 1.5;
+}
+
+.pdpa-pillar-desc strong {
+    color: #ffffff;
+}
+
+/* PDPA 2-Column Comparison Layout (Slide 6) */
+.pdpa-compare-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    width: 100%;
+    margin-top: 6px;
+}
+
+.pdpa-compare-card {
+    background: var(--bg-card);
+    border: 2px solid #334155;
+    border-radius: 10px;
+    padding: 18px 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.pdpa-compare-card.general {
+    border-color: var(--neon-cyan);
+    border-left: 6px solid var(--neon-cyan);
+}
+
+.pdpa-compare-card.sensitive {
+    border-color: var(--neon-magenta);
+    border-left: 6px solid var(--neon-magenta);
+    background: rgba(244, 63, 94, 0.07);
+}
+
+.compare-head-title {
+    font-size: 1.25rem;
+    font-weight: 800;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.pdpa-compare-card.general .compare-head-title { color: var(--neon-cyan); }
+.pdpa-compare-card.sensitive .compare-head-title { color: var(--neon-magenta); }
+
+.compare-subtitle {
+    font-size: 0.95rem;
+    color: var(--text-sub);
+    font-weight: 600;
+    line-height: 1.4;
+}
+
+.compare-tag-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.compare-tag-item {
+    background: #0f172a;
+    border: 1px solid #475569;
+    padding: 6px 12px;
+    border-radius: 8px;
+    font-size: 0.92rem;
+    font-weight: 600;
+    color: #ffffff;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.pdpa-compare-card.sensitive .compare-tag-item {
+    border-color: rgba(244, 63, 94, 0.5);
+    background: rgba(244, 63, 94, 0.15);
+}
+
+.compare-bottom-rule {
+    font-size: 0.88rem;
+    padding: 8px 12px;
+    border-radius: 6px;
+    background: rgba(15, 23, 42, 0.8);
+    border: 1px dashed #475569;
+    color: var(--text-body);
+    line-height: 1.4;
+}
+
+/* PDPA 4-Step Rights Cards (Slide 7) */
+.pdpa-rights-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+    width: 100%;
+    margin-top: 6px;
+}
+
+.pdpa-right-card {
+    background: var(--bg-card);
+    border: 2px solid #334155;
+    border-top: 5px solid var(--neon-green);
+    border-radius: 10px;
+    padding: 16px 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    transition: all 0.2s ease;
+}
+
+.pdpa-right-card:hover {
+    background: var(--bg-card-hover);
+    border-color: var(--neon-green);
+    transform: translateY(-3px);
+}
+
+.right-step-badge {
+    font-family: var(--font-pixel) !important;
+    font-size: 0.75rem;
+    color: var(--neon-green);
+    background: rgba(74, 222, 128, 0.15);
+    border: 1px solid var(--neon-green);
+    padding: 2px 8px;
+    border-radius: 4px;
+    display: inline-block;
+    width: fit-content;
+}
+
+.right-huge-action {
+    font-size: 1.35rem;
+    font-weight: 900;
+    color: #ffffff;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.right-section-ref {
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: var(--neon-green);
+}
+
+.right-easy-desc {
+    font-size: 0.92rem;
+    color: var(--text-body);
+    line-height: 1.45;
+}
+
+.right-easy-desc strong {
+    color: #ffffff;
+}
+
+/* 2x2 Grid Layout for Fallback */
 .grid-2x2 {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -382,51 +660,6 @@ h1, h2, h3, h4, h5, h6, p, span, div {
     color: var(--text-body);
     line-height: 1.6;
 }
-
-/* Slide 6: Items Layout */
-.item-box-container {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 18px;
-    margin-top: 5px;
-}
-
-.item-category {
-    background: var(--bg-card);
-    border: 2px solid #334155;
-    border-radius: 10px;
-    padding: 20px;
-}
-
-.item-category.rare {
-    border-color: var(--neon-magenta);
-    background: rgba(244, 63, 94, 0.06);
-}
-
-.category-header {
-    font-size: 1.3rem;
-    font-weight: 700;
-    margin-bottom: 14px;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-}
-
-.item-tags {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
-}
-
-.tag-pill {
-    background: #0f172a;
-    border: 1px solid #475569;
-    padding: 8px 16px;
-    border-radius: 20px;
-    font-size: 1rem;
-    font-weight: 500;
-    color: #ffffff;
-    display: flex;
     align-items: center;
     gap: 8px;
 }
@@ -584,10 +817,19 @@ h1, h2, h3, h4, h5, h6, p, span, div {
         text-align: left;
         white-space: normal;
     }
-    .grid-2x2, .item-box-container {
+    .grid-2x2, .item-box-container, .pdpa-3col-grid, .pdpa-compare-grid {
         grid-template-columns: 1fr;
+    }
+    .pdpa-rights-grid {
+        grid-template-columns: 1fr 1fr;
     }
     .main-title { font-size: 2.2rem; }
     .slide-title { font-size: 1.5rem; }
     .slide { padding: 18px 20px; }
+}
+
+@media (max-width: 640px) {
+    .pdpa-rights-grid {
+        grid-template-columns: 1fr;
+    }
 }

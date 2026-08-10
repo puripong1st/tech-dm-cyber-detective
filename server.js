@@ -13,13 +13,24 @@ const PORT = process.env.PORT || 3000;
 app.use(cors());
 app.use(express.json());
 
-// Serve Static Files from Root Directory
+// Serve Static Directories with explicit caching
+app.use('/assets', express.static(path.join(__dirname, 'assets'), { maxAge: '1d' }));
+app.use('/css', express.static(path.join(__dirname, 'css')));
+app.use('/js', express.static(path.join(__dirname, 'js')));
 app.use(express.static(__dirname));
 
 // Explicit Static File Route for cases_data.js (Guarantees HTTP 200 on Vercel)
 app.get('/cases_data.js', (req, res) => {
     res.setHeader('Content-Type', 'application/javascript');
     res.sendFile(path.join(__dirname, 'cases_data.js'));
+});
+
+// Explicit Static Route for Assets (Guarantees HTTP 200 on Vercel)
+app.get('/assets/*', (req, res) => {
+    const assetPath = path.join(__dirname, req.path);
+    res.sendFile(assetPath, (err) => {
+        if (err) res.status(404).send('Asset not found');
+    });
 });
 
 // Secure API Endpoint: Expose Public Supabase Environment Variables to Frontend

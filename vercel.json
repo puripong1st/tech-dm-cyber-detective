@@ -11,6 +11,11 @@
           "*.js",
           "*.json",
           "*.png",
+          "*.jpg",
+          "*.jpeg",
+          "*.svg",
+          "*.ico",
+          "assets/**/*",
           "css/**/*",
           "js/**/*"
         ]
@@ -18,6 +23,9 @@
     }
   ],
   "routes": [
+    { "src": "/assets/(.*)", "dest": "server.js" },
+    { "src": "/css/(.*)", "dest": "server.js" },
+    { "src": "/js/(.*)", "dest": "server.js" },
     { "src": "/api/(.*)", "dest": "server.js" },
     { "src": "/detective", "dest": "server.js" },
     { "src": "/teacher", "dest": "server.js" },
