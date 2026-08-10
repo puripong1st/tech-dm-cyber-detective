@@ -233,12 +233,12 @@
             <section class="lg:col-span-5 flex flex-col gap-2.5">
                 
                 <!-- Dossier Header & Complaint Box -->
-                <div class="glass-panel p-3.5 rounded-2xl border border-cyan-500/30 flex flex-col gap-2">
+                <div class="glass-panel p-3.5 rounded-2xl border border-cyan-500/30 flex flex-col gap-2 shadow-lg">
                     <div class="flex items-center justify-between">
                         <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-medium bg-cyan-500/10 text-cyan-300 border border-cyan-500/30 font-mono">
                             <i class="fa-solid fa-fingerprint"></i> DOSSIER #<span id="dossier-case-num">01</span>
                         </span>
-                        <span id="dossier-category" class="text-[11px] px-2 py-0.5 rounded bg-purple-500/20 text-purple-300 border border-purple-500/30 font-semibold">
+                        <span id="dossier-category" class="text-[11px] px-2.5 py-0.5 rounded bg-purple-500/20 text-purple-300 border border-purple-500/30 font-semibold font-mono">
                             พ.ร.บ. คอมพิวเตอร์
                         </span>
                     </div>
@@ -248,7 +248,7 @@
                     </h2>
 
                     <!-- Complaint Summary -->
-                    <div class="bg-slate-900/90 rounded-xl p-2.5 border-l-4 border-cyan-400 text-xs text-slate-300 leading-relaxed">
+                    <div class="bg-slate-900/90 rounded-xl p-2.5 border-l-4 border-cyan-400 text-xs text-slate-300 leading-relaxed shadow-inner">
                         <div class="font-semibold text-cyan-300 mb-0.5 flex items-center gap-1 text-[11px]">
                             <i class="fa-solid fa-bullhorn"></i> คำร้องทุกข์จากผู้เสียหาย:
                         </div>
@@ -257,20 +257,20 @@
                 </div>
 
                 <!-- 9-Panel Comic Thumbnail with Zoom Button -->
-                <div class="glass-panel p-3 rounded-2xl border border-cyan-500/30 flex flex-col gap-2 flex-1 justify-between">
+                <div class="glass-panel p-3.5 rounded-2xl border border-cyan-500/30 flex flex-col gap-2.5 shadow-lg">
                     <div class="flex items-center justify-between">
                         <div class="flex items-center gap-1.5 text-xs text-slate-200 font-semibold">
                             <i class="fa-solid fa-film text-pink-400"></i>
-                            <span>หลักฐานการ์ตูน 9 ช่อง</span>
+                            <span>หลักฐานภาพการ์ตูน 9 ช่อง</span>
                         </div>
-                        <button onclick="openComicLightbox()" class="text-[11px] px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-cyan-300 border border-cyan-500/40 flex items-center gap-1 transition">
+                        <button onclick="openComicLightbox()" class="text-[11px] px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-cyan-300 border border-cyan-500/40 flex items-center gap-1 transition shadow-sm">
                             <i class="fa-solid fa-magnifying-glass-plus"></i> ซูมดูภาพใหญ่
                         </button>
                     </div>
 
-                    <!-- Comic Image Thumbnail (Optimized height for one-page fit) -->
-                    <div class="relative group cursor-pointer overflow-hidden rounded-xl border border-slate-700 bg-white/95 shadow-md flex items-center justify-center p-1 max-h-[260px] sm:max-h-[300px]" onclick="openComicLightbox()">
-                        <img id="dossier-comic-img" src="assets/evidence/case_ev_8f3a9b21.png" alt="Comic 9 Panels" class="w-full h-auto max-h-[250px] sm:max-h-[290px] object-contain mx-auto rounded transition duration-200 group-hover:scale-[1.02]">
+                    <!-- Comic Image Thumbnail -->
+                    <div class="relative group cursor-pointer overflow-hidden rounded-xl border border-slate-700 bg-white/95 shadow-md flex items-center justify-center p-1" onclick="openComicLightbox()">
+                        <img id="dossier-comic-img" src="assets/evidence/case_ev_8f3a9b21.png" alt="Comic 9 Panels" class="w-full h-auto max-h-[260px] sm:max-h-[290px] object-contain mx-auto rounded transition duration-200 group-hover:scale-[1.02]">
                         <div class="absolute inset-0 bg-slate-950/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
                             <span class="text-xs text-cyan-300 bg-slate-900/90 px-3 py-1.5 rounded-full border border-cyan-400/50 shadow-lg">
                                 <i class="fa-solid fa-expand mr-1"></i> คลิกเพื่อขยายเต็มจอ
@@ -279,9 +279,9 @@
                     </div>
 
                     <!-- 3-Phase Story Breakdown Buttons -->
-                    <div class="flex flex-col gap-1.5 mt-1">
+                    <div class="flex flex-col gap-1.5 pt-0.5">
                         <div class="grid grid-cols-3 gap-1.5 text-[11px] font-sarabun">
-                            <button onclick="selectStoryPhase(1)" id="phase-tab-1" class="px-2 py-1.5 rounded-lg bg-slate-800/90 border border-cyan-500/40 text-cyan-300 font-semibold transition">
+                            <button onclick="selectStoryPhase(1)" id="phase-tab-1" class="px-2 py-1.5 rounded-lg bg-slate-800/90 border border-cyan-500/40 text-cyan-300 font-semibold transition shadow-sm">
                                 🚩 1. ต้นเหตุ
                             </button>
                             <button onclick="selectStoryPhase(2)" id="phase-tab-2" class="px-2 py-1.5 rounded-lg bg-slate-900/60 border border-slate-700 text-slate-400 hover:text-white transition">
@@ -291,7 +291,7 @@
                                 ⚖️ 3. คลี่คลาย
                             </button>
                         </div>
-                        <div id="story-phase-desc" class="p-2 rounded-xl bg-slate-900/80 border border-slate-800 text-[11px] text-slate-300 leading-relaxed min-h-[42px]">
+                        <div id="story-phase-desc" class="p-2.5 rounded-xl bg-slate-900/90 border border-slate-800 text-[11px] text-slate-300 leading-relaxed min-h-[44px]">
                             โหลดเนื้อเรื่องช่วงที่ 1...
                         </div>
                     </div>
@@ -305,18 +305,18 @@
             <!-- ================================================================= -->
             <section class="lg:col-span-7 flex flex-col gap-3">
                 
-                <div class="glass-panel p-4 sm:p-5 rounded-2xl border border-cyan-500/30 flex flex-col gap-3.5 flex-1 justify-between shadow-2xl">
+                <div class="glass-panel p-4 sm:p-5 rounded-2xl border border-cyan-500/30 flex flex-col gap-4 shadow-2xl">
                     
                     <!-- 3-Step Interactive Role Stepper at Top -->
-                    <div class="flex flex-col gap-2 border-b border-slate-800 pb-3">
+                    <div class="flex flex-col gap-2.5 border-b border-slate-800 pb-3">
                         <div class="flex items-center justify-between">
                             <div class="flex items-center gap-2">
-                                <span class="w-6 h-6 rounded-lg bg-cyan-500/20 border border-cyan-400 text-cyan-300 flex items-center justify-center text-xs">
+                                <span class="w-6 h-6 rounded-lg bg-cyan-500/20 border border-cyan-400 text-cyan-300 flex items-center justify-center text-xs shadow-sm">
                                     <i class="fa-solid fa-list-check"></i>
                                 </span>
                                 <h3 class="text-sm font-bold text-slate-100">ขั้นตอนการสืบคดี (ทำทีละบทบาท & ตรวจสดทันที)</h3>
                             </div>
-                            <span id="case-status-badge" class="text-[11px] px-2.5 py-0.5 rounded-full bg-slate-800 text-amber-300 font-mono border border-slate-700">
+                            <span id="case-status-badge" class="text-[11px] px-2.5 py-0.5 rounded-full bg-slate-800/90 text-amber-300 font-mono border border-slate-700 shadow-sm">
                                 กำลังสืบคดี: 0/30 คะแนน
                             </span>
                         </div>
@@ -325,28 +325,28 @@
                         <div class="grid grid-cols-3 gap-2 text-xs font-sarabun">
                             
                             <!-- Role 1 Stepper Tab -->
-                            <button onclick="switchActiveRole('legal')" id="step-tab-legal" class="p-2 rounded-xl bg-amber-500/20 border-2 border-amber-400 text-amber-200 font-bold flex flex-col items-center gap-0.5 transition shadow-sm">
+                            <button onclick="switchActiveRole('legal')" id="step-tab-legal" class="p-2.5 rounded-xl bg-amber-500/20 border-2 border-amber-400 text-amber-200 font-bold flex flex-col items-center gap-0.5 transition shadow-md">
                                 <div class="flex items-center gap-1 text-[11px]">
                                     <span>👨‍⚖️ 1. กฎหมาย</span>
-                                    <span id="badge-legal-score" class="text-[10px] px-1 rounded bg-amber-500/30 font-mono">0/10</span>
+                                    <span id="badge-legal-score" class="text-[10px] px-1.5 rounded bg-amber-500/30 font-mono">0/10</span>
                                 </div>
-                                <span id="status-legal-text" class="text-[10px] text-amber-300 font-normal">กำลังทำ</span>
+                                <span id="status-legal-text" class="text-[10px] text-amber-300 font-normal">กำลังทำ ✍️</span>
                             </button>
 
                             <!-- Role 2 Stepper Tab -->
-                            <button onclick="switchActiveRole('remedy')" id="step-tab-remedy" class="p-2 rounded-xl bg-slate-900/60 border border-slate-700 text-slate-400 flex flex-col items-center gap-0.5 hover:text-slate-200 transition">
+                            <button onclick="switchActiveRole('remedy')" id="step-tab-remedy" class="p-2.5 rounded-xl bg-slate-900/60 border border-slate-700 text-slate-400 flex flex-col items-center gap-0.5 hover:text-slate-200 transition">
                                 <div class="flex items-center gap-1 text-[11px]">
                                     <span>🚑 2. บรรเทาภัย</span>
-                                    <span id="badge-remedy-score" class="text-[10px] px-1 rounded bg-slate-800 font-mono">0/10</span>
+                                    <span id="badge-remedy-score" class="text-[10px] px-1.5 rounded bg-slate-800 font-mono">0/10</span>
                                 </div>
                                 <span id="status-remedy-text" class="text-[10px] text-slate-400 font-normal">รอตรวจ</span>
                             </button>
 
                             <!-- Role 3 Stepper Tab -->
-                            <button onclick="switchActiveRole('security')" id="step-tab-security" class="p-2 rounded-xl bg-slate-900/60 border border-slate-700 text-slate-400 flex flex-col items-center gap-0.5 hover:text-slate-200 transition">
+                            <button onclick="switchActiveRole('security')" id="step-tab-security" class="p-2.5 rounded-xl bg-slate-900/60 border border-slate-700 text-slate-400 flex flex-col items-center gap-0.5 hover:text-slate-200 transition">
                                 <div class="flex items-center gap-1 text-[11px]">
                                     <span>🛡️ 3. ป้องกัน</span>
-                                    <span id="badge-security-score" class="text-[10px] px-1 rounded bg-slate-800 font-mono">0/10</span>
+                                    <span id="badge-security-score" class="text-[10px] px-1.5 rounded bg-slate-800 font-mono">0/10</span>
                                 </div>
                                 <span id="status-security-text" class="text-[10px] text-slate-400 font-normal">รอตรวจ</span>
                             </button>
@@ -354,13 +354,13 @@
                         </div>
                     </div>
 
-                    <!-- ACTIVE ROLE INPUT CARD -->
-                    <div id="active-role-card" class="p-3.5 sm:p-4 rounded-xl bg-slate-900/90 border border-slate-700 flex flex-col gap-3 transition-all">
+                    <!-- ACTIVE ROLE INPUT CARD (Sits comfortably directly below Stepper) -->
+                    <div id="active-role-card" class="p-4 rounded-xl bg-slate-900/95 border border-slate-700/80 flex flex-col gap-3.5 shadow-xl transition-all">
                         
                         <!-- Role Header Title & Guidelines -->
                         <div class="flex items-center justify-between gap-2 border-b border-slate-800 pb-2.5">
-                            <div class="flex items-center gap-2">
-                                <span id="role-avatar" class="w-8 h-8 rounded-lg bg-amber-500/20 border border-amber-400 text-amber-300 flex items-center justify-center text-base">
+                            <div class="flex items-center gap-2.5">
+                                <span id="role-avatar" class="w-9 h-9 rounded-xl bg-amber-500/20 border border-amber-400 text-amber-300 flex items-center justify-center text-lg shadow-sm">
                                     👨‍⚖️
                                 </span>
                                 <div>
@@ -372,21 +372,21 @@
                                     </p>
                                 </div>
                             </div>
-                            <span id="role-max-badge" class="text-xs font-mono font-bold text-amber-400 bg-amber-500/20 px-2 py-0.5 rounded border border-amber-500/30 shrink-0">
+                            <span id="role-max-badge" class="text-xs font-mono font-bold text-amber-400 bg-amber-500/20 px-2.5 py-1 rounded-lg border border-amber-500/30 shrink-0">
                                 เต็ม 10 คะแนน
                             </span>
                         </div>
 
                         <!-- Active Textarea -->
-                        <div class="relative flex flex-col gap-1">
-                            <textarea id="active-role-input" rows="4" oninput="handleActiveTextInput()" placeholder="พิมพ์วิเคราะห์คำตอบที่นี่..." class="w-full bg-slate-950/90 border border-slate-700 rounded-xl p-3 text-xs sm:text-sm text-slate-100 placeholder-slate-500 focus:outline-none focus:border-cyan-400 focus:ring-1 focus:ring-cyan-400 font-sarabun transition resize-none"></textarea>
+                        <div class="relative flex flex-col gap-1.5">
+                            <textarea id="active-role-input" rows="5" oninput="handleActiveTextInput()" placeholder="พิมพ์วิเคราะห์คำตอบที่นี่..." class="w-full bg-slate-950/90 border border-slate-700 rounded-xl p-3.5 text-xs sm:text-sm text-slate-100 placeholder-slate-500 focus:outline-none focus:border-cyan-400 focus:ring-1 focus:ring-cyan-400 font-sarabun transition resize-none leading-relaxed"></textarea>
                             
                             <!-- Counter & Help Tip -->
-                            <div class="flex items-center justify-between text-[11px] px-1">
-                                <span id="role-tip" class="text-slate-400">
-                                    💡 เกณฑ์: ระบุฐานความผิด + อัตราโทษจำคุก/ปรับ + เหตุผล
+                            <div class="flex items-center justify-between text-[11px] px-1 text-slate-400">
+                                <span id="role-tip" class="flex items-center gap-1">
+                                    💡 <b>เกณฑ์:</b> ระบุฐานความผิด + อัตราโทษจำคุก/ปรับ + เหตุผล
                                 </span>
-                                <span id="active-char-count" class="font-mono text-slate-400">
+                                <span id="active-char-count" class="font-mono">
                                     0 / 20 ตัวอักษร
                                 </span>
                             </div>
@@ -394,16 +394,16 @@
 
                         <!-- Action Button for this Single Role -->
                         <div class="flex items-center justify-between gap-2 pt-1">
-                            <button type="button" id="btn-clear-active-role" onclick="clearActiveRoleDraft()" class="px-3 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-medium transition">
+                            <button type="button" id="btn-clear-active-role" onclick="clearActiveRoleDraft()" class="px-3.5 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-medium transition shadow-sm">
                                 <i class="fa-solid fa-rotate-left mr-1"></i> ล้างคำตอบ
                             </button>
 
-                            <div id="role-locked-badge" class="hidden px-3.5 py-1.5 rounded-xl bg-emerald-500/15 border border-emerald-500/40 text-emerald-300 text-xs font-semibold flex items-center gap-1.5 shadow-sm">
+                            <div id="role-locked-badge" class="hidden px-4 py-2 rounded-xl bg-emerald-500/15 border border-emerald-500/40 text-emerald-300 text-xs font-semibold flex items-center gap-1.5 shadow-sm">
                                 <i class="fa-solid fa-lock text-emerald-400"></i>
                                 <span>ประเมินผลเรียบร้อยแล้ว (ไม่สามารถส่งคำตอบซ้ำได้)</span>
                             </div>
 
-                            <button type="button" id="btn-submit-active-role" onclick="submitActiveRoleToAI()" disabled class="px-5 py-2 rounded-xl bg-gradient-to-r from-cyan-600 via-pink-600 to-amber-500 hover:from-cyan-500 hover:via-pink-500 hover:to-amber-400 disabled:opacity-40 disabled:cursor-not-allowed text-white text-xs sm:text-sm font-bold shadow-lg shadow-cyan-500/20 flex items-center gap-2 transition transform active:scale-95">
+                            <button type="button" id="btn-submit-active-role" onclick="submitActiveRoleToAI()" disabled class="px-5 py-2.5 rounded-xl bg-gradient-to-r from-cyan-600 via-pink-600 to-amber-500 hover:from-cyan-500 hover:via-pink-500 hover:to-amber-400 disabled:opacity-40 disabled:cursor-not-allowed text-white text-xs sm:text-sm font-bold shadow-lg shadow-cyan-500/20 flex items-center gap-2 transition transform active:scale-95">
                                 <i class="fa-solid fa-bolt text-yellow-300"></i>
                                 <span id="label-submit-btn">ส่งตรวจบทบาทนี้ (10 คะแนน)</span>
                             </button>
@@ -412,15 +412,15 @@
                     </div>
 
                     <!-- INSTANT AI EVALUATION FEEDBACK BOX (Appears immediately after submitting this role) -->
-                    <div id="role-feedback-box" class="hidden p-3.5 sm:p-4 rounded-xl bg-slate-950 border border-emerald-500/40 flex flex-col gap-2.5 transition-all">
+                    <div id="role-feedback-box" class="hidden p-4 rounded-xl bg-slate-950/95 border border-emerald-500/50 flex flex-col gap-3 shadow-xl transition-all">
                         
-                        <div class="flex items-center justify-between border-b border-slate-800 pb-2">
+                        <div class="flex items-center justify-between border-b border-slate-800 pb-2.5">
                             <div class="flex items-center gap-2">
                                 <div class="w-6 h-6 rounded-md bg-emerald-500/20 border border-emerald-400 text-emerald-300 flex items-center justify-center text-xs">
                                     <i class="fa-solid fa-circle-check"></i>
                                 </div>
                                 <span class="text-xs font-bold text-slate-100">ผลการประเมินจาก Google Gemini AI</span>
-                                <span id="role-eval-mode" class="text-[10px] px-1.5 py-0.2 rounded bg-cyan-500/20 text-cyan-300 font-mono">AI Evaluator</span>
+                                <span id="role-eval-mode" class="text-[10px] px-2 py-0.5 rounded bg-cyan-500/20 text-cyan-300 font-mono border border-cyan-500/30">AI Evaluator</span>
                             </div>
 
                             <!-- Single Role Score Badge -->
@@ -432,13 +432,13 @@
                         </div>
 
                         <!-- Feedback Content Text -->
-                        <p id="role-eval-feedback" class="text-xs text-slate-200 leading-relaxed font-sarabun bg-slate-900/80 p-3 rounded-lg border border-slate-800">
+                        <p id="role-eval-feedback" class="text-xs text-slate-200 leading-relaxed font-sarabun bg-slate-900/90 p-3.5 rounded-xl border border-slate-800 shadow-inner">
                             ...
                         </p>
 
                         <!-- Next Step Button Navigation -->
                         <div class="flex items-center justify-end pt-1">
-                            <button type="button" id="btn-next-role-step" onclick="proceedToNextRoleOrCase()" class="px-5 py-2 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white text-xs sm:text-sm font-bold shadow-lg shadow-emerald-500/20 flex items-center gap-2 transition transform active:scale-95">
+                            <button type="button" id="btn-next-role-step" onclick="proceedToNextRoleOrCase()" class="px-5 py-2.5 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white text-xs sm:text-sm font-bold shadow-lg shadow-emerald-500/25 flex items-center gap-2 transition transform active:scale-95">
                                 <span id="label-next-step-btn">➡️ ไปยังบทบาทที่ 2: บรรเทาภัย</span>
                                 <i class="fa-solid fa-arrow-right"></i>
                             </button>
