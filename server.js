@@ -35,7 +35,21 @@ const CASE_REFERENCES = {
             "แอบเข้า",
             "เข้าถึงระบบ",
             "แอบส่อง",
-            "แอบล็อกอิน"
+            "แอบล็อกอิน",
+            "เข้าถึงคอมพิวเตอร์",
+            "ไม่ได้รับอนุญาต",
+            "โดยไม่ได้รับอนุญาต",
+            "แอบใช้",
+            "แอบดู",
+            "บุกรุกระบบ",
+            "แอบเปิด",
+            "ปลดล็อก",
+            "แอบปลดล็อก",
+            "เข้าเครื่อง",
+            "ใช้เครื่องคนอื่น",
+            "แอบจำรหัส",
+            "แอบจำพาสเวิร์ด",
+            "แอบใช้รหัส"
         ],
         "keywords_penalty": [
             "6 เดือน",
@@ -44,7 +58,15 @@ const CASE_REFERENCES = {
             "หนึ่งหมื่น",
             "10000",
             "หมื่นบาท",
-            "ทั้งจำทั้งปรับ"
+            "ทั้งจำทั้งปรับ",
+            "จำคุก",
+            "ปรับ",
+            "บาท",
+            "โทษ",
+            "จำคุกไม่เกิน",
+            "ปรับไม่เกิน",
+            "หมื่น",
+            "ไม่เกิน 6"
         ],
         "keywords_remedy": [
             "logout",
@@ -54,7 +76,21 @@ const CASE_REFERENCES = {
             "เปลี่ยนพาส",
             "แจ้งครู",
             "แจ้งผู้ปกครอง",
-            "รายงาน"
+            "รายงาน",
+            "เปลี่ยนรหัสผ่าน",
+            "แจ้งตำรวจ",
+            "ล็อกเอาต์",
+            "ล็อกออก",
+            "ล็อกหน้าจอ",
+            "เปลี่ยนพาสเวิร์ด",
+            "แจ้งเรื่อง",
+            "บอกครู",
+            "บอกผู้ปกครอง",
+            "ตัดการเข้าถึง",
+            "เปลี่ยน password",
+            "reset password",
+            "แจ้งเจ้าของ",
+            "บอกเจ้าของ"
         ],
         "keywords_security": [
             "2fa",
@@ -63,7 +99,21 @@ const CASE_REFERENCES = {
             "ล็อกอิน 2 ชั้น",
             "สองชั้น",
             "ล็อกหน้าจอ",
-            "ยืนยันตัวตน"
+            "ยืนยันตัวตน",
+            "ตั้งรหัส",
+            "ล็อกเครื่อง",
+            "pin",
+            "pattern",
+            "รหัสผ่านที่ซับซ้อน",
+            "ไม่บอกรหัส",
+            "ไม่แชร์รหัส",
+            "ล็อกมือถือ",
+            "ล็อกแท็บเล็ต",
+            "ล็อกอัตโนมัติ",
+            "auto lock",
+            "two factor",
+            "ยืนยัน 2 ขั้นตอน",
+            "เปลี่ยนรหัสบ่อยๆ"
         ]
     },
     "2": {
@@ -79,7 +129,17 @@ const CASE_REFERENCES = {
             "มาตรการป้องกัน",
             "แจกรหัส",
             "เผยแพร่รหัส",
-            "ปล่อยรหัส"
+            "ปล่อยรหัส",
+            "โพสต์รหัส",
+            "ส่งรหัส",
+            "บอกรหัส",
+            "แชร์รหัส",
+            "แจกพาส",
+            "แจกพาสเวิร์ด",
+            "เปิดเผยรหัสผ่าน",
+            "เปิดเผยข้อมูลลับ",
+            "เปิดเผยมาตรการ",
+            "แจกรหัสผ่าน"
         ],
         "keywords_penalty": [
             "1 ปี",
@@ -88,7 +148,14 @@ const CASE_REFERENCES = {
             "สองหมื่น",
             "20000",
             "หมื่น",
-            "ทั้งจำทั้งปรับ"
+            "ทั้งจำทั้งปรับ",
+            "จำคุก",
+            "ปรับ",
+            "บาท",
+            "โทษ",
+            "จำคุกไม่เกิน",
+            "ปรับไม่เกิน",
+            "ไม่เกิน 1 ปี"
         ],
         "keywords_remedy": [
             "เปลี่ยนรหัส",
@@ -96,7 +163,18 @@ const CASE_REFERENCES = {
             "แจ้งแอดมิน",
             "discord",
             "ตัดเซสชัน",
-            "บล็อก"
+            "บล็อก",
+            "เปลี่ยนรหัสผ่าน",
+            "ลบโพสต์",
+            "เปลี่ยนพาส",
+            "ลบรูป",
+            "ลบข้อมูล",
+            "แจ้งครู",
+            "เปลี่ยน password",
+            "แจ้งเจ้าของระบบ",
+            "แจ้งไอที",
+            "ลบทันที",
+            "ลบออก"
         ],
         "keywords_security": [
             "รหัสผ่านซับซ้อน",
@@ -105,7 +183,16 @@ const CASE_REFERENCES = {
             "สัญลักษณ์",
             "ห้ามจด",
             "password manager",
-            "ความลับ"
+            "ความลับ",
+            "ตัวพิมพ์เล็ก",
+            "ตั้งรหัสยาก",
+            "strong password",
+            "ไม่จดรหัส",
+            "ไม่เขียนรหัส",
+            "ไม่แปะรหัส",
+            "เก็บรหัสเป็นความลับ",
+            "รหัสยาว",
+            "รหัสที่ปลอดภัย"
         ]
     },
     "3": {
@@ -121,7 +208,21 @@ const CASE_REFERENCES = {
             "ข้อมูลคอมพิวเตอร์",
             "ไดอารี่",
             "คุ้ยไฟล์",
-            "ดูดไฟล์"
+            "ดูดไฟล์",
+            "แอบดู",
+            "แอบเปิด",
+            "เข้าถึงข้อมูลผู้อื่น",
+            "ลักลอบ",
+            "ข้อมูลส่วนตัว",
+            "แอบอ่าน",
+            "ดูข้อมูลคนอื่น",
+            "เปิดไฟล์คนอื่น",
+            "เข้าถึงไฟล์",
+            "แอบโหลด",
+            "ดาวน์โหลดไฟล์",
+            "แอบดาวน์โหลด",
+            "แอบคัดลอก",
+            "แอบก็อปปี้"
         ],
         "keywords_penalty": [
             "2 ปี",
@@ -130,14 +231,31 @@ const CASE_REFERENCES = {
             "สี่หมื่น",
             "40000",
             "หมื่น",
-            "ทั้งจำทั้งปรับ"
+            "ทั้งจำทั้งปรับ",
+            "จำคุก",
+            "ปรับ",
+            "บาท",
+            "โทษ",
+            "จำคุกไม่เกิน",
+            "ปรับไม่เกิน",
+            "ไม่เกิน 2 ปี"
         ],
         "keywords_remedy": [
             "ลบไฟล์",
             "เปลี่ยนรหัส",
             "แจ้งระงับ",
             "แจ้งครู",
-            "แจ้งแอดมิน"
+            "แจ้งแอดมิน",
+            "ลบข้อมูล",
+            "เปลี่ยนพาส",
+            "ลบออก",
+            "แจ้งผู้ปกครอง",
+            "แจ้งตำรวจ",
+            "ลบทิ้ง",
+            "ลบรูป",
+            "ลบแชท",
+            "เปลี่ยนรหัสผ่าน",
+            "เปลี่ยน password"
         ],
         "keywords_security": [
             "สแกนใบหน้า",
@@ -146,7 +264,16 @@ const CASE_REFERENCES = {
             "biometrics",
             "เข้ารหัส",
             "encryption",
-            "ล็อกโฟลเดอร์"
+            "ล็อกโฟลเดอร์",
+            "ตั้งรหัส",
+            "ล็อกไฟล์",
+            "ซ่อนไฟล์",
+            "ล็อกด้วยรหัส",
+            "fingerprint",
+            "touch id",
+            "ล็อกเครื่อง",
+            "ป้องกันด้วยรหัส",
+            "เข้ารหัสไฟล์"
         ]
     },
     "4": {
@@ -162,7 +289,18 @@ const CASE_REFERENCES = {
             "ดักจับ",
             "ระหว่างการส่ง",
             "ข้อมูลคอมพิวเตอร์",
-            "ดักข้อมูล"
+            "ดักข้อมูล",
+            "ดักฟัง",
+            "ดักสัญญาณ",
+            "ดักรับข้อมูล",
+            "man in the middle",
+            "mitm",
+            "wifi ปลอม",
+            "wi-fi ปลอม",
+            "ไวไฟปลอม",
+            "ดักจับข้อมูล",
+            "สอดแนม",
+            "แฮก"
         ],
         "keywords_penalty": [
             "3 ปี",
@@ -171,7 +309,14 @@ const CASE_REFERENCES = {
             "หกหมื่น",
             "60000",
             "หมื่น",
-            "ทั้งจำทั้งปรับ"
+            "ทั้งจำทั้งปรับ",
+            "จำคุก",
+            "ปรับ",
+            "บาท",
+            "โทษ",
+            "จำคุกไม่เกิน",
+            "ปรับไม่เกิน",
+            "ไม่เกิน 3 ปี"
         ],
         "keywords_remedy": [
             "ตัด wifi",
@@ -179,7 +324,18 @@ const CASE_REFERENCES = {
             "อายัดบัตร",
             "แจ้งธนาคาร",
             "แจ้งค่ายเกม",
-            "เปลี่ยนพาส"
+            "เปลี่ยนพาส",
+            "ตัดการเชื่อมต่อ",
+            "ปิดไวไฟ",
+            "เลิกใช้",
+            "แจ้งอายัด",
+            "เปลี่ยนรหัส",
+            "เปลี่ยนรหัสผ่าน",
+            "ตัดสัญญาณ",
+            "ถอดการเชื่อมต่อ",
+            "disconnect",
+            "แจ้งบัตรเครดิต",
+            "ระงับบัตร"
         ],
         "keywords_security": [
             "ssl",
@@ -188,7 +344,16 @@ const CASE_REFERENCES = {
             "เข้ารหัสข้อมูล",
             "encryption",
             "หลีกเลี่ยง wifi ฟรี",
-            "public wifi"
+            "public wifi",
+            "ไม่เชื่อมต่อ wifi สาธารณะ",
+            "ไม่ใช้ wifi ฟรี",
+            "เข้ารหัส",
+            "ใช้เน็ตมือถือ",
+            "ใช้ 4g",
+            "ใช้ 5g",
+            "ใช้เน็ตส่วนตัว",
+            "wifi ที่ปลอดภัย",
+            "ไม่ทำธุรกรรมบน wifi สาธารณะ"
         ]
     },
     "5": {
@@ -204,7 +369,18 @@ const CASE_REFERENCES = {
             "แก้ไข",
             "ลบไฟล์",
             "เปลี่ยนแปลงข้อมูล",
-            "เสียหาย"
+            "เสียหาย",
+            "ลบข้อมูล",
+            "ทำให้เสียหาย",
+            "ทำลายข้อมูล",
+            "ลบทิ้ง",
+            "ลบออก",
+            "แก้ไขข้อมูล",
+            "เปลี่ยนแปลง",
+            "ทำให้เสีย",
+            "ทำลายไฟล์",
+            "ลบงาน",
+            "ลบโครงงาน"
         ],
         "keywords_penalty": [
             "5 ปี",
@@ -213,7 +389,15 @@ const CASE_REFERENCES = {
             "หนึ่งแสน",
             "100000",
             "แสนบาท",
-            "ทั้งจำทั้งปรับ"
+            "ทั้งจำทั้งปรับ",
+            "จำคุก",
+            "ปรับ",
+            "บาท",
+            "โทษ",
+            "จำคุกไม่เกิน",
+            "ปรับไม่เกิน",
+            "แสน",
+            "ไม่เกิน 5 ปี"
         ],
         "keywords_remedy": [
             "version history",
@@ -222,7 +406,20 @@ const CASE_REFERENCES = {
             "restore",
             "ถังขยะ",
             "recycle bin",
-            "activity log"
+            "activity log",
+            "กู้ไฟล์",
+            "กู้ข้อมูล",
+            "เรียกคืน",
+            "ย้อนกลับ",
+            "กู้งาน",
+            "กู้สไลด์",
+            "แจ้งครู",
+            "แจ้งไอที",
+            "undo",
+            "ctrl+z",
+            "ประวัติการแก้ไข",
+            "backup",
+            "สำรอง"
         ],
         "keywords_security": [
             "read-only",
@@ -231,7 +428,17 @@ const CASE_REFERENCES = {
             "permission",
             "แชร์เฉพาะอีเมล",
             "backup",
-            "สำรองข้อมูล"
+            "สำรองข้อมูล",
+            "อ่านได้อย่างเดียว",
+            "สิทธิ์",
+            "ตั้งสิทธิ์",
+            "กำหนดสิทธิ์",
+            "จำกัดการเข้าถึง",
+            "ห้ามแก้ไข",
+            "ห้ามลบ",
+            "แบ็คอัพ",
+            "สำรอง",
+            "cloud backup"
         ]
     },
     "6": {
@@ -248,7 +455,18 @@ const CASE_REFERENCES = {
             "ระงับการทำงาน",
             "พังระบบ",
             "ddos",
-            "ระบบล่ม"
+            "ระบบล่ม",
+            "ทำให้ไม่สามารถใช้งาน",
+            "ทำให้ระบบไม่ทำงาน",
+            "โจมตี",
+            "ยิงระบบ",
+            "ยิงเซิร์ฟเวอร์",
+            "ระบบพัง",
+            "เซิร์ฟเวอร์ล่ม",
+            "ทราฟฟิก",
+            "บอท",
+            "ขัดขวางการทำงาน",
+            "ยิง ddos"
         ],
         "keywords_penalty": [
             "5 ปี",
@@ -257,7 +475,15 @@ const CASE_REFERENCES = {
             "หนึ่งแสน",
             "100000",
             "แสนบาท",
-            "ทั้งจำทั้งปรับ"
+            "ทั้งจำทั้งปรับ",
+            "จำคุก",
+            "ปรับ",
+            "บาท",
+            "โทษ",
+            "จำคุกไม่เกิน",
+            "ปรับไม่เกิน",
+            "แสน",
+            "ไม่เกิน 5 ปี"
         ],
         "keywords_remedy": [
             "บล็อก ip",
@@ -265,7 +491,17 @@ const CASE_REFERENCES = {
             "สลับเซิร์ฟเวอร์",
             "แจ้งไอที",
             "แจ้งครู",
-            "รีสตาร์ท"
+            "รีสตาร์ท",
+            "บล็อกไอพี",
+            "ปิดบอท",
+            "หยุดบอท",
+            "สลับเซิร์ฟเวอร์สำรอง",
+            "แจ้งแอดมิน",
+            "แจ้งผู้ดูแล",
+            "restart",
+            "reboot",
+            "แจ้งตำรวจ",
+            "บล็อก"
         ],
         "keywords_security": [
             "firewall",
@@ -274,7 +510,16 @@ const CASE_REFERENCES = {
             "cloudflare",
             "waf",
             "rate limit",
-            "load balancer"
+            "load balancer",
+            "ไฟร์วอล",
+            "กำแพงไฟ",
+            "ระบบกรอง",
+            "ป้องกัน ddos",
+            "ระบบป้องกัน",
+            "rate limiting",
+            "จำกัดการเข้าถึง",
+            "แบนไอพี",
+            "ตรวจจับบอท"
         ]
     },
     "7": {
@@ -290,14 +535,30 @@ const CASE_REFERENCES = {
             "สแปม",
             "ปกปิดแหล่งที่มา",
             "ปลอมแปลง",
-            "อีเมลขยะ"
+            "อีเมลขยะ",
+            "ส่งอีเมล",
+            "ส่งเมล",
+            "สแปมเมล",
+            "spam",
+            "ปลอมชื่อ",
+            "ปลอมตัว",
+            "ปกปิดตัวตน",
+            "ปลอมชื่อผู้ส่ง",
+            "ส่งข้อมูลคอมพิวเตอร์",
+            "อีเมลปลอม",
+            "ปกปิดไอพี"
         ],
         "keywords_penalty": [
             "100,000",
             "หนึ่งแสน",
             "100000",
             "ปรับไม่เกิน 1 แสน",
-            "ปรับ"
+            "ปรับ",
+            "แสนบาท",
+            "บาท",
+            "โทษ",
+            "ปรับไม่เกิน",
+            "แสน"
         ],
         "keywords_remedy": [
             "spam",
@@ -306,7 +567,18 @@ const CASE_REFERENCES = {
             "รายงาน",
             "report",
             "แบน",
-            "บล็อกผู้ส่ง"
+            "บล็อกผู้ส่ง",
+            "mark as spam",
+            "ทำเครื่องหมาย",
+            "แจ้ง",
+            "ลบ",
+            "บล็อก",
+            "แจ้งผู้ให้บริการ",
+            "แจ้งอีเมล",
+            "บล็อกอีเมล",
+            "กรอง",
+            "อีเมลขยะ",
+            "สแปม"
         ],
         "keywords_security": [
             "anti-spam",
@@ -315,7 +587,15 @@ const CASE_REFERENCES = {
             "spf",
             "dkim",
             "dmarc",
-            "บล็อกผู้ส่งปลอม"
+            "บล็อกผู้ส่งปลอม",
+            "กรองอีเมล",
+            "ระบบกรอง",
+            "ตัวกรอง",
+            "ตัวกรองสแปม",
+            "email filter",
+            "ป้องกันสแปม",
+            "ระบบกรองเมล",
+            "anti spam"
         ]
     },
     "8": {
@@ -332,21 +612,49 @@ const CASE_REFERENCES = {
             "ยกเลิก",
             "unsubscribe",
             "รบกวน",
-            "เดือดร้อนรำคาญ"
+            "เดือดร้อนรำคาญ",
+            "ส่งข้อความรบกวน",
+            "สแปม",
+            "ไม่มีปุ่มยกเลิก",
+            "ไม่ให้ยกเลิก",
+            "บอกเลิก",
+            "ส่งข้อมูลรบกวน",
+            "ไม่เปิดโอกาสให้ยกเลิก",
+            "ส่งอีเมลรบกวน",
+            "ส่งข้อความ",
+            "ข้อความขยะ",
+            "โฆษณารบกวน"
         ],
         "keywords_penalty": [
             "200,000",
             "สองแสน",
             "200000",
             "ปรับไม่เกิน 2 แสน",
-            "ปรับ"
+            "ปรับ",
+            "บาท",
+            "โทษ",
+            "ปรับไม่เกิน",
+            "แสน",
+            "แสนบาท"
         ],
         "keywords_remedy": [
             "แคปรูป",
             "ร้องเรียน",
             "แจ้งแพลตฟอร์ม",
             "บล็อก",
-            "report"
+            "report",
+            "แคปหลักฐาน",
+            "บล็อกเบอร์",
+            "บล็อกผู้ส่ง",
+            "แจ้ง กสทช",
+            "แจ้งเครือข่าย",
+            "แจ้งผู้ให้บริการ",
+            "รายงาน",
+            "ร้องทุกข์",
+            "แจ้งครู",
+            "แจ้งตำรวจ",
+            "screenshot",
+            "เก็บหลักฐาน"
         ],
         "keywords_security": [
             "ไม่แปะเบอร์",
@@ -354,7 +662,15 @@ const CASE_REFERENCES = {
             "บอร์ดสาธารณะ",
             "email alias",
             "ความเป็นส่วนตัว",
-            "privacy"
+            "privacy",
+            "ไม่กรอกเบอร์",
+            "ไม่กรอกอีเมล",
+            "ไม่ให้ข้อมูลส่วนตัว",
+            "ไม่ลงทะเบียน",
+            "ไม่สมัครรับข่าว",
+            "ใช้อีเมลสำรอง",
+            "อีเมลชั่วคราว",
+            "temp email"
         ]
     },
     "9": {
@@ -372,7 +688,21 @@ const CASE_REFERENCES = {
             "หลอกลวง",
             "ฟิชชิ่ง",
             "phishing",
-            "เว็บปลอม"
+            "เว็บปลอม",
+            "หลอก",
+            "ข้อมูลปลอม",
+            "นำเข้าสู่ระบบ",
+            "เว็บหลอก",
+            "หน้าเว็บปลอม",
+            "ข้อมูลอันเป็นเท็จ",
+            "หลอกลวงประชาชน",
+            "ปลอมเว็บ",
+            "ล็อกอินปลอม",
+            "หลอกเอารหัส",
+            "หลอกเอาข้อมูล",
+            "scam",
+            "สกินฟรี",
+            "แจกเพชร"
         ],
         "keywords_penalty": [
             "5 ปี",
@@ -381,14 +711,31 @@ const CASE_REFERENCES = {
             "หนึ่งแสน",
             "100000",
             "แสนบาท",
-            "ทั้งจำทั้งปรับ"
+            "ทั้งจำทั้งปรับ",
+            "จำคุก",
+            "ปรับ",
+            "บาท",
+            "โทษ",
+            "จำคุกไม่เกิน",
+            "ปรับไม่เกิน",
+            "แสน",
+            "ไม่เกิน 5 ปี"
         ],
         "keywords_remedy": [
             "แจ้งค่ายเกม",
             "ระงับบัญชี",
             "กู้คืน",
             "เปลี่ยนรหัส",
-            "เตือนเพื่อน"
+            "เตือนเพื่อน",
+            "กู้บัญชี",
+            "เปลี่ยนรหัสผ่าน",
+            "เปลี่ยนพาส",
+            "แจ้งตำรวจ",
+            "แจ้งครู",
+            "แจ้งผู้ปกครอง",
+            "ล็อกบัญชี",
+            "เปลี่ยน password",
+            "แจ้งแพลตฟอร์ม"
         ],
         "keywords_security": [
             "ตรวจ url",
@@ -397,7 +744,19 @@ const CASE_REFERENCES = {
             "ลิงก์ปลอม",
             "ไม่คลิกลิงก์",
             "เว็บทางการ",
-            "official"
+            "official",
+            "เช็ค url",
+            "ดู url",
+            "ดูลิงก์",
+            "ตรวจสอบลิงก์",
+            "ไม่กดลิงก์แปลก",
+            "ไม่หลงเชื่อ",
+            "ไม่เชื่อของฟรี",
+            "ดูชื่อเว็บ",
+            "เว็บจริง",
+            "ตรวจสอบเว็บ",
+            "ไม่กรอกรหัส",
+            "ไม่กรอกข้อมูล"
         ]
     },
     "10": {
@@ -415,7 +774,18 @@ const CASE_REFERENCES = {
             "ข่าวปลอม",
             "fake news",
             "ข้อมูลเท็จ",
-            "ตระหนกตกใจ"
+            "ตระหนกตกใจ",
+            "ข่าวลวง",
+            "ข่าวเท็จ",
+            "ข้อมูลอันเป็นเท็จ",
+            "กุข่าว",
+            "ข่าวหลอก",
+            "โพสต์ข่าวปลอม",
+            "แชร์ข่าวปลอม",
+            "ข่าวมั่ว",
+            "สร้างความตื่นตระหนก",
+            "ก่อความตื่นตระหนก",
+            "ทำให้ตกใจ"
         ],
         "keywords_penalty": [
             "5 ปี",
@@ -424,21 +794,49 @@ const CASE_REFERENCES = {
             "หนึ่งแสน",
             "100000",
             "แสนบาท",
-            "ทั้งจำทั้งปรับ"
+            "ทั้งจำทั้งปรับ",
+            "จำคุก",
+            "ปรับ",
+            "บาท",
+            "โทษ",
+            "จำคุกไม่เกิน",
+            "ปรับไม่เกิน",
+            "แสน",
+            "ไม่เกิน 5 ปี"
         ],
         "keywords_remedy": [
             "ลบโพสต์",
             "ลบข่าวปลอม",
             "แถลงแก้ข่าว",
             "โพสต์แก้",
-            "ชี้แจง"
+            "ชี้แจง",
+            "ลบข้อความ",
+            "ลบออก",
+            "แจ้งลบ",
+            "แก้ข่าว",
+            "ชี้แจงข้อเท็จจริง",
+            "โพสต์ชี้แจง",
+            "ลบทันที",
+            "แจ้งแพลตฟอร์ม",
+            "report",
+            "รายงาน"
         ],
         "keywords_security": [
             "ศูนย์ต่อต้านข่าวปลอม",
             "anti-fake news",
             "เช็กก่อนแชร์",
             "แหล่งข่าวทางการ",
-            "verified"
+            "verified",
+            "ตรวจสอบข่าว",
+            "ตรวจสอบข้อมูล",
+            "ตรวจสอบก่อนแชร์",
+            "เช็คข่าว",
+            "ตรวจสอบแหล่งข่าว",
+            "ข่าวจริง",
+            "แหล่งข่าวน่าเชื่อถือ",
+            "ข้อมูลจริง",
+            "สื่อทางการ",
+            "เว็บราชการ"
         ]
     },
     "11": {
@@ -455,7 +853,15 @@ const CASE_REFERENCES = {
             "ลามก",
             "อนาจาร",
             "คลิปโป๊",
-            "18+"
+            "18+",
+            "ภาพลามก",
+            "คลิปลามก",
+            "เนื้อหาลามก",
+            "สื่อลามก",
+            "วิดีโอลามก",
+            "ภาพอนาจาร",
+            "เนื้อหาไม่เหมาะสม",
+            "ภาพไม่เหมาะสม"
         ],
         "keywords_penalty": [
             "5 ปี",
@@ -464,7 +870,15 @@ const CASE_REFERENCES = {
             "หนึ่งแสน",
             "100000",
             "แสนบาท",
-            "ทั้งจำทั้งปรับ"
+            "ทั้งจำทั้งปรับ",
+            "จำคุก",
+            "ปรับ",
+            "บาท",
+            "โทษ",
+            "จำคุกไม่เกิน",
+            "ปรับไม่เกิน",
+            "แสน",
+            "ไม่เกิน 5 ปี"
         ],
         "keywords_remedy": [
             "ลบคลิป",
@@ -473,7 +887,18 @@ const CASE_REFERENCES = {
             "แอดมินลบ",
             "บล็อก",
             "report",
-            "รายงาน"
+            "รายงาน",
+            "ลบออก",
+            "ลบเนื้อหา",
+            "ลบทันที",
+            "แจ้งลบ",
+            "แจ้งแอดมิน",
+            "แจ้งผู้ดูแล",
+            "แจ้งครู",
+            "แจ้งตำรวจ",
+            "แจ้งผู้ปกครอง",
+            "บล็อกบัญชี",
+            "บล็อกผู้ส่ง"
         ],
         "keywords_security": [
             "safesearch",
@@ -481,7 +906,15 @@ const CASE_REFERENCES = {
             "content filter",
             "ตัวกรอง",
             "กรองเนื้อหา",
-            "moderation"
+            "moderation",
+            "ตัวกรองเนื้อหา",
+            "กรองภาพ",
+            "กรองคลิป",
+            "ระบบกรอง",
+            "content filtering",
+            "เนื้อหาที่ไม่เหมาะสม",
+            "parental control",
+            "ตั้งค่าความปลอดภัย"
         ]
     },
     "12": {
@@ -499,7 +932,19 @@ const CASE_REFERENCES = {
             "ดูหมิ่น",
             "อับอาย",
             "cyberbullying",
-            "ประจาน"
+            "ประจาน",
+            "แก้ไขภาพ",
+            "ตัดต่อภาพ",
+            "ตัดต่อรูป",
+            "ดัดแปลงภาพ",
+            "ทำให้เสื่อมเสีย",
+            "ทำให้อับอาย",
+            "ล้อเลียน",
+            "แกล้ง",
+            "บูลลี่",
+            "bully",
+            "ดูถูก",
+            "เสียหาย"
         ],
         "keywords_penalty": [
             "3 ปี",
@@ -508,7 +953,14 @@ const CASE_REFERENCES = {
             "สองแสน",
             "200000",
             "แสนบาท",
-            "ปรับ"
+            "ปรับ",
+            "จำคุก",
+            "บาท",
+            "โทษ",
+            "จำคุกไม่เกิน",
+            "ปรับไม่เกิน",
+            "ไม่เกิน 3 ปี",
+            "ทั้งจำทั้งปรับ"
         ],
         "keywords_remedy": [
             "แคปรูป",
@@ -517,14 +969,37 @@ const CASE_REFERENCES = {
             "report",
             "cyberbullying",
             "แจ้งครู",
-            "แจ้งผู้ปกครอง"
+            "แจ้งผู้ปกครอง",
+            "เก็บหลักฐาน",
+            "screenshot",
+            "แจ้งตำรวจ",
+            "ลบโพสต์",
+            "ลบภาพ",
+            "แจ้งแพลตฟอร์ม",
+            "รายงาน",
+            "แจ้งแอดมิน",
+            "แจ้ง ig",
+            "แจ้ง instagram",
+            "ขอโทษ",
+            "บอกครู",
+            "บอกผู้ปกครอง"
         ],
         "keywords_security": [
             "private account",
             "ตั้งค่าส่วนตัว",
             "จำกัดแท็ก",
             "ไม่แชร์รูปสาธารณะ",
-            "จริยธรรม"
+            "จริยธรรม",
+            "บัญชีส่วนตัว",
+            "ตั้งค่าความเป็นส่วนตัว",
+            "ไม่เผยแพร่รูป",
+            "ไม่แชร์รูป",
+            "privacy",
+            "ห้ามแท็ก",
+            "อนุญาตก่อนแท็ก",
+            "ไม่ให้คนแปลกหน้าเห็น",
+            "ตั้งค่า privacy",
+            "ไม่โพสต์รูปคนอื่น"
         ]
     }
 };
@@ -581,15 +1056,15 @@ function evaluateLocally(caseId, studentAnswers) {
         const hasPenaltyMatch = ref.keywords_penalty.some(k => lLower.includes(k.toLowerCase()));
         const hasPenaltyGeneral = (lLower.includes("คุก") || lLower.includes("จำคุก")) && (lLower.includes("ปรับ") || lLower.includes("บาท"));
 
-        if (hasLawMatch) legalScore += 4;
-        else if (lLower.includes("พ.ร.บ") || lLower.includes("มาตรา") || lLower.includes("pdpa") || lLower.includes("กฎหมาย")) legalScore += 2.5;
+        if (hasLawMatch) legalScore += 5;
+        else if (lLower.includes("พ.ร.บ") || lLower.includes("มาตรา") || lLower.includes("pdpa") || lLower.includes("กฎหมาย") || lLower.includes("ผิดกฎหมาย") || lLower.includes("ความผิด")) legalScore += 3;
 
         if (hasPenaltyMatch) legalScore += 3;
-        else if (hasPenaltyGeneral || lLower.includes("คุก") || lLower.includes("ปรับ") || lLower.includes("ปี") || lLower.includes("เดือน") || lLower.includes("บาท")) legalScore += 2;
+        else if (hasPenaltyGeneral || lLower.includes("คุก") || lLower.includes("ปรับ") || lLower.includes("ปี") || lLower.includes("เดือน") || lLower.includes("บาท") || lLower.includes("โทษ") || lLower.includes("ลงโทษ")) legalScore += 2;
 
-        if (hasLawMatch && (hasPenaltyMatch || hasPenaltyGeneral)) legalScore += 3;
-        else if (hasLawMatch && legalText.length >= 25) legalScore += 2;
-        else if (legalText.length >= 20) legalScore += 1;
+        if (hasLawMatch && (hasPenaltyMatch || hasPenaltyGeneral)) legalScore += 2;
+        else if (hasLawMatch && legalText.length >= 20) legalScore += 2;
+        else if (legalText.length >= 15) legalScore += 1;
 
         legalScore = Math.min(10, Math.max(0, legalScore));
         legalFeedback = legalScore >= 9
@@ -608,16 +1083,16 @@ function evaluateLocally(caseId, studentAnswers) {
     } else {
         const rLower = remedyText.toLowerCase();
         const hasRemedyAction = ref.keywords_remedy.some(k => rLower.includes(k.toLowerCase()));
-        const mentionsStakeholder = ["ครู", "ผู้ปกครอง", "พ่อ", "แม่", "ตำรวจ", "แอดมิน", "แพลตฟอร์ม", "ธนาคาร", "ค่ายเกม", "ผู้ดูแล"].some(s => rLower.includes(s));
+        const mentionsStakeholder = ["ครู","ผู้ปกครอง","พ่อ","แม่","ตำรวจ","แอดมิน","แพลตฟอร์ม","ธนาคาร","ค่ายเกม","ผู้ดูแล","ไอที","ผู้ให้บริการ","กสทช","เจ้าหน้าที่","อาจารย์","ผู้บริหาร","หัวหน้า","โรงเรียน","admin","ผู้ใหญ่"].some(s => rLower.includes(s));
 
-        if (hasRemedyAction) remedyScore += 4.5;
-        else if (rLower.includes("ลบ") || rLower.includes("เปลี่ยน") || rLower.includes("แจ้ง") || rLower.includes("บล็อก") || rLower.includes("กู้") || rLower.includes("หยุด") || rLower.includes("อายัด")) remedyScore += 3;
+        if (hasRemedyAction) remedyScore += 5;
+        else if (rLower.includes("ลบ") || rLower.includes("เปลี่ยน") || rLower.includes("แจ้ง") || rLower.includes("บล็อก") || rLower.includes("กู้") || rLower.includes("หยุด") || rLower.includes("อายัด") || rLower.includes("ปิด") || rLower.includes("ตัด") || rLower.includes("ระงับ")) remedyScore += 3;
 
         if (mentionsStakeholder) remedyScore += 3;
-        else if (rLower.includes("บอก") || rLower.includes("ช่วย") || rLower.includes("รายงาน") || rLower.includes("ปรึกษา")) remedyScore += 2;
+        else if (rLower.includes("บอก") || rLower.includes("ช่วย") || rLower.includes("รายงาน") || rLower.includes("ปรึกษา") || rLower.includes("ประสานงาน") || rLower.includes("ติดต่อ")) remedyScore += 2;
 
-        if (hasRemedyAction && (mentionsStakeholder || remedyText.length >= 30)) remedyScore += 2.5;
-        else if (remedyText.length >= 20) remedyScore += 1;
+        if (hasRemedyAction && (mentionsStakeholder || remedyText.length >= 25)) remedyScore += 2;
+        else if (remedyText.length >= 15) remedyScore += 1;
 
         remedyScore = Math.min(10, Math.max(0, remedyScore));
         remedyFeedback = remedyScore >= 9
@@ -638,13 +1113,13 @@ function evaluateLocally(caseId, studentAnswers) {
         const hasSecurityTool = ref.keywords_security.some(k => sLower.includes(k.toLowerCase()));
 
         if (hasSecurityTool) securityScore += 5;
-        else if (sLower.includes("รหัส") || sLower.includes("ระบบ") || sLower.includes("ป้องกัน") || sLower.includes("ตั้งค่า") || sLower.includes("ล็อก") || sLower.includes("สิทธิ์") || sLower.includes("กรอง")) securityScore += 3;
+        else if (sLower.includes("รหัส") || sLower.includes("ระบบ") || sLower.includes("ป้องกัน") || sLower.includes("ตั้งค่า") || sLower.includes("ล็อก") || sLower.includes("สิทธิ์") || sLower.includes("กรอง") || sLower.includes("ความปลอดภัย") || sLower.includes("ระวัง") || sLower.includes("ไม่ควร") || sLower.includes("หลีกเลี่ยง")) securityScore += 3;
 
-        if (hasSecurityTool && (sLower.includes("ทำได้") || sLower.includes("ง่าย") || sLower.includes("ตั้ง") || sLower.includes("เปิด") || sLower.includes("เพื่อ") || sLower.includes("ป้องกัน") || sLower.includes("บล็อก"))) securityScore += 3;
+        if (hasSecurityTool && (sLower.includes("ทำได้") || sLower.includes("ง่าย") || sLower.includes("ตั้ง") || sLower.includes("เปิด") || sLower.includes("เพื่อ") || sLower.includes("ป้องกัน") || sLower.includes("บล็อก") || sLower.includes("ใช้") || sLower.includes("ติดตั้ง") || sLower.includes("สมัคร"))) securityScore += 3;
         else if (hasSecurityTool) securityScore += 2;
 
-        if (hasSecurityTool && sLower.length >= 30) securityScore += 2;
-        else if (sLower.length >= 20) securityScore += 1;
+        if (hasSecurityTool && sLower.length >= 25) securityScore += 2;
+        else if (sLower.length >= 15) securityScore += 1;
 
         securityScore = Math.min(10, Math.max(0, securityScore));
         securityFeedback = securityScore >= 9

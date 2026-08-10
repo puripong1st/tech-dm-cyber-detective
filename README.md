@@ -1,126 +1,328 @@
 <div align="center">
-  <img src="assets/github_banner.png" alt="Cyber Shield Detective Promotional Banner" width="100%" />
+  <img src="favicon.png" alt="Cyber Shield Detective Logo" width="128" />
+  <br/>
+  <h1>🛡️ Cyber Shield Detective Platform</h1>
+  <h3>แพลตฟอร์มเกมการเรียนรู้กฎหมายคอมพิวเตอร์ & PDPA สำหรับนักเรียน ม.3</h3>
+  <p>ประเมินผลอัตนัยด้วย Google Gemini AI | ตรวจคะแนนเรียลไทม์ผ่าน Supabase | ระบบป้องกันโกงครบวงจร</p>
+
+[![Platform](https://img.shields.io/badge/Platform-พ.ร.บ.คอมพิวเตอร์_&_PDPA-0284c7?style=for-the-badge&logo=shield)](cyber_shield_detective.html)
+[![AI Engine](https://img.shields.io/badge/AI-Google_Gemini_API-ea4335?style=for-the-badge&logo=google)](https://aistudio.google.com)
+[![Database](https://img.shields.io/badge/DB-Supabase_Realtime-3ecf8e?style=for-the-badge&logo=supabase)](https://supabase.com)
+[![Deploy](https://img.shields.io/badge/Deploy-Vercel_|_GitHub_Pages-000?style=for-the-badge&logo=vercel)](vercel.json)
+[![License](https://img.shields.io/badge/License-MIT-f59e0b?style=for-the-badge)](package.json)
 </div>
 
-# 🛡️ Cyber Shield Detective: ปฏิบัติการสายสืบพิทักษ์ไซเบอร์ (ม.3)
-### ศูนย์รวมสื่อการเรียนรู้ & ระบบสืบคดีกฎหมายคอมพิวเตอร์และ PDPA ด้วยระบบประเมินผล AI
+---
 
-[![Platform](https://img.shields.io/badge/Platform-Cyber%20Law%20%26%20PDPA-0284c7?style=for-the-badge&logo=shield)](cyber_shield_detective.html)
-[![AI Engine](https://img.shields.io/badge/AI%20Engine-Google%20Gemini%20API-ea4335?style=for-the-badge&logo=google)](https://aistudio.google.com)
-[![Status](https://img.shields.io/badge/Status-Production%20Ready-10b981?style=for-the-badge)](cyber_shield_detective.html)
-[![Database](https://img.shields.io/badge/Database-Supabase%20Realtime-3ecf8e?style=for-the-badge&logo=supabase)](https://supabase.com)
-[![Anti-Cheat](https://img.shields.io/badge/Security-Zero%20Spoiler%20%26%20Anti--F12-8b5cf6?style=for-the-badge)](cyber_shield_detective.html)
-[![License](https://img.shields.io/badge/License-MIT-f59e0b?style=for-the-badge)](package.json)
+## 📌 สารบัญ
 
-**Cyber Shield Detective** เป็นแพลตฟอร์มเกมการเรียนรู้เชิงโต้ตอบ (Interactive Learning & Forensic Simulation Web Application) เรื่อง **พ.ร.บ. ว่าด้วยการกระทำความผิดเกี่ยวกับคอมพิวเตอร์ (ฉบับแก้ไขเพิ่มเติม)** และ **พระราชบัญญัติคุ้มครองข้อมูลส่วนบุคคล (PDPA)** ออกแบบมาเฉพาะสำหรับนักเรียนระดับชั้นมัธยมศึกษาปีที่ 3 เพื่อเสริมสร้างทักษะการคิดวิเคราะห์ นิติวิทยาศาสตร์ดิจิทัล และความมั่นคงปลอดภัยไซเบอร์ผ่านการ์ตูน 9 ช่อง และการประเมินผลอัตนัยด้วย **Google Gemini Generative AI**
+- [ภาพรวมโปรเจกต์](#-ภาพรวมโปรเจกต์)
+- [แผนผังไฟล์ทั้งหมด (Sitemap)](#️-แผนผังไฟล์ทั้งหมด-sitemap)
+- [เกมหลัก: Cyber Shield Detective (อัตนัย + AI)](#-เกมหลัก-cyber-shield-detective-อัตนัย--ai)
+  - [กติกาการเล่น](#กติกาการเล่น)
+  - [ระบบ 3 บทบาท (3 Forensic Dimensions)](#ระบบ-3-บทบาท-3-forensic-dimensions)
+  - [ระบบให้คะแนน (Scoring System)](#ระบบให้คะแนน-scoring-system)
+  - [ระบบป้องกันโกง (Anti-Cheat)](#ระบบป้องกันโกง-anti-cheat)
+  - [ใบเกียรติบัตร (Certificate)](#ใบเกียรติบัตร-certificate)
+- [เกม v3: Cyber Detective (ปรนัย)](#-เกม-v3-cyber-detective-ปรนัย)
+- [แดชบอร์ดครูผู้สอน](#-แดชบอร์ดครูผู้สอน)
+- [แฟ้ม 12 คดีหลักฐานการ์ตูน 9 ช่อง](#-แฟ้ม-12-คดีหลักฐานการ์ตูน-9-ช่อง)
+- [สถาปัตยกรรมโค้ด (Code Architecture)](#-สถาปัตยกรรมโค้ด-code-architecture)
+- [ติดตั้ง Supabase Database](#-ติดตั้ง-supabase-database)
+- [ตั้งค่า Environment Variables](#️-ตั้งค่า-environment-variables)
+- [วิธีรันในเครื่อง (Local Setup)](#-วิธีรันในเครื่อง-local-setup)
+- [Deploy ขึ้น Vercel / GitHub Pages](#-deploy-ขึ้น-vercel--github-pages)
 
 ---
 
-## 📌 สารบัญ (Table of Contents)
-- [🎮 จุดเด่นของเกม Cyber Shield Detective](#-จุดเด่นของเกม-cyber-shield-detective)
-- [🛡️ ระบบความปลอดภัยและป้องกันการโกง (Anti-Cheat & Security Shield)](#️-ระบบความปลอดภัยและป้องกันการโกง-anti-cheat--security-shield)
-- [🤖 ระบบวิเคราะห์คำตอบด้วย Google Gemini AI (No-Spoiler AI Evaluator)](#-ระบบวิเคราะห์คำตอบด้วย-google-gemini-ai-no-spoiler-ai-evaluator)
-- [📚 แฟ้ม 12 คดีหลักฐานการ์ตูน 9 ช่อง](#-แฟ้ม-12-คดีหลักฐานการ์ตูน-9-ช่อง)
-- [📊 ระบบรายงานผลคะแนนกลุ่ม & พิมพ์ PDF เรียงตามเลขที่](#-ระบบรายงานผลคะแนนกลุ่ม--พิมพ์-pdf-เรียงตามเลขที่)
-- [⚡ การติดตั้งฐานข้อมูล Supabase Realtime](#-การติดตั้งฐานข้อมูล-supabase-realtime)
-- [⚙️ การตั้งค่าสภาพแวดล้อม (.env)](#️-การตั้งค่าสภาพแวดล้อม-env)
-- [🚀 ขั้นตอนการติดตั้งและรันในเครื่อง (Local Setup)](#-ขั้นตอนการติดตั้งและรันในเครื่อง-local-setup)
-- [🌐 การเปิดเล่นผ่าน GitHub Pages & Vercel](#-การเปิดเล่นผ่าน-github-pages--vercel)
-- [🗺️ แผนผังหน้าเว็บในโปรเจกต์ (Sitemap & Hub)](#️-แผนผังหน้าเว็บในโปรเจกต์-sitemap--hub)
+## 🎯 ภาพรวมโปรเจกต์
+
+**Cyber Shield Detective Platform** คือแพลตฟอร์มเว็บแอปพลิเคชันเพื่อการเรียนรู้เรื่อง **พ.ร.บ.ว่าด้วยการกระทำความผิดเกี่ยวกับคอมพิวเตอร์** และ **PDPA** ออกแบบสำหรับนักเรียนชั้น ม.3 ประกอบด้วย:
+
+| ส่วนประกอบ | คำอธิบาย |
+|:---|:---|
+| 🎮 **เกมหลัก (Shield Detective)** | เกมสืบคดีอัตนัย 3 บทบาท ตรวจด้วย Google Gemini AI |
+| 🕹️ **เกม v3 (Detective)** | เกมสืบคดีปรนัย (เลือกตอบ) 30 คดี |
+| 👩‍🏫 **แดชบอร์ดครู (Shield)** | ตรวจคะแนนเรียลไทม์ กรองห้อง ส่งออก PDF |
+| 📊 **แดชบอร์ดครู (v3)** | ตรวจคะแนนเกม v3 ส่งออก PDF |
+| 📖 **สไลด์บทเรียน** | สรุปเนื้อหา พ.ร.บ.คอมพิวเตอร์ มาตราสำคัญ |
+| 📂 **คลังคดี & เฉลย** | ข้อมูลอ้างอิง 12 คดี + ระบบปลดล็อกเฉลยสำหรับครู |
 
 ---
 
-## 🎮 จุดเด่นของเกม Cyber Shield Detective
+## 🗺️ แผนผังไฟล์ทั้งหมด (Sitemap)
+
+| URL Path | ไฟล์ | คำอธิบาย |
+|:---|:---|:---|
+| `/` | `index.html` | 🏠 ศูนย์รวมสื่อ — หน้าหลักเลือกเข้าเกม/แดชบอร์ด |
+| `/shield_detective` | `cyber_shield_detective.html` | 🎮 เกมหลัก: สืบคดีอัตนัย 3 บทบาท + AI + Anti-Cheat |
+| `/shield_teacher` | `cyber_shield_teacher.html` | 👩‍🏫 แดชบอร์ดครู: ตรวจคะแนนเกมหลัก Realtime |
+| `/detective` | `cyber_detective.html` | 🕹️ เกม v3: สืบคดีปรนัย (เลือกตอบ) |
+| `/teacher_dashboard` | `teacher_dashboard.html` | 📊 แดชบอร์ดครู v3: ตรวจคะแนนเกม v3 |
+| `/presentation` | `presentation.html` | 📖 สไลด์บทเรียน พ.ร.บ.คอมพิวเตอร์ |
+| `/cases` | `cases_reference.html` | 📂 คลังข้อมูลอ้างอิง 12 คดี + เฉลย |
+
+### โครงสร้างโฟลเดอร์
 
 ```
-┌─────────────────────────────────────────────────────────────────────────────┐
-│                 CYBER SHIELD DETECTIVE: CORE GAMEPLAY LOOP                  │
-│                                                                             │
-│  [1. ทะเบียนทีม & สมาชิก] ──► [2. สุ่ม 6 คดีการ์ตูน] ──► [3. วิเคราะห์ 3 มิติ]│
-│  - เลือกห้อง ม.3/1 - 3/15    - ภาพหลักฐาน Opaque Hashed   - 👨‍⚖️ นักกฎหมายไซเบอร์│
-│  - สมาชิก 1-10 คน (ด.ช./ด.ญ.)- ไทม์ไลน์ 3 ช่วง 9 ช่อง    - 🚑 ผู้บรรเทาเหตุฉุกเฉิน│
-│  - บันทึกลง LocalStorage       - ซูมดู Lightbox คมชัด    - 🛡️ วิศวกรความปลอดภัย│
-│                                                                             │
-│                                      ▼                                      │
-│  [6. รายงานผล & PDF] ◄── [5. บันทึกผล & อันดับ] ◄── [4. Gemini AI วิเคราะห์] │
-│  - สรุปคะแนน 3 มิติ            - บันทึกลง Supabase Realtime- ให้เหตุผลเชิงแนวคิด │
-│  - Export PDF เรียงเลขที่แนวตั้ง- Leaderboard สด            - ตรวจจับพิมพ์มั่ว/สแปม │
-└─────────────────────────────────────────────────────────────────────────────┘
+📁 cyber-law-game-app/
+├── 📄 index.html                     # หน้าหลัก Hub
+├── 📄 cyber_shield_detective.html    # เกมหลัก (อัตนัย AI)
+├── 📄 cyber_shield_teacher.html      # แดชบอร์ดครูเกมหลัก
+├── 📄 cyber_detective.html           # เกม v3 (ปรนัย)
+├── 📄 teacher_dashboard.html         # แดชบอร์ดครู v3
+├── 📄 presentation.html              # สไลด์บทเรียน
+├── 📄 cases_reference.html           # คลังคดี & เฉลย
+├── 📄 cases_data.js                  # ข้อมูล 30 คดีสำหรับเกม v3
+├── 📄 server.js                      # Express.js Backend + Gemini AI
+├── 📄 vercel.json                    # Vercel Deployment Config
+├── 📄 package.json                   # Node.js Dependencies
+├── 📁 assets/
+│   ├── 📁 evidence/                  # ภาพการ์ตูน 9 ช่อง (12 คดี)
+│   │   ├── case_ev_8f3a9b21.png      # คดี 1
+│   │   ├── case_ev_4e7c1d89.png      # คดี 2
+│   │   ├── ...                       # คดี 3-12
+│   │   └── case_ev_4d9f1e8a.png      # คดี 12
+│   └── 📁 comic/                     # ภาพการ์ตูนสำหรับเกม v3
+├── 📁 css/
+│   ├── index.css                     # สไตล์หน้า Hub
+│   ├── teacher_dashboard.css         # สไตล์แดชบอร์ดครู v3
+│   └── ...
+├── 📁 js/                            # JavaScript Modules
+└── 📄 .env                           # Environment Variables (ไม่รวมใน Git)
 ```
 
-1. **การวิเคราะห์อัตนัย 3 บทบาทเชิงลึก (3 Forensic Dimensions)**:
-   - 👨‍⚖️ **นักกฎหมายไซเบอร์ (Legal Dimension - 10 คะแนน):** วิเคราะห์พฤติการณ์ความผิดตาม พ.ร.บ.คอมพิวเตอร์/PDPA พร้อมประเมินอัตราโทษจำคุกและปรับ
-   - 🚑 **ผู้บรรเทาเหตุฉุกเฉิน (Incident Remedy - 10 คะแนน):** กำหนดขั้นตอนการตัดวงจรความเสียหายทันที และระบุผู้รับผิดชอบหรือหน่วยงานที่มีอำนาจระงับเหตุ
-   - 🛡️ **วิศวกรความปลอดภัย (Security Engineering - 10 คะแนน):** เสนอแนะมาตรการทางเทคนิคและเทคโนโลยีเพื่อปิดช่องโหว่ความเสี่ยงในระยะยาว
-2. **ระบบสุ่มคดีอัตโนมัติ (6 Random Cases)**: จากคลังคดีการ์ตูน 12 มาตรา เพื่อความหลากหลายในแต่ละรอบการเล่น
-3. **ระบบป้องกันข้อมูลสูญหาย (F5 Auto-Save)**: กดรีเฟรชหรือสลับหน้าต่าง ระบบจะจำสถานะการเล่น สมาชิก และคำตอบเดิมผ่าน `localStorage` โดยอัตโนมัติ พร้อมปุ่มยืนยันเริ่มเล่นใหม่
+---
+
+## 🎮 เกมหลัก: Cyber Shield Detective (อัตนัย + AI)
+
+### กติกาการเล่น
+
+```
+┌─────────────────────────────────────────────────────────────────────────┐
+│                        GAME FLOW OVERVIEW                              │
+│                                                                        │
+│  1. ลงทะเบียนทีม        →  2. รับ 6 คดีสุ่ม       →  3. วิเคราะห์    │
+│  - ตั้งชื่อกลุ่ม           - สุ่มจากคลัง 12 คดี      - ทำทีละคดี      │
+│  - เลือกห้อง ม.3/1-15     - ดูการ์ตูน 9 ช่อง         - ทีละบทบาท     │
+│  - เพิ่มสมาชิก 1-10 คน    - อ่านคำร้องทุกข์          - ส่งทีละบท     │
+│                                                                        │
+│  4. AI ตรวจคะแนน      ←  5. บันทึก Supabase     ←  6. ใบเกียรติบัตร  │
+│  - Gemini AI / Heuristic   - Realtime Database       - สรุปคะแนน     │
+│  - 10 คะแนน/บทบาท         - ครูดูคะแนนสด            - พิมพ์ PDF      │
+└─────────────────────────────────────────────────────────────────────────┘
+```
+
+**ขั้นตอนโดยละเอียด:**
+
+1. **ลงทะเบียนทีม** — ตั้งชื่อกลุ่มสายสืบ, เลือกห้องเรียน (ม.3/1 - ม.3/15), เพิ่มสมาชิก 1-10 คน (ระบุเลขที่, คำนำหน้า, ชื่อ-นามสกุล)
+2. **รับมอบหมายคดี** — ระบบสุ่ม 6 คดีจากคลัง 12 คดี แต่ละคดีมีการ์ตูน 9 ช่อง + คำร้องทุกข์
+3. **ทำทีละคดี ทีละบทบาท** — เลือกคดีใดก่อนก็ได้ แต่ละคดีต้องทำ 3 บทบาทตามลำดับ:
+   - บทบาทที่ 1: กฎหมาย → พิมพ์คำตอบ → **กดส่งตรวจ** → ได้คะแนนทันที
+   - บทบาทที่ 2: บรรเทาภัย → พิมพ์คำตอบ → **กดส่งตรวจ** → ได้คะแนนทันที
+   - บทบาทที่ 3: ความปลอดภัย → พิมพ์คำตอบ → **กดส่งตรวจ** → ได้คะแนนทันที
+4. **ดูผลประเมิน** — AI ให้คะแนน + ฟีดแบ็กเชิงแนวคิด (ไม่บอกเฉลยตรงๆ)
+5. **ส่งซ้ำไม่ได้** — เมื่อส่งครบ 3 บทบาทของคดีนั้นแล้ว จะไม่สามารถแก้ไขหรือส่งซ้ำได้อีก
+6. **ใบเกียรติบัตร** — เมื่อทำครบ 6 คดี สามารถดูสรุปคะแนนรวมและพิมพ์ใบเกียรติบัตรเป็น PDF
+
+### ระบบ 3 บทบาท (3 Forensic Dimensions)
+
+| บทบาท | ไอคอน | คะแนน | เกณฑ์การให้คะแนน |
+|:---|:---:|:---:|:---|
+| **นักวิเคราะห์กฎหมาย** | 👨‍⚖️ | 10 | ระบุฐานความผิด (พ.ร.บ.คอมพิวเตอร์/PDPA) + อัตราโทษจำคุก/ปรับ |
+| **เจ้าหน้าที่บรรเทาภัย** | 🚑 | 10 | ระบุขั้นตอนระงับเหตุเฉพาะหน้า + แจ้งผู้เกี่ยวข้อง |
+| **วิศวกรความปลอดภัย** | 🛡️ | 10 | เสนอเครื่องมือ/มาตรการทางเทคนิคเพื่อป้องกันระยะยาว |
+
+**คะแนนเต็มต่อคดี = 30 คะแนน** (3 บทบาท × 10 คะแนน)
+**คะแนนเต็มรวม = 180 คะแนน** (6 คดี × 30 คะแนน)
+
+### ระบบให้คะแนน (Scoring System)
+
+ระบบให้คะแนนมี 2 โหมด ขึ้นอยู่กับว่ามี Gemini API Key หรือไม่:
+
+#### โหมดที่ 1: Google Gemini AI (เมื่อมี API Key)
+- AI อ่านคำตอบนักเรียนและเปรียบเทียบกับฐานข้อมูลคำตอบมาตรฐาน
+- ให้คะแนน 0-10 พร้อมฟีดแบ็กเชิงแนวคิด
+- **ไม่บอกเฉลยตรงๆ** — AI จะชี้แนะทิศทางให้นักเรียนคิดต่อเอง
+
+#### โหมดที่ 2: Heuristic Engine (Offline / ไม่มี API Key)
+ใช้ระบบ Keyword Matching + Scoring Rubric ตรวจคำตอบ:
+
+**บทบาทกฎหมาย (Legal):**
+| เงื่อนไข | คะแนนที่ได้ |
+|:---|:---:|
+| ระบุมาตราถูกต้อง (ตรงกับ keyword เฉพาะคดี) | +5 |
+| ระบุคำทั่วไปเกี่ยวกับกฎหมาย (เช่น "พ.ร.บ.", "มาตรา") | +3 |
+| ระบุโทษจำคุก/ปรับถูกต้อง (ตรงกับ keyword) | +3 |
+| ระบุคำทั่วไปเกี่ยวกับโทษ (เช่น "จำคุก", "ปรับ", "บาท") | +2 |
+| ระบุทั้งมาตราและโทษถูกต้อง (Bonus) | +2 |
+| คำตอบมีความยาวเพียงพอ (≥20 ตัวอักษร) | +1-2 |
+
+**บทบาทบรรเทาภัย (Remedy):**
+| เงื่อนไข | คะแนนที่ได้ |
+|:---|:---:|
+| ระบุวิธีระงับเหตุตรงประเด็น (ตรงกับ keyword) | +5 |
+| ระบุคำทั่วไปเกี่ยวกับการรับมือ (เช่น "ลบ", "แจ้ง", "บล็อก") | +3 |
+| ระบุผู้เกี่ยวข้อง (ครู/ผู้ปกครอง/ตำรวจ/แอดมิน/ธนาคาร ฯลฯ) | +3 |
+| ระบุคำทั่วไปเกี่ยวกับการขอความช่วยเหลือ | +2 |
+| ทั้ง Action + Stakeholder (Bonus) | +2 |
+
+**บทบาทความปลอดภัย (Security):**
+| เงื่อนไข | คะแนนที่ได้ |
+|:---|:---:|
+| ระบุเครื่องมือเทคนิคถูกต้อง (เช่น "2FA", "Firewall", "VPN") | +5 |
+| ระบุแนวคิดทั่วไปเกี่ยวกับการป้องกัน | +3 |
+| อธิบายวิธีใช้เครื่องมือ (Bonus) | +3 |
+| ระบุเครื่องมือแต่ไม่อธิบาย | +2 |
+| คำตอบยาวเพียงพอ (Bonus) | +1-2 |
+
+**ระบบตรวจจับข้อความมั่ว (Anti-Gibberish):**
+- กดแป้นพิมพ์มั่ว (asdfgh, ฟกหกด) → **0 คะแนน**
+- ตัวอักษรซ้ำ 5+ ตัว (aaaaa, กกกกก) → **0 คะแนน**
+- คำตอบเลี่ยง (ไม่รู้, ขี้เกียจ, 5555) → **0 คะแนน**
+- ข้อความสั้นเกินไป (<10 ตัวอักษร) → **0 คะแนน**
+
+### ระบบป้องกันโกง (Anti-Cheat)
+
+| มาตรการ | รายละเอียด |
+|:---|:---|
+| **ชื่อไฟล์ภาพ Hashed** | ภาพหลักฐานใช้ชื่อแฮชสุ่ม (เช่น `case_ev_8f3a9b21.png`) ไม่ระบุมาตรา |
+| **ปิด DevTools** | บล็อก F12, Ctrl+Shift+I/J/C, Ctrl+U, Ctrl+S |
+| **ปิดคลิกขวา** | Right-Click Context Menu ถูกปิด + Toast Alert |
+| **ล้าง Console** | ตรวจจับ DevTools เปิด → ล้าง Console อัตโนมัติ |
+| **Zero-Spoiler** | ไม่มีเลขมาตราในหลักฐาน, ไทม์ไลน์, หรือ UI ใดๆ |
+| **AI No-Spoiler** | Gemini AI ชี้แนะแนวคิด ไม่บอกคำตอบ |
+| **ส่งซ้ำไม่ได้** | เมื่อส่งครบ 3 บทบาทแล้ว ล็อกไม่ให้แก้ไข |
+
+### ใบเกียรติบัตร (Certificate)
+
+เมื่อทำครบ 6 คดี ระบบจะแสดงใบเกียรติบัตรที่มี:
+- ชื่อกลุ่มสายสืบ + รายชื่อสมาชิก
+- คะแนนรวมทั้ง 6 คดี (เต็ม 180)
+- ระดับฝีมือ: Cyber Master / Senior Detective / นักสืบฝึกหัด
+- รองรับ `window.print()` สำหรับพิมพ์เป็น PDF กระดาษ A4
 
 ---
 
-## 🛡️ ระบบความปลอดภัยและป้องกันการโกง (Anti-Cheat & Security Shield)
+## 🕹️ เกม v3: Cyber Detective (ปรนัย)
 
-ระบบได้รับการออกแบบด้วยหลักการ Zero-Knowledge Anti-Cheat เพื่อป้องกันไม่ให้นักเรียนโกงหรือแอบดูคำตอบ:
-
-1. **การเข้ารหัสชื่อไฟล์ภาพหลักฐาน (Opaque Hashed Filenames)**:
-   - ภาพหลักฐานในโฟลเดอร์ `assets/evidence/` ถูกเปลี่ยนชื่อเป็นรหัสแฮชสุ่ม (เช่น `case_ev_8f3a9b21.png`)
-   - ป้องกันการแอบดูชื่อไฟล์ภาพ (เช่น `มาตรา 8.png`) ผ่าน Network Tab หรือการ Inspect Element
-2. **Anti-DevTools & Anti-Inspect Shield**:
-   - ปิดการใช้งานปุ่ม **`F12`**, **`Ctrl+Shift+I`**, **`Ctrl+Shift+J`**, **`Ctrl+Shift+C`**
-   - ปิดการใช้งาน **`Ctrl+U`** (View Source) และ **`Ctrl+S`** (Save Webpage)
-   - ปิดการคลิกขวา (**Right-Click Context Menu**) พร้อมระบบแจ้งเตือนความปลอดภัย (Security Toast Alert)
-   - มีระบบดักจับและล้างหน้าต่าง Console อัตโนมัติเมื่อตรวจพบการเปิดหน้าต่าง DevTools
-3. **Zero-Spoiler Policy**:
-   - ไม่มีข้อความระบุเลขมาตราในแฟ้มคดี, แท็บไทม์ไลน์ 3 ช่วง, หน้าต่างซูม Lightbox หรือตารางคะแนนกลุ่ม
+เกมเวอร์ชันเดิมที่ใช้ระบบเลือกตอบ (Multiple Choice):
+- **30 คดีจำลอง** พร้อมภาพการ์ตูนประกอบ
+- วิเคราะห์หลักฐาน → ไต่สวนผู้สงสัย → เลือกฐานความผิด
+- ตรวจคำตอบทันทีแบบอัตโนมัติ
+- ข้อมูลคดีทั้งหมดอยู่ในไฟล์ `cases_data.js`
 
 ---
 
-## 🤖 ระบบวิเคราะห์คำตอบด้วย Google Gemini AI (No-Spoiler AI Evaluator)
+## 👩‍🏫 แดชบอร์ดครูผู้สอน
 
-ระบบใช้ Google Gemini API ร่วมกับ Local Heuristic Engine ในการตรวจคำตอบ:
+### แดชบอร์ดเกมหลัก (cyber_shield_teacher.html)
+- 🔐 ล็อกด้วยรหัสผ่านครู (Passcode)
+- 📊 ตารางคะแนนเรียลไทม์ผ่าน Supabase — จัดกลุ่มตามชื่อทีม
+- 🔍 กรองตามห้อง (ม.3/1 - ม.3/15) + ค้นหาชื่อ
+- 📋 โหมดแสดงรายชื่อสมาชิก (เลขที่ / ชื่อ)
+- 📖 แฟ้มเฉลยเกณฑ์ 12 คดี (ระบบปลดล็อก)
+- 🖨️ ส่งออก PDF รายงานเกรด (A4)
 
-- **การประเมินเชิงการศึกษา (Pedagogical Explanations)**:
-  - หากนักเรียนตอบไม่ตรงประเด็นหรือได้คะแนนน้อย AI จะ**ไม่อธิบายเฉลยตรงๆ หรือบอกเลขมาตรา**
-  - AI จะอธิบายให้เข้าใจว่าเหตุการณ์ดังกล่าวส่งผลกระทบต่อสิทธิหรือระบบอย่างไร และคำตอบยังขาดมิติใด เพื่อให้นักเรียนฝึกคิดวิเคราะห์
-- **ระบบคัดกรองข้อความมั่วและสแปม (Anti-Gibberish Detection)**:
-  - ตรวจจับการกดแป้นพิมพ์มั่ว (เช่น `asdfghjk`, `ฟกหกด่าส`, ตัวอักษรซ้ำๆ)
-  - ตรวจจับคำตอบเลี่ยง (เช่น `ไม่รู้`, `ขี้เกียจ`, `55555`) และปรับเป็น 0 คะแนนทันทีพร้อมข้อความชี้แนะ
+### แดชบอร์ดเกม v3 (teacher_dashboard.html)
+- 📊 ตารางคะแนนเกม v3 (ปรนัย)
+- 🖨️ ส่งออก PDF สำหรับพิมพ์
 
 ---
 
 ## 📚 แฟ้ม 12 คดีหลักฐานการ์ตูน 9 ช่อง
 
-| คดีที่ | ชื่อคดี (พฤติการณ์จำลอง) | ไฟล์ภาพหลักฐาน (Hashed) | สาระสำคัญทางกฎหมาย |
-| :---: | :--- | :--- | :--- |
-| **01** | แอบส่องระบบไอดีเกมของเพื่อน | `assets/evidence/case_ev_8f3a9b21.png` | การเข้าถึงระบบคอมพิวเตอร์โดยมิชอบ |
-| **02** | แจกรหัสผ่านระบบในกลุ่ม Discord | `assets/evidence/case_ev_4e7c1d89.png` | การเปิดเผยมาตรการป้องกันการเข้าถึง |
-| **03** | แอบคุ้ยไฟล์ไดอารี่แชทลับส่วนตัว | `assets/evidence/case_ev_9a2b5f34.png` | การเข้าถึงข้อมูลคอมพิวเตอร์โดยมิชอบ |
-| **04** | ดักจับข้อมูลธุรกรรมเติมเกมกลางทาง | `assets/evidence/case_ev_1c8e7b54.png` | การดักรับข้อมูลระหว่างการส่ง |
-| **05** | มือบอนแอบลบไฟล์โครงงานวิทย์เพื่อน | `assets/evidence/case_ev_6a92f03d.png` | การทำลาย แก้ไข หรือเปลี่ยนแปลงข้อมูล |
-| **06** | ยิง DDoS พังเซิร์ฟเวอร์เว็บสอบโรงเรียน | `assets/evidence/case_ev_3f81e6ac.png` | การรบกวน ขัดขวางการทำงานของระบบ |
-| **07** | ส่งอีเมลสแปมขายของปลอมตัวตน | `assets/evidence/case_ev_e920d57b.png` | การส่งสแปมโดยปกปิดแหล่งที่มา |
-| **08** | บอทสแปมรัวๆ ปิดปุ่มยกเลิกรับข่าวสาร | `assets/evidence/case_ev_7c3a812f.png` | การส่งสแปมรบกวนโดยไม่ให้กดยกเลิก |
-| **09** | สร้างเว็บฟิชชิ่งหลอกสกินเกมฟรี | `assets/evidence/case_ev_5b04c9e8.png` | การนำเข้าข้อมูลเท็จหลอกลวงประชาชน |
-| **10** | โพสต์ข่าวลวงภัยพิบัติจนคนแตกตื่นวิ่งวุ่น | `assets/evidence/case_ev_a1f9e832.png` | การนำเข้าข้อมูลเท็จสร้างความตื่นตระหนก |
-| **11** | โพสต์ภาพ/คลิปโป๊ลงคอมพิวเตอร์สาธารณะ | `assets/evidence/case_ev_2e6d9a41.png` | การนำเข้าข้อมูลลามกสู่ระบบสาธารณะ |
-| **12** | ตัดต่อหน้าเพื่อนใส่เอเลี่ยนประจานในโซเชียล | `assets/evidence/case_ev_4d9f1e8a.png` | การนำภาพตัดต่อทำให้ผู้อื่นเสียชื่อเสียง |
+| # | ชื่อคดี | มาตรา | อัตราโทษ |
+|:---:|:---|:---|:---|
+| 1 | แอบส่องระบบไอดีเกมของเพื่อน | ม.5 เข้าถึงระบบโดยมิชอบ | จำคุก ≤6 เดือน / ปรับ ≤10,000 บาท |
+| 2 | แจกรหัสผ่านระบบใน Discord | ม.6 เปิดเผยมาตรการป้องกัน | จำคุก ≤1 ปี / ปรับ ≤20,000 บาท |
+| 3 | แอบคุ้ยไฟล์ไดอารี่แชทลับส่วนตัว | ม.7 เข้าถึงข้อมูลโดยมิชอบ | จำคุก ≤2 ปี / ปรับ ≤40,000 บาท |
+| 4 | ดักจับข้อมูลธุรกรรมเติมเกมกลางทาง | ม.8 ดักรับข้อมูลระหว่างการส่ง | จำคุก ≤3 ปี / ปรับ ≤60,000 บาท |
+| 5 | มือบอนแอบลบไฟล์โครงงานวิทย์เพื่อน | ม.9 ทำลาย/แก้ไขข้อมูลโดยมิชอบ | จำคุก ≤5 ปี / ปรับ ≤100,000 บาท |
+| 6 | ยิง DDoS พังเซิร์ฟเวอร์เว็บสอบ | ม.10 รบกวน/ขัดขวางระบบ | จำคุก ≤5 ปี / ปรับ ≤100,000 บาท |
+| 7 | ส่งอีเมลสแปมขายของปลอมตัวตน | ม.11 วรรค 1 ส่งสแปมปกปิดตัวตน | ปรับ ≤100,000 บาท |
+| 8 | บอทสแปมรัวๆ ปิดปุ่มยกเลิก | ม.11 วรรค 2 ส่งสแปมไม่ให้ยกเลิก | ปรับ ≤200,000 บาท |
+| 9 | สร้างเว็บฟิชชิ่งหลอกสกินเกมฟรี | ม.14(1) ข้อมูลเท็จหลอกลวง | จำคุก ≤5 ปี / ปรับ ≤100,000 บาท |
+| 10 | โพสต์ข่าวลวงภัยพิบัติจนคนแตกตื่น | ม.14(2) ข้อมูลเท็จสร้างตื่นตระหนก | จำคุก ≤5 ปี / ปรับ ≤100,000 บาท |
+| 11 | โพสต์ภาพ/คลิปลามกลงสาธารณะ | ม.14(4) ข้อมูลลามกอนาจาร | จำคุก ≤5 ปี / ปรับ ≤100,000 บาท |
+| 12 | ตัดต่อหน้าเพื่อนประจานในโซเชียล | ม.16 ภาพตัดต่อทำให้เสียชื่อเสียง | จำคุก ≤3 ปี / ปรับ ≤200,000 บาท |
+
+> 📝 **หมายเหตุ:** ชื่อไฟล์ภาพหลักฐานถูกเข้ารหัสเป็น Hash เพื่อป้องกันนักเรียนแอบดูมาตราจากชื่อไฟล์
 
 ---
 
-## 📊 ระบบรายงานผลคะแนนกลุ่ม & พิมพ์ PDF เรียงตามเลขที่
+## 🏗️ สถาปัตยกรรมโค้ด (Code Architecture)
 
-- ปุ่ม **"คะแนนกลุ่ม & PDF"** สำหรับดูสรุปคะแนน 6 คดี พร้อมตารางคะแนนรวม
-- **การพิมพ์ PDF (`window.print()`)**: จัดหน้ากระดาษแนวตั้งสำหรับพิมพ์ใบงาน โดยแสดงข้อมูล:
-  - `ชื่อกลุ่ม` | `เพศ (ด.ช./ด.ญ.)` | `ชื่อ - นามสกุล` | `ห้อง (ม.3/1 - 3/15)` | `เลขที่` | `คะแนนสะสม`
-  - ตารางรายชื่อสมาชิกจะถูกเรียงลำดับตาม **เลขที่ (1-50)** จากน้อยไปมากโดยอัตโนมัติ
+### Frontend (Client-side)
+
+| ไฟล์ | หน้าที่ |
+|:---|:---|
+| `cyber_shield_detective.html` | **SPA เกมหลัก** — มี `ALL_12_CASES` object เก็บข้อมูลคดี + keywords, UI state management, ระบบ role switching, lightbox ซูมภาพ, certificate generation, anti-cheat shield |
+| `cyber_shield_teacher.html` | **แดชบอร์ดครู** — เชื่อมต่อ Supabase Realtime, ตาราง scoreboard จัดกลุ่มตามทีม, กรองห้อง, export PDF |
+| `cyber_detective.html` | **เกม v3** — เกมเลือกตอบ ใช้ข้อมูลจาก `cases_data.js` |
+| `teacher_dashboard.html` | **แดชบอร์ดครู v3** — สรุปคะแนนเกม v3 |
+| `presentation.html` | **สไลด์บทเรียน** — เนื้อหาบรรยาย พ.ร.บ.คอมพิวเตอร์ |
+| `cases_reference.html` | **คลังคดี** — ข้อมูลอ้างอิง + เฉลยล็อกด้วย passcode |
+| `index.html` | **Hub** — หน้าหลักเลือกเข้าเว็บย่อย |
+
+### Backend (server.js — Express.js)
+
+| ส่วน | หน้าที่ |
+|:---|:---|
+| `CASE_REFERENCES` | ฐานข้อมูล 12 คดี: คำตอบมาตรฐาน + keywords 4 หมวด (law, penalty, remedy, security) |
+| `isGibberishOrNonsense()` | ตรวจจับข้อความมั่ว/สแปม/คำตอบเลี่ยง |
+| `evaluateLocally()` | **Heuristic Engine** — ตรวจคำตอบด้วย keyword matching + scoring rubric |
+| `POST /api/evaluate-case` | Endpoint หลัก — เรียก Gemini AI ก่อน, fallback เป็น Heuristic ถ้าไม่มี key |
+| `POST /api/verify-passcode` | ตรวจ passcode ครู |
+| `POST /api/test-gemini-key` | ทดสอบ Gemini API Key |
+| `GET /api/config` | ส่ง public config (Supabase URL/Key) ให้ frontend |
+
+### Scoring Pipeline
+
+```
+คำตอบนักเรียน
+    │
+    ▼
+┌─────────────────┐     API Key มี?     ┌──────────────────┐
+│ isGibberish()   │ ──── ใช่ ────────►  │ Google Gemini AI │
+│ ตรวจข้อความมั่ว  │                     │ ตรวจ + ให้ฟีดแบ็ก │
+└─────────────────┘                     └──────────────────┘
+    │ ไม่ใช่                                    │
+    ▼                                           ▼
+┌─────────────────┐                     ┌──────────────────┐
+│ evaluateLocally │ ◄── ไม่มี Key ────  │ บันทึก Supabase  │
+│ Keyword Match   │                     │ Realtime Database│
+│ + Scoring Rubric│                     └──────────────────┘
+└─────────────────┘
+    │
+    ▼
+┌─────────────────┐
+│ ส่งคะแนน + ฟีดแบ็ก │
+│ กลับให้ Frontend   │
+└─────────────────┘
+```
+
+### Keywords Database
+
+แต่ละคดีมี keywords 4 หมวด ใช้สำหรับ Heuristic Scoring:
+
+| หมวด | ตัวอย่าง (คดี 1) | ใช้ประเมิน |
+|:---|:---|:---|
+| `keywords_law` | มาตรา 5, แอบเข้า, เข้าถึงระบบ, มิชอบ | ฐานความผิด |
+| `keywords_penalty` | 6 เดือน, 10,000, ทั้งจำทั้งปรับ | อัตราโทษ |
+| `keywords_remedy` | เปลี่ยนรหัส, ล็อกเอาต์, แจ้งครู | วิธีระงับเหตุ |
+| `keywords_security` | 2FA, OTP, ล็อกหน้าจอ, ยืนยันตัวตน | เครื่องมือป้องกัน |
+
+> Keywords ถูกจัดเก็บทั้งใน `cyber_shield_detective.html` (client) และ `server.js` (backend) เพื่อรองรับทั้งโหมด Online และ Offline
 
 ---
 
-## ⚡ การติดตั้งฐานข้อมูล Supabase Realtime
+## ⚡ ติดตั้ง Supabase Database
 
-นำคำสั่ง SQL ด้านล่างนี้ไปรันใน **Supabase SQL Editor** เพื่อสร้างตารางและเปิดใช้งาน Realtime:
+สร้างตาราง `game_scores` ใน **Supabase SQL Editor**:
 
 ```sql
--- 1. สร้างตารางเก็บผลคะแนนสืบคดี
+-- 1. สร้างตาราง
 CREATE TABLE IF NOT EXISTS public.game_scores (
     id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     created_at TIMESTAMPTZ DEFAULT NOW(),
@@ -137,84 +339,93 @@ CREATE TABLE IF NOT EXISTS public.game_scores (
     ai_feedback JSONB
 );
 
--- 2. เปิดใช้งาน Row Level Security (RLS)
+-- 2. เปิด Row Level Security
 ALTER TABLE public.game_scores ENABLE ROW LEVEL SECURITY;
 
 -- 3. กำหนดสิทธิ์ Anonymous Read & Insert
 CREATE POLICY "Allow anonymous select" ON public.game_scores FOR SELECT USING (true);
 CREATE POLICY "Allow anonymous insert" ON public.game_scores FOR INSERT WITH CHECK (true);
 
--- 4. เปิดใช้งาน Realtime
+-- 4. เปิด Realtime
 ALTER PUBLICATION supabase_realtime ADD TABLE public.game_scores;
 ```
 
 ---
 
-## ⚙️ การตั้งค่าสภาพแวดล้อม (.env)
+## ⚙️ ตั้งค่า Environment Variables
 
-สร้างไฟล์ `.env` ที่โฟลเดอร์หลักของโปรเจกต์:
+สร้างไฟล์ `.env` ในโฟลเดอร์หลัก:
 
 ```env
 PORT=3000
 NODE_ENV=development
 
-# Google Gemini API Key สำหรับประเมินผลอัตนัย
+# Google Gemini API Key (สำหรับประเมินผลอัตนัย)
 GEMINI_API_KEY=your_gemini_api_key_here
 
 # Supabase Realtime Database
 SUPABASE_URL=https://your-project.supabase.co
 SUPABASE_ANON_KEY=your_supabase_anon_key_here
 
-# รหัสผ่านสำหรับแผงควบคุมและแฟ้มเฉลยครูผู้สอน
+# รหัสผ่านสำหรับแผงควบคุมครูผู้สอน
 TEACHER_PASSCODE=your_secure_teacher_passcode
 ```
 
+| ตัวแปร | จำเป็น | คำอธิบาย |
+|:---|:---:|:---|
+| `GEMINI_API_KEY` | ❌ | ไม่มีก็เล่นได้ — fallback เป็น Heuristic Engine |
+| `SUPABASE_URL` | ❌ | ไม่มีก็เล่นได้ — ไม่บันทึกคะแนนลง DB |
+| `SUPABASE_ANON_KEY` | ❌ | ใช้คู่กับ SUPABASE_URL |
+| `TEACHER_PASSCODE` | ❌ | ค่า default: `admin123` หรือ `teacher123` |
+
 ---
 
-## 🚀 ขั้นตอนการติดตั้งและรันในเครื่อง (Local Setup)
+## 🚀 วิธีรันในเครื่อง (Local Setup)
 
 ```bash
-# 1. ติดตั้ง Dependencies
+# 1. Clone โปรเจกต์
+git clone https://github.com/puripong1st/tech-dm-cyber-detective.git
+cd tech-dm-cyber-detective
+
+# 2. ติดตั้ง Dependencies
 npm install
 
-# 2. เริ่มต้นรันเซิร์ฟเวอร์
-npm start
-# หรือรันแบบ Dev Watcher
-npm run dev
+# 3. สร้างไฟล์ .env (ดูตัวอย่างจาก .env.example)
+cp .env.example .env
 
-# 3. เปิดเว็บเบราว์เซอร์
-# เข้าเล่นเกมหลัก: http://localhost:3000/shield_detective
-# หน้าศูนย์รวมสื่อ: http://localhost:3000
+# 4. รันเซิร์ฟเวอร์
+npm start
+
+# 5. เปิดเบราว์เซอร์
+# หน้าหลัก:      http://localhost:3000
+# เกมหลัก:       http://localhost:3000/shield_detective
+# แดชบอร์ดครู:   http://localhost:3000/shield_teacher
+# เกม v3:        http://localhost:3000/detective
+# แดชบอร์ด v3:   http://localhost:3000/teacher_dashboard
 ```
 
 ---
 
-## 🌐 การเปิดเล่นผ่าน GitHub Pages & Vercel
+## 🌐 Deploy ขึ้น Vercel / GitHub Pages
 
-1. **GitHub Pages (Static Mode)**:
-   - เข้าเล่นเกมได้โดยตรงผ่าน `https://<username>.github.io/<repo-name>/cyber_shield_detective.html`
-   - ระบบจะตรวจคำตอบผ่าน Heuristic Fallback อัตโนมัติ หรือใช้ Client-side Gemini เมื่อกรอก API Key ในแดชบอร์ด
-   - รูปภาพทั้งหมดโหลดผ่าน `assets/evidence/*.png` อย่างสมบูรณ์ 100%
-2. **Vercel / Node.js Server (Full AI Mode)**:
-   - เชื่อมต่อ GitHub Repo กับ Vercel
-   - กำหนด Environment Variables (`GEMINI_API_KEY`, `SUPABASE_URL`, `SUPABASE_ANON_KEY`) ใน Vercel Dashboard
-   - ระบบจะประเมินผลคำตอบผ่าน Backend Serverless Function โดยอัตโนมัติ
+### Vercel (แนะนำ — รองรับ Gemini AI เต็มรูปแบบ)
+1. เชื่อม GitHub Repo กับ Vercel
+2. ตั้ง Environment Variables ใน Vercel Dashboard:
+   - `GEMINI_API_KEY`
+   - `SUPABASE_URL`
+   - `SUPABASE_ANON_KEY`
+   - `TEACHER_PASSCODE`
+3. Deploy — ระบบจะใช้ `vercel.json` ที่มีอยู่แล้ว
 
----
-
-## 🗺️ แผนผังหน้าเว็บในโปรเจกต์ (Sitemap & Hub)
-
-| URL Path | ไฟล์หน้าเว็บ | คำอธิบาย |
-| :--- | :--- | :--- |
-| `/` | `index.html` | ศูนย์รวมสื่อและหน้าหลักเลือกเกม |
-| `/shield_detective`, `/game` | `cyber_shield_detective.html` | **เกมหลัก:** Cyber Shield Detective สืบคดีอัตนัย AI + Anti-Cheat (ม.3) |
-| `/shield_teacher`, `/teacher` | `cyber_shield_teacher.html` | **แดชบอร์ดครู:** Realtime Scoreboard, กรองห้อง ม.3/1-15, แฟ้มเฉลย, Export PDF |
-| `/detective` | `cyber_detective.html` | เกมสืบคดีเวอร์ชันเดิม ช้อยส์เลือกตอบ (v3) |
-| `/teacher_dashboard` | `teacher_dashboard.html` | แดชบอร์ดสรุปคะแนนเวอร์ชันเดิม (v3) |
-| `/presentation` | `presentation.html` | สไลด์สรุปเนื้อหา พ.ร.บ.คอมพิวเตอร์ & PDPA |
-| `/cases` | `cases_reference.html` | คลังข้อมูลอ้างอิง 12 คดี |
+### GitHub Pages (Static Mode)
+- เข้าเล่นได้ที่ `https://<username>.github.io/<repo>/cyber_shield_detective.html`
+- ระบบ Gemini AI ไม่ทำงาน (ไม่มี backend) → ใช้ Heuristic Engine แทน
+- นักเรียนสามารถกรอก Gemini API Key ของตัวเอง (Client-side) ได้
 
 ---
+
 <div align="center">
   <sub>พัฒนาขึ้นเพื่อสนับสนุนการเรียนการสอนกลุ่มสาระการเรียนรู้วิทยาศาสตร์และเทคโนโลยี (วิทยาการคำนวณ) ระดับชั้น ม.3</sub>
+  <br/>
+  <sub>© 2026 Cyber Law Detective & Teacher Platform. All rights reserved.</sub>
 </div>
