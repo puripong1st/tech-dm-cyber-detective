@@ -504,10 +504,10 @@
                                 <th class="p-2.5 text-center w-16 border-r border-slate-800">เลขที่</th>
                                 <th class="p-2.5 text-center w-24 border-r border-slate-800">คำนำหน้า</th>
                                 <th class="p-2.5 border-r border-slate-800">ชื่อ - นามสกุล</th>
-                                <th class="p-2.5 text-center w-24 border-r border-slate-800">👨‍⚖️ กฎหมาย (10)</th>
-                                <th class="p-2.5 text-center w-24 border-r border-slate-800">🚑 บรรเทา (10)</th>
-                                <th class="p-2.5 text-center w-24 border-r border-slate-800">🛡️ ป้องกัน (10)</th>
-                                <th class="p-2.5 text-right w-24">คะแนนรวม</th>
+                                <th class="p-2.5 text-center w-24 border-r border-slate-800">👨‍⚖️ กฎหมาย</th>
+                                <th class="p-2.5 text-center w-24 border-r border-slate-800">🚑 บรรเทา</th>
+                                <th class="p-2.5 text-center w-24 border-r border-slate-800">🛡️ ป้องกัน</th>
+                                <th class="p-2.5 text-right w-28">⭐ รวม (180)</th>
                             </tr>
                         </thead>
                         <tbody id="pdf-report-tbody" class="divide-y divide-slate-800">
@@ -1169,40 +1169,66 @@
             document.getElementById('pdf-date-label').textContent = new Date().toLocaleDateString('th-TH', { year: 'numeric', month: 'long', day: 'numeric' });
 
             const tbody = document.getElementById('pdf-report-tbody');
-            
+
+            // Group by team_name
+            const teamMap = new Map();
+            allScoresData.forEach(item => {
+                const teamKey = item.team_name || item.player_id || 'นักสืบเยาวชน';
+                if (!teamMap.has(teamKey)) {
+                    teamMap.set(teamKey, []);
+                }
+                teamMap.get(teamKey).push(item);
+            });
+
             let flatMembersList = [];
+            let totalTeamsCount = 0;
 
-            allScoresData.forEach((item) => {
-                const parsed = parseScoreItem(item);
+            teamMap.forEach((items, teamKey) => {
+                const firstParsed = parseScoreItem(items[0]);
 
-                if (roomFilter === 'ALL' || parsed.room === roomFilter) {
-                    if (parsed.members.length > 0) {
-                        parsed.members.forEach(m => {
-                            flatMembersList.push({
-                                team_name: item.team_name || 'นักสืบเยาวชน',
-                                room: parsed.room,
-                                student_no: parseInt(m.no || '999', 10),
-                                prefix: m.prefix || '',
-                                name: m.name || '',
-                                legal: parsed.legal,
-                                remedy: parsed.remedy,
-                                security: parsed.security,
-                                total: parsed.total
-                            });
-                        });
-                    } else {
+                if (roomFilter !== 'ALL' && firstParsed.room !== roomFilter && !teamKey.includes(roomFilter)) {
+                    return;
+                }
+
+                totalTeamsCount++;
+
+                let totalLegal = 0, totalRemedy = 0, totalSecurity = 0;
+                items.forEach(item => {
+                    const p = parseScoreItem(item);
+                    totalLegal += p.legal;
+                    totalRemedy += p.remedy;
+                    totalSecurity += p.security;
+                });
+                const totalScore = totalLegal + totalRemedy + totalSecurity;
+
+                if (firstParsed.members.length > 0) {
+                    firstParsed.members.forEach(m => {
                         flatMembersList.push({
-                            team_name: item.team_name || 'นักสืบเยาวชน',
-                            room: parsed.room,
-                            student_no: 1,
-                            prefix: '',
-                            name: '-',
-                            legal: parsed.legal,
-                            remedy: parsed.remedy,
-                            security: parsed.security,
-                            total: parsed.total
+                            team_name: teamKey,
+                            room: firstParsed.room,
+                            student_no: parseInt(m.no || '999', 10),
+                            prefix: m.prefix || '',
+                            name: m.name || '',
+                            caseCount: items.length,
+                            legal: totalLegal,
+                            remedy: totalRemedy,
+                            security: totalSecurity,
+                            total: totalScore
                         });
-                    }
+                    });
+                } else {
+                    flatMembersList.push({
+                        team_name: teamKey,
+                        room: firstParsed.room,
+                        student_no: 1,
+                        prefix: '',
+                        name: '-',
+                        caseCount: items.length,
+                        legal: totalLegal,
+                        remedy: totalRemedy,
+                        security: totalSecurity,
+                        total: totalScore
+                    });
                 }
             });
 
@@ -1211,10 +1237,10 @@
                 return a.student_no - b.student_no;
             });
 
-            document.getElementById('pdf-teams-count').textContent = flatMembersList.length;
+            document.getElementById('pdf-teams-count').textContent = totalTeamsCount;
 
             if (flatMembersList.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="10" class="p-6 text-center text-slate-500">ไม่มีข้อมูลสำหรับออกรายงาน</td></tr>';
+                tbody.innerHTML = '<tr><td colspan="10" class="p-6 text-center text-slate-500">ไม่มีข้อมูลสำหรับออกรายงานตามเงื่อนไขที่เลือก</td></tr>';
             } else {
                 tbody.innerHTML = flatMembersList.map((m, idx) => `
                     <tr class="${idx % 2 === 0 ? 'bg-slate-950/30' : 'bg-slate-900/30'}">
