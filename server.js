@@ -532,55 +532,69 @@ You MUST reply strictly in JSON format. Do not write any markdown backticks outs
     res.json({ success: true, evaluation: fallbackResult, mode: 'fallback_heuristic' });
 });
 
-// Helper function to save game score to Supabase
+// In-memory score cache buffer for fast realtime fallback
+const SERVER_SCORES_CACHE = [];
+
+// Helper function to save game score to Supabase & Memory Cache
 async function saveToSupabase(record) {
+    const row = {
+        id: 'rec_' + Date.now() + '_' + Math.random().toString(36).substring(2, 7),
+        player_id: record.playerId || 'anonymous',
+        team_name: record.teamName || 'นักสืบเยาวชน',
+        case_id: record.caseId,
+        case_title: record.caseTitle,
+        legal_score: record.evaluation.legal?.score || 0,
+        remedy_score: record.evaluation.remedy?.score || 0,
+        security_score: record.evaluation.security?.score || 0,
+        total_score: record.evaluation.total_score || 0,
+        student_answers: record.studentAnswers,
+        ai_feedback: record.evaluation,
+        created_at: new Date().toISOString()
+    };
+
+    if (record.membersInfo) {
+        row.members_info = record.membersInfo;
+    }
+
+    // Save to memory cache (keep last 500 records)
+    SERVER_SCORES_CACHE.unshift(row);
+    if (SERVER_SCORES_CACHE.length > 500) SERVER_SCORES_CACHE.pop();
+
     if (!process.env.SUPABASE_URL || !process.env.SUPABASE_ANON_KEY) return;
     try {
         const { createClient } = require('@supabase/supabase-js');
         const supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_ANON_KEY);
-        
-        const row = {
-            player_id: record.playerId || 'anonymous',
-            team_name: record.teamName || 'นักสืบเยาวชน',
-            case_id: record.caseId,
-            case_title: record.caseTitle,
-            legal_score: record.evaluation.legal?.score || 0,
-            remedy_score: record.evaluation.remedy?.score || 0,
-            security_score: record.evaluation.security?.score || 0,
-            total_score: record.evaluation.total_score || 0,
-            student_answers: record.studentAnswers,
-            ai_feedback: record.evaluation,
-            created_at: new Date().toISOString()
-        };
-
-        if (record.membersInfo) {
-            row.members_info = record.membersInfo;
-        }
-
         await supabase.from('game_scores').insert([row]);
     } catch (e) {
         console.error('Failed to log score to Supabase:', e.message);
     }
 }
 
-// Secure API Endpoint: Leaderboard Data
+// Secure API Endpoint: Leaderboard & Teacher Realtime Telemetry Data
 app.get('/api/leaderboard', async (req, res) => {
-    if (!process.env.SUPABASE_URL || !process.env.SUPABASE_ANON_KEY) {
-        return res.json({ success: true, data: [] });
+    let results = [];
+    if (process.env.SUPABASE_URL && process.env.SUPABASE_ANON_KEY) {
+        try {
+            const { createClient } = require('@supabase/supabase-js');
+            const supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_ANON_KEY);
+            const { data, error } = await supabase
+                .from('game_scores')
+                .select('*')
+                .order('created_at', { ascending: false })
+                .limit(300);
+            if (!error && Array.isArray(data) && data.length > 0) {
+                results = data;
+            }
+        } catch (e) {
+            console.warn('Supabase query error, fallback to cache:', e.message);
+        }
     }
-    try {
-        const { createClient } = require('@supabase/supabase-js');
-        const supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_ANON_KEY);
-        const { data, error } = await supabase
-            .from('game_scores')
-            .select('*')
-            .order('total_score', { ascending: false })
-            .limit(20);
-        if (error) throw error;
-        res.json({ success: true, data: data || [] });
-    } catch (e) {
-        res.json({ success: false, data: [], error: e.message });
+
+    if (results.length === 0 && SERVER_SCORES_CACHE.length > 0) {
+        results = [...SERVER_SCORES_CACHE];
     }
+
+    res.json({ success: true, data: results });
 });
 
 // Health check endpoint for Vercel

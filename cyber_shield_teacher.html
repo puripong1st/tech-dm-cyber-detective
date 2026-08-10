@@ -86,6 +86,22 @@
         ::-webkit-scrollbar-thumb { background: #334155; border-radius: 4px; }
         ::-webkit-scrollbar-thumb:hover { background: #8B5CF6; }
 
+        /* Force dark style on select dropdowns and options */
+        select {
+            color-scheme: dark !important;
+            background-color: #0f172a !important;
+            color: #f8fafc !important;
+        }
+        select option {
+            background-color: #0f172a !important;
+            color: #f8fafc !important;
+            padding: 10px 14px !important;
+        }
+        select option:hover, select option:focus, select option:checked {
+            background-color: #8b5cf6 !important;
+            color: #ffffff !important;
+        }
+
         @media print {
             .no-print { display: none !important; }
             body { background: white !important; color: black !important; padding: 0 !important; }
@@ -251,34 +267,34 @@
                         <!-- Room Selector -->
                         <div class="flex items-center gap-1.5 bg-slate-950 px-3 py-2 rounded-xl border border-slate-700">
                             <i class="fa-solid fa-door-open text-purple-400"></i>
-                            <select id="filter-room" onchange="renderScoreboardTable()" class="bg-transparent text-white font-medium focus:outline-none cursor-pointer">
-                                <option value="ALL">ทุกห้องเรียน (ม.3/1 - ม.3/15)</option>
-                                <option value="ม.3/1">ม.3/1</option>
-                                <option value="ม.3/2">ม.3/2</option>
-                                <option value="ม.3/3">ม.3/3</option>
-                                <option value="ม.3/4">ม.3/4</option>
-                                <option value="ม.3/5">ม.3/5</option>
-                                <option value="ม.3/6">ม.3/6</option>
-                                <option value="ม.3/7">ม.3/7</option>
-                                <option value="ม.3/8">ม.3/8</option>
-                                <option value="ม.3/9">ม.3/9</option>
-                                <option value="ม.3/10">ม.3/10</option>
-                                <option value="ม.3/11">ม.3/11</option>
-                                <option value="ม.3/12">ม.3/12</option>
-                                <option value="ม.3/13">ม.3/13</option>
-                                <option value="ม.3/14">ม.3/14</option>
-                                <option value="ม.3/15">ม.3/15</option>
+                            <select id="filter-room" onchange="renderScoreboardTable()" class="bg-slate-950 text-white font-medium focus:outline-none cursor-pointer">
+                                <option value="ALL" class="bg-slate-900 text-white py-1">ทุกห้องเรียน (ม.3/1 - ม.3/15)</option>
+                                <option value="ม.3/1" class="bg-slate-900 text-white py-1">ม.3/1</option>
+                                <option value="ม.3/2" class="bg-slate-900 text-white py-1">ม.3/2</option>
+                                <option value="ม.3/3" class="bg-slate-900 text-white py-1">ม.3/3</option>
+                                <option value="ม.3/4" class="bg-slate-900 text-white py-1">ม.3/4</option>
+                                <option value="ม.3/5" class="bg-slate-900 text-white py-1">ม.3/5</option>
+                                <option value="ม.3/6" class="bg-slate-900 text-white py-1">ม.3/6</option>
+                                <option value="ม.3/7" class="bg-slate-900 text-white py-1">ม.3/7</option>
+                                <option value="ม.3/8" class="bg-slate-900 text-white py-1">ม.3/8</option>
+                                <option value="ม.3/9" class="bg-slate-900 text-white py-1">ม.3/9</option>
+                                <option value="ม.3/10" class="bg-slate-900 text-white py-1">ม.3/10</option>
+                                <option value="ม.3/11" class="bg-slate-900 text-white py-1">ม.3/11</option>
+                                <option value="ม.3/12" class="bg-slate-900 text-white py-1">ม.3/12</option>
+                                <option value="ม.3/13" class="bg-slate-900 text-white py-1">ม.3/13</option>
+                                <option value="ม.3/14" class="bg-slate-900 text-white py-1">ม.3/14</option>
+                                <option value="ม.3/15" class="bg-slate-900 text-white py-1">ม.3/15</option>
                             </select>
                         </div>
 
                         <!-- Sort Order Selector -->
                         <div class="flex items-center gap-1.5 bg-slate-950 px-3 py-2 rounded-xl border border-slate-700">
                             <i class="fa-solid fa-arrow-down-wide-short text-amber-400"></i>
-                            <select id="filter-sort" onchange="renderScoreboardTable()" class="bg-transparent text-white font-medium focus:outline-none cursor-pointer">
-                                <option value="score-desc">🏆 เรียงตามคะแนนสูงสุด (มาก ➔ น้อย)</option>
-                                <option value="score-asc">📉 เรียงตามคะแนนต่ำสุด (น้อย ➔ มาก)</option>
-                                <option value="room-asc">🏫 เรียงตามห้องและเลขที่</option>
-                                <option value="time-desc">⏱️ เรียงตามเวลาที่ส่งล่าสุด</option>
+                            <select id="filter-sort" onchange="renderScoreboardTable()" class="bg-slate-950 text-white font-medium focus:outline-none cursor-pointer">
+                                <option value="score-desc" class="bg-slate-900 text-white py-1">🏆 เรียงตามคะแนนสูงสุด (มาก ➔ น้อย)</option>
+                                <option value="score-asc" class="bg-slate-900 text-white py-1">📉 เรียงตามคะแนนต่ำสุด (น้อย ➔ มาก)</option>
+                                <option value="room-asc" class="bg-slate-900 text-white py-1">🏫 เรียงตามห้องและเลขที่</option>
+                                <option value="time-desc" class="bg-slate-900 text-white py-1">⏱️ เรียงตามเวลาที่ส่งล่าสุด</option>
                             </select>
                         </div>
 
@@ -876,6 +892,50 @@
             renderScoreboardTable();
         }
 
+        // --- Universal Score Item Data Parser ---
+        function parseScoreItem(item) {
+            let room = 'ม.3/1';
+            let members = [];
+            let rawInfo = item.members_info;
+
+            if (rawInfo) {
+                if (typeof rawInfo === 'object') {
+                    if (rawInfo.room) room = rawInfo.room;
+                    if (Array.isArray(rawInfo.members)) members = rawInfo.members;
+                } else if (typeof rawInfo === 'string') {
+                    try {
+                        const parsed = JSON.parse(rawInfo);
+                        if (parsed && typeof parsed === 'object') {
+                            if (parsed.room) room = parsed.room;
+                            if (Array.isArray(parsed.members)) members = parsed.members;
+                        }
+                    } catch(e) {
+                        const mRoom = rawInfo.match(/ม\.3\/\d+/);
+                        if (mRoom) room = mRoom[0];
+                    }
+                }
+            }
+
+            if (room === 'ม.3/1' && item.team_name) {
+                const mRoom = item.team_name.match(/ม\.3\/\d+/);
+                if (mRoom) room = mRoom[0];
+            }
+
+            const legal = Number(item.legal_score ?? item.evaluation?.legal?.score ?? 0);
+            const remedy = Number(item.remedy_score ?? item.evaluation?.remedy?.score ?? 0);
+            const security = Number(item.security_score ?? item.evaluation?.security?.score ?? 0);
+            const total = Number(item.total_score ?? item.evaluation?.total_score ?? (legal + remedy + security));
+
+            return {
+                room,
+                members,
+                legal,
+                remedy,
+                security,
+                total
+            };
+        }
+
         // --- Scoreboard Table Rendering ---
         function renderScoreboardTable() {
             const tbody = document.getElementById('scoreboard-tbody');
@@ -887,24 +947,27 @@
 
             if (roomFilter !== 'ALL') {
                 list = list.filter(item => {
-                    const info = item.members_info || '';
-                    return info.includes(roomFilter) || (item.team_name || '').includes(roomFilter);
+                    const parsed = parseScoreItem(item);
+                    return parsed.room === roomFilter || (item.team_name || '').includes(roomFilter);
                 });
             }
 
             if (searchVal) {
                 list = list.filter(item => {
+                    const parsed = parseScoreItem(item);
                     const team = (item.team_name || '').toLowerCase();
-                    const info = (item.members_info || '').toLowerCase();
                     const caseTitle = (item.case_title || '').toLowerCase();
-                    return team.includes(searchVal) || info.includes(searchVal) || caseTitle.includes(searchVal);
+                    const membersStr = parsed.members.map(m => `${m.no} ${m.prefix}${m.name}`).join(' ').toLowerCase();
+                    return team.includes(searchVal) || caseTitle.includes(searchVal) || membersStr.includes(searchVal);
                 });
             }
 
             if (sortFilter === 'score-desc') {
-                list.sort((a, b) => (b.total_score || 0) - (a.total_score || 0));
+                list.sort((a, b) => (parseScoreItem(b).total) - (parseScoreItem(a).total));
             } else if (sortFilter === 'score-asc') {
-                list.sort((a, b) => (a.total_score || 0) - (b.total_score || 0));
+                list.sort((a, b) => (parseScoreItem(a).total) - (parseScoreItem(b).total));
+            } else if (sortFilter === 'room-asc') {
+                list.sort((a, b) => parseScoreItem(a).room.localeCompare(parseScoreItem(b).room));
             } else if (sortFilter === 'time-desc') {
                 list.sort((a, b) => new Date(b.created_at || 0) - new Date(a.created_at || 0));
             }
@@ -915,28 +978,14 @@
             }
 
             tbody.innerHTML = list.map((item, idx) => {
-                const legal = item.legal_score ?? (item.evaluation?.legal?.score || 0);
-                const remedy = item.remedy_score ?? (item.evaluation?.remedy?.score || 0);
-                const security = item.security_score ?? (item.evaluation?.security?.score || 0);
-                const total = item.total_score ?? (item.evaluation?.total_score || (legal + remedy + security));
+                const parsed = parseScoreItem(item);
                 
-                let room = 'ม.3/1';
                 let membersDisplay = '-';
-                if (item.members_info) {
-                    try {
-                        const parsed = typeof item.members_info === 'string' ? JSON.parse(item.members_info) : item.members_info;
-                        if (parsed.room) room = parsed.room;
-                        if (Array.isArray(parsed.members) && parsed.members.length > 0) {
-                            if (displayMode === 'detailed_roster') {
-                                membersDisplay = parsed.members.map(m => `<span class="inline-block px-1.5 py-0.5 rounded bg-slate-800 border border-slate-700 text-[11px] mr-1 mb-1">เลขที่ ${m.no}: ${m.prefix}${m.name}</span>`).join('');
-                            } else {
-                                membersDisplay = `<span class="text-slate-400 font-mono">${parsed.members.length} คน (คลิกโหมดสมาชิกเพื่อดูเลขที่)</span>`;
-                            }
-                        } else if (typeof parsed === 'string') {
-                            membersDisplay = parsed;
-                        }
-                    } catch(e) {
-                        membersDisplay = String(item.members_info);
+                if (parsed.members.length > 0) {
+                    if (displayMode === 'detailed_roster') {
+                        membersDisplay = parsed.members.map(m => `<span class="inline-block px-1.5 py-0.5 rounded bg-slate-800 border border-slate-700 text-[11px] mr-1 mb-1">เลขที่ ${m.no}: ${m.prefix}${m.name}</span>`).join('');
+                    } else {
+                        membersDisplay = `<span class="text-slate-400 font-mono">${parsed.members.length} คน (คลิกโหมดสมาชิกเพื่อดูเลขที่)</span>`;
                     }
                 }
 
@@ -949,13 +998,13 @@
                         <i class="fa-solid fa-users text-purple-400"></i>
                         <span>${item.team_name || 'นักสืบเยาวชน'}</span>
                     </td>
-                    <td class="p-3 text-center font-bold text-cyan-300 border-r border-slate-800">${room}</td>
+                    <td class="p-3 text-center font-bold text-cyan-300 border-r border-slate-800">${parsed.room}</td>
                     <td class="p-3 border-r border-slate-800">${membersDisplay}</td>
                     <td class="p-3 text-center text-slate-300 border-r border-slate-800 truncate max-w-[160px]">${item.case_title || `คดี #${item.case_id || '-'}`}</td>
-                    <td class="p-3 text-center font-mono font-bold text-amber-400 border-r border-slate-800">${legal}</td>
-                    <td class="p-3 text-center font-mono font-bold text-pink-400 border-r border-slate-800">${remedy}</td>
-                    <td class="p-3 text-center font-mono font-bold text-cyan-400 border-r border-slate-800">${security}</td>
-                    <td class="p-3 text-right font-mono font-bold text-yellow-300 text-sm border-r border-slate-800">${total} คะแนน</td>
+                    <td class="p-3 text-center font-mono font-bold text-amber-400 border-r border-slate-800">${parsed.legal}</td>
+                    <td class="p-3 text-center font-mono font-bold text-pink-400 border-r border-slate-800">${parsed.remedy}</td>
+                    <td class="p-3 text-center font-mono font-bold text-cyan-400 border-r border-slate-800">${parsed.security}</td>
+                    <td class="p-3 text-right font-mono font-bold text-yellow-300 text-sm border-r border-slate-800">${parsed.total} คะแนน</td>
                     <td class="p-3 text-center font-mono text-slate-400">${timeStr}</td>
                 </tr>`;
             }).join('');
@@ -969,11 +1018,10 @@
             const rooms = new Set();
             let scoreSum = 0;
             allScoresData.forEach(s => {
-                const total = s.total_score || 0;
-                scoreSum += total;
-                if (s.members_info && typeof s.members_info === 'string' && s.members_info.includes('ม.3/')) {
-                    const match = s.members_info.match(/ม\.3\/\d+/);
-                    if (match) rooms.add(match[0]);
+                const parsed = parseScoreItem(s);
+                scoreSum += parsed.total;
+                if (parsed.room && parsed.room.startsWith('ม.3/')) {
+                    rooms.add(parsed.room);
                 }
             });
 
@@ -1081,47 +1129,34 @@
             let flatMembersList = [];
 
             allScoresData.forEach((item) => {
-                let room = 'ม.3/1';
-                let members = [];
-                if (item.members_info) {
-                    try {
-                        const parsed = typeof item.members_info === 'string' ? JSON.parse(item.members_info) : item.members_info;
-                        if (parsed.room) room = parsed.room;
-                        if (Array.isArray(parsed.members)) members = parsed.members;
-                    } catch(e) {}
-                }
+                const parsed = parseScoreItem(item);
 
-                if (roomFilter === 'ALL' || room === roomFilter) {
-                    const legal = item.legal_score || 0;
-                    const remedy = item.remedy_score || 0;
-                    const security = item.security_score || 0;
-                    const total = item.total_score || (legal + remedy + security);
-
-                    if (members.length > 0) {
-                        members.forEach(m => {
+                if (roomFilter === 'ALL' || parsed.room === roomFilter) {
+                    if (parsed.members.length > 0) {
+                        parsed.members.forEach(m => {
                             flatMembersList.push({
                                 team_name: item.team_name || 'นักสืบเยาวชน',
-                                room: room,
+                                room: parsed.room,
                                 student_no: parseInt(m.no || '999', 10),
                                 prefix: m.prefix || '',
                                 name: m.name || '',
-                                legal: legal,
-                                remedy: remedy,
-                                security: security,
-                                total: total
+                                legal: parsed.legal,
+                                remedy: parsed.remedy,
+                                security: parsed.security,
+                                total: parsed.total
                             });
                         });
                     } else {
                         flatMembersList.push({
                             team_name: item.team_name || 'นักสืบเยาวชน',
-                            room: room,
+                            room: parsed.room,
                             student_no: 1,
                             prefix: '',
                             name: '-',
-                            legal: legal,
-                            remedy: remedy,
-                            security: security,
-                            total: total
+                            legal: parsed.legal,
+                            remedy: parsed.remedy,
+                            security: parsed.security,
+                            total: parsed.total
                         });
                     }
                 }

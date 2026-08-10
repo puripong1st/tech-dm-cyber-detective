@@ -122,6 +122,22 @@
             background: #06B6D4;
         }
 
+        /* Force dark style on select dropdowns and options */
+        select {
+            color-scheme: dark !important;
+            background-color: #0f172a !important;
+            color: #f8fafc !important;
+        }
+        select option {
+            background-color: #0f172a !important;
+            color: #f8fafc !important;
+            padding: 8px 12px !important;
+        }
+        select option:hover, select option:focus, select option:checked {
+            background-color: #06b6d4 !important;
+            color: #ffffff !important;
+        }
+
         /* Print Media Styles for Certificate & Group Score Report */
         @media print {
             body {
@@ -1893,12 +1909,15 @@
             playSound('scan');
             showToast('ส่งคำตอบให้ Google Gemini AI กำลังวิเคราะห์...', 'fa-solid fa-wand-magic-sparkles text-cyan-400');
 
-            const membersRosterStr = (GAME_STATE.members || []).map(m => `เลขที่ ${m.no} ${m.prefix}${m.name}`).join(', ');
+            const membersInfoPayload = JSON.stringify({
+                room: GAME_STATE.room || 'ม.3/1',
+                members: GAME_STATE.members || []
+            });
 
             const payload = {
                 playerId: GAME_STATE.teamName,
-                teamName: `${GAME_STATE.teamName} (${GAME_STATE.room})`,
-                membersInfo: membersRosterStr,
+                teamName: `${GAME_STATE.teamName} (${GAME_STATE.room || 'ม.3/1'})`,
+                membersInfo: membersInfoPayload,
                 caseId: caseItem.id,
                 caseTitle: caseItem.title,
                 studentAnswers: {
@@ -1930,6 +1949,28 @@
 
                 renderAIFeedback(evaluationResult, true);
                 playSound('success');
+
+                // Realtime broadcast and local cache update
+                try {
+                    const cacheRaw = localStorage.getItem('CYBER_DETECTIVE_SCORES_CACHE');
+                    const cacheList = cacheRaw ? JSON.parse(cacheRaw) : [];
+                    cacheList.unshift({
+                        team_name: `${GAME_STATE.teamName} (${GAME_STATE.room || 'ม.3/1'})`,
+                        case_id: caseItem.id,
+                        case_title: caseItem.title,
+                        legal_score: evaluationResult.legal?.score || 0,
+                        remedy_score: evaluationResult.remedy?.score || 0,
+                        security_score: evaluationResult.security?.score || 0,
+                        total_score: evaluationResult.total_score || 0,
+                        members_info: membersInfoPayload,
+                        created_at: new Date().toISOString()
+                    });
+                    if (cacheList.length > 200) cacheList.pop();
+                    localStorage.setItem('CYBER_DETECTIVE_SCORES_CACHE', JSON.stringify(cacheList));
+
+                    const bc = new BroadcastChannel('cyber_detective_live');
+                    bc.postMessage({ type: 'NEW_SCORE' });
+                } catch(e) {}
 
             } catch (err) {
                 console.warn('API error, using client fallback:', err);
