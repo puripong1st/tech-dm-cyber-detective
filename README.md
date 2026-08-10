@@ -165,8 +165,8 @@ GEMINI_API_KEY=your_gemini_api_key_here
 SUPABASE_URL=https://your-project.supabase.co
 SUPABASE_ANON_KEY=your_supabase_anon_key_here
 
-# รหัสผ่านเฉลยคดีสำหรับครูผู้สอน
-TEACHER_PASSCODE=admin123
+# รหัสผ่านสำหรับแผงควบคุมและแฟ้มเฉลยครูผู้สอน
+TEACHER_PASSCODE=your_secure_teacher_passcode
 ```
 
 ---

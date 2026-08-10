@@ -295,42 +295,26 @@
                     </div>
                 </div>
 
-                <!-- Action Buttons Group -->
+                <!-- Action Buttons Group (Student Only) -->
                 <div class="flex items-center gap-1.5 lg:gap-2">
-                    <!-- Group Score & PDF Export Button (NEW) -->
-                    <button onclick="openGroupScoreModal()" class="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-emerald-950/70 hover:bg-emerald-900/80 border border-emerald-500/40 text-emerald-200 text-xs font-medium transition shadow-sm" title="ดูคะแนนกลุ่มและส่งออก PDF">
-                        <i class="fa-solid fa-file-pdf text-emerald-400"></i>
-                        <span class="hidden md:inline">คะแนนกลุ่ม & PDF</span>
-                    </button>
-
-                    <!-- Solutions / Answer Key Button (NEW) -->
-                    <button onclick="openSolutionsModal()" class="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-purple-950/70 hover:bg-purple-900/80 border border-purple-500/40 text-purple-200 text-xs font-medium transition shadow-sm" title="แฟ้มเฉลยคดี พ.ร.บ. คอมพิวเตอร์ (สำหรับครู)">
-                        <i class="fa-solid fa-book-open text-purple-400"></i>
-                        <span class="hidden md:inline">เฉลยคดี (ครู)</span>
-                    </button>
-
                     <!-- Leaderboard Button -->
-                    <button onclick="openLeaderboardModal()" class="p-2 rounded-lg bg-slate-800 hover:bg-slate-700 border border-slate-700 hover:border-amber-400/50 text-slate-300 hover:text-amber-300 text-xs transition" title="ตารางอันดับเรียลไทม์">
+                    <button onclick="openLeaderboardModal()" class="px-3 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 border border-slate-700 hover:border-amber-400/50 text-slate-200 hover:text-amber-300 text-xs font-semibold transition flex items-center gap-1.5 shadow-sm" title="ตารางอันดับเรียลไทม์">
                         <i class="fa-solid fa-trophy text-amber-400"></i>
+                        <span class="hidden sm:inline">ตารางอันดับ</span>
                     </button>
 
-                    <!-- Reset Game Session Button (NEW) -->
-                    <button onclick="confirmResetGame()" class="p-2 rounded-lg bg-slate-800 hover:bg-red-950/80 border border-slate-700 hover:border-red-500/50 text-slate-300 hover:text-red-300 text-xs transition" title="เริ่มเกมใหม่ (Reset Session)">
+                    <!-- Reset Game Session Button -->
+                    <button onclick="confirmResetGame()" class="p-2 rounded-xl bg-slate-800 hover:bg-red-950/80 border border-slate-700 hover:border-red-500/50 text-slate-300 hover:text-red-300 text-xs transition" title="เริ่มรอบใหม่ (Reset)">
                         <i class="fa-solid fa-arrows-rotate text-red-400"></i>
                     </button>
 
-                    <!-- Teacher Settings Button -->
-                    <button onclick="openTeacherModal()" class="p-2 rounded-lg bg-slate-800 hover:bg-slate-700 border border-slate-700 hover:border-pink-400/50 text-slate-300 hover:text-pink-300 text-xs transition" title="แผงควบคุมครู">
-                        <i class="fa-solid fa-gear text-pink-400"></i>
-                    </button>
-
                     <!-- Sound Toggle Button -->
-                    <button id="btn-sound-toggle" onclick="toggleAudio()" class="p-2 rounded-lg bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-300 text-xs transition" title="เปิด/ปิด เสียง">
+                    <button id="btn-sound-toggle" onclick="toggleAudio()" class="p-2 rounded-xl bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-300 text-xs transition" title="เปิด/ปิด เสียง">
                         <i id="sound-icon" class="fa-solid fa-volume-high text-cyan-400"></i>
                     </button>
 
                     <!-- Home Link -->
-                    <a href="/" class="p-2 rounded-lg bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-300 hover:text-white text-xs transition" title="กลับหน้าหลัก">
+                    <a href="/" class="p-2 rounded-xl bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-300 hover:text-white text-xs transition" title="กลับหน้าหลัก">
                         <i class="fa-solid fa-house"></i>
                     </a>
                 </div>
@@ -917,84 +901,6 @@
         </div>
     </div>
 
-    <!-- 4.3 TEACHER'S CONTROL MODAL -->
-    <div id="modal-teacher" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-md">
-        <div class="glass-panel max-w-xl w-full p-6 sm:p-8 rounded-3xl border border-pink-500/40 shadow-2xl flex flex-col gap-5 relative max-h-[90vh] overflow-y-auto">
-            
-            <button onclick="closeTeacherModal()" class="absolute top-4 right-4 text-slate-400 hover:text-white p-2 rounded-lg bg-slate-800/80 border border-slate-700 transition">
-                <i class="fa-solid fa-xmark text-lg"></i>
-            </button>
-
-            <div class="flex items-center gap-3 border-b border-slate-800 pb-3">
-                <div class="w-10 h-10 rounded-xl bg-pink-500/20 border border-pink-400 text-pink-300 flex items-center justify-center text-lg">
-                    <i class="fa-solid fa-chalkboard-user"></i>
-                </div>
-                <div>
-                    <h3 class="text-lg font-bold text-slate-100">แผงควบคุมสำหรับครูผู้สอน (Teacher Dashboard)</h3>
-                    <p class="text-xs text-slate-400">ตั้งค่าระบบ AI, กุญแจ API และจัดการห้องเรียน</p>
-                </div>
-            </div>
-
-            <!-- Passcode Gate -->
-            <div id="teacher-lock-view" class="flex flex-col gap-3">
-                <p class="text-xs text-slate-300">กรุณาใส่รหัสผ่านผู้ดูแลระบบ (ค่าเริ่มต้น: <code>admin123</code>)</p>
-                <div class="flex items-center gap-2">
-                    <input type="password" id="teacher-passcode-input" placeholder="ใส่รหัสผ่าน..." class="flex-1 bg-slate-950 border border-slate-700 rounded-xl px-3.5 py-2.5 text-sm text-white focus:outline-none focus:border-pink-400">
-                    <button onclick="verifyTeacherPasscode()" class="px-5 py-2.5 rounded-xl bg-pink-600 hover:bg-pink-500 text-white font-bold text-sm transition">
-                        ปลดล็อก
-                    </button>
-                </div>
-                <span id="teacher-lock-msg" class="text-xs text-red-400 hidden">รหัสผ่านไม่ถูกต้อง</span>
-            </div>
-
-            <!-- Authenticated Settings View -->
-            <div id="teacher-settings-view" class="hidden flex flex-col gap-4">
-                
-                <!-- AI Engine Mode -->
-                <div>
-                    <label class="block text-xs font-semibold text-slate-300 mb-1">🤖 โหมดการประเมินผล AI (AI Evaluation Mode)</label>
-                    <select id="teacher-ai-mode" class="w-full bg-slate-950 border border-slate-700 rounded-xl px-3.5 py-2 text-xs text-white focus:outline-none focus:border-pink-400">
-                        <option value="server">โหมด 1: Express Server API (/api/evaluate-case) - แนะนำ</option>
-                        <option value="client">โหมด 2: Client-side Direct (เรียกตรงจากเบราว์เซอร์)</option>
-                        <option value="heuristic">โหมด 3: Smart Heuristic Simulation (โหมดออฟไลน์ไม่ต้องใช้เน็ต)</option>
-                    </select>
-                </div>
-
-                <!-- Gemini API Key -->
-                <div>
-                    <label class="block text-xs font-semibold text-cyan-300 mb-1">🔑 Google Gemini API Key</label>
-                    <input type="password" id="teacher-gemini-key" placeholder="AIzaSy..." class="w-full bg-slate-950 border border-slate-700 rounded-xl px-3.5 py-2 text-xs text-white font-mono focus:outline-none focus:border-cyan-400">
-                </div>
-
-                <!-- Supabase Settings -->
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                    <div>
-                        <label class="block text-xs font-semibold text-slate-300 mb-1">⚡ Supabase URL</label>
-                        <input type="text" id="teacher-supabase-url" placeholder="https://xxx.supabase.co" class="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white font-mono focus:outline-none focus:border-purple-400">
-                    </div>
-                    <div>
-                        <label class="block text-xs font-semibold text-slate-300 mb-1">🔒 Supabase Anon Key</label>
-                        <input type="password" id="teacher-supabase-key" placeholder="eyJ..." class="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white font-mono focus:outline-none focus:border-purple-400">
-                    </div>
-                </div>
-
-                <!-- Quick Action Buttons -->
-                <div class="flex items-center justify-between gap-2 pt-2 border-t border-slate-800">
-                    <button onclick="resetGameSession()" class="px-3.5 py-2 rounded-xl bg-red-950/60 hover:bg-red-900 border border-red-500/40 text-red-300 text-xs font-medium transition">
-                        <i class="fa-solid fa-arrows-rotate mr-1"></i> ล้างคะแนนเริ่มใหม่
-                    </button>
-                    <div class="flex items-center gap-2">
-                        <button onclick="saveTeacherSettings()" class="px-4 py-2 rounded-xl bg-pink-600 hover:bg-pink-500 text-white text-xs font-bold transition shadow-md shadow-pink-500/20">
-                            <i class="fa-solid fa-floppy-disk mr-1"></i> บันทึกการตั้งค่า
-                        </button>
-                    </div>
-                </div>
-
-            </div>
-
-        </div>
-    </div>
-
     <!-- 4.4 LIVE CLASS LEADERBOARD MODAL -->
     <div id="modal-leaderboard" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-md">
         <div class="glass-panel max-w-2xl w-full p-6 rounded-3xl border border-amber-400/40 shadow-2xl flex flex-col gap-4 relative max-h-[85vh] overflow-y-auto">
@@ -1171,66 +1077,6 @@
                         <span>พิมพ์รายงาน / บันทึกเป็น PDF</span>
                     </button>
                 </div>
-            </div>
-
-        </div>
-    </div>
-
-    <!-- 4.8 OFFICIAL CASE SOLUTIONS & ANSWER KEYS (PROTECTED) -->
-    <div id="modal-solutions" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/90 backdrop-blur-md overflow-y-auto">
-        <div class="glass-panel max-w-4xl w-full p-6 sm:p-8 rounded-3xl border border-purple-500/50 shadow-2xl flex flex-col gap-5 relative my-6 max-h-[92vh] overflow-y-auto">
-            
-            <button onclick="closeSolutionsModal()" class="absolute top-4 right-4 text-slate-400 hover:text-white p-2 rounded-lg bg-slate-800/80 border border-slate-700 transition">
-                <i class="fa-solid fa-xmark text-lg"></i>
-            </button>
-
-            <!-- Header -->
-            <div class="flex items-center gap-3 border-b border-slate-800 pb-3">
-                <div class="w-10 h-10 rounded-xl bg-purple-500/20 border border-purple-400 text-purple-300 flex items-center justify-center text-lg">
-                    <i class="fa-solid fa-book-open"></i>
-                </div>
-                <div>
-                    <h3 class="text-lg font-bold text-slate-100">แฟ้มเฉลยคดี พ.ร.บ. คอมพิวเตอร์ & PDPA ครบ 12 คดี</h3>
-                    <p class="text-xs text-slate-400">เฉลยแนวคำตอบอัตนัย 3 บทบาท พร้อมเกณฑ์ให้คะแนนฉบับทางการสำหรับครูผู้สอน</p>
-                </div>
-            </div>
-
-            <!-- View 1: Passcode Lock Screen -->
-            <div id="solutions-lock-view" class="flex flex-col items-center justify-center gap-4 py-8 text-center">
-                <div class="w-16 h-16 rounded-2xl bg-purple-500/20 border border-purple-400 text-purple-300 flex items-center justify-center text-2xl mb-1 shadow-lg shadow-purple-500/20">
-                    <i class="fa-solid fa-shield-halved"></i>
-                </div>
-                <div class="max-w-md">
-                    <h4 class="text-base font-bold text-white mb-1">พื้นที่สงวนสิทธิ์สำหรับคุณครูผู้สอน</h4>
-                    <p class="text-xs text-slate-400">กรุณากรอกรหัสผ่านครูผู้สอน (ตั้งค่าใน .env เช่น admin123) เพื่อปลดล็อกแฟ้มเฉลย</p>
-                </div>
-
-                <div class="flex items-center gap-2 w-full max-w-xs">
-                    <input type="password" id="solutions-passcode-input" placeholder="ใส่รหัสผ่านครู (admin123)" class="flex-1 bg-slate-950 border border-purple-500/40 rounded-xl px-3.5 py-2.5 text-xs text-white text-center focus:outline-none focus:border-purple-400">
-                    <button onclick="verifySolutionsPasscode()" class="px-4 py-2.5 rounded-xl bg-purple-600 hover:bg-purple-500 text-white text-xs font-bold transition shadow-md shadow-purple-500/20">
-                        ปลดล็อก
-                    </button>
-                </div>
-                <span id="solutions-lock-msg" class="text-xs text-red-400 hidden">รหัสผ่านไม่ถูกต้อง กรุณาลองใหม่อีกครั้ง</span>
-            </div>
-
-            <!-- View 2: Unlocked Solutions Archive -->
-            <div id="solutions-content-view" class="hidden flex flex-col gap-4">
-                
-                <!-- Filter Tabs -->
-                <div class="flex flex-wrap gap-1.5 p-1 bg-slate-900/90 rounded-xl border border-slate-800 text-xs">
-                    <button onclick="filterSolutions('all')" class="sol-filter-btn px-3 py-1.5 rounded-lg bg-purple-600 text-white font-medium transition" data-filter="all">ทั้งหมด (12 คดี)</button>
-                    <button onclick="filterSolutions('access')" class="sol-filter-btn px-3 py-1.5 rounded-lg text-slate-400 hover:text-white transition" data-filter="access">มาตรา 5-8 (การเข้าถึง)</button>
-                    <button onclick="filterSolutions('damage')" class="sol-filter-btn px-3 py-1.5 rounded-lg text-slate-400 hover:text-white transition" data-filter="damage">มาตรา 9-10 (ทำลาย/รบกวน)</button>
-                    <button onclick="filterSolutions('spam')" class="sol-filter-btn px-3 py-1.5 rounded-lg text-slate-400 hover:text-white transition" data-filter="spam">มาตรา 11 (สแปม)</button>
-                    <button onclick="filterSolutions('content')" class="sol-filter-btn px-3 py-1.5 rounded-lg text-slate-400 hover:text-white transition" data-filter="content">มาตรา 14-16 (เนื้อหา/ตัดต่อ)</button>
-                </div>
-
-                <!-- 12 Solutions Cards Container -->
-                <div id="solutions-cards-container" class="flex flex-col gap-4 max-h-[60vh] overflow-y-auto pr-1">
-                    <!-- Populated dynamically from ALL_12_CASES -->
-                </div>
-
             </div>
 
         </div>
@@ -2535,7 +2381,7 @@ Reply STRICTLY in JSON: {"legal":{"score":<0-10>,"feedback":"..."},"remedy":{"sc
                 });
                 const data = await res.json();
 
-                if (data.success || passcode === 'admin123' || passcode === 'teacher123') {
+                if (data.success || passcode === 'SECRET_VERIFY' || passcode === 'SECRET_VERIFY') {
                     document.getElementById('solutions-lock-view').classList.add('hidden');
                     document.getElementById('solutions-content-view').classList.remove('hidden');
                     renderSolutionsCards('all');
@@ -2544,7 +2390,7 @@ Reply STRICTLY in JSON: {"legal":{"score":<0-10>,"feedback":"..."},"remedy":{"sc
                     msg.classList.remove('hidden');
                 }
             } catch (e) {
-                if (passcode === 'admin123' || passcode === 'teacher123') {
+                if (passcode === 'SECRET_VERIFY' || passcode === 'SECRET_VERIFY') {
                     document.getElementById('solutions-lock-view').classList.add('hidden');
                     document.getElementById('solutions-content-view').classList.remove('hidden');
                     renderSolutionsCards('all');
@@ -2781,7 +2627,7 @@ Reply STRICTLY in JSON: {"legal":{"score":<0-10>,"feedback":"..."},"remedy":{"sc
                     document.getElementById('teacher-lock-msg').classList.remove('hidden');
                 }
             } catch (e) {
-                if (passcode === 'admin123' || passcode === 'teacher123') {
+                if (passcode === 'SECRET_VERIFY' || passcode === 'SECRET_VERIFY') {
                     document.getElementById('teacher-lock-view').classList.add('hidden');
                     document.getElementById('teacher-settings-view').classList.remove('hidden');
                 } else {
