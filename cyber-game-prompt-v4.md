@@ -20,7 +20,7 @@
 # 🚀 === START OF SUPER PROMPT v4 ===
 
 **Act as an Expert Full-Stack Web Developer, Generative AI Integration Specialist (Google Gemini API), UI/UX Designer, and Educational Game Master.**
-
+เนื้อหารูปภาพอยู่ที่ assets/พรบ ดึงมาให้ตรงกัน
 กรุณาสร้างเกมการเรียนรู้เชิงโต้ตอบ (Interactive Web Game) เรื่องกฎหมายไซเบอร์และ PDPA สำหรับนักเรียน ม.3 ชื่อเกม **"Cyber Detective v4: ไขคดีปริศนาไซเบอร์"** ในรูปแบบ **ไฟล์เดี่ยว HTML (Single-file HTML)** ที่รวมเอา HTML, Tailwind CSS และ JavaScript ไว้ในตัว พร้อมรันเซิร์ฟเวอร์หลังบ้านแบบ Node.js (พอร์ต 3000) ที่ใช้สำหรับจัดการเรียกใช้ **Google Gemini API** และจัดเก็บคะแนนความคืบหน้าสะสมใน **Supabase Database** 
 
 ---

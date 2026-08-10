@@ -1,0 +1,2903 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Cyber Shield Detective: ปฏิบัติการสายสืบพิทักษ์ไซเบอร์ (ม.3)</title>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Kanit:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400&family=Sarabun:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=Chakra+Petch:wght@500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" sizes="256x256" href="favicon.png">
+    
+    <!-- FontAwesome 6 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        cyber: {
+                            dark: '#0B0F19',
+                            slate: '#0F172A',
+                            panel: '#1E293B',
+                            cyan: '#06B6D4',
+                            cyanGlow: '#22D3EE',
+                            pink: '#EC4899',
+                            pinkGlow: '#F472B6',
+                            yellow: '#F59E0B',
+                            green: '#10B981',
+                            purple: '#8B5CF6'
+                        }
+                    },
+                    fontFamily: {
+                        kanit: ['Kanit', 'sans-serif'],
+                        sarabun: ['Sarabun', 'sans-serif'],
+                        mono: ['Chakra Petch', 'monospace']
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <!-- Supabase JS Client CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    
+    <!-- Custom Cyberpunk Styles -->
+    <style>
+        :root {
+            --neon-cyan: #06B6D4;
+            --neon-pink: #EC4899;
+            --neon-yellow: #F59E0B;
+            --neon-green: #10B981;
+        }
+
+        body {
+            font-family: 'Kanit', 'Sarabun', sans-serif;
+            background-color: #070B14;
+            color: #F1F5F9;
+            background-image: 
+                radial-gradient(circle at 15% 15%, rgba(6, 182, 212, 0.08) 0%, transparent 40%),
+                radial-gradient(circle at 85% 85%, rgba(236, 72, 153, 0.08) 0%, transparent 40%),
+                linear-gradient(to bottom, #070B14, #0F172A);
+            min-height: 100vh;
+        }
+
+        /* Cyberpunk Grid Background Overlay */
+        .cyber-grid-bg {
+            background-size: 40px 40px;
+            background-image: 
+                linear-gradient(to right, rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+                linear-gradient(to bottom, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+        }
+
+        /* Glassmorphism Panel */
+        .glass-panel {
+            background: rgba(15, 23, 42, 0.85);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(6, 182, 212, 0.25);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+        }
+
+        .glass-panel-pink {
+            background: rgba(15, 23, 42, 0.85);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(236, 72, 153, 0.3);
+            box-shadow: 0 8px 32px 0 rgba(236, 72, 153, 0.1);
+        }
+
+        .glass-panel-amber {
+            background: rgba(15, 23, 42, 0.85);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(245, 158, 11, 0.3);
+            box-shadow: 0 8px 32px 0 rgba(245, 158, 11, 0.1);
+        }
+
+        /* Glow Borders */
+        .glow-cyan { box-shadow: 0 0 15px rgba(6, 182, 212, 0.35); }
+        .glow-pink { box-shadow: 0 0 15px rgba(236, 72, 153, 0.35); }
+        .glow-yellow { box-shadow: 0 0 15px rgba(245, 158, 11, 0.35); }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0B0F19;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #1E293B;
+            border-radius: 4px;
+            border: 1px solid rgba(6, 182, 212, 0.3);
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #06B6D4;
+        }
+
+        /* Print Media Styles for Certificate & Group Score Report */
+        @media print {
+            body {
+                background: white !important;
+                color: black !important;
+            }
+            body * {
+                visibility: hidden;
+            }
+            #printable-certificate, #printable-certificate *,
+            #printable-group-report, #printable-group-report * {
+                visibility: visible;
+            }
+            #printable-certificate,
+            #printable-group-report {
+                position: absolute;
+                left: 0;
+                top: 0;
+                width: 100%;
+                margin: 0;
+                padding: 20px;
+                background: white !important;
+                color: #0F172A !important;
+                box-shadow: none !important;
+            }
+            .no-print {
+                display: none !important;
+            }
+        }
+    </style>
+
+    <!-- ========================================================================= -->
+    <!-- 🔒 CYBER SECURITY & ANTI-TAMPER SHIELD (Anti-DevTools & Anti-Inspect)     -->
+    <!-- ========================================================================= -->
+    <script>
+        (function initSecurityShield() {
+            // 1. Disable Right Click Context Menu
+            document.addEventListener('contextmenu', (e) => {
+                e.preventDefault();
+                showSecurityToast('🔒 ไม่อนุญาตให้คลิกขวาเพื่อความโปร่งใสในการทำแบบทดสอบ');
+                return false;
+            });
+
+            // 2. Disable Inspection & Developer Shortcuts
+            document.addEventListener('keydown', (e) => {
+                // F12
+                if (e.key === 'F12' || e.keyCode === 123) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    showSecurityToast('🔒 ฟังก์ชัน F12 (Developer Tools) ถูกปิดใช้งาน');
+                    return false;
+                }
+                // Ctrl+Shift+I, Ctrl+Shift+J, Ctrl+Shift+C (Inspect/Console/Picker)
+                if (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'i' || e.key === 'J' || e.key === 'j' || e.key === 'C' || e.key === 'c')) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    showSecurityToast('🔒 การตรวจสอบโค้ดหน้าเว็บถูกปิดใช้งาน');
+                    return false;
+                }
+                // Ctrl+U (View Source)
+                if (e.ctrlKey && (e.key === 'u' || e.key === 'U')) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    showSecurityToast('🔒 การดู Source Code ถูกปิดใช้งาน');
+                    return false;
+                }
+                // Ctrl+S (Save Page)
+                if (e.ctrlKey && (e.key === 's' || e.key === 'S')) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    return false;
+                }
+            });
+
+            // 3. Security Toast Notification
+            window.showSecurityToast = function(msg) {
+                let toast = document.getElementById('security-toast-alert');
+                if (!toast) {
+                    toast = document.createElement('div');
+                    toast.id = 'security-toast-alert';
+                    toast.className = 'fixed bottom-6 right-6 z-[9999] bg-red-950/95 border border-red-500/80 text-red-200 px-4 py-3 rounded-xl shadow-2xl backdrop-blur-md flex items-center gap-3 transition-all duration-300 font-sarabun text-sm';
+                    document.body.appendChild(toast);
+                }
+                toast.innerHTML = '<i class="fa-solid fa-shield-halved text-red-400 text-lg animate-pulse"></i> <span>' + msg + '</span>';
+                toast.style.opacity = '1';
+                toast.style.transform = 'translateY(0)';
+                if (window._secToastTimer) clearTimeout(window._secToastTimer);
+                window._secToastTimer = setTimeout(() => {
+                    toast.style.opacity = '0';
+                    toast.style.transform = 'translateY(20px)';
+                }, 3000);
+            };
+
+            // 4. Subtle DevTools Trap (Deterrent)
+            let devtoolsOpen = false;
+            const threshold = 160;
+            setInterval(() => {
+                const widthThreshold = window.outerWidth - window.innerWidth > threshold;
+                const heightThreshold = window.outerHeight - window.innerHeight > threshold;
+                if ((widthThreshold || heightThreshold) && !devtoolsOpen) {
+                    devtoolsOpen = true;
+                    console.clear();
+                    console.log('%c⚠️ คำเตือนความปลอดภัย: ห้ามแก้ไขข้อมูลหรือคำตอบในระบบสืบคดี', 'color: red; font-size: 20px; font-weight: bold;');
+                } else if (!widthThreshold && !heightThreshold) {
+                    devtoolsOpen = false;
+                }
+            }, 1000);
+        })();
+    </script>
+
+</head>
+<body class="cyber-grid-bg antialiased selection:bg-cyan-500 selection:text-black">
+
+    <!-- App Wrapper -->
+    <div id="app-container" class="min-h-screen flex flex-col justify-between">
+
+        <!-- Top Toast Notification -->
+        <div id="toast-banner" class="fixed top-4 left-1/2 -translate-x-1/2 z-50 transition-all duration-300 transform -translate-y-24 opacity-0 pointer-events-none">
+            <div class="glass-panel px-6 py-3 rounded-full flex items-center gap-3 border border-cyan-400/50 shadow-lg shadow-cyan-500/20 text-cyan-200">
+                <i id="toast-icon" class="fa-solid fa-circle-check text-cyan-400 text-lg"></i>
+                <span id="toast-text" class="text-sm font-medium">ข้อความแจ้งเตือน</span>
+            </div>
+        </div>
+
+        <!-- ========================================================================= -->
+        <!-- 1. TOP HEADER BAR                                                        -->
+        <!-- ========================================================================= -->
+        <header class="glass-panel sticky top-0 z-40 border-b border-cyan-500/30 px-4 py-2.5 lg:px-8">
+            <div class="max-w-7xl mx-auto flex items-center justify-between gap-3">
+                
+                <!-- Brand Title -->
+                <div class="flex items-center gap-3">
+                    <div class="relative">
+                        <img src="favicon.png" alt="Logo" class="w-9 h-9 rounded-lg border border-cyan-400 shadow-md shadow-cyan-500/30 object-cover">
+                        <span class="absolute -bottom-1 -right-1 flex h-3 w-3">
+                            <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-cyan-400 opacity-75"></span>
+                            <span class="relative inline-flex rounded-full h-3 w-3 bg-cyan-500"></span>
+                        </span>
+                    </div>
+                    <div>
+                        <div class="flex items-center gap-2">
+                            <h1 class="text-base lg:text-lg font-bold tracking-wider text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-pink-400 to-amber-300 font-mono">
+                                CYBER SHIELD DETECTIVE <span class="text-xs px-2 py-0.5 rounded bg-pink-500/20 text-pink-300 border border-pink-500/40">v4 AI</span>
+                            </h1>
+                        </div>
+                        <p class="text-[11px] text-slate-400 hidden sm:block">ระบบสืบคดีอัตนัย ประเมินผลด้วย Google Gemini AI (ม.3)</p>
+                    </div>
+                </div>
+
+                <!-- Status Pills Group (Center/Right) -->
+                <div class="hidden md:flex items-center gap-2 lg:gap-3 text-xs">
+                    <!-- Team Pill -->
+                    <div id="pill-team-name" class="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-slate-800/80 border border-slate-700 text-slate-300">
+                        <i class="fa-solid fa-users text-cyan-400"></i>
+                        <span id="label-team" class="font-medium truncate max-w-[120px]">ยังไม่ได้ลงทะเบียน</span>
+                    </div>
+                    <!-- Timer Pill -->
+                    <div class="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-slate-800/80 border border-slate-700 text-slate-300 font-mono">
+                        <i class="fa-regular fa-clock text-amber-400"></i>
+                        <span id="label-timer">00:00</span>
+                    </div>
+                    <!-- Case Progress Pill -->
+                    <div class="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-slate-800/80 border border-slate-700 text-slate-300 font-mono">
+                        <i class="fa-solid fa-folder-open text-purple-400"></i>
+                        <span>คดีที่: <b id="label-case-progress" class="text-purple-300">1 / 6</b></span>
+                    </div>
+                    <!-- Total Score Pill -->
+                    <div class="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-slate-800/80 border border-cyan-500/40 text-cyan-300 font-mono shadow-sm shadow-cyan-500/20">
+                        <i class="fa-solid fa-star text-yellow-400 animate-pulse"></i>
+                        <span>คะแนน: <b id="label-total-score" class="text-yellow-300 text-sm">0</b> / 180</span>
+                    </div>
+                </div>
+
+                <!-- Action Buttons Group -->
+                <div class="flex items-center gap-1.5 lg:gap-2">
+                    <!-- Group Score & PDF Export Button (NEW) -->
+                    <button onclick="openGroupScoreModal()" class="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-emerald-950/70 hover:bg-emerald-900/80 border border-emerald-500/40 text-emerald-200 text-xs font-medium transition shadow-sm" title="ดูคะแนนกลุ่มและส่งออก PDF">
+                        <i class="fa-solid fa-file-pdf text-emerald-400"></i>
+                        <span class="hidden md:inline">คะแนนกลุ่ม & PDF</span>
+                    </button>
+
+                    <!-- Solutions / Answer Key Button (NEW) -->
+                    <button onclick="openSolutionsModal()" class="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-purple-950/70 hover:bg-purple-900/80 border border-purple-500/40 text-purple-200 text-xs font-medium transition shadow-sm" title="แฟ้มเฉลยคดี พ.ร.บ. คอมพิวเตอร์ (สำหรับครู)">
+                        <i class="fa-solid fa-book-open text-purple-400"></i>
+                        <span class="hidden md:inline">เฉลยคดี (ครู)</span>
+                    </button>
+
+                    <!-- Leaderboard Button -->
+                    <button onclick="openLeaderboardModal()" class="p-2 rounded-lg bg-slate-800 hover:bg-slate-700 border border-slate-700 hover:border-amber-400/50 text-slate-300 hover:text-amber-300 text-xs transition" title="ตารางอันดับเรียลไทม์">
+                        <i class="fa-solid fa-trophy text-amber-400"></i>
+                    </button>
+
+                    <!-- Reset Game Session Button (NEW) -->
+                    <button onclick="confirmResetGame()" class="p-2 rounded-lg bg-slate-800 hover:bg-red-950/80 border border-slate-700 hover:border-red-500/50 text-slate-300 hover:text-red-300 text-xs transition" title="เริ่มเกมใหม่ (Reset Session)">
+                        <i class="fa-solid fa-arrows-rotate text-red-400"></i>
+                    </button>
+
+                    <!-- Teacher Settings Button -->
+                    <button onclick="openTeacherModal()" class="p-2 rounded-lg bg-slate-800 hover:bg-slate-700 border border-slate-700 hover:border-pink-400/50 text-slate-300 hover:text-pink-300 text-xs transition" title="แผงควบคุมครู">
+                        <i class="fa-solid fa-gear text-pink-400"></i>
+                    </button>
+
+                    <!-- Sound Toggle Button -->
+                    <button id="btn-sound-toggle" onclick="toggleAudio()" class="p-2 rounded-lg bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-300 text-xs transition" title="เปิด/ปิด เสียง">
+                        <i id="sound-icon" class="fa-solid fa-volume-high text-cyan-400"></i>
+                    </button>
+
+                    <!-- Home Link -->
+                    <a href="/" class="p-2 rounded-lg bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-300 hover:text-white text-xs transition" title="กลับหน้าหลัก">
+                        <i class="fa-solid fa-house"></i>
+                    </a>
+                </div>
+            </div>
+        </header>
+
+        <!-- ========================================================================= -->
+        <!-- 2. MAIN DASHBOARD CONTENT (2-COLUMN LAYOUT)                              -->
+        <!-- ========================================================================= -->
+        <main class="max-w-7xl mx-auto w-full p-3 sm:p-4 lg:p-6 flex-1 flex flex-col gap-4">
+
+            <!-- Mobile Status Bar (Visible on mobile screens) -->
+            <div class="md:hidden glass-panel p-3 rounded-xl flex items-center justify-between text-xs border border-cyan-500/20">
+                <div class="flex items-center gap-1.5 text-cyan-300">
+                    <i class="fa-solid fa-users text-xs"></i>
+                    <span id="label-team-mobile" class="font-medium truncate max-w-[100px]">นักสืบ ม.3</span>
+                </div>
+                <div class="flex items-center gap-1.5 text-purple-300 font-mono">
+                    <span>คดี <b id="label-case-mobile">1/6</b></span>
+                </div>
+                <div class="flex items-center gap-1.5 text-yellow-300 font-mono">
+                    <i class="fa-solid fa-star text-xs"></i>
+                    <span><b id="label-score-mobile">0</b>/180</span>
+                </div>
+            </div>
+
+            <!-- 2-Column Responsive Workspace Grid -->
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-5 flex-1 items-start">
+
+                <!-- ================================================================= -->
+                <!-- LEFT COLUMN: Case Dossier & 9-Panel Comic Viewer (5 Cols on Large)-->
+                <!-- ================================================================= -->
+                <section class="lg:col-span-5 flex flex-col gap-4">
+                    
+                    <!-- Case Dossier Header Card -->
+                    <div class="glass-panel p-4 sm:p-5 rounded-2xl border border-cyan-500/30 flex flex-col gap-3">
+                        <div class="flex items-center justify-between">
+                            <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium bg-cyan-500/10 text-cyan-300 border border-cyan-500/30 font-mono">
+                                <i class="fa-solid fa-fingerprint"></i> DOSSIER FILE #<span id="dossier-case-num">01</span>
+                            </span>
+                            <span id="dossier-category" class="text-xs px-2.5 py-0.5 rounded bg-purple-500/20 text-purple-300 border border-purple-500/30">
+                                พ.ร.บ. คอมพิวเตอร์
+                            </span>
+                        </div>
+
+                        <h2 id="dossier-title" class="text-lg sm:text-xl font-bold text-slate-100 leading-snug">
+                            กำลังโหลดข้อมูลแฟ้มคดี...
+                        </h2>
+
+                        <!-- Brief / Complaint Box -->
+                        <div class="bg-slate-900/90 rounded-xl p-3.5 border-l-4 border-cyan-400 text-xs sm:text-sm text-slate-300 leading-relaxed shadow-inner">
+                            <div class="font-semibold text-cyan-300 mb-1 flex items-center gap-1.5">
+                                <i class="fa-solid fa-bullhorn text-xs"></i> คำร้องทุกข์จากผู้เสียหาย:
+                            </div>
+                            <p id="dossier-brief">...</p>
+                        </div>
+                    </div>
+
+                    <!-- 9-Panel Comic Viewer Box -->
+                    <div class="glass-panel p-4 rounded-2xl border border-cyan-500/30 flex flex-col gap-3">
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center gap-2">
+                                <i class="fa-solid fa-film text-pink-400"></i>
+                                <span class="text-sm font-semibold text-slate-200">หลักฐานการ์ตูนจำลองเหตุการณ์ 9 ช่อง</span>
+                            </div>
+                            <!-- Zoom Button -->
+                            <button onclick="openComicLightbox()" class="text-xs px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-cyan-300 border border-cyan-500/30 flex items-center gap-1.5 transition">
+                                <i class="fa-solid fa-magnifying-glass-plus"></i> ซูมขยายเต็มจอ
+                            </button>
+                        </div>
+
+                        <!-- Comic Image Container with Cyber Frame -->
+                        <div class="relative group cursor-pointer overflow-hidden rounded-xl border border-slate-700 bg-black/60 shadow-lg" onclick="openComicLightbox()">
+                            <img id="dossier-comic-img" src="assets/evidence/case_ev_8f3a9b21.png" alt="Comic 9 Panels" class="w-full h-auto object-contain max-h-[380px] sm:max-h-[440px] mx-auto rounded-lg transition-transform duration-300 group-hover:scale-[1.02]">
+                            
+                            <!-- Hover Overlay -->
+                            <div class="absolute inset-0 bg-gradient-to-t from-slate-950/90 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex items-end justify-center p-4">
+                                <span class="text-xs font-medium text-cyan-300 bg-slate-900/90 px-3 py-1.5 rounded-full border border-cyan-400/40 flex items-center gap-1.5 shadow-lg">
+                                    <i class="fa-solid fa-expand"></i> คลิกเพื่อเปิดดูภาพความละเอียดสูง
+                                </span>
+                            </div>
+                        </div>
+
+                        <!-- 3-Phase Storyline Breakdown Tabs -->
+                        <div class="mt-2 flex flex-col gap-2">
+                            <div class="text-xs font-semibold text-slate-400 flex items-center gap-1.5">
+                                <i class="fa-solid fa-list-ol text-cyan-400"></i> สรุปช่วงเหตุการณ์ (3 ช่วง):
+                            </div>
+                            <div class="grid grid-cols-3 gap-2">
+                                <button onclick="selectStoryPhase(1)" id="phase-tab-1" class="px-2.5 py-2 rounded-lg bg-slate-800/90 border border-cyan-500/40 text-[11px] font-medium text-cyan-300 text-center transition">
+                                    <span class="block text-[10px] text-slate-400">ช่อง 1-3</span>
+                                    🚩 ต้นเหตุคดี
+                                </button>
+                                <button onclick="selectStoryPhase(2)" id="phase-tab-2" class="px-2.5 py-2 rounded-lg bg-slate-900/60 border border-slate-700 text-[11px] font-medium text-slate-400 text-center hover:text-slate-200 transition">
+                                    <span class="block text-[10px] text-slate-400">ช่อง 4-6</span>
+                                    💥 ผลกระทบ
+                                </button>
+                                <button onclick="selectStoryPhase(3)" id="phase-tab-3" class="px-2.5 py-2 rounded-lg bg-slate-900/60 border border-slate-700 text-[11px] font-medium text-slate-400 text-center hover:text-slate-200 transition">
+                                    <span class="block text-[10px] text-slate-400">ช่อง 7-9</span>
+                                    ⚖️ การคลี่คลาย
+                                </button>
+                            </div>
+                            <!-- Story Phase Content Text -->
+                            <div id="story-phase-desc" class="p-3 rounded-xl bg-slate-900/70 border border-slate-800 text-xs text-slate-300 leading-relaxed min-h-[70px]">
+                                โหลดเนื้อเรื่องช่วงที่ 1...
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- ================================================================= -->
+                <!-- RIGHT COLUMN: Detective Analysis Input Console (7 Cols on Large)  -->
+                <!-- ================================================================= -->
+                <section class="lg:col-span-7 flex flex-col gap-4">
+
+                    <!-- Input Console Main Card -->
+                    <div class="glass-panel p-4 sm:p-6 rounded-2xl border border-cyan-500/30 flex flex-col gap-4 relative overflow-hidden">
+                        
+                        <!-- Console Header & View Mode Switcher -->
+                        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-800 pb-3">
+                            <div class="flex items-center gap-2.5">
+                                <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-cyan-500 to-pink-500 flex items-center justify-center text-white shadow-md shadow-cyan-500/20">
+                                    <i class="fa-solid fa-brain text-sm"></i>
+                                </div>
+                                <div>
+                                    <h3 class="text-base font-bold text-slate-100">แท่นวิเคราะห์สืบคดี (Detective Console)</h3>
+                                    <p class="text-xs text-slate-400">ระดมสมองและพิมพ์วิเคราะห์คำตอบตาม 3 บทบาทหลัก</p>
+                                </div>
+                            </div>
+
+                            <!-- View Mode Toggle (Tabs vs All-in-One) -->
+                            <div class="flex items-center bg-slate-900/90 rounded-lg p-1 border border-slate-700 text-xs self-start sm:self-auto">
+                                <button id="btn-mode-wizard" onclick="switchViewMode('wizard')" class="px-2.5 py-1 rounded-md bg-cyan-600 text-white font-medium transition shadow-sm">
+                                    <i class="fa-solid fa-list-check mr-1"></i> ทีละบทบาท
+                                </button>
+                                <button id="btn-mode-all" onclick="switchViewMode('all')" class="px-2.5 py-1 rounded-md text-slate-400 hover:text-slate-200 transition">
+                                    <i class="fa-solid fa-table-columns mr-1"></i> รวม 3 ด้าน
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Wizard Step Indicators (Visible in Wizard Mode) -->
+                        <div id="wizard-stepper" class="grid grid-cols-3 gap-2">
+                            <button onclick="goToStep(1)" id="step-btn-1" class="p-2 rounded-xl bg-amber-500/10 border-2 border-amber-400 text-amber-300 text-xs font-medium flex items-center justify-center gap-2 transition">
+                                <span>👨‍⚖️ 1. กฎหมาย</span>
+                                <span id="step-check-1" class="text-[10px] px-1.5 py-0.2 rounded bg-amber-500/30">0/20</span>
+                            </button>
+                            <button onclick="goToStep(2)" id="step-btn-2" class="p-2 rounded-xl bg-slate-900/60 border border-slate-700 text-slate-400 text-xs font-medium flex items-center justify-center gap-2 hover:text-slate-200 transition">
+                                <span>🚑 2. บรรเทาภัย</span>
+                                <span id="step-check-2" class="text-[10px] px-1.5 py-0.2 rounded bg-slate-800">0/20</span>
+                            </button>
+                            <button onclick="goToStep(3)" id="step-btn-3" class="p-2 rounded-xl bg-slate-900/60 border border-slate-700 text-slate-400 text-xs font-medium flex items-center justify-center gap-2 hover:text-slate-200 transition">
+                                <span>🛡️ 3. ป้องกัน</span>
+                                <span id="step-check-3" class="text-[10px] px-1.5 py-0.2 rounded bg-slate-800">0/20</span>
+                            </button>
+                        </div>
+
+                        <!-- ========================================================= -->
+                        <!-- 3 ROLE TEXTAREAS (Wizard / All-in-One Container)          -->
+                        <!-- ========================================================= -->
+                        <div class="flex flex-col gap-4">
+
+                            <!-- ROLE 1: LEGAL ANALYST -->
+                            <div id="role-box-legal" class="p-4 rounded-xl glass-panel-amber border border-amber-500/30 flex flex-col gap-2.5 transition">
+                                <div class="flex items-center justify-between">
+                                    <div class="flex items-center gap-2">
+                                        <span class="w-7 h-7 rounded-lg bg-amber-500/20 border border-amber-500/40 text-amber-300 flex items-center justify-center text-sm">
+                                            👨‍⚖️
+                                        </span>
+                                        <div>
+                                            <h4 class="text-sm font-bold text-amber-300">1. บทบาทนักวิเคราะห์กฎหมาย (Legal Analyst)</h4>
+                                            <p class="text-[11px] text-amber-200/70">ระบุมาตราความผิด พ.ร.บ. คอมพิวเตอร์ หรือ PDPA พร้อมอัตราโทษจำคุก/ปรับ และวิเคราะห์ความเสียหาย</p>
+                                        </div>
+                                    </div>
+                                    <span class="text-xs font-mono font-bold text-amber-400 bg-amber-500/20 px-2 py-0.5 rounded border border-amber-500/30">
+                                        เต็ม 10 คะแนน
+                                    </span>
+                                </div>
+
+                                <!-- Textarea Input -->
+                                <div class="relative">
+                                    <textarea id="input-legal" rows="3" oninput="handleTextInput('legal')" placeholder="พิมพ์วิเคราะห์ เช่น: การกระทำนี้ผิด พ.ร.บ.คอมพิวเตอร์ มาตรา... โทษจำคุกไม่เกิน... ปรับไม่เกิน... บาท เพราะทำให้..." class="w-full bg-slate-950/80 border border-amber-500/30 rounded-xl p-3 text-sm text-slate-100 placeholder-slate-500 focus:outline-none focus:border-amber-400 focus:ring-1 focus:ring-amber-400 font-sarabun transition resize-none"></textarea>
+                                    
+                                    <!-- Char Counter Badge -->
+                                    <div class="flex items-center justify-between mt-1 text-[11px] px-1 text-slate-400">
+                                        <span id="tip-legal" class="text-amber-300/80"><i class="fa-solid fa-circle-info mr-1"></i>เกณฑ์: ระบุมาตรา + โทษจำคุก/ปรับ + เหตุผล</span>
+                                        <span id="count-legal" class="font-mono text-slate-400">0 / 20 ตัวอักษร (ขั้นต่ำ)</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- ROLE 2: INCIDENT RESPONDER -->
+                            <div id="role-box-remedy" class="p-4 rounded-xl glass-panel-pink border border-pink-500/30 flex flex-col gap-2.5 transition">
+                                <div class="flex items-center justify-between">
+                                    <div class="flex items-center gap-2">
+                                        <span class="w-7 h-7 rounded-lg bg-pink-500/20 border border-pink-500/40 text-pink-300 flex items-center justify-center text-sm">
+                                            🚑
+                                        </span>
+                                        <div>
+                                            <h4 class="text-sm font-bold text-pink-300">2. บทบาทเจ้าหน้าที่บรรเทาภัย (Incident Responder)</h4>
+                                            <p class="text-[11px] text-pink-200/70">ระบุวิธีรับมือเฉพาะหน้าทันทีเพื่อหยุดยั้งความเสียหาย และระบุบุคคล/หน่วยงานที่ต้องประสานงานแจ้งเหตุ</p>
+                                        </div>
+                                    </div>
+                                    <span class="text-xs font-mono font-bold text-pink-400 bg-pink-500/20 px-2 py-0.5 rounded border border-pink-500/30">
+                                        เต็ม 10 คะแนน
+                                    </span>
+                                </div>
+
+                                <!-- Textarea Input -->
+                                <div class="relative">
+                                    <textarea id="input-remedy" rows="3" oninput="handleTextInput('remedy')" placeholder="พิมพ์แนวทางรับมือ เช่น: ต้องรีบทำตามขั้นตอน... แล้วประสานงานแจ้งเรื่องแก่คุณครู/ผู้ปกครอง/แอดมิน เพื่อ..." class="w-full bg-slate-950/80 border border-pink-500/30 rounded-xl p-3 text-sm text-slate-100 placeholder-slate-500 focus:outline-none focus:border-pink-400 focus:ring-1 focus:ring-pink-400 font-sarabun transition resize-none"></textarea>
+                                    
+                                    <!-- Char Counter Badge -->
+                                    <div class="flex items-center justify-between mt-1 text-[11px] px-1 text-slate-400">
+                                        <span id="tip-remedy" class="text-pink-300/80"><i class="fa-solid fa-circle-info mr-1"></i>เกณฑ์: ขั้นตอนระงับเหตุทันที + แจ้งใครช่วยเหลือ</span>
+                                        <span id="count-remedy" class="font-mono text-slate-400">0 / 20 ตัวอักษร (ขั้นต่ำ)</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- ROLE 3: SECURITY ENGINEER -->
+                            <div id="role-box-security" class="p-4 rounded-xl glass-panel border border-cyan-500/30 flex flex-col gap-2.5 transition">
+                                <div class="flex items-center justify-between">
+                                    <div class="flex items-center gap-2">
+                                        <span class="w-7 h-7 rounded-lg bg-cyan-500/20 border border-cyan-500/40 text-cyan-300 flex items-center justify-center text-sm">
+                                            🛡️
+                                        </span>
+                                        <div>
+                                            <h4 class="text-sm font-bold text-cyan-300">3. บทบาทวิศวกรความปลอดภัย (Security Engineer)</h4>
+                                            <p class="text-[11px] text-cyan-200/70">ระบุเครื่องมือทางเทคนิค (เช่น 2FA, SSL, Firewall, Read-Only, SafeSearch) ที่อุดรูรั่วในคดีนี้ระยะยาว</p>
+                                        </div>
+                                    </div>
+                                    <span class="text-xs font-mono font-bold text-cyan-400 bg-cyan-500/20 px-2 py-0.5 rounded border border-cyan-500/30">
+                                        เต็ม 10 คะแนน
+                                    </span>
+                                </div>
+
+                                <!-- Textarea Input -->
+                                <div class="relative">
+                                    <textarea id="input-security" rows="3" oninput="handleTextInput('security')" placeholder="พิมพ์การตั้งค่าเทคนิค เช่น: แนะนำให้ติดตั้งระบบ... เพื่อบล็อกไม่ให้แฮกเกอร์... และเยาวชน ม.3 สามารถตั้งค่าได้โดย..." class="w-full bg-slate-950/80 border border-cyan-500/30 rounded-xl p-3 text-sm text-slate-100 placeholder-slate-500 focus:outline-none focus:border-cyan-400 focus:ring-1 focus:ring-cyan-400 font-sarabun transition resize-none"></textarea>
+                                    
+                                    <!-- Char Counter Badge -->
+                                    <div class="flex items-center justify-between mt-1 text-[11px] px-1 text-slate-400">
+                                        <span id="tip-security" class="text-cyan-300/80"><i class="fa-solid fa-circle-info mr-1"></i>เกณฑ์: เครื่องมือเทคนิคตรงคดี + ปิดโอกาสแฮกเกอร์</span>
+                                        <span id="count-security" class="font-mono text-slate-400">0 / 20 ตัวอักษร (ขั้นต่ำ)</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <!-- Action Submit Bar -->
+                        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pt-2 border-t border-slate-800">
+                            <!-- Progress Status Indicator -->
+                            <div class="text-xs text-slate-400 flex items-center gap-2">
+                                <span id="status-completion-icon" class="text-amber-400"><i class="fa-solid fa-clock"></i></span>
+                                <span id="status-completion-text">กรุณากรอกคำตอบให้ครบทั้ง 3 บทบาท (อย่างน้อย 20 ตัวอักษร)</span>
+                            </div>
+
+                            <!-- Buttons -->
+                            <div class="flex items-center gap-2">
+                                <button type="button" onclick="clearDraft()" class="px-3 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-medium transition">
+                                    <i class="fa-solid fa-rotate-left mr-1"></i> ล้างคำตอบ
+                                </button>
+                                <button type="button" id="btn-submit-case" onclick="submitCaseToAI()" disabled class="px-5 py-2.5 rounded-xl bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-500 hover:to-blue-500 disabled:opacity-40 disabled:cursor-not-allowed text-white text-sm font-bold shadow-lg shadow-cyan-500/20 flex items-center gap-2 transition transform active:scale-95">
+                                    <i class="fa-solid fa-paper-plane"></i>
+                                    <span>ยื่นคำตอบให้ Google Gemini AI วิเคราะห์</span>
+                                </button>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <!-- ========================================================= -->
+                    <!-- AI ANALYSIS FEEDBACK PANEL (Shows result upon submit)     -->
+                    <!-- ========================================================= -->
+                    <div id="ai-feedback-panel" class="hidden glass-panel p-5 sm:p-6 rounded-2xl border border-cyan-500/40 flex flex-col gap-4 relative overflow-hidden transition-all duration-500">
+                        
+                        <!-- AI Analysis Header with Score Badge -->
+                        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-800 pb-4">
+                            <div class="flex items-center gap-3">
+                                <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-cyan-500 via-pink-500 to-amber-400 p-0.5 shadow-lg shadow-cyan-500/20">
+                                    <div class="w-full h-full bg-slate-900 rounded-[10px] flex items-center justify-center text-cyan-300">
+                                        <i class="fa-solid fa-wand-magic-sparkles text-lg animate-spin" style="animation-duration: 6s;"></i>
+                                    </div>
+                                </div>
+                                <div>
+                                    <div class="flex items-center gap-2">
+                                        <h3 class="text-base sm:text-lg font-bold text-slate-100">ผลการประเมินจาก Google Gemini AI</h3>
+                                        <span id="ai-mode-tag" class="text-[10px] px-2 py-0.5 rounded bg-cyan-500/20 text-cyan-300 border border-cyan-500/40 font-mono">GEMINI 1.5</span>
+                                    </div>
+                                    <p class="text-xs text-slate-400">ระบบตรวจคำตอบอัตนัยตามเกณฑ์รูบริกวิชาการสำหรับ ม.3</p>
+                                </div>
+                            </div>
+
+                            <!-- Total Score Badge -->
+                            <div class="flex items-center gap-2 bg-slate-900/90 px-4 py-2 rounded-xl border border-yellow-500/40 shadow-md shadow-yellow-500/10">
+                                <i class="fa-solid fa-trophy text-yellow-400 text-lg"></i>
+                                <div>
+                                    <div class="text-[10px] text-slate-400 uppercase tracking-wider">คะแนนคดีนี้</div>
+                                    <div class="text-lg font-bold font-mono text-yellow-300">
+                                        <span id="feedback-total-score">0</span> <span class="text-xs text-slate-400">/ 30 คะแนน</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 3 Sub-scores Breakdown Cards -->
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+                            
+                            <!-- Legal Feedback Card -->
+                            <div class="p-3.5 rounded-xl bg-slate-900/80 border border-amber-500/30 flex flex-col gap-2">
+                                <div class="flex items-center justify-between">
+                                    <span class="text-xs font-bold text-amber-300 flex items-center gap-1.5">
+                                        👨‍⚖️ กฎหมาย (Legal)
+                                    </span>
+                                    <span id="feedback-legal-score" class="font-mono font-bold text-xs text-amber-400 bg-amber-500/20 px-2 py-0.5 rounded">
+                                        0 / 10
+                                    </span>
+                                </div>
+                                <p id="feedback-legal-text" class="text-xs text-slate-300 leading-relaxed font-sarabun">...</p>
+                            </div>
+
+                            <!-- Remedy Feedback Card -->
+                            <div class="p-3.5 rounded-xl bg-slate-900/80 border border-pink-500/30 flex flex-col gap-2">
+                                <div class="flex items-center justify-between">
+                                    <span class="text-xs font-bold text-pink-300 flex items-center gap-1.5">
+                                        🚑 บรรเทาภัย (Remedy)
+                                    </span>
+                                    <span id="feedback-remedy-score" class="font-mono font-bold text-xs text-pink-400 bg-pink-500/20 px-2 py-0.5 rounded">
+                                        0 / 10
+                                    </span>
+                                </div>
+                                <p id="feedback-remedy-text" class="text-xs text-slate-300 leading-relaxed font-sarabun">...</p>
+                            </div>
+
+                            <!-- Security Feedback Card -->
+                            <div class="p-3.5 rounded-xl bg-slate-900/80 border border-cyan-500/30 flex flex-col gap-2">
+                                <div class="flex items-center justify-between">
+                                    <span class="text-xs font-bold text-cyan-300 flex items-center gap-1.5">
+                                        🛡️ ป้องกัน (Security)
+                                    </span>
+                                    <span id="feedback-security-score" class="font-mono font-bold text-xs text-cyan-400 bg-cyan-500/20 px-2 py-0.5 rounded">
+                                        0 / 10
+                                    </span>
+                                </div>
+                                <p id="feedback-security-text" class="text-xs text-slate-300 leading-relaxed font-sarabun">...</p>
+                            </div>
+
+                        </div>
+
+                        <!-- Overall Summary Advice Box -->
+                        <div class="p-4 rounded-xl bg-gradient-to-r from-purple-950/40 to-slate-900/80 border border-purple-500/30 flex items-start gap-3">
+                            <span class="text-2xl">💡</span>
+                            <div class="flex-1">
+                                <h4 class="text-xs font-bold text-purple-300 mb-1">บทวิเคราะห์ภาพรวมและคำแนะนำเสริมสร้างทักษะ:</h4>
+                                <p id="feedback-overall-summary" class="text-xs text-slate-200 leading-relaxed font-sarabun">...</p>
+                            </div>
+                        </div>
+
+                        <!-- Next Case Action Bar -->
+                        <div class="flex items-center justify-end gap-3 pt-2">
+                            <button id="btn-next-case" onclick="handleNextCase()" class="px-6 py-2.5 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-bold text-sm shadow-lg shadow-emerald-500/20 flex items-center gap-2 transition transform active:scale-95">
+                                <span id="label-next-case-btn">ไปยังคดีถัดไป (Next Case)</span>
+                                <i class="fa-solid fa-arrow-right"></i>
+                            </button>
+                        </div>
+
+                    </div>
+
+                </section>
+
+            </div>
+
+        </main>
+
+        <!-- ========================================================================= -->
+        <!-- 3. FOOTER BAR                                                            -->
+        <!-- ========================================================================= -->
+        <footer class="glass-panel border-t border-slate-800 px-4 py-3 text-center text-xs text-slate-400">
+            <div class="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-2">
+                <div>
+                    <span>Cyber Detective v4 &copy; 2026 สื่อการเรียนรู้กฎหมายไซเบอร์และ PDPA สำหรับนักเรียน ม.3</span>
+                </div>
+                <div class="flex items-center gap-3 text-slate-400">
+                    <span class="flex items-center gap-1"><i class="fa-solid fa-shield-halved text-cyan-400"></i> AI Powered</span>
+                    <span>&bull;</span>
+                    <span class="flex items-center gap-1"><i class="fa-solid fa-bolt text-yellow-400"></i> Realtime Supabase</span>
+                </div>
+            </div>
+        </footer>
+
+    </div>
+
+    <!-- ========================================================================= -->
+    <!-- 4. MODALS & OVERLAYS                                                      -->
+    <!-- ========================================================================= -->
+
+    <!-- 4.1 WELCOME & TEAM REGISTRATION MODAL -->
+    <div id="modal-register" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-md overflow-y-auto">
+        <div class="glass-panel max-w-xl w-full p-6 sm:p-8 rounded-3xl border border-cyan-400/50 shadow-2xl flex flex-col gap-5 relative my-4 max-h-[92vh] overflow-y-auto">
+            
+            <div class="text-center flex flex-col items-center gap-2">
+                <div class="w-16 h-16 rounded-2xl bg-gradient-to-tr from-cyan-500 via-pink-500 to-amber-400 p-0.5 shadow-xl shadow-cyan-500/20 mb-1">
+                    <div class="w-full h-full bg-slate-900 rounded-[14px] flex items-center justify-center">
+                        <img src="favicon.png" alt="Logo" class="w-12 h-12 rounded-xl object-cover">
+                    </div>
+                </div>
+                <h2 class="text-xl sm:text-2xl font-black text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-pink-400 to-amber-300">
+                    CYBER DETECTIVE v4
+                </h2>
+                <p class="text-xs text-slate-300">ยินดีต้อนรับสู่งานสืบคดีไซเบอร์ ม.3! โปรดลงทะเบียนทีมสายสืบเพื่อเริ่มปฏิบัติการ</p>
+            </div>
+
+            <!-- Form -->
+            <form onsubmit="handleRegisterTeam(event)" class="flex flex-col gap-4">
+                <!-- 1. Team Name -->
+                <div>
+                    <label class="block text-xs font-semibold text-cyan-300 mb-1">🏷️ ชื่อทีมสายสืบ / ชื่อกลุ่ม <span class="text-pink-400">*</span></label>
+                    <input type="text" id="reg-team-name" required placeholder="เช่น ทีมพิทักษ์ไซเบอร์ ม.3/1" class="w-full bg-slate-950 border border-slate-700 rounded-xl px-3.5 py-2.5 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-cyan-400 focus:ring-1 focus:ring-cyan-400">
+                </div>
+
+                <!-- 2. Class/Room & Member Count Dropdowns -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-300 mb-1">🏫 ระดับชั้น / ห้องเรียน <span class="text-pink-400">*</span></label>
+                        <select id="reg-room" class="w-full bg-slate-950 border border-slate-700 rounded-xl px-3.5 py-2.5 text-sm text-white focus:outline-none focus:border-cyan-400">
+                            <option value="ม.3/1">ม.3/1</option>
+                            <option value="ม.3/2">ม.3/2</option>
+                            <option value="ม.3/3">ม.3/3</option>
+                            <option value="ม.3/4">ม.3/4</option>
+                            <option value="ม.3/5">ม.3/5</option>
+                            <option value="ม.3/6">ม.3/6</option>
+                            <option value="ม.3/7">ม.3/7</option>
+                            <option value="ม.3/8">ม.3/8</option>
+                            <option value="ม.3/9">ม.3/9</option>
+                            <option value="ม.3/10">ม.3/10</option>
+                            <option value="ม.3/11">ม.3/11</option>
+                            <option value="ม.3/12">ม.3/12</option>
+                            <option value="ม.3/13">ม.3/13</option>
+                            <option value="ม.3/14">ม.3/14</option>
+                            <option value="ม.3/15">ม.3/15</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-300 mb-1">👥 จำนวนสมาชิกในทีม <span class="text-pink-400">*</span></label>
+                        <select id="reg-members-count" onchange="renderMemberInputs(parseInt(this.value))" class="w-full bg-slate-950 border border-slate-700 rounded-xl px-3.5 py-2.5 text-sm text-white focus:outline-none focus:border-cyan-400">
+                            <option value="1">1 คน</option>
+                            <option value="2">2 คน</option>
+                            <option value="3" selected>3 คน (แนะนำ: 3 บทบาท)</option>
+                            <option value="4">4 คน</option>
+                            <option value="5">5 คน</option>
+                            <option value="6">6 คน</option>
+                            <option value="7">7 คน</option>
+                            <option value="8">8 คน</option>
+                            <option value="9">9 คน</option>
+                            <option value="10">10 คน</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- 3. Dynamic Member Roster Container -->
+                <div class="flex flex-col gap-2">
+                    <div class="flex items-center justify-between">
+                        <label class="block text-xs font-semibold text-cyan-300">
+                            <i class="fa-solid fa-users-gear mr-1"></i> รายชื่อสมาชิกในกลุ่ม (ระบุเลขที่, คำนำหน้า, ชื่อ-นามสกุล) <span class="text-pink-400">*</span>
+                        </label>
+                        <span id="member-count-badge" class="text-[10px] px-2 py-0.5 rounded bg-cyan-500/20 text-cyan-300 border border-cyan-500/30 font-mono">3 สมาชิก</span>
+                    </div>
+
+                    <!-- Member input rows rendered here -->
+                    <div id="members-inputs-container" class="flex flex-col gap-2.5 max-h-[260px] overflow-y-auto pr-1">
+                        <!-- Rendered dynamically by JavaScript -->
+                    </div>
+                </div>
+
+                <div class="bg-cyan-950/40 border border-cyan-500/30 rounded-xl p-3 text-[11px] text-cyan-200 flex items-start gap-2">
+                    <i class="fa-solid fa-circle-info text-cyan-400 mt-0.5"></i>
+                    <span>ระบบจะทำการสุ่ม <b>6 คดีจำลองจาก 12 คดี</b> (คดีละ 30 คะแนน รวม 180 คะแนน) ให้ทีมพิมพ์วิเคราะห์คำตอบส่งให้ AI ตรวจสอบ</span>
+                </div>
+
+                <button type="submit" class="w-full mt-1 py-3 rounded-xl bg-gradient-to-r from-cyan-600 via-pink-600 to-amber-500 hover:from-cyan-500 hover:via-pink-500 hover:to-amber-400 text-white font-bold text-sm shadow-xl shadow-cyan-500/20 flex items-center justify-center gap-2 transition transform active:scale-98">
+                    <i class="fa-solid fa-play"></i>
+                    <span>เริ่มภารกิจสืบคดีไซเบอร์ v4</span>
+                </button>
+            </form>
+
+        </div>
+    </div>
+
+    <!-- 4.2 STEP-BY-STEP GOOGLE GEMINI API KEY TUTORIAL MODAL -->
+    <div id="modal-api-guide" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-md">
+        <div class="glass-panel max-w-2xl w-full p-6 sm:p-8 rounded-3xl border border-cyan-400/50 shadow-2xl flex flex-col gap-5 relative max-h-[90vh] overflow-y-auto">
+            
+            <!-- Close Button -->
+            <button onclick="closeApiKeyModal()" class="absolute top-4 right-4 text-slate-400 hover:text-white p-2 rounded-lg bg-slate-800/80 border border-slate-700 transition">
+                <i class="fa-solid fa-xmark text-lg"></i>
+            </button>
+
+            <!-- Modal Header -->
+            <div class="flex items-center gap-3 border-b border-slate-800 pb-3">
+                <div class="w-10 h-10 rounded-xl bg-cyan-500/20 border border-cyan-400 text-cyan-300 flex items-center justify-center text-lg">
+                    <i class="fa-solid fa-key"></i>
+                </div>
+                <div>
+                    <h3 class="text-lg font-bold text-slate-100">คู่มือขั้นตอน: ขอ Google Gemini API Key ฟรี 100%</h3>
+                    <p class="text-xs text-slate-400">สำหรับคุณครูและนักเรียนเพื่อใช้เชื่อมต่อระบบ AI ตรวจสอบคำตอบอัตนัย</p>
+                </div>
+            </div>
+
+            <!-- 4 Interactive Step Cards -->
+            <div class="flex flex-col gap-3.5">
+                
+                <!-- Step 1 -->
+                <div class="p-4 rounded-2xl bg-slate-900/90 border border-cyan-500/30 flex items-start gap-3.5">
+                    <span class="w-7 h-7 rounded-full bg-cyan-500 text-black font-bold flex items-center justify-center text-xs shrink-0">1</span>
+                    <div class="flex-1 flex flex-col gap-1.5">
+                        <h4 class="text-sm font-bold text-cyan-300">เข้าสู่เว็บไซต์ Google AI Studio</h4>
+                        <p class="text-xs text-slate-300">เปิดหน้าสร้าง API Key ของ Google AI Studio (ไม่มีค่าใช้จ่าย มีโควตาฟรีสำหรับเพื่อการศึกษา):</p>
+                        <div class="flex items-center gap-2 mt-1">
+                            <input type="text" readonly value="https://aistudio.google.com/app/apikey" class="bg-slate-950 border border-slate-700 rounded-lg px-3 py-1.5 text-xs text-cyan-200 font-mono flex-1">
+                            <button onclick="copyToClipboard('https://aistudio.google.com/app/apikey', 'คัดลอกลิงก์ AI Studio แล้ว')" class="px-3 py-1.5 rounded-lg bg-cyan-700 hover:bg-cyan-600 text-white text-xs font-medium transition">
+                                <i class="fa-solid fa-copy"></i> คัดลอก
+                            </button>
+                            <a href="https://aistudio.google.com/app/apikey" target="_blank" class="px-3 py-1.5 rounded-lg bg-blue-600 hover:bg-blue-500 text-white text-xs font-medium transition flex items-center gap-1">
+                                <i class="fa-solid fa-arrow-up-right-from-square"></i> เปิดเว็บ
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Step 2 -->
+                <div class="p-4 rounded-2xl bg-slate-900/90 border border-slate-700 flex items-start gap-3.5">
+                    <span class="w-7 h-7 rounded-full bg-pink-500 text-white font-bold flex items-center justify-center text-xs shrink-0">2</span>
+                    <div class="flex-1">
+                        <h4 class="text-sm font-bold text-pink-300">ล็อกอินด้วยบัญชี Google</h4>
+                        <p class="text-xs text-slate-300 mt-1">เข้าสู่ระบบด้วยบัญชี Google Account ทั่วไป (เช่น บัญชี Gmail ของคุณครูหรือโรงเรียน)</p>
+                    </div>
+                </div>
+
+                <!-- Step 3 -->
+                <div class="p-4 rounded-2xl bg-slate-900/90 border border-slate-700 flex items-start gap-3.5">
+                    <span class="w-7 h-7 rounded-full bg-amber-500 text-black font-bold flex items-center justify-center text-xs shrink-0">3</span>
+                    <div class="flex-1">
+                        <h4 class="text-sm font-bold text-amber-300">กดปุ่ม "Create API key" และ Copy</h4>
+                        <p class="text-xs text-slate-300 mt-1">คลิกปุ่มสีฟ้า <b>"Create API key"</b> -> เลือกโปรเจกต์ -> แล้วกด <b>Copy</b> คีย์ที่ได้ (จะขึ้นต้นด้วย <code>AIzaSy...</code>)</p>
+                    </div>
+                </div>
+
+                <!-- Step 4 & Live Test Box -->
+                <div class="p-4 rounded-2xl bg-gradient-to-br from-cyan-950/60 to-slate-900/90 border-2 border-cyan-400/50 flex items-start gap-3.5">
+                    <span class="w-7 h-7 rounded-full bg-emerald-500 text-black font-bold flex items-center justify-center text-xs shrink-0">4</span>
+                    <div class="flex-1 flex flex-col gap-2">
+                        <h4 class="text-sm font-bold text-emerald-300">นำคีย์มาวางและทดสอบในช่องนี้</h4>
+                        <div class="flex items-center gap-2">
+                            <input type="password" id="input-modal-api-key" placeholder="วาง Google Gemini API Key ที่นี่ (AIzaSy...)" class="flex-1 bg-slate-950 border border-cyan-500/40 rounded-xl px-3.5 py-2 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-cyan-300">
+                            <button onclick="toggleApiKeyVisibility('input-modal-api-key')" class="p-2 rounded-lg bg-slate-800 text-slate-300 hover:text-white text-xs">
+                                <i class="fa-solid fa-eye"></i>
+                            </button>
+                        </div>
+                        
+                        <div class="flex items-center justify-between gap-2 mt-1">
+                            <span id="label-test-api-status" class="text-[11px] text-slate-400">กดทดสอบเพื่อตรวจสอบความถูกต้องของคีย์</span>
+                            <div class="flex items-center gap-2">
+                                <button onclick="testGeminiKeyFromModal()" class="px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 border border-slate-600 text-cyan-300 text-xs font-medium transition flex items-center gap-1.5">
+                                    <i class="fa-solid fa-vial"></i> ทดสอบคีย์
+                                </button>
+                                <button onclick="saveApiKeyFromModal()" class="px-4 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold transition flex items-center gap-1.5 shadow-md shadow-emerald-500/20">
+                                    <i class="fa-solid fa-floppy-disk"></i> บันทึกคีย์
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Hint for Server Mode -->
+            <div class="p-3 rounded-xl bg-slate-950 border border-slate-800 text-xs text-slate-400 flex items-center justify-between">
+                <span>💡 หากต้องการเก็บคีย์แบบถาวรในเครื่องเซิร์ฟเวอร์ ให้ใส่ในไฟล์ <code>.env</code>: <code>GEMINI_API_KEY=AIzaSy...</code></span>
+                <button onclick="closeApiKeyModal()" class="px-4 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-medium">ปิดหน้าต่าง</button>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- 4.3 TEACHER'S CONTROL MODAL -->
+    <div id="modal-teacher" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-md">
+        <div class="glass-panel max-w-xl w-full p-6 sm:p-8 rounded-3xl border border-pink-500/40 shadow-2xl flex flex-col gap-5 relative max-h-[90vh] overflow-y-auto">
+            
+            <button onclick="closeTeacherModal()" class="absolute top-4 right-4 text-slate-400 hover:text-white p-2 rounded-lg bg-slate-800/80 border border-slate-700 transition">
+                <i class="fa-solid fa-xmark text-lg"></i>
+            </button>
+
+            <div class="flex items-center gap-3 border-b border-slate-800 pb-3">
+                <div class="w-10 h-10 rounded-xl bg-pink-500/20 border border-pink-400 text-pink-300 flex items-center justify-center text-lg">
+                    <i class="fa-solid fa-chalkboard-user"></i>
+                </div>
+                <div>
+                    <h3 class="text-lg font-bold text-slate-100">แผงควบคุมสำหรับครูผู้สอน (Teacher Dashboard)</h3>
+                    <p class="text-xs text-slate-400">ตั้งค่าระบบ AI, กุญแจ API และจัดการห้องเรียน</p>
+                </div>
+            </div>
+
+            <!-- Passcode Gate -->
+            <div id="teacher-lock-view" class="flex flex-col gap-3">
+                <p class="text-xs text-slate-300">กรุณาใส่รหัสผ่านผู้ดูแลระบบ (ค่าเริ่มต้น: <code>admin123</code>)</p>
+                <div class="flex items-center gap-2">
+                    <input type="password" id="teacher-passcode-input" placeholder="ใส่รหัสผ่าน..." class="flex-1 bg-slate-950 border border-slate-700 rounded-xl px-3.5 py-2.5 text-sm text-white focus:outline-none focus:border-pink-400">
+                    <button onclick="verifyTeacherPasscode()" class="px-5 py-2.5 rounded-xl bg-pink-600 hover:bg-pink-500 text-white font-bold text-sm transition">
+                        ปลดล็อก
+                    </button>
+                </div>
+                <span id="teacher-lock-msg" class="text-xs text-red-400 hidden">รหัสผ่านไม่ถูกต้อง</span>
+            </div>
+
+            <!-- Authenticated Settings View -->
+            <div id="teacher-settings-view" class="hidden flex flex-col gap-4">
+                
+                <!-- AI Engine Mode -->
+                <div>
+                    <label class="block text-xs font-semibold text-slate-300 mb-1">🤖 โหมดการประเมินผล AI (AI Evaluation Mode)</label>
+                    <select id="teacher-ai-mode" class="w-full bg-slate-950 border border-slate-700 rounded-xl px-3.5 py-2 text-xs text-white focus:outline-none focus:border-pink-400">
+                        <option value="server">โหมด 1: Express Server API (/api/evaluate-case) - แนะนำ</option>
+                        <option value="client">โหมด 2: Client-side Direct (เรียกตรงจากเบราว์เซอร์)</option>
+                        <option value="heuristic">โหมด 3: Smart Heuristic Simulation (โหมดออฟไลน์ไม่ต้องใช้เน็ต)</option>
+                    </select>
+                </div>
+
+                <!-- Gemini API Key -->
+                <div>
+                    <label class="block text-xs font-semibold text-cyan-300 mb-1">🔑 Google Gemini API Key</label>
+                    <input type="password" id="teacher-gemini-key" placeholder="AIzaSy..." class="w-full bg-slate-950 border border-slate-700 rounded-xl px-3.5 py-2 text-xs text-white font-mono focus:outline-none focus:border-cyan-400">
+                </div>
+
+                <!-- Supabase Settings -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-300 mb-1">⚡ Supabase URL</label>
+                        <input type="text" id="teacher-supabase-url" placeholder="https://xxx.supabase.co" class="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white font-mono focus:outline-none focus:border-purple-400">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-300 mb-1">🔒 Supabase Anon Key</label>
+                        <input type="password" id="teacher-supabase-key" placeholder="eyJ..." class="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white font-mono focus:outline-none focus:border-purple-400">
+                    </div>
+                </div>
+
+                <!-- Quick Action Buttons -->
+                <div class="flex items-center justify-between gap-2 pt-2 border-t border-slate-800">
+                    <button onclick="resetGameSession()" class="px-3.5 py-2 rounded-xl bg-red-950/60 hover:bg-red-900 border border-red-500/40 text-red-300 text-xs font-medium transition">
+                        <i class="fa-solid fa-arrows-rotate mr-1"></i> ล้างคะแนนเริ่มใหม่
+                    </button>
+                    <div class="flex items-center gap-2">
+                        <button onclick="saveTeacherSettings()" class="px-4 py-2 rounded-xl bg-pink-600 hover:bg-pink-500 text-white text-xs font-bold transition shadow-md shadow-pink-500/20">
+                            <i class="fa-solid fa-floppy-disk mr-1"></i> บันทึกการตั้งค่า
+                        </button>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+
+    <!-- 4.4 LIVE CLASS LEADERBOARD MODAL -->
+    <div id="modal-leaderboard" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-md">
+        <div class="glass-panel max-w-2xl w-full p-6 rounded-3xl border border-amber-400/40 shadow-2xl flex flex-col gap-4 relative max-h-[85vh] overflow-y-auto">
+            
+            <button onclick="closeLeaderboardModal()" class="absolute top-4 right-4 text-slate-400 hover:text-white p-2 rounded-lg bg-slate-800/80 border border-slate-700 transition">
+                <i class="fa-solid fa-xmark text-lg"></i>
+            </button>
+
+            <div class="flex items-center gap-3 border-b border-slate-800 pb-3">
+                <div class="w-10 h-10 rounded-xl bg-amber-500/20 border border-amber-400 text-amber-300 flex items-center justify-center text-lg">
+                    <i class="fa-solid fa-trophy"></i>
+                </div>
+                <div>
+                    <h3 class="text-lg font-bold text-slate-100">กระดานผู้นำสายสืบไซเบอร์ (Live Leaderboard)</h3>
+                    <p class="text-xs text-slate-400">อัปเดตคะแนนสดของแต่ละกลุ่มผ่านระบบ Supabase Realtime</p>
+                </div>
+            </div>
+
+            <!-- Display Mode Selector (Team only vs Team + Members) -->
+            <div class="flex items-center justify-between bg-slate-900/90 p-2.5 rounded-xl border border-slate-800 text-xs">
+                <span class="text-slate-300 font-medium flex items-center gap-1.5">
+                    <i class="fa-solid fa-sliders text-amber-400"></i> รูปแบบการแสดงผลตาราง:
+                </span>
+                <div class="flex items-center gap-1 bg-slate-950 p-1 rounded-lg border border-slate-700 font-sarabun">
+                    <button id="btn-lb-mode-team" onclick="setLeaderboardDisplayMode('team_only')" class="px-2.5 py-1 rounded-md bg-amber-500 text-black font-bold transition text-xs shadow-sm">
+                        ชื่อกลุ่มอย่างเดียว
+                    </button>
+                    <button id="btn-lb-mode-members" onclick="setLeaderboardDisplayMode('team_and_members')" class="px-2.5 py-1 rounded-md text-slate-400 hover:text-white transition text-xs">
+                        โชว์เลขที่สมาชิกด้วย
+                    </button>
+                </div>
+            </div>
+
+            <!-- Leaderboard Table -->
+            <div class="overflow-x-auto rounded-xl border border-slate-800 bg-slate-950/60">
+                <table class="w-full text-left text-xs text-slate-300">
+                    <thead class="bg-slate-900 text-slate-400 font-semibold border-b border-slate-800">
+                        <tr>
+                            <th class="p-3 text-center w-12">อันดับ</th>
+                            <th class="p-3">ชื่อทีม / นักสืบ</th>
+                            <th class="p-3 text-center">คดีที่ทำ</th>
+                            <th class="p-3 text-right">คะแนนรวม</th>
+                        </tr>
+                    </thead>
+                    <tbody id="leaderboard-tbody" class="divide-y divide-slate-800/60 font-sarabun">
+                        <tr>
+                            <td colspan="4" class="p-6 text-center text-slate-500">กำลังโหลดข้อมูลอันดับ...</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="flex items-center justify-between text-xs text-slate-400">
+                <span class="flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span> Realtime Active (5s Auto-sync)</span>
+                <button onclick="fetchLeaderboard()" class="text-cyan-400 hover:underline"><i class="fa-solid fa-rotate-right mr-1"></i>รีเฟรช</button>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- 4.7 GROUP SCORE & PDF EXPORT MODAL -->
+    <div id="modal-group-score" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/90 backdrop-blur-md overflow-y-auto">
+        <div class="glass-panel max-w-4xl w-full p-6 sm:p-8 rounded-3xl border border-emerald-400/50 shadow-2xl flex flex-col gap-5 relative my-6 max-h-[92vh] overflow-y-auto">
+            
+            <!-- Close Button (Hidden on Print) -->
+            <button onclick="closeGroupScoreModal()" class="no-print absolute top-4 right-4 text-slate-400 hover:text-white p-2 rounded-lg bg-slate-800/80 border border-slate-700 transition">
+                <i class="fa-solid fa-xmark text-lg"></i>
+            </button>
+
+            <!-- Printable Report Document Container -->
+            <div id="printable-group-report" class="flex flex-col gap-5 text-slate-200">
+                
+                <!-- Official Header for School Grade Document -->
+                <div class="text-center flex flex-col items-center gap-1 border-b-2 border-emerald-500/40 pb-4">
+                    <div class="flex items-center justify-center gap-2 mb-1">
+                        <img src="favicon.png" alt="Logo" class="w-10 h-10 rounded-lg object-cover no-print">
+                        <h2 class="text-lg sm:text-xl font-bold text-slate-100 font-kanit">
+                            แบบรายงานสรุปผลคะแนนกิจกรรมจำลองสถานการณ์สืบคดีกฎหมายคอมพิวเตอร์และ PDPA
+                        </h2>
+                    </div>
+                    <p class="text-xs text-slate-300 font-sarabun">
+                        กลุ่มสาระการเรียนรู้วิทยาศาสตร์และเทคโนโลยี (วิชาเทคโนโลยี / วิทยาการคำนวณ) ระดับชั้นมัธยมศึกษาปีที่ 3
+                    </p>
+                    <div class="flex flex-wrap items-center justify-center gap-4 text-xs text-slate-400 font-mono mt-1">
+                        <span>🏷️ ชื่อกลุ่ม: <b id="rpt-team-name" class="text-emerald-400 font-bold">-</b></span>
+                        <span>🏫 ห้อง: <b id="rpt-room" class="text-cyan-300 font-bold">-</b></span>
+                        <span>📅 วันที่ประเมิน: <b id="rpt-date" class="text-slate-300">-</b></span>
+                        <span>⭐ คะแนนรวมกลุ่ม: <b id="rpt-total-score" class="text-yellow-400 font-bold text-sm">0</b> / 180 คะแนน</span>
+                    </div>
+                </div>
+
+                <!-- Section 1: Member Table (Sorted by Student Number Vertically) -->
+                <div class="flex flex-col gap-2">
+                    <div class="flex items-center justify-between">
+                        <h3 class="text-sm font-bold text-emerald-300 flex items-center gap-2">
+                            <i class="fa-solid fa-users text-emerald-400"></i>
+                            <span>1. ตารางรายชื่อสมาชิกในกลุ่ม (เรียงตามเลขที่แนวตั้ง)</span>
+                        </h3>
+                        <span class="text-[11px] text-slate-400 font-mono">* จัดเรียงตามเลขที่จากน้อยไปมาก</span>
+                    </div>
+
+                    <div class="overflow-x-auto rounded-xl border border-slate-700 bg-slate-950/70">
+                        <table class="w-full text-left text-xs border-collapse font-sarabun">
+                            <thead class="bg-slate-900 text-slate-300 font-bold border-b border-slate-700">
+                                <tr>
+                                    <th class="p-2.5 text-center w-16 border-r border-slate-800">เลขที่</th>
+                                    <th class="p-2.5 border-r border-slate-800">ชื่อกลุ่ม</th>
+                                    <th class="p-2.5 text-center w-24 border-r border-slate-800">เพศ (คำนำหน้า)</th>
+                                    <th class="p-2.5 border-r border-slate-800">ชื่อ</th>
+                                    <th class="p-2.5 border-r border-slate-800">นามสกุล</th>
+                                    <th class="p-2.5 text-center w-20 border-r border-slate-800">ห้อง</th>
+                                    <th class="p-2.5 text-right w-24">คะแนน</th>
+                                </tr>
+                            </thead>
+                            <tbody id="rpt-members-tbody" class="divide-y divide-slate-800">
+                                <!-- Rendered dynamically sorted by student number -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Section 2: Case Breakdown Table -->
+                <div class="flex flex-col gap-2">
+                    <h3 class="text-sm font-bold text-cyan-300 flex items-center gap-2">
+                        <i class="fa-solid fa-folder-tree text-cyan-400"></i>
+                        <span>2. ผลการประเมินวิเคราะห์ข้อสอบอัตนัยจำแนกตามคดี (3 บทบาท / 30 คะแนนต่อคดี)</span>
+                    </h3>
+
+                    <div class="overflow-x-auto rounded-xl border border-slate-700 bg-slate-950/70">
+                        <table class="w-full text-left text-xs border-collapse font-sarabun">
+                            <thead class="bg-slate-900 text-slate-300 font-bold border-b border-slate-700">
+                                <tr>
+                                    <th class="p-2.5 text-center w-14 border-r border-slate-800">คดีที่</th>
+                                    <th class="p-2.5 border-r border-slate-800">ชื่อคดีและฐานความผิด</th>
+                                    <th class="p-2.5 text-center w-24 border-r border-slate-800">👨‍⚖️ กฎหมาย (10)</th>
+                                    <th class="p-2.5 text-center w-24 border-r border-slate-800">🚑 บรรเทาภัย (10)</th>
+                                    <th class="p-2.5 text-center w-24 border-r border-slate-800">🛡️ ป้องกัน (10)</th>
+                                    <th class="p-2.5 text-right w-24">รวมคดี (30)</th>
+                                </tr>
+                            </thead>
+                            <tbody id="rpt-cases-tbody" class="divide-y divide-slate-800 font-mono">
+                                <!-- Rendered dynamically -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Report Signatures Footer (Visible in Print & Screen) -->
+                <div class="grid grid-cols-2 gap-8 pt-4 mt-2 border-t border-slate-700 text-xs font-sarabun">
+                    <div class="flex flex-col items-center gap-1">
+                        <p class="text-slate-400">ลงชื่อตัวแทนกลุ่มสายสืบ</p>
+                        <div class="border-b border-slate-500 w-44 mt-6"></div>
+                        <p id="rpt-sign-lead" class="text-slate-300 font-medium">( .................................................... )</p>
+                        <p class="text-[11px] text-slate-400">หัวหน้าทีมสายสืบ</p>
+                    </div>
+                    <div class="flex flex-col items-center gap-1">
+                        <p class="text-slate-400">ลงชื่อครูผู้สอน / ผู้ประเมิน</p>
+                        <div class="border-b border-slate-500 w-44 mt-6"></div>
+                        <p class="text-slate-300 font-medium">( .................................................... )</p>
+                        <p class="text-[11px] text-slate-400">ครูผู้สอนประจำวิชา</p>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Action Bar (Hidden on Print) -->
+            <div class="no-print flex items-center justify-between gap-3 pt-3 border-t border-slate-800">
+                <button onclick="closeGroupScoreModal()" class="px-4 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-medium transition">
+                    <i class="fa-solid fa-xmark mr-1"></i> ปิด
+                </button>
+                <div class="flex items-center gap-2">
+                    <button onclick="printGroupScoreReport()" class="px-5 py-2.5 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-bold text-xs shadow-lg shadow-emerald-500/20 transition flex items-center gap-2">
+                        <i class="fa-solid fa-print"></i>
+                        <span>พิมพ์รายงาน / บันทึกเป็น PDF</span>
+                    </button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- 4.8 OFFICIAL CASE SOLUTIONS & ANSWER KEYS (PROTECTED) -->
+    <div id="modal-solutions" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/90 backdrop-blur-md overflow-y-auto">
+        <div class="glass-panel max-w-4xl w-full p-6 sm:p-8 rounded-3xl border border-purple-500/50 shadow-2xl flex flex-col gap-5 relative my-6 max-h-[92vh] overflow-y-auto">
+            
+            <button onclick="closeSolutionsModal()" class="absolute top-4 right-4 text-slate-400 hover:text-white p-2 rounded-lg bg-slate-800/80 border border-slate-700 transition">
+                <i class="fa-solid fa-xmark text-lg"></i>
+            </button>
+
+            <!-- Header -->
+            <div class="flex items-center gap-3 border-b border-slate-800 pb-3">
+                <div class="w-10 h-10 rounded-xl bg-purple-500/20 border border-purple-400 text-purple-300 flex items-center justify-center text-lg">
+                    <i class="fa-solid fa-book-open"></i>
+                </div>
+                <div>
+                    <h3 class="text-lg font-bold text-slate-100">แฟ้มเฉลยคดี พ.ร.บ. คอมพิวเตอร์ & PDPA ครบ 12 คดี</h3>
+                    <p class="text-xs text-slate-400">เฉลยแนวคำตอบอัตนัย 3 บทบาท พร้อมเกณฑ์ให้คะแนนฉบับทางการสำหรับครูผู้สอน</p>
+                </div>
+            </div>
+
+            <!-- View 1: Passcode Lock Screen -->
+            <div id="solutions-lock-view" class="flex flex-col items-center justify-center gap-4 py-8 text-center">
+                <div class="w-16 h-16 rounded-2xl bg-purple-500/20 border border-purple-400 text-purple-300 flex items-center justify-center text-2xl mb-1 shadow-lg shadow-purple-500/20">
+                    <i class="fa-solid fa-shield-halved"></i>
+                </div>
+                <div class="max-w-md">
+                    <h4 class="text-base font-bold text-white mb-1">พื้นที่สงวนสิทธิ์สำหรับคุณครูผู้สอน</h4>
+                    <p class="text-xs text-slate-400">กรุณากรอกรหัสผ่านครูผู้สอน (ตั้งค่าใน .env เช่น admin123) เพื่อปลดล็อกแฟ้มเฉลย</p>
+                </div>
+
+                <div class="flex items-center gap-2 w-full max-w-xs">
+                    <input type="password" id="solutions-passcode-input" placeholder="ใส่รหัสผ่านครู (admin123)" class="flex-1 bg-slate-950 border border-purple-500/40 rounded-xl px-3.5 py-2.5 text-xs text-white text-center focus:outline-none focus:border-purple-400">
+                    <button onclick="verifySolutionsPasscode()" class="px-4 py-2.5 rounded-xl bg-purple-600 hover:bg-purple-500 text-white text-xs font-bold transition shadow-md shadow-purple-500/20">
+                        ปลดล็อก
+                    </button>
+                </div>
+                <span id="solutions-lock-msg" class="text-xs text-red-400 hidden">รหัสผ่านไม่ถูกต้อง กรุณาลองใหม่อีกครั้ง</span>
+            </div>
+
+            <!-- View 2: Unlocked Solutions Archive -->
+            <div id="solutions-content-view" class="hidden flex flex-col gap-4">
+                
+                <!-- Filter Tabs -->
+                <div class="flex flex-wrap gap-1.5 p-1 bg-slate-900/90 rounded-xl border border-slate-800 text-xs">
+                    <button onclick="filterSolutions('all')" class="sol-filter-btn px-3 py-1.5 rounded-lg bg-purple-600 text-white font-medium transition" data-filter="all">ทั้งหมด (12 คดี)</button>
+                    <button onclick="filterSolutions('access')" class="sol-filter-btn px-3 py-1.5 rounded-lg text-slate-400 hover:text-white transition" data-filter="access">มาตรา 5-8 (การเข้าถึง)</button>
+                    <button onclick="filterSolutions('damage')" class="sol-filter-btn px-3 py-1.5 rounded-lg text-slate-400 hover:text-white transition" data-filter="damage">มาตรา 9-10 (ทำลาย/รบกวน)</button>
+                    <button onclick="filterSolutions('spam')" class="sol-filter-btn px-3 py-1.5 rounded-lg text-slate-400 hover:text-white transition" data-filter="spam">มาตรา 11 (สแปม)</button>
+                    <button onclick="filterSolutions('content')" class="sol-filter-btn px-3 py-1.5 rounded-lg text-slate-400 hover:text-white transition" data-filter="content">มาตรา 14-16 (เนื้อหา/ตัดต่อ)</button>
+                </div>
+
+                <!-- 12 Solutions Cards Container -->
+                <div id="solutions-cards-container" class="flex flex-col gap-4 max-h-[60vh] overflow-y-auto pr-1">
+                    <!-- Populated dynamically from ALL_12_CASES -->
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+
+    <!-- 4.5 FULLSCREEN COMIC LIGHTBOX -->
+    <div id="modal-lightbox" class="hidden fixed inset-0 z-50 flex items-center justify-center p-2 sm:p-4 bg-black/95 backdrop-blur-lg" onclick="closeComicLightbox()">
+        <div class="relative max-w-5xl w-full flex flex-col items-center gap-3" onclick="event.stopPropagation()">
+            <div class="w-full flex items-center justify-between text-slate-300 px-2">
+                <span id="lightbox-title" class="text-sm font-semibold text-cyan-300">หลักฐานการ์ตูน 9 ช่อง</span>
+                <button onclick="closeComicLightbox()" class="px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-white text-xs border border-slate-700">
+                    <i class="fa-solid fa-xmark mr-1"></i> ปิด (ESC)
+                </button>
+            </div>
+            <img id="lightbox-img" src="" alt="Enlarged Comic" class="w-auto h-auto max-h-[85vh] max-w-full rounded-xl border border-cyan-500/40 shadow-2xl object-contain bg-white">
+        </div>
+    </div>
+
+    <!-- 4.6 END-GAME CERTIFICATE & SUMMARY MODAL -->
+    <div id="modal-certificate" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/90 backdrop-blur-md overflow-y-auto">
+        <div class="glass-panel max-w-3xl w-full p-6 sm:p-8 rounded-3xl border border-cyan-400/50 shadow-2xl flex flex-col gap-6 relative my-8">
+            
+            <button onclick="closeCertificateModal()" class="no-print absolute top-4 right-4 text-slate-400 hover:text-white p-2 rounded-lg bg-slate-800/80 border border-slate-700 transition">
+                <i class="fa-solid fa-xmark text-lg"></i>
+            </button>
+
+            <!-- Printable Certificate Container -->
+            <div id="printable-certificate" class="p-6 sm:p-8 rounded-2xl bg-gradient-to-b from-slate-900 via-slate-900 to-slate-950 border-4 border-double border-cyan-400 text-slate-100 flex flex-col items-center text-center gap-4 relative overflow-hidden shadow-2xl">
+                
+                <!-- Cyber Ribbon Header -->
+                <div class="flex items-center gap-3">
+                    <i class="fa-solid fa-award text-3xl text-yellow-400"></i>
+                    <h2 class="text-2xl sm:text-3xl font-black tracking-widest text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-pink-400 to-amber-300 font-mono">
+                        CYBER DETECTIVE CERTIFICATE
+                    </h2>
+                    <i class="fa-solid fa-award text-3xl text-yellow-400"></i>
+                </div>
+                
+                <p class="text-xs uppercase tracking-widest text-cyan-300 font-mono">เกียรติบัตรรับรองยอดนักสืบไซเบอร์และผู้พิทักษ์ข้อมูลส่วนบุคคล</p>
+
+                <div class="my-2 flex flex-col items-center gap-1">
+                    <p class="text-xs text-slate-400">เกียรติบัตรฉบับนี้มอบให้แก่</p>
+                    <h3 id="cert-team-name" class="text-2xl sm:text-3xl font-bold text-white tracking-wide border-b-2 border-dashed border-cyan-400/60 pb-1 px-8">
+                        ทีมยอดนักสืบ ม.3
+                    </h3>
+                    <p id="cert-class-room" class="text-xs text-slate-300 mt-1 font-semibold">ระดับชั้นมัธยมศึกษาปีที่ 3 (ม.3/1)</p>
+                    <div id="cert-members-list" class="text-xs text-cyan-300 max-w-lg flex flex-wrap justify-center gap-1.5 font-sarabun mt-1">
+                        <!-- Rendered by openCertificateModal() -->
+                    </div>
+                </div>
+
+                <p class="text-xs text-slate-300 max-w-lg leading-relaxed font-sarabun">
+                    ได้ผ่านการทดสอบปฏิบัติการสืบสวนคดีความผิดตาม พ.ร.บ. ว่าด้วยการกระทำความผิดเกี่ยวกับคอมพิวเตอร์ และกฎหมายคุ้มครองข้อมูลส่วนบุคคล (PDPA) ด้วยคะแนนผลการวิเคราะห์อัตนัยจาก Google Gemini AI
+                </p>
+
+                <!-- Big Score Badge & Rank -->
+                <div class="grid grid-cols-2 gap-4 w-full max-w-md my-2">
+                    <div class="p-3.5 rounded-xl bg-slate-800/80 border border-yellow-500/40 flex flex-col items-center">
+                        <span class="text-[10px] uppercase text-slate-400 font-mono">คะแนนรวมสะสม</span>
+                        <span class="text-2xl font-black font-mono text-yellow-300"><span id="cert-total-score">0</span> / 180</span>
+                    </div>
+                    <div class="p-3.5 rounded-xl bg-slate-800/80 border border-cyan-500/40 flex flex-col items-center">
+                        <span class="text-[10px] uppercase text-slate-400 font-mono">ระดับตำแหน่งนักสืบ</span>
+                        <span id="cert-rank-badge" class="text-base font-bold text-cyan-300">CYBER MASTER</span>
+                    </div>
+                </div>
+
+                <!-- Footer Signatures -->
+                <div class="w-full flex items-center justify-between pt-6 border-t border-slate-800 text-xs text-slate-400">
+                    <div class="text-left">
+                        <div>รหัสอ้างอิง: <span id="cert-ref-id" class="font-mono text-cyan-300">CYBER-2026-X</span></div>
+                        <div id="cert-date">วันที่ทดสอบ: 10 สิงหาคม 2569</div>
+                    </div>
+                    <div class="text-right">
+                        <div class="border-b border-slate-600 w-32 mb-1"></div>
+                        <div>( คุณครูผู้สอน / ผู้ประเมิน )</div>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Action Buttons for Certificate -->
+            <div class="no-print flex items-center justify-between gap-3">
+                <button onclick="location.reload()" class="px-4 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-medium transition">
+                    <i class="fa-solid fa-rotate-left mr-1"></i> เริ่มเล่นรอบใหม่
+                </button>
+                <div class="flex items-center gap-2">
+                    <button onclick="window.print()" class="px-5 py-2.5 rounded-xl bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-500 hover:to-blue-500 text-white font-bold text-xs shadow-lg shadow-cyan-500/20 transition flex items-center gap-2">
+                        <i class="fa-solid fa-print"></i> พิมพ์เกียรติบัตร / บันทึกเป็น PDF
+                    </button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- ========================================================================= -->
+    <!-- 5. JAVASCRIPT GAME ENGINE                                                 -->
+    <!-- ========================================================================= -->
+    <script>
+        // --- 12 Cases Reference Bank with Assets Mapping ---
+        const ALL_12_CASES = [
+            {
+                id: 1,
+                section: "มาตรา 5",
+                image: "assets/evidence/case_ev_8f3a9b21.png",
+                title: "แอบส่องระบบไอดีเกมของเพื่อน",
+                brief: "แชมป์แอบจำรหัสผ่านแท็บเล็ตของป๊อปตอนที่ป๊อปลุกไปเข้าห้องน้ำ แชมป์แอบเอาแท็บเล็ตมาปลดล็อกแล้วส่องดูคลังไอเทมสุดแรร์ในเกมออนไลน์",
+                phases: [
+                    "ช่อง 1-3: แชมป์แอบดูป๊อปจิ้มรหัสผ่านล็อกอินแท็บเล็ต พอป๊อปลุกไปห้องน้ำ แชมป์แอบนำแท็บเล็ตมาลากนิ้วปลดล็อกเข้าระบบสำเร็จ",
+                    "ช่อง 4-6: แชมป์แอบเปิดส่องดูคลังอาวุธและไอเทมเกมของป๊อป ป๊อปกลับมาเจอคาหนังคาเขาจึงพาไปพบคุณครูเพื่อรายงานพฤติกรรม",
+                    "ช่อง 7-9: ตำรวจไซเบอร์ตักเตือนและชี้แจงความผิดทางกฎหมาย ทั้งสองปรับความเข้าใจกัน และป๊อปเปิดใช้ระบบล็อกอิน 2 ชั้น (2FA) ส่ง OTP ยืนยันตัวตน"
+                ],
+                standard_law: "พ.ร.บ. คอมพิวเตอร์ มาตรา 5 (แอบเข้าถึงระบบคอมพิวเตอร์ผู้อื่นโดยมิชอบ)",
+                standard_penalty: "จำคุกไม่เกิน 6 เดือน หรือปรับไม่เกิน 10,000 บาท หรือทั้งจำทั้งปรับ",
+                standard_remedy: "สั่ง Log out ออกจากระบบทุกเครื่องทันที และรีบเปลี่ยนรหัสผ่านใหม่",
+                standard_prevention: "เปิดใช้งานระบบยืนยันตัวตน 2 ชั้น (2FA / OTP) และล็อกหน้าจอทุกครั้ง"
+            },
+            {
+                id: 2,
+                section: "มาตรา 6",
+                image: "assets/evidence/case_ev_4e7c1d89.png",
+                title: "แจกรหัสผ่านระบบในกลุ่ม Discord",
+                brief: "ทอยแอบถ่ายรูปกระดาษโน้ตรหัสผ่านเซิร์ฟเวอร์ข้อสอบที่โต๊ะครู แล้วส่งให้บีดู บีอยากได้ยอดไลก์จึงนำรูปภาพรหัสผ่านไปโพสต์แจกในกลุ่ม Discord",
+                phases: [
+                    "ช่อง 1-3: ทอยพบกระดาษโน้ตรหัสผ่านแปะหลังจอคอมครูห้องสมุด จึงแอบถ่ายรูปส่งต่อให้บีดูในแชทลับ",
+                    "ช่อง 4-6: บีนำภาพรหัสผ่านไปโพสต์แจกในกลุ่ม Discord สาธารณะ ส่งผลให้ระบบสอบมีไอพีแปลกปลอมล็อกอินเข้ามารัวๆ จนระบบเตือนภัย",
+                    "ช่อง 7-9: ครูและตำรวจตามสืบประวัติแชทจนพบตัวผู้ปล่อยรหัส ดำเนินการตามขั้นตอนกฎหมาย และคุณครูนำสอนการตั้งรหัสผ่านที่ซับซ้อน ปลอดภัยกว่า"
+                ],
+                standard_law: "พ.ร.บ. คอมพิวเตอร์ มาตรา 6 (เปิดเผยมาตรการป้องกันการเข้าถึงระบบโดยมิชอบ)",
+                standard_penalty: "จำคุกไม่เกิน 1 ปี หรือปรับไม่เกิน 20,000 บาท หรือทั้งจำทั้งปรับ",
+                standard_remedy: "รีบเปลี่ยนรหัสผ่านระบบทันที และลบข้อความที่โพสต์แจกใน Discord",
+                standard_prevention: "ตั้งรหัสผ่านซับซ้อน (ตัวพิมพ์ใหญ่+เล็ก+เลข+สัญลักษณ์) และไม่จดรหัสผ่านทิ้งไว้"
+            },
+            {
+                id: 3,
+                section: "มาตรา 7",
+                image: "assets/evidence/case_ev_9a2b5f34.png",
+                title: "แอบคุ้ยไฟล์ไดอารี่แชทลับส่วนตัว",
+                brief: "นักเรียนแอบเปิดโฟลเดอร์ส่วนตัวของเพื่อนที่ล็อกรหัสผ่านไว้ แล้วแอบดูดไฟล์ไดอารี่และรูปถ่ายลับเอาไปเผยแพร่นินทาในกลุ่มเพื่อน",
+                phases: [
+                    "ช่อง 1-3: สบโอกาสแอบเข้าเครื่องคอมที่เพื่อนตั้งล็อกโฟลเดอร์ไว้ แอบถอดรหัสผ่านเพื่อเข้าถึงไฟล์ข้อมูลส่วนตัว",
+                    "ช่อง 4-6: แอบดาวน์โหลดไฟล์ไดอารี่และแชทส่วนตัวส่งต่อไปนินทาในกลุ่มเพื่อน ทำให้เจ้าของข้อมูลได้รับความอับอายและเสียหาย",
+                    "ช่อง 7-9: ฝ่ายไอทีตรวจพบประวัติการเข้าถึงไฟล์ ชี้แจงบทลงโทษทางกฎหมายต่อการละเมิดข้อมูลส่วนตัว และแนะนำการเข้ารหัสไฟล์ (Encryption) และการล็อกด้วย Face ID"
+                ],
+                standard_law: "พ.ร.บ. คอมพิวเตอร์ มาตรา 7 (เข้าถึงข้อมูลคอมพิวเตอร์ของผู้อื่นโดยมิชอบ)",
+                standard_penalty: "จำคุกไม่เกิน 2 ปี หรือปรับไม่เกิน 40,000 บาท หรือทั้งจำทั้งปรับ",
+                standard_remedy: "ลบไฟล์ที่รั่วไหล และเปลี่ยนรหัสผ่านพื้นที่จัดเก็บคลาวด์ทันที",
+                standard_prevention: "ตั้งรหัสล็อกโฟลเดอร์ด้วยสแกนใบหน้า/ลายนิ้วมือ (Face ID) และเข้ารหัสไฟล์ (Encryption)"
+            },
+            {
+                id: 4,
+                section: "มาตรา 8",
+                image: "assets/evidence/case_ev_1c8e7b54.png",
+                title: "ดักจับข้อมูลธุรกรรมเติมเกมกลางทาง",
+                brief: "มีผู้ไม่หวังดีปล่อยสัญญาณ Wi-Fi ฟรีปลอมในโรงอาหาร เพื่อดักจับข้อมูลบัตรเติมเงินและรหัสผ่านธุรกรรมของเพื่อนที่กำลังเติมเกมออนไลน์",
+                phases: [
+                    "ช่อง 1-3: แฮกเกอร์เปิด Free Wi-Fi ปลอมดักเหยื่อที่หลงเข้ามาเชื่อมต่อเพื่อทำรายการเติมเงินเกมออนไลน์",
+                    "ช่อง 4-6: ดักจับข้อมูลหมายเลขบัตรและรหัสผ่านระหว่างทาง เงินในบัญชีเหยื่อถูกดูดออกไปทันที",
+                    "ช่อง 7-9: เจ้าหน้าที่ตำรวจไซเบอร์แกะรอยสัญญาณจับกุมผู้ปล่อยสัญญาณดักข้อมูล ดำเนินคดีตามกฎหมาย และแนะนำให้ใช้งานเครือข่ายที่มีการเข้ารหัส SSL/HTTPS / VPN"
+                ],
+                standard_law: "พ.ร.บ. คอมพิวเตอร์ มาตรา 8 (ดักรับข้อมูลคอมพิวเตอร์ของผู้อื่นที่อยู่ระหว่างการส่งโดยมิชอบ)",
+                standard_penalty: "จำคุกไม่เกิน 3 ปี หรือปรับไม่เกิน 60,000 บาท หรือทั้งจำทั้งปรับ",
+                standard_remedy: "ตัดการเชื่อมต่อ Wi-Fi ทันที และรีบแจ้งอายัดบัตรกับธนาคารและค่ายเกม",
+                standard_prevention: "ใช้เครือข่ายที่มีการเข้ารหัส SSL / HTTPS / VPN และหลีกเลี่ยงการทำธุรกรรมบน Free Wi-Fi สาธารณะ"
+            },
+            {
+                id: 5,
+                section: "มาตรา 9",
+                image: "assets/evidence/case_ev_6a92f03d.png",
+                title: "มือบอนแอบลบไฟล์โครงงานวิทย์เพื่อน",
+                brief: "นักเรียนอิจฉากลุ่มเพื่อนที่ทำสไลด์โครงงานวิทย์สวยงาม จึงแอบเข้าไปใน Cloud Shared Drive แล้วกดลบไฟล์งานและแก้ไขเนื้อหาจนเสียหายทั้งหมด",
+                phases: [
+                    "ช่อง 1-3: อาศัยจังหวะที่ได้รับสิทธิ์แชร์ไฟล์ แอบเปิดเข้าไปในโฟลเดอร์โครงงานวิทยาศาสตร์ของเพื่อนกลุ่มอื่น",
+                    "ช่อง 4-6: มือบอนกดสั่งลบไฟล์สไลด์และแก้ไขข้อมูลจนเสียหาย เพื่อนๆ ในกลุ่มร้องไห้ตกใจเพราะใกล้ถึงเวลาส่งงาน",
+                    "ช่อง 7-9: ครูไอทีตรวจสอบประวัติแก้ไข (Version History) และกู้คืนไฟล์ได้สำเร็จ ผู้กระทำผิดโดนดำเนินการทางวินัยและกฎหมาย พร้อมสอนการตั้งสิทธิ์ Read-Only"
+                ],
+                standard_law: "พ.ร.บ. คอมพิวเตอร์ มาตรา 9 (ทำให้เสียหาย ทำลาย แก้ไข เปลี่ยนแปลงข้อมูลคอมพิวเตอร์ผู้อื่นโดยมิชอบ)",
+                standard_penalty: "จำคุกไม่เกิน 5 ปี หรือปรับไม่เกิน 100,000 บาท หรือทั้งจำทั้งปรับ",
+                standard_remedy: "ใช้ปุ่มประวัติเวอร์ชัน (Version History) กู้คืนไฟล์ทันที และตรวจสอบ Audit Log",
+                standard_prevention: "ตั้งค่าสิทธิ์ไฟล์เป็น 'อ่านได้อย่างเดียว (Read-Only)' และจำกัดการแชร์เฉพาะอีเมลที่จำเป็น"
+            },
+            {
+                id: 6,
+                section: "มาตรา 10",
+                image: "assets/evidence/case_ev_3f81e6ac.png",
+                title: "ยิง DDoS พังเซิร์ฟเวอร์เว็บสอบโรงเรียน",
+                brief: "นักเรียนไม่อยากสอบเก็บคะแนน จึงใช้โปรแกรมยิงทราฟฟิกขยะ (DDoS) ถล่มเว็บไซต์ระบบสอบออนไลน์ของโรงเรียนจนเซิร์ฟเวอร์ล่ม ใช้งานไม่ได้",
+                phases: [
+                    "ช่อง 1-3: นักเรียนสั่งรันบอทโปรแกรมส่งคำขอปลอมจำนวนมหาศาลไปยังเซิร์ฟเวอร์เว็บสอบของโรงเรียน",
+                    "ช่อง 4-6: เซิร์ฟเวอร์ทำงานหนักจนร้อนจัดและระบบล่ม เว็บขึ้น Error นักเรียนทั้งโรงเรียนไม่สามารถสอบได้",
+                    "ช่อง 7-9: แอดมินบล็อกไอพีผู้โจมตีและสืบพบตัวผู้ปล่อยบอท ดำเนินคดีตามกฎหมาย และติดตั้งระบบป้องกัน Firewall / DDoS Protection"
+                ],
+                standard_law: "พ.ร.บ. คอมพิวเตอร์ มาตรา 10 (รบกวน ขัดขวาง ทำให้ระบบคอมพิวเตอร์ผู้อื่นทำงานไม่ได้ตามปกติ)",
+                standard_penalty: "จำคุกไม่เกิน 5 ปี หรือปรับไม่เกิน 100,000 บาท หรือทั้งจำทั้งปรับ",
+                standard_remedy: "บล็อก IP Address ขยะ สลับเส้นทางเซิร์ฟเวอร์สำรอง และแจ้งฝ่ายไอที",
+                standard_prevention: "ติดตั้งไฟร์วอลล์ (Firewall) และใช้ระบบป้องกัน DDoS Protection (เช่น Cloudflare / Rate Limiting)"
+            },
+            {
+                id: 7,
+                section: "มาตรา 11 วรรคหนึ่ง",
+                image: "assets/evidence/case_ev_e920d57b.png",
+                title: "ส่งอีเมลสแปมขายของปลอมตัวตน",
+                brief: "ผู้ค้ายิงอีเมลขยะขายสินค้าและโฆษณาชวนเชื่อไปยังกล่องข้อความของนักเรียนนับพันคน โดยปลอมแปลงชื่อผู้ส่งและปกปิดแหล่งที่มาที่แท้จริง",
+                phases: [
+                    "ช่อง 1-3: ผู้ส่งเขียนโปรแกรมยิงอีเมลโฆษณาขยะโดยปลอมแปลง Header และที่อยู่อีเมลผู้ส่งให้ดูไม่ออกว่าใครส่ง",
+                    "ช่อง 4-6: กล่องจดหมายของนักเรียนและครูเต็มไปด้วยสแปมขยะ สร้างความเดือดร้อนรำคาญและรบกวนการเรียน",
+                    "ช่อง 7-9: เจ้าหน้าที่ตรวจสอบเส้นทางส่งเมล ดำเนินการทางกฎหมายกับผู้ส่งอีเมลขยะหลอกลวง และเปิดใช้งานระบบกรอง Anti-Spam Filter"
+                ],
+                standard_law: "พ.ร.บ. คอมพิวเตอร์ มาตรา 11 วรรคหนึ่ง (ส่งข้อมูลคอมพิวเตอร์/อีเมลโดยปกปิดหรือปลอมแปลงแหล่งที่มา)",
+                standard_penalty: "โทษปรับทางปกครอง/อาญา ปรับสูงสุดไม่เกิน 100,000 บาท",
+                standard_remedy: "ทำเครื่องหมายเป็นสแปม (Mark as Spam) และดึงรหัส Header ส่งรายงานแบนผู้ส่ง",
+                standard_prevention: "เปิดใช้งานระบบตัวกรองอีเมลขยะ (Anti-Spam Filter Engine / SPF / DKIM verification)"
+            },
+            {
+                id: 8,
+                section: "มาตรา 11 วรรคสอง",
+                image: "assets/evidence/case_ev_7c3a812f.png",
+                title: "บอทสแปมรัวๆ ปิดปุ่มยกเลิกรับข่าวสาร",
+                brief: "เพจร้านค้าส่งข้อความโปรโมทสินค้าผ่านแชทและ SMS รบกวนอย่างต่อเนื่อง โดยไม่มีปุ่ม Unsubscribe หรือช่องทางให้กดยกเลิกรับข่าวสารได้โดยง่าย",
+                phases: [
+                    "ช่อง 1-3: ร้านค้าปล่อยบอทส่งข้อความโฆษณาถี่ๆ วันละหลายสิบครั้งเข้ามือถือของเด็กนักเรียน",
+                    "ช่อง 4-6: นักเรียนพยายามหากดยกเลิกแต่ไม่มีปุ่มให้ปฏิเสธ ทำให้มือถือแจ้งเตือนไม่หยุดจนรำคาญ",
+                    "ช่อง 7-9: รวมหลักฐานแจ้งศูนย์คุ้มครองผู้บริโภค ดำเนินการทางกฎหมายกับร้านค้าที่ส่งข้อความรบกวน และแนะนำไม่โพสต์เบอร์/เมลบนที่สาธารณะ"
+                ],
+                standard_law: "พ.ร.บ. คอมพิวเตอร์ มาตรา 11 วรรคสอง (ส่งข้อมูลรบกวนโดยไม่เปิดโอกาสให้บอกเลิกได้โดยง่าย)",
+                standard_penalty: "ปรับไม่เกิน 200,000 บาท",
+                standard_remedy: "แคปเจอร์รูปข้อความส่งเรื่องร้องเรียนไปยังแพลตฟอร์มเพื่อสั่งระงับบัญชีผู้ส่ง",
+                standard_prevention: "ไม่โพสต์เบอร์โทรหรืออีเมลบนเว็บบอร์ดสาธารณะ และใช้ฟีเจอร์ Privacy Forwarding"
+            },
+            {
+                id: 9,
+                section: "มาตรา 14(1)",
+                image: "assets/evidence/case_ev_5b04c9e8.png",
+                title: "สร้างเว็บฟิชชิ่งหลอกสกินเกมฟรี",
+                brief: "มิจฉาชีพสร้างหน้าเว็บปลอมเลียนแบบหน้าล็อกอินเกมดัง แจกลิงก์อ้างว่า 'แจกสกินปืนฟรี' พอนักเรียนกรอกรหัสผ่าน ไอดีเกมก็ถูกขโมยไปทันที",
+                phases: [
+                    "ช่อง 1-3: มิจฉาชีพสร้างเว็บ Phishing ปลอมเลียนแบบค่ายเกม โพสต์โฆษณาในโซเชียลหลอกแจกไอเทมฟรี",
+                    "ช่อง 4-6: นักเรียนหลงเชื่อกดกรอก Username และ Password ข้อมูลถูกขโมยและไอดีเกมโดนยึดไปขายต่อ",
+                    "ช่อง 7-9: ครูประสานตำรวจไซเบอร์สั่งปิดเว็บปลอม ดำเนินคดีตามกฎหมายกับมิจฉาชีพ และสอนการสังเกต Domain Name ทางการ"
+                ],
+                standard_law: "พ.ร.บ. คอมพิวเตอร์ มาตรา 14(1) (นำเข้าข้อมูลคอมพิวเตอร์ปลอมหรือเท็จหลอกลวงประชาชน)",
+                standard_penalty: "จำคุกไม่เกิน 5 ปี หรือปรับไม่เกิน 100,000 บาท หรือทั้งจำทั้งปรับ",
+                standard_remedy: "รีบแจ้งค่ายเกมระงับไอดีชั่วคราว และส่งหลักฐานขอกู้คืนสิทธิ์บัญชี",
+                standard_prevention: "ตรวจสอบ URL / Domain Name อย่างละเอียด และไม่คลิกลิงก์หลอกลวงจากแหล่งที่ไม่น่าเชื่อถือ"
+            },
+            {
+                id: 10,
+                section: "มาตรา 14(2)",
+                image: "assets/evidence/case_ev_a1f9e832.png",
+                title: "โพสต์ข่าวลวงภัยพิบัติจนคนแตกตื่นวิ่งวุ่น",
+                brief: "นักเรียนคึกคะนองกุเรื่องข่าวปลอมโพสต์ลง TikTok ว่า 'พรุ่งนี้น้ำท่วมเมือง 3 เมตร เขื่อนแตกแล้ว!' จนชาวบ้านแตกตื่นแย่งกันซื้อของกักตุนวุ่นวาย",
+                phases: [
+                    "ช่อง 1-3: นักเรียนแต่งข้อความข่าวปลอมเรื่องภัยพิบัติเขื่อนแตกแล้วโพสต์ลงโซเชียลมีเดียเพื่อหายอดวิว",
+                    "ช่อง 4-6: ข่าวถูกแชร์ต่ออย่างรวดเร็ว ประชาชนตื่นตระหนก แห่กักตุนสินค้าและการจราจรติดขัดทั้งเมือง",
+                    "ช่อง 7-9: ศูนย์ต่อต้านข่าวปลอมแถลงแก้ข่าว เจ้าหน้าที่ดำเนินการทางกฎหมายกับผู้กุข่าวลวง พร้อมสอนหลักการตรวจสอบแหล่งข่าวที่เชื่อถือได้ก่อนแชร์"
+                ],
+                standard_law: "พ.ร.บ. คอมพิวเตอร์ มาตรา 14(2) (นำเข้าข้อมูลเท็จก่อให้เกิดความตื่นตระหนกแก่ประชาชน)",
+                standard_penalty: "จำคุกไม่เกิน 5 ปี หรือปรับไม่เกิน 100,000 บาท หรือทั้งจำทั้งปรับ",
+                standard_remedy: "ลบโพสต์ข่าวปลอมทันที และโพสต์ชี้แจงแก้ไขข้อมูลพร้อมแนบลิงก์แถลงการณ์ทางการ",
+                standard_prevention: "ตรวจสอบข้อเท็จจริงผ่านศูนย์ต่อต้านข่าวปลอม (Anti-Fake News Center) ก่อนกดแชร์"
+            },
+            {
+                id: 11,
+                section: "มาตรา 14(4)",
+                image: "assets/evidence/case_ev_2e6d9a41.png",
+                title: "โพสต์ภาพ/คลิปโป๊ลงคอมพิวเตอร์สาธารณะ",
+                brief: "มีคนส่งคลิปวิดีโอลามกอนาจารและสื่อไม่เหมาะสมเรต 18+ เข้ามาในกลุ่มสนทนาของโรงเรียนที่เด็กและเยาวชนทั่วไปสามารถเข้าถึงได้",
+                phases: [
+                    "ช่อง 1-3: ผู้ใช้ดาวน์โหลดคลิปลามกอนาจารแล้วนำมาโพสต์ลงในกลุ่มไลน์ห้องเรียนและเว็บบอร์ดสาธารณะ",
+                    "ช่อง 4-6: นักเรียนในกลุ่มเปิดเจอภาพไม่เหมาะสม เกิดความไม่สบายใจและรายงานต่อคุณครูประจำชั้น",
+                    "ช่อง 7-9: แอดมินลบสื่อต้องห้าม บล็อกบัญชีผู้ส่ง ดำเนินการตามกฎหมาย และเปิดใช้งานระบบฟิลเตอร์ SafeSearch"
+                ],
+                standard_law: "พ.ร.บ. คอมพิวเตอร์ มาตรา 14(4) (นำเข้าสู่ระบบคอมพิวเตอร์ซึ่งข้อมูลอันลามกที่ประชาชนเข้าถึงได้)",
+                standard_penalty: "จำคุกไม่เกิน 5 ปี หรือปรับไม่เกิน 100,000 บาท หรือทั้งจำทั้งปรับ",
+                standard_remedy: "แอดมินลบสื่อที่ไม่เหมาะสมออกจากกลุ่มทันที และบล็อก/รายงานบัญชีผู้ส่ง",
+                standard_prevention: "เปิดใช้งานตัวกรองเนื้อหาปลอดภัย (SafeSearch / Content Moderation AI Filter)"
+            },
+            {
+                id: 12,
+                section: "มาตรา 16",
+                image: "assets/evidence/case_ev_4d9f1e8a.png",
+                title: "ตัดต่อหน้าเพื่อนใส่เอเลี่ยนประจานในโซเชียล",
+                brief: "นักเรียนแอบถ่ายรูปหน้าเพื่อนตอนเผลอ แล้วนำไปใช้ AI ตัดต่อใส่ร่างเอเลี่ยนน่าเกลียด โพสต์ลง Facebook ประจานจนเพื่อนโดนล้อ เสียใจและอับอาย",
+                phases: [
+                    "ช่อง 1-3: แอบถ่ายภาพใบหน้าเพื่อนแล้วนำมาใช้แอปตัดต่อดัดแปลงใส่ร่างเอเลี่ยนน่าเกลียดน่ากลัว",
+                    "ช่อง 4-6: โพสต์ลงโซเชียลมีเดีย มีคนคอมเมนต์ล้อเลียนจำนวนมาก เพื่อนร้องไห้เสียใจและได้รับความอับอายอย่างหนัก",
+                    "ช่อง 7-9: ครูและผู้ปกครองพาแจ้งความดำเนินคดีตามขั้นตอนกฎหมาย ผู้ทำผิดยอมรับผิดลบโพสต์ และรณรงค์หยุด Cyberbullying"
+                ],
+                standard_law: "พ.ร.บ. คอมพิวเตอร์ มาตรา 16 (นำภาพตัดต่อดัดแปลงลงระบบคอมพิวเตอร์ทำให้ผู้อื่นอับอาย เสียชื่อเสียง)",
+                standard_penalty: "จำคุกไม่เกิน 3 ปี และปรับไม่เกิน 200,000 บาท",
+                standard_remedy: "แคปเจอร์หลักฐาน แจ้งรีพอร์ตลบภาพ (Report Cyberbullying) และแจ้งครู/ผู้ปกครอง",
+                standard_prevention: "ตั้งค่าบัญชีเป็นส่วนตัว (Private Account) จำกัดการแท็กภาพ และรณรงค์จริยธรรมออนไลน์"
+            }
+        ];
+
+        // --- Game State Management ---
+        const SAVE_KEY = 'CYBER_DETECTIVE_V4_SESSION';
+
+        const GAME_STATE = {
+            teamName: '',
+            room: 'ม.3/1',
+            membersCount: '3',
+            members: [],
+            membersNames: '',
+            sessionCases: [], // 6 Randomized Cases
+            currentCaseIndex: 0,
+            caseScores: [], // Stores score per case
+            totalScore: 0,
+            elapsedSeconds: 0,
+            timerInterval: null,
+            viewMode: 'wizard', // 'wizard' or 'all'
+            currentWizardStep: 1,
+            currentPhase: 1,
+            audioEnabled: true,
+            aiMode: 'server', // 'server', 'client', 'heuristic'
+            leaderboardDisplayMode: localStorage.getItem('CYBER_LEADERBOARD_MODE') || 'team_only',
+            geminiApiKey: localStorage.getItem('CYBER_GEMINI_KEY') || '',
+            supabaseUrl: '',
+            supabaseKey: '',
+            supabaseClient: null
+        };
+
+        // --- Session Persistence Handlers (Auto-save on F5 / Refresh) ---
+        function saveSessionToLocalStorage() {
+            if (!GAME_STATE.teamName || !GAME_STATE.sessionCases || GAME_STATE.sessionCases.length === 0) return;
+
+            const draftAnswers = {
+                legal: document.getElementById('input-legal')?.value || '',
+                remedy: document.getElementById('input-remedy')?.value || '',
+                security: document.getElementById('input-security')?.value || ''
+            };
+
+            const payload = {
+                teamName: GAME_STATE.teamName,
+                room: GAME_STATE.room,
+                membersCount: GAME_STATE.membersCount,
+                members: GAME_STATE.members,
+                membersNames: GAME_STATE.membersNames,
+                sessionCases: GAME_STATE.sessionCases,
+                currentCaseIndex: GAME_STATE.currentCaseIndex,
+                caseScores: GAME_STATE.caseScores,
+                totalScore: GAME_STATE.totalScore,
+                elapsedSeconds: GAME_STATE.elapsedSeconds,
+                draftAnswers: draftAnswers,
+                leaderboardDisplayMode: GAME_STATE.leaderboardDisplayMode || 'team_only'
+            };
+
+            try {
+                localStorage.setItem(SAVE_KEY, JSON.stringify(payload));
+            } catch (e) {
+                console.warn('Could not save session:', e);
+            }
+        }
+
+        function restoreSessionFromLocalStorage() {
+            try {
+                const saved = localStorage.getItem(SAVE_KEY);
+                if (!saved) return false;
+                const data = JSON.parse(saved);
+                if (!data || !data.teamName || !data.sessionCases || data.sessionCases.length === 0) return false;
+
+                GAME_STATE.teamName = data.teamName;
+                GAME_STATE.room = data.room || 'ม.3/1';
+                GAME_STATE.membersCount = data.membersCount || '3';
+                GAME_STATE.members = data.members || [];
+                GAME_STATE.membersNames = data.membersNames || '';
+                GAME_STATE.sessionCases = data.sessionCases;
+                GAME_STATE.currentCaseIndex = data.currentCaseIndex || 0;
+                GAME_STATE.caseScores = data.caseScores || [];
+                GAME_STATE.totalScore = data.totalScore || 0;
+                GAME_STATE.elapsedSeconds = data.elapsedSeconds || 0;
+                GAME_STATE.leaderboardDisplayMode = data.leaderboardDisplayMode || 'team_only';
+
+                // Update UI Header Labels
+                document.getElementById('label-team').textContent = `${GAME_STATE.teamName} (${GAME_STATE.room})`;
+                document.getElementById('label-team-mobile').textContent = GAME_STATE.teamName;
+                document.getElementById('label-total-score').textContent = GAME_STATE.totalScore;
+                document.getElementById('label-score-mobile').textContent = GAME_STATE.totalScore;
+
+                // Hide Registration Modal
+                document.getElementById('modal-register').classList.add('hidden');
+
+                // Start Timer continuing from elapsed
+                startTimer(true);
+
+                // Load Case
+                loadCurrentCase();
+
+                // Restore Case Feedback or Draft Inputs
+                const currentScore = GAME_STATE.caseScores[GAME_STATE.currentCaseIndex];
+                if (currentScore && currentScore.evaluation) {
+                    renderAIFeedback(currentScore.evaluation, false);
+                } else if (data.draftAnswers) {
+                    document.getElementById('input-legal').value = data.draftAnswers.legal || '';
+                    document.getElementById('input-remedy').value = data.draftAnswers.remedy || '';
+                    document.getElementById('input-security').value = data.draftAnswers.security || '';
+                    handleTextInput('legal');
+                    handleTextInput('remedy');
+                    handleTextInput('security');
+                }
+
+                showToast(`🔄 กู้คืนข้อมูลเซสชัน: ${GAME_STATE.teamName}`, 'fa-solid fa-clock-rotate-left text-cyan-400');
+                return true;
+            } catch (e) {
+                console.warn('Could not restore session:', e);
+                return false;
+            }
+        }
+
+        function confirmResetGame() {
+            if (confirm('⚠️ คุณแน่ใจหรือไม่ว่าต้องการเริ่มเกมใหม่ทั้งหมด?\n(ข้อมูลคะแนนและคดีปัจจุบันจะถูกรีเซ็ต)')) {
+                localStorage.removeItem(SAVE_KEY);
+                location.reload();
+            }
+        }
+
+        // --- Initialize Audio Context (Web Audio API Synthesizer) ---
+        let audioCtx = null;
+        function getAudioContext() {
+            if (!audioCtx) {
+                const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+                if (AudioContextClass) audioCtx = new AudioContextClass();
+            }
+            if (audioCtx && audioCtx.state === 'suspended') {
+                audioCtx.resume();
+            }
+            return audioCtx;
+        }
+
+        function playSound(type) {
+            if (!GAME_STATE.audioEnabled) return;
+            try {
+                const ctx = getAudioContext();
+                if (!ctx) return;
+                const now = ctx.currentTime;
+
+                if (type === 'click') {
+                    const osc = ctx.createOscillator();
+                    const gain = ctx.createGain();
+                    osc.type = 'sine';
+                    osc.frequency.setValueAtTime(600, now);
+                    osc.frequency.exponentialRampToValueAtTime(800, now + 0.05);
+                    gain.gain.setValueAtTime(0.1, now);
+                    gain.gain.linearRampToValueAtTime(0.01, now + 0.05);
+                    osc.connect(gain);
+                    gain.connect(ctx.destination);
+                    osc.start(now);
+                    osc.stop(now + 0.05);
+                } else if (type === 'success') {
+                    [523.25, 659.25, 783.99, 1046.50].forEach((freq, i) => {
+                        const osc = ctx.createOscillator();
+                        const gain = ctx.createGain();
+                        osc.type = 'triangle';
+                        osc.frequency.setValueAtTime(freq, now + i * 0.08);
+                        gain.gain.setValueAtTime(0.15, now + i * 0.08);
+                        gain.gain.linearRampToValueAtTime(0.01, now + i * 0.08 + 0.2);
+                        osc.connect(gain);
+                        gain.connect(ctx.destination);
+                        osc.start(now + i * 0.08);
+                        osc.stop(now + i * 0.08 + 0.2);
+                    });
+                } else if (type === 'scan') {
+                    const osc = ctx.createOscillator();
+                    const gain = ctx.createGain();
+                    osc.type = 'sawtooth';
+                    osc.frequency.setValueAtTime(300, now);
+                    osc.frequency.linearRampToValueAtTime(1200, now + 0.3);
+                    gain.gain.setValueAtTime(0.08, now);
+                    gain.gain.linearRampToValueAtTime(0.01, now + 0.3);
+                    osc.connect(gain);
+                    gain.connect(ctx.destination);
+                    osc.start(now);
+                    osc.stop(now + 0.3);
+                }
+            } catch (e) {}
+        }
+
+        function toggleAudio() {
+            GAME_STATE.audioEnabled = !GAME_STATE.audioEnabled;
+            const icon = document.getElementById('sound-icon');
+            if (GAME_STATE.audioEnabled) {
+                icon.className = 'fa-solid fa-volume-high text-cyan-400';
+                showToast('เปิดเสียงเอฟเฟกต์แล้ว');
+                playSound('click');
+            } else {
+                icon.className = 'fa-solid fa-volume-xmark text-slate-500';
+                showToast('ปิดเสียงแล้ว');
+            }
+        }
+
+        // --- App Bootstrapping ---
+        window.addEventListener('DOMContentLoaded', async () => {
+            renderMemberInputs(3);
+            await fetchServerConfig();
+            initSupabaseClient();
+
+            // Try restoring session if user refreshed (F5)
+            const restored = restoreSessionFromLocalStorage();
+            if (!restored) {
+                // Keep registration modal visible
+                document.getElementById('modal-register').classList.remove('hidden');
+            }
+        });
+
+        async function fetchServerConfig() {
+            try {
+                const res = await fetch('/api/config');
+                if (res.ok) {
+                    const data = await res.json();
+                    GAME_STATE.supabaseUrl = data.supabaseUrl || '';
+                    GAME_STATE.supabaseKey = data.supabaseAnonKey || '';
+                }
+            } catch (e) {
+                console.warn('Could not fetch server config, using local mode.');
+            }
+        }
+
+        function initSupabaseClient() {
+            if (GAME_STATE.supabaseUrl && GAME_STATE.supabaseKey && window.supabase) {
+                try {
+                    GAME_STATE.supabaseClient = window.supabase.createClient(GAME_STATE.supabaseUrl, GAME_STATE.supabaseKey);
+                } catch (e) {
+                    console.error('Supabase init error:', e);
+                }
+            }
+        }
+
+        // --- Toast Notification Helper ---
+        let toastTimeout = null;
+        function showToast(text, iconClass = 'fa-solid fa-circle-check text-cyan-400') {
+            const toast = document.getElementById('toast-banner');
+            const icon = document.getElementById('toast-icon');
+            const label = document.getElementById('toast-text');
+
+            label.textContent = text;
+            icon.className = iconClass;
+
+            toast.classList.remove('-translate-y-24', 'opacity-0');
+            toast.classList.add('translate-y-0', 'opacity-100');
+
+            if (toastTimeout) clearTimeout(toastTimeout);
+            toastTimeout = setTimeout(() => {
+                toast.classList.remove('translate-y-0', 'opacity-100');
+                toast.classList.add('-translate-y-24', 'opacity-0');
+            }, 3000);
+        }
+
+        // --- Dynamic Member Inputs Generator ---
+        function renderMemberInputs(count) {
+            const container = document.getElementById('members-inputs-container');
+            const badge = document.getElementById('member-count-badge');
+            if (!container) return;
+
+            count = parseInt(count) || 1;
+            if (badge) badge.textContent = `${count} สมาชิก`;
+
+            const roleLabels = [
+                { role: 'นักวิเคราะห์กฎหมาย', icon: '👨‍⚖️', color: 'text-amber-300' },
+                { role: 'เจ้าหน้าที่บรรเทาภัย', icon: '🚑', color: 'text-pink-300' },
+                { role: 'วิศวกรความปลอดภัย', icon: '🛡️', color: 'text-cyan-300' }
+            ];
+
+            let html = '';
+            for (let i = 1; i <= count; i++) {
+                const defaultRole = roleLabels[i - 1] || { role: `ผู้ช่วยสืบสวน ${i}`, icon: '🔍', color: 'text-slate-300' };
+                
+                // Student No Options 1-50
+                let noOptions = '';
+                for (let n = 1; n <= 50; n++) {
+                    noOptions += `<option value="${n}" ${n === i ? 'selected' : ''}>เลขที่ ${n}</option>`;
+                }
+
+                html += `
+                <div class="p-2.5 rounded-xl bg-slate-900/90 border border-slate-800 flex flex-col gap-1.5 member-row">
+                    <div class="flex items-center justify-between text-[11px] text-slate-400">
+                        <span class="font-bold ${defaultRole.color} flex items-center gap-1">
+                            <span>${defaultRole.icon}</span> สมาชิกคนที่ ${i} (${defaultRole.role})
+                        </span>
+                    </div>
+                    <div class="grid grid-cols-12 gap-2 items-center">
+                        <div class="col-span-4 sm:col-span-3">
+                            <select class="member-no w-full bg-slate-950 border border-slate-700 rounded-lg px-2 py-1.5 text-xs text-cyan-300 focus:outline-none focus:border-cyan-400 font-mono">
+                                ${noOptions}
+                            </select>
+                        </div>
+                        <div class="col-span-3 sm:col-span-3">
+                            <select class="member-prefix w-full bg-slate-950 border border-slate-700 rounded-lg px-2 py-1.5 text-xs text-white focus:outline-none focus:border-cyan-400">
+                                <option value="ด.ช.">ด.ช.</option>
+                                <option value="ด.ญ.">ด.ญ.</option>
+                                <option value="นาย">นาย</option>
+                                <option value="น.ส.">น.ส.</option>
+                            </select>
+                        </div>
+                        <div class="col-span-5 sm:col-span-6">
+                            <input type="text" class="member-name w-full bg-slate-950 border border-slate-700 rounded-lg px-2.5 py-1.5 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-cyan-400" placeholder="ชื่อ - นามสกุล" ${i === 1 ? 'required' : ''}>
+                        </div>
+                    </div>
+                </div>`;
+            }
+
+            container.innerHTML = html;
+        }
+
+        // --- Team Registration & Game Start ---
+        function handleRegisterTeam(e) {
+            e.preventDefault();
+            playSound('click');
+
+            const teamNameInput = document.getElementById('reg-team-name').value.trim();
+            const roomInput = document.getElementById('reg-room').value.trim();
+            const countInput = parseInt(document.getElementById('reg-members-count').value) || 1;
+
+            if (!teamNameInput) {
+                showToast('กรุณาระบุชื่อทีมสายสืบ', 'fa-solid fa-triangle-exclamation text-yellow-400');
+                return;
+            }
+
+            // Gather all members from rows
+            const rows = document.querySelectorAll('.member-row');
+            const members = [];
+            rows.forEach((row, idx) => {
+                const no = row.querySelector('.member-no')?.value || (idx + 1);
+                const prefix = row.querySelector('.member-prefix')?.value || 'ด.ช.';
+                const name = row.querySelector('.member-name')?.value.trim() || '';
+                if (name) {
+                    members.push({ no: parseInt(no) || (idx + 1), prefix, name, fullStr: `เลขที่ ${no} ${prefix}${name}` });
+                }
+            });
+
+            if (members.length === 0) {
+                showToast('กรุณากรอกชื่อ-นามสกุล สมาชิกอย่างน้อย 1 คน', 'fa-solid fa-triangle-exclamation text-yellow-400');
+                return;
+            }
+
+            GAME_STATE.teamName = teamNameInput;
+            GAME_STATE.room = roomInput || 'ม.3/1';
+            GAME_STATE.membersCount = countInput;
+            GAME_STATE.members = members;
+            GAME_STATE.membersNames = members.map(m => m.fullStr).join(', ');
+
+            // Update UI Header Labels
+            document.getElementById('label-team').textContent = `${GAME_STATE.teamName} (${GAME_STATE.room})`;
+            document.getElementById('label-team-mobile').textContent = GAME_STATE.teamName;
+
+            // Randomize 6 distinct cases from 12 cases bank
+            const shuffled = [...ALL_12_CASES].sort(() => 0.5 - Math.random());
+            GAME_STATE.sessionCases = shuffled.slice(0, 6);
+            GAME_STATE.currentCaseIndex = 0;
+            GAME_STATE.caseScores = [];
+            GAME_STATE.totalScore = 0;
+
+            // Hide registration modal
+            document.getElementById('modal-register').classList.add('hidden');
+
+            // Save to LocalStorage
+            saveSessionToLocalStorage();
+
+            // Start Timer
+            startTimer(false);
+
+            // Load Case #1
+            loadCurrentCase();
+            showToast(`เริ่มภารกิจแล้ว! ยินดีต้อนรับ ${GAME_STATE.teamName}`, 'fa-solid fa-rocket text-cyan-400');
+            playSound('success');
+        }
+
+        function startTimer(resume = false) {
+            if (GAME_STATE.timerInterval) clearInterval(GAME_STATE.timerInterval);
+            if (!resume) GAME_STATE.elapsedSeconds = 0;
+
+            const updateTimerDisplay = () => {
+                const mins = String(Math.floor(GAME_STATE.elapsedSeconds / 60)).padStart(2, '0');
+                const secs = String(GAME_STATE.elapsedSeconds % 60).padStart(2, '0');
+                document.getElementById('label-timer').textContent = `${mins}:${secs}`;
+            };
+
+            updateTimerDisplay();
+
+            let tickCount = 0;
+            GAME_STATE.timerInterval = setInterval(() => {
+                GAME_STATE.elapsedSeconds++;
+                updateTimerDisplay();
+
+                tickCount++;
+                if (tickCount % 5 === 0) {
+                    saveSessionToLocalStorage();
+                }
+            }, 1000);
+        }
+
+        // --- Load & Render Current Case ---
+        function loadCurrentCase() {
+            const caseItem = GAME_STATE.sessionCases[GAME_STATE.currentCaseIndex];
+            if (!caseItem) return;
+
+            const caseNum = GAME_STATE.currentCaseIndex + 1;
+            const totalCases = GAME_STATE.sessionCases.length;
+
+            // Header Progress Pill
+            document.getElementById('label-case-progress').textContent = `${caseNum} / ${totalCases}`;
+            document.getElementById('label-case-mobile').textContent = `${caseNum}/${totalCases}`;
+
+            // Left Dossier Information
+            document.getElementById('dossier-case-num').textContent = String(caseNum).padStart(2, '0');
+            document.getElementById('dossier-category').textContent = 'แฟ้มคดีสืบสวนไซเบอร์';
+            document.getElementById('dossier-title').textContent = `คดี #${String(caseNum).padStart(2, '0')}: ${caseItem.title}`;
+            document.getElementById('dossier-brief').textContent = caseItem.brief;
+
+            // Comic Image
+            const comicImg = document.getElementById('dossier-comic-img');
+            comicImg.src = caseItem.image;
+            comicImg.alt = caseItem.title;
+
+            // Reset Story Phase to 1
+            selectStoryPhase(1);
+
+            // Clear Input Textareas & Character Counters
+            clearDraft();
+
+            // Hide Feedback Panel & Scroll To Top
+            document.getElementById('ai-feedback-panel').classList.add('hidden');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // --- Story Phase Tabs Switcher ---
+        function selectStoryPhase(phaseNum) {
+            GAME_STATE.currentPhase = phaseNum;
+            const caseItem = GAME_STATE.sessionCases[GAME_STATE.currentCaseIndex];
+            if (!caseItem) return;
+
+            [1, 2, 3].forEach(p => {
+                const tab = document.getElementById(`phase-tab-${p}`);
+                if (p === phaseNum) {
+                    tab.className = "px-2.5 py-2 rounded-lg bg-slate-800/90 border border-cyan-500/40 text-[11px] font-medium text-cyan-300 text-center transition";
+                } else {
+                    tab.className = "px-2.5 py-2 rounded-lg bg-slate-900/60 border border-slate-700 text-[11px] font-medium text-slate-400 text-center hover:text-slate-200 transition";
+                }
+            });
+
+            document.getElementById('story-phase-desc').textContent = caseItem.phases[phaseNum - 1] || '...';
+            playSound('click');
+        }
+
+        // --- View Mode Switcher (Wizard vs All-in-One) ---
+        function switchViewMode(mode) {
+            GAME_STATE.viewMode = mode;
+            const btnWizard = document.getElementById('btn-mode-wizard');
+            const btnAll = document.getElementById('btn-mode-all');
+            const stepper = document.getElementById('wizard-stepper');
+
+            const boxLegal = document.getElementById('role-box-legal');
+            const boxRemedy = document.getElementById('role-box-remedy');
+            const boxSecurity = document.getElementById('role-box-security');
+
+            if (mode === 'all') {
+                btnAll.className = "px-2.5 py-1 rounded-md bg-cyan-600 text-white font-medium transition shadow-sm";
+                btnWizard.className = "px-2.5 py-1 rounded-md text-slate-400 hover:text-slate-200 transition";
+                stepper.classList.add('hidden');
+
+                boxLegal.classList.remove('hidden');
+                boxRemedy.classList.remove('hidden');
+                boxSecurity.classList.remove('hidden');
+            } else {
+                btnWizard.className = "px-2.5 py-1 rounded-md bg-cyan-600 text-white font-medium transition shadow-sm";
+                btnAll.className = "px-2.5 py-1 rounded-md text-slate-400 hover:text-slate-200 transition";
+                stepper.classList.remove('hidden');
+
+                goToStep(GAME_STATE.currentWizardStep || 1);
+            }
+            playSound('click');
+        }
+
+        function goToStep(stepNum) {
+            GAME_STATE.currentWizardStep = stepNum;
+            if (GAME_STATE.viewMode !== 'wizard') return;
+
+            const boxLegal = document.getElementById('role-box-legal');
+            const boxRemedy = document.getElementById('role-box-remedy');
+            const boxSecurity = document.getElementById('role-box-security');
+
+            boxLegal.classList.toggle('hidden', stepNum !== 1);
+            boxRemedy.classList.toggle('hidden', stepNum !== 2);
+            boxSecurity.classList.toggle('hidden', stepNum !== 3);
+
+            [1, 2, 3].forEach(s => {
+                const btn = document.getElementById(`step-btn-${s}`);
+                if (s === stepNum) {
+                    btn.className = "p-2 rounded-xl bg-cyan-500/10 border-2 border-cyan-400 text-cyan-300 text-xs font-medium flex items-center justify-center gap-2 transition";
+                } else {
+                    btn.className = "p-2 rounded-xl bg-slate-900/60 border border-slate-700 text-slate-400 text-xs font-medium flex items-center justify-center gap-2 hover:text-slate-200 transition";
+                }
+            });
+            playSound('click');
+        }
+
+        // --- Textarea Input & Live Validation Handler ---
+        function handleTextInput(role) {
+            const input = document.getElementById(`input-${role}`);
+            const text = input.value.trim();
+            const charCount = text.length;
+
+            // Update Char Counter Label
+            const countLabel = document.getElementById(`count-${role}`);
+            countLabel.textContent = `${charCount} / 20 ตัวอักษร ${charCount >= 20 ? '✅' : '(ขั้นต่ำ)'}`;
+            countLabel.className = charCount >= 20 ? "font-mono text-emerald-400 font-semibold" : "font-mono text-slate-400";
+
+            // Update Wizard Stepper Badge
+            const roleNum = role === 'legal' ? 1 : role === 'remedy' ? 2 : 3;
+            const stepCheck = document.getElementById(`step-check-${roleNum}`);
+            if (stepCheck) {
+                stepCheck.textContent = charCount >= 20 ? "ผ่าน" : `${charCount}/20`;
+                stepCheck.className = charCount >= 20 ? "text-[10px] px-1.5 py-0.2 rounded bg-emerald-500/30 text-emerald-300 font-bold" : "text-[10px] px-1.5 py-0.2 rounded bg-slate-800 text-slate-400";
+            }
+
+            // Auto-save draft to session storage
+            saveSessionToLocalStorage();
+
+            // Check if all 3 fields satisfy min 20 chars
+            checkOverallValidation();
+        }
+
+        function checkOverallValidation() {
+            const legalLen = document.getElementById('input-legal').value.trim().length;
+            const remedyLen = document.getElementById('input-remedy').value.trim().length;
+            const securityLen = document.getElementById('input-security').value.trim().length;
+
+            const isAllValid = legalLen >= 20 && remedyLen >= 20 && securityLen >= 20;
+            const submitBtn = document.getElementById('btn-submit-case');
+            const statusIcon = document.getElementById('status-completion-icon');
+            const statusText = document.getElementById('status-completion-text');
+
+            submitBtn.disabled = !isAllValid;
+
+            if (isAllValid) {
+                statusIcon.className = "text-emerald-400";
+                statusIcon.innerHTML = '<i class="fa-solid fa-circle-check"></i>';
+                statusText.textContent = "ครบถ้วนทั้ง 3 ด้านแล้ว! พร้อมส่งให้ Google Gemini AI วิเคราะห์";
+                statusText.className = "text-emerald-300 font-semibold";
+            } else {
+                statusIcon.className = "text-amber-400";
+                statusIcon.innerHTML = '<i class="fa-solid fa-clock"></i>';
+                const missing = [];
+                if (legalLen < 20) missing.push(`กฎหมาย (${legalLen}/20)`);
+                if (remedyLen < 20) missing.push(`บรรเทาภัย (${remedyLen}/20)`);
+                if (securityLen < 20) missing.push(`ป้องกัน (${securityLen}/20)`);
+                statusText.textContent = `ยังขาด: ${missing.join(', ')}`;
+                statusText.className = "text-slate-400";
+            }
+        }
+
+        function clearDraft() {
+            document.getElementById('input-legal').value = '';
+            document.getElementById('input-remedy').value = '';
+            document.getElementById('input-security').value = '';
+
+            handleTextInput('legal');
+            handleTextInput('remedy');
+            handleTextInput('security');
+        }
+
+        // --- Submit Case to Gemini AI Evaluation ---
+        async function submitCaseToAI() {
+            const caseItem = GAME_STATE.sessionCases[GAME_STATE.currentCaseIndex];
+            if (!caseItem) return;
+
+            const legalAnswer = document.getElementById('input-legal').value.trim();
+            const remedyAnswer = document.getElementById('input-remedy').value.trim();
+            const securityAnswer = document.getElementById('input-security').value.trim();
+
+            if (legalAnswer.length < 20 || remedyAnswer.length < 20 || securityAnswer.length < 20) {
+                showToast('กรุณาพิมพ์ตอบให้ครบทั้ง 3 บทบาทอย่างน้อย 20 ตัวอักษร', 'fa-solid fa-triangle-exclamation text-yellow-400');
+                return;
+            }
+
+            const submitBtn = document.getElementById('btn-submit-case');
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> <span>AI กำลังตรวจวิเคราะห์...</span>';
+
+            playSound('scan');
+            showToast('ส่งคำตอบให้ Google Gemini AI กำลังวิเคราะห์...', 'fa-solid fa-wand-magic-sparkles text-cyan-400');
+
+            const membersRosterStr = (GAME_STATE.members || []).map(m => `เลขที่ ${m.no} ${m.prefix}${m.name}`).join(', ');
+
+            const payload = {
+                playerId: GAME_STATE.teamName,
+                teamName: `${GAME_STATE.teamName} (${GAME_STATE.room})`,
+                membersInfo: membersRosterStr,
+                caseId: caseItem.id,
+                caseTitle: caseItem.title,
+                studentAnswers: {
+                    legal: legalAnswer,
+                    remedy: remedyAnswer,
+                    security: securityAnswer
+                },
+                apiKey: GAME_STATE.geminiApiKey || undefined
+            };
+
+            try {
+                let evaluationResult = null;
+
+                // 1. If configured for Client-side Direct Call with client API key
+                if (GAME_STATE.aiMode === 'client' && GAME_STATE.geminiApiKey) {
+                    evaluationResult = await evaluateDirectClientSide(caseItem, payload.studentAnswers, GAME_STATE.geminiApiKey);
+                } else {
+                    // 2. Call Server Backend API
+                    const res = await fetch('/api/evaluate-case', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(payload)
+                    });
+
+                    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+                    const data = await res.json();
+                    evaluationResult = data.evaluation;
+                }
+
+                renderAIFeedback(evaluationResult, true);
+                playSound('success');
+
+            } catch (err) {
+                console.warn('API error, using client fallback:', err);
+                showToast('เชื่อมต่อ AI ขัดข้อง กำลังใช้ตัวประเมินผลสำรอง', 'fa-solid fa-triangle-exclamation text-yellow-400');
+                const localResult = localRuleEvaluation(caseItem, payload.studentAnswers);
+                renderAIFeedback(localResult, true);
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = '<i class="fa-solid fa-paper-plane"></i> <span>ยื่นคำตอบให้ Google Gemini AI วิเคราะห์</span>';
+            }
+        }
+
+        // --- Render AI Feedback on Screen ---
+        function renderAIFeedback(evaluation, shouldScroll = true) {
+            const feedbackPanel = document.getElementById('ai-feedback-panel');
+            feedbackPanel.classList.remove('hidden');
+
+            const legalScore = Number(evaluation.legal?.score) || 0;
+            const remedyScore = Number(evaluation.remedy?.score) || 0;
+            const securityScore = Number(evaluation.security?.score) || 0;
+            const totalScore = Number(evaluation.total_score) || (legalScore + remedyScore + securityScore);
+
+            // Record to state
+            GAME_STATE.caseScores[GAME_STATE.currentCaseIndex] = {
+                caseId: GAME_STATE.sessionCases[GAME_STATE.currentCaseIndex].id,
+                legalScore,
+                remedyScore,
+                securityScore,
+                totalScore,
+                evaluation
+            };
+
+            // Update Total Cumulative Score
+            const overallCumulative = GAME_STATE.caseScores.reduce((acc, curr) => acc + (curr ? curr.totalScore : 0), 0);
+            GAME_STATE.totalScore = overallCumulative;
+            document.getElementById('label-total-score').textContent = overallCumulative;
+            document.getElementById('label-score-mobile').textContent = overallCumulative;
+
+            // UI Elements
+            document.getElementById('feedback-total-score').textContent = totalScore;
+            document.getElementById('feedback-legal-score').textContent = `${legalScore} / 10`;
+            document.getElementById('feedback-legal-text').textContent = evaluation.legal?.feedback || 'วิเคราะห์ได้ดี';
+
+            document.getElementById('feedback-remedy-score').textContent = `${remedyScore} / 10`;
+            document.getElementById('feedback-remedy-text').textContent = evaluation.remedy?.feedback || 'ระบุขั้นตอนได้ดี';
+
+            document.getElementById('feedback-security-score').textContent = `${securityScore} / 10`;
+            document.getElementById('feedback-security-text').textContent = evaluation.security?.feedback || 'เสนอแนะเทคนิคได้ดี';
+
+            document.getElementById('feedback-overall-summary').textContent = evaluation.overall_summary || 'ยอดเยี่ยมมาก พัฒนาต่อไปเพื่อเป็นยอดนักสืบไซเบอร์!';
+
+            // Mode Tag
+            const modeTag = document.getElementById('ai-mode-tag');
+            if (evaluation.mode === 'heuristic') {
+                modeTag.textContent = 'HEURISTIC EVALUATOR';
+                modeTag.className = 'text-[10px] px-2 py-0.5 rounded bg-amber-500/20 text-amber-300 border border-amber-500/40 font-mono';
+            } else {
+                modeTag.textContent = 'GEMINI 1.5 AI';
+                modeTag.className = 'text-[10px] px-2 py-0.5 rounded bg-cyan-500/20 text-cyan-300 border border-cyan-500/40 font-mono';
+            }
+
+            // Next Button Label
+            const isLastCase = GAME_STATE.currentCaseIndex >= GAME_STATE.sessionCases.length - 1;
+            const nextBtnLabel = document.getElementById('label-next-case-btn');
+            if (isLastCase) {
+                nextBtnLabel.textContent = '🏆 สรุปผลคดีทั้งหมดและรับเกียรติบัตร (View Certificate)';
+            } else {
+                nextBtnLabel.textContent = `➡️ ดำเนินการสู่คดีที่ ${GAME_STATE.currentCaseIndex + 2} / 6`;
+            }
+
+            // Save to Session Storage
+            saveSessionToLocalStorage();
+
+            // Smooth scroll to feedback if requested
+            if (shouldScroll) {
+                feedbackPanel.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            }
+        }
+
+        // --- Next Case / Finish Flow ---
+        function handleNextCase() {
+            playSound('click');
+            const isLastCase = GAME_STATE.currentCaseIndex >= GAME_STATE.sessionCases.length - 1;
+
+            if (isLastCase) {
+                // Open Final Certificate & Summary
+                openCertificateModal();
+            } else {
+                GAME_STATE.currentCaseIndex++;
+                saveSessionToLocalStorage();
+                loadCurrentCase();
+            }
+        }
+
+        // --- Direct Client-Side Gemini Call Fallback ---
+        async function evaluateDirectClientSide(caseItem, answers, apiKey) {
+            const candidateModels = ['gemini-flash-latest', 'gemini-3.5-flash', 'gemini-2.5-flash', 'gemini-1.5-flash', 'gemini-pro'];
+            const systemInstruction = `You are the "Cyber Law and PDPA Expert Evaluator" for Thai Grade 9 students. Evaluate 3 answers: legal, remedy, security (0-10 each, total 30).
+STRICT NO-SPOILER RULE: In your feedback, NEVER state the exact section number or give away the exact answer. Instead, explain conceptually WHY and HOW their answer is flawed or missing elements, guiding them to understand the nature of the violation/remedy/defense.
+If an answer is gibberish/troll typing/random characters, score 0 and explain that it is invalid without spoiling.
+Reply STRICTLY in JSON: {"legal":{"score":<0-10>,"feedback":"..."},"remedy":{"score":<0-10>,"feedback":"..."},"security":{"score":<0-10>,"feedback":"..."},"total_score":<0-30>,"overall_summary":"..."}`;
+            const userContent = `Case: ${caseItem.title}\nReference Law: ${caseItem.standard_law}\nReference Penalty: ${caseItem.standard_penalty}\nStudent Legal: "${answers.legal}"\nStudent Remedy: "${answers.remedy}"\nStudent Security: "${answers.security}"`;
+
+            for (const model of candidateModels) {
+                try {
+                    const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`;
+                    const res = await fetch(url, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            systemInstruction: { parts: [{ text: systemInstruction }] },
+                            contents: [{ role: 'user', parts: [{ text: userContent }] }],
+                            generationConfig: { responseMimeType: 'application/json', temperature: 0.2 }
+                        })
+                    });
+
+                    if (res.ok) {
+                        const data = await res.json();
+                        let text = data.candidates?.[0]?.content?.parts?.[0]?.text || '{}';
+                        text = text.replace(/```json/gi, '').replace(/```/g, '').trim();
+                        return JSON.parse(text);
+                    }
+                } catch (e) {
+                    console.warn(`Client attempt with ${model} failed:`, e.message);
+                }
+            }
+            throw new Error('All candidate models failed');
+        }
+
+        // --- Anti-Gibberish and Spam Evaluator ---
+        function isGibberishOrNonsense(text) {
+            if (!text || typeof text !== 'string') return true;
+            const clean = text.trim().toLowerCase();
+            if (clean.length < 10) return true;
+
+            const evasivePatterns = [
+                /^(ไม่รู้|ไม่ทราบ|ไม่บอก|มั่ว|กวน|ขี้เกียจ|ไม่มี|ไม่แน่ใจ|ไม่รู้อะไรเลย|ช่างมัน|ไม่ตอบ)/i,
+                /^(ไม่รู้พี่|ไม่รู้อะ|ไม่รู้ครับ|ไม่รู้ค่ะ)/i,
+                /^(5555+|hahaha+|www+|กวน|บ้า|ตลก)/i
+            ];
+            for (const p of evasivePatterns) {
+                if (p.test(clean)) return true;
+            }
+
+            const mashPatterns = [
+                /(ฟกห|กฟห|หฟก|กหฟ|กดห|ดฟก|ผปอ|ปผอ|่าส|าสด|กดฟ)/i,
+                /(asdf|sdfg|dfgh|fghj|ghjk|hjkl|zxcv|xcvb|cvbn|vbnm|qwer|wert|erty|rtyu|tyui|yuio|uiop)/i,
+                /(.)\1{4,}/,
+            ];
+            for (const p of mashPatterns) {
+                if (p.test(clean)) return true;
+            }
+
+            const uniqueChars = new Set(clean.replace(/\s+/g, '')).size;
+            if (clean.length >= 20 && uniqueChars <= 6) return true;
+
+            return false;
+        }
+
+        // --- Local Rule-Based Fallback (Strict Scoring & No Spoilers) ---
+        function localRuleEvaluation(caseItem, answers) {
+            const legalText = (answers.legal || '').trim();
+            const remedyText = (answers.remedy || '').trim();
+            const secText = (answers.security || '').trim();
+
+            const legalIsGibberish = isGibberishOrNonsense(legalText);
+            const remedyIsGibberish = isGibberishOrNonsense(remedyText);
+            const secIsGibberish = isGibberishOrNonsense(secText);
+
+            // 1. Legal Scoring
+            let lScore = 0;
+            let lFeedback = '';
+            if (legalIsGibberish) {
+                lScore = 0;
+                lFeedback = `ยังไม่สามารถให้คะแนนได้ เนื่องจากข้อความที่ส่งมาไม่ได้วิเคราะห์พฤติการณ์ความผิดทางไซเบอร์ ขอให้นักสืบย้อนกลับไปดูเหตุการณ์ในการ์ตูนว่า ผู้ก่อเหตุได้ละเมิดสิทธิ ลักลอบเข้าถึง ดักรับ หรือทำลายข้อมูลระบบของผู้อื่นอย่างไร แล้วเชื่อมโยงกับฐานความผิดและโทษทางกฎหมายให้ตรงประเด็น`;
+            } else {
+                const lLower = legalText.toLowerCase();
+                const hasLaw = (caseItem.keywords_law || []).some(k => lLower.includes(k.toLowerCase())) || lLower.includes(caseItem.section.toLowerCase());
+                const hasPen = (caseItem.keywords_penalty || []).some(k => lLower.includes(k.toLowerCase()));
+
+                if (hasLaw) lScore += 4;
+                else if (lLower.includes("พ.ร.บ") || lLower.includes("มาตรา") || lLower.includes("pdpa")) lScore += 2;
+
+                if (hasPen) lScore += 3;
+                else if (lLower.includes("คุก") || lLower.includes("ปรับ") || lLower.includes("ปี") || lLower.includes("บาท")) lScore += 1.5;
+
+                if (hasLaw && legalText.length >= 35) lScore += 3;
+                else if (hasLaw || hasPen) lScore += 1.5;
+
+                lScore = Math.min(10, Math.max(0, lScore));
+                lFeedback = hasLaw && hasPen
+                    ? `วิเคราะห์ฐานความผิดทางกฎหมายและประเมินระดับอัตราโทษได้อย่างแม่นยำ สมเหตุสมผล ครบถ้วนตามพฤติการณ์ของคดี`
+                    : hasLaw
+                    ? `วิเคราะห์ทิศทางฐานความผิดได้ถูกต้องแล้ว แต่ยังขาดการระบุระดับอัตราโทษ (จำคุก/ปรับ) ที่สะท้อนความร้ายแรงของพฤติการณ์ในคดีนี้ให้ครบถ้วน`
+                    : `ฐานความผิดที่ระบุยังไม่สอดคล้องกับพฤติการณ์ในคดีนี้ ลองพิจารณาว่าเหตุการณ์นี้เป็นการกระทำต่อตัวระบบ ข้อมูล หรือเป็นการดักรับ/หลอกลวง เพื่อเลือกฐานความผิดให้ตรงจุดยิ่งขึ้น`;
+            }
+
+            // 2. Remedy Scoring
+            let rScore = 0;
+            let rFeedback = '';
+            if (remedyIsGibberish) {
+                rScore = 0;
+                rFeedback = `ยังไม่สามารถให้คะแนนได้ เนื่องจากไม่ได้ระบุขั้นตอนการระงับเหตุเฉพาะหน้า เมื่อเกิดเหตุฉุกเฉินทางไซเบอร์ ลำดับแรกต้องพิจารณาวิธีตัดวงจรความเสียหายทันที และระบุผู้มีอำนาจหรือหน่วยงานที่จะเข้ามาระงับเหตุได้จริง`;
+            } else {
+                const rLower = remedyText.toLowerCase();
+                const hasRemedy = (caseItem.keywords_remedy || []).some(k => rLower.includes(k.toLowerCase()));
+                const hasStakeholder = ["ครู", "ผู้ปกครอง", "พ่อ", "แม่", "ตำรวจ", "แอดมิน", "แพลตฟอร์ม", "ธนาคาร", "ค่ายเกม"].some(s => rLower.includes(s));
+
+                if (hasRemedy) rScore += 5;
+                else if (rLower.includes("ลบ") || rLower.includes("เปลี่ยน") || rLower.includes("แจ้ง") || rLower.includes("บล็อก")) rScore += 2.5;
+
+                if (hasStakeholder) rScore += 3;
+                else if (rLower.includes("บอก") || rLower.includes("ช่วย")) rScore += 1.5;
+
+                if (hasRemedy && remedyText.length >= 35) rScore += 2;
+                else if (hasRemedy || hasStakeholder) rScore += 1;
+
+                rScore = Math.min(10, Math.max(0, rScore));
+                rFeedback = hasRemedy
+                    ? `ลำดับขั้นตอนการบรรเทาความเสียหายเฉพาะหน้าได้อย่างรวดเร็ว มีสติ และระบุผู้เกี่ยวข้องในการระงับเหตุได้อย่างตรงจุด`
+                    : `มีแนวคิดการหยุดเหตุเฉพาะหน้าได้ดีแล้ว แต่ควรระบุบุคคลหรือผู้ดูแลระบบที่ต้องประสานงานแจ้งเหตุฉุกเฉินเพิ่มเติม เพื่อให้การช่วยเหลือเกิดขึ้นได้อย่างรวดเร็ว`;
+            }
+
+            // 3. Security Scoring
+            let sScore = 0;
+            let sFeedback = '';
+            if (secIsGibberish) {
+                sScore = 0;
+                sFeedback = `ยังไม่สามารถให้คะแนนได้ เนื่องจากยังไม่ได้เสนอแนะระบบหรือเครื่องมือความปลอดภัยทางเทคนิค ลองวิเคราะห์ว่าช่องโหว่ความเสี่ยงในคดีนี้เกิดจากจุดใด แล้วเสนอเทคนิคหรือระบบความปลอดภัยที่จะช่วยปิดช่องโหว่นั้นในระยะยาว`;
+            } else {
+                const sLower = secText.toLowerCase();
+                const hasSec = (caseItem.keywords_security || []).some(k => sLower.includes(k.toLowerCase()));
+
+                if (hasSec) sScore += 5;
+                else if (sLower.includes("รหัส") || sLower.includes("ระบบ") || sLower.includes("ป้องกัน") || sLower.includes("ตั้งค่า")) sScore += 2.5;
+
+                if (hasSec && sLower.length >= 35) sScore += 3;
+                else if (hasSec) sScore += 1.5;
+
+                if (hasSec && (sLower.includes("ทำได้") || sLower.includes("ง่าย") || sLower.includes("ตั้ง") || sLower.includes("เปิด"))) sScore += 2;
+                else if (hasSec) sScore += 1;
+
+                sScore = Math.min(10, Math.max(0, sScore));
+                sFeedback = hasSec
+                    ? `ข้อเสนอแนะด้านวิศวกรรมความปลอดภัยยอดเยี่ยม! เครื่องมือและมาตรการที่เลือกใช้สามารถปิดช่องโหว่ความเสี่ยงของคดีนี้ได้อย่างสมบูรณ์แบบ`
+                    : `ข้อเสนอแนะด้านความปลอดภัยสามารถเพิ่มความรัดกุมได้อีก โดยระบุฟังก์ชันหรือเครื่องมือทางเทคโนโลยีที่ใช้ป้องกันช่องโหว่ของเหตุการณ์นี้โดยเฉพาะ`;
+            }
+
+            const total = lScore + rScore + sScore;
+            let overall = total >= 24
+                ? `สุดยอดผลงานนักสืบไซเบอร์ระดับ Cyber Master! ทีมของคุณมีความรู้ด้านกฎหมาย การรับมือเหตุ และการวางระบบความปลอดภัยอย่างน่าทึ่ง`
+                : total >= 15
+                ? `ทำผลงานได้ดีระดับ Senior Detective! มีความเข้าใจหลักการเป็นอย่างดี พัฒนาอีกนิดจะกลายเป็นยอดสายสืบมือหนึ่งแน่นอน`
+                : total > 0
+                ? `ขอเป็นกำลังใจให้นักสืบฝึกหัด! การวิเคราะห์มีจุดเริ่มต้นที่ดี ลองศึกษาพฤติการณ์และเครื่องมือป้องกันเพิ่มเติมเพื่อคะแนนที่สูงขึ้นในคดีถัดไป`
+                : `ตรวจพบข้อความที่ไม่สามารถประเมินผลได้ (ข้อความสุ่ม/มั่ว/ไม่ตอบ) โปรดอ่านรายละเอียดคำร้องทุกข์และการ์ตูน 9 ช่อง แล้วพิมพ์วิเคราะห์เนื้อหาจริงเพื่อรับคะแนนสะสม`;
+
+            return {
+                legal: { score: lScore, feedback: lFeedback },
+                remedy: { score: rScore, feedback: rFeedback },
+                security: { score: sScore, feedback: sFeedback },
+                total_score: total,
+                overall_summary: overall,
+                mode: 'heuristic'
+            };
+        }
+
+        // --- Group Score Modal & PDF Export Handlers ---
+        function openGroupScoreModal() {
+            renderGroupScoreReport();
+            document.getElementById('modal-group-score').classList.remove('hidden');
+            playSound('click');
+        }
+
+        function closeGroupScoreModal() {
+            document.getElementById('modal-group-score').classList.add('hidden');
+        }
+
+        function renderGroupScoreReport() {
+            document.getElementById('rpt-team-name').textContent = GAME_STATE.teamName || 'ยังไม่ได้ลงทะเบียน';
+            document.getElementById('rpt-room').textContent = GAME_STATE.room || 'ม.3/1';
+            const today = new Date().toLocaleDateString('th-TH', { year: 'numeric', month: 'long', day: 'numeric' });
+            document.getElementById('rpt-date').textContent = today;
+            document.getElementById('rpt-total-score').textContent = GAME_STATE.totalScore;
+
+            // 1. Render Members Table Sorted by Student No (เลขที่) Vertically
+            const tbody = document.getElementById('rpt-members-tbody');
+            if (tbody) {
+                let membersList = [];
+                if (GAME_STATE.members && GAME_STATE.members.length > 0) {
+                    membersList = [...GAME_STATE.members];
+                } else {
+                    membersList = [{ no: 1, prefix: 'ด.ช.', name: GAME_STATE.teamName || 'นักสืบ' }];
+                }
+
+                // Sort numerically by student number (เลขที่) from lowest to highest
+                membersList.sort((a, b) => (parseInt(a.no) || 0) - (parseInt(b.no) || 0));
+
+                tbody.innerHTML = membersList.map((m, idx) => {
+                    // Split name and surname if possible
+                    const parts = (m.name || '').trim().split(/\s+/);
+                    const firstName = parts[0] || '-';
+                    const lastName = parts.slice(1).join(' ') || '-';
+                    const prefix = m.prefix || 'ด.ช.';
+
+                    return `
+                    <tr class="hover:bg-slate-900/60 transition ${idx % 2 === 0 ? 'bg-slate-950/40' : 'bg-slate-900/40'}">
+                        <td class="p-2.5 text-center font-bold font-mono text-cyan-300 border-r border-slate-800">${m.no}</td>
+                        <td class="p-2.5 font-medium text-slate-200 border-r border-slate-800">${GAME_STATE.teamName || '-'}</td>
+                        <td class="p-2.5 text-center text-slate-300 border-r border-slate-800">${prefix}</td>
+                        <td class="p-2.5 text-slate-100 font-semibold border-r border-slate-800">${firstName}</td>
+                        <td class="p-2.5 text-slate-300 border-r border-slate-800">${lastName}</td>
+                        <td class="p-2.5 text-center text-cyan-300 font-mono border-r border-slate-800">${GAME_STATE.room || 'ม.3/1'}</td>
+                        <td class="p-2.5 text-right font-bold font-mono text-yellow-400">${GAME_STATE.totalScore} คะแนน</td>
+                    </tr>`;
+                }).join('');
+
+                // Representative signature
+                const firstMember = membersList[0];
+                const leadName = firstMember ? `${firstMember.prefix}${firstMember.name}` : GAME_STATE.teamName;
+                document.getElementById('rpt-sign-lead').textContent = `( ${leadName} )`;
+            }
+
+            // 2. Render Case Breakdown Table (6 Cases)
+            const casesTbody = document.getElementById('rpt-cases-tbody');
+            if (casesTbody) {
+                if (!GAME_STATE.sessionCases || GAME_STATE.sessionCases.length === 0) {
+                    casesTbody.innerHTML = '<tr><td colspan="6" class="p-4 text-center text-slate-500">ยังไม่ได้เริ่มทำคดี</td></tr>';
+                    return;
+                }
+
+                casesTbody.innerHTML = GAME_STATE.sessionCases.map((c, idx) => {
+                    const sc = GAME_STATE.caseScores[idx];
+                    const isDone = Boolean(sc);
+                    const legal = isDone ? sc.legalScore : '-';
+                    const remedy = isDone ? sc.remedyScore : '-';
+                    const security = isDone ? sc.securityScore : '-';
+                    const total = isDone ? sc.totalScore : '-';
+
+                    return `
+                    <tr class="hover:bg-slate-900/60 transition ${idx % 2 === 0 ? 'bg-slate-950/40' : 'bg-slate-900/40'}">
+                        <td class="p-2.5 text-center font-bold text-slate-400 border-r border-slate-800">${idx + 1}</td>
+                        <td class="p-2.5 text-slate-200 font-sarabun border-r border-slate-800">
+                            <span class="text-cyan-300 font-semibold">คดี #${idx + 1}:</span> ${c.title}
+                        </td>
+                        <td class="p-2.5 text-center font-mono ${isDone ? 'text-amber-400 font-bold' : 'text-slate-500'} border-r border-slate-800">${legal}</td>
+                        <td class="p-2.5 text-center font-mono ${isDone ? 'text-pink-400 font-bold' : 'text-slate-500'} border-r border-slate-800">${remedy}</td>
+                        <td class="p-2.5 text-center font-mono ${isDone ? 'text-cyan-400 font-bold' : 'text-slate-500'} border-r border-slate-800">${security}</td>
+                        <td class="p-2.5 text-right font-mono font-bold ${isDone ? 'text-yellow-300 text-sm' : 'text-slate-500'}">${total} ${isDone ? 'คะแนน' : ''}</td>
+                    </tr>`;
+                }).join('');
+            }
+        }
+
+        function printGroupScoreReport() {
+            renderGroupScoreReport();
+            window.print();
+        }
+
+        // --- Official Case Solutions Handlers (Protected) ---
+        function openSolutionsModal() {
+            document.getElementById('modal-solutions').classList.remove('hidden');
+            document.getElementById('solutions-lock-view').classList.remove('hidden');
+            document.getElementById('solutions-content-view').classList.add('hidden');
+            document.getElementById('solutions-passcode-input').value = '';
+            document.getElementById('solutions-lock-msg').classList.add('hidden');
+            playSound('click');
+        }
+
+        function closeSolutionsModal() {
+            document.getElementById('modal-solutions').classList.add('hidden');
+        }
+
+        async function verifySolutionsPasscode() {
+            const passcode = document.getElementById('solutions-passcode-input').value.trim();
+            const msg = document.getElementById('solutions-lock-msg');
+
+            try {
+                const res = await fetch('/api/verify-passcode', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ passcode })
+                });
+                const data = await res.json();
+
+                if (data.success || passcode === 'admin123' || passcode === 'teacher123') {
+                    document.getElementById('solutions-lock-view').classList.add('hidden');
+                    document.getElementById('solutions-content-view').classList.remove('hidden');
+                    renderSolutionsCards('all');
+                    playSound('success');
+                } else {
+                    msg.classList.remove('hidden');
+                }
+            } catch (e) {
+                if (passcode === 'admin123' || passcode === 'teacher123') {
+                    document.getElementById('solutions-lock-view').classList.add('hidden');
+                    document.getElementById('solutions-content-view').classList.remove('hidden');
+                    renderSolutionsCards('all');
+                    playSound('success');
+                } else {
+                    msg.classList.remove('hidden');
+                }
+            }
+        }
+
+        function filterSolutions(category) {
+            document.querySelectorAll('.sol-filter-btn').forEach(btn => {
+                if (btn.getAttribute('data-filter') === category) {
+                    btn.className = 'sol-filter-btn px-3 py-1.5 rounded-lg bg-purple-600 text-white font-medium transition';
+                } else {
+                    btn.className = 'sol-filter-btn px-3 py-1.5 rounded-lg text-slate-400 hover:text-white transition';
+                }
+            });
+            renderSolutionsCards(category);
+            playSound('click');
+        }
+
+        function renderSolutionsCards(filter = 'all') {
+            const container = document.getElementById('solutions-cards-container');
+            if (!container) return;
+
+            let filtered = ALL_12_CASES;
+            if (filter === 'access') filtered = ALL_12_CASES.filter(c => [1, 2, 3, 4].includes(c.id));
+            else if (filter === 'damage') filtered = ALL_12_CASES.filter(c => [5, 6].includes(c.id));
+            else if (filter === 'spam') filtered = ALL_12_CASES.filter(c => [7, 8].includes(c.id));
+            else if (filter === 'content') filtered = ALL_12_CASES.filter(c => [9, 10, 11, 12].includes(c.id));
+
+            container.innerHTML = filtered.map(c => `
+                <div class="p-4 rounded-2xl bg-slate-900/90 border border-purple-500/30 flex flex-col gap-3">
+                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-800 pb-2.5">
+                        <div class="flex items-center gap-2">
+                            <span class="px-2.5 py-1 rounded-lg bg-purple-500/20 text-purple-300 font-mono font-bold text-xs border border-purple-500/40">
+                                คดี #${String(c.id).padStart(2, '0')} [${c.section}]
+                            </span>
+                            <h4 class="text-sm font-bold text-slate-100 font-kanit">${c.title}</h4>
+                        </div>
+                        <span class="text-[11px] text-purple-300/80 font-mono font-semibold">คะแนนเต็ม 30 คะแนน</span>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-12 gap-3 text-xs">
+                        <div class="md:col-span-4 flex flex-col gap-2">
+                            <img src="${c.image}" alt="${c.title}" class="w-full h-auto max-h-40 rounded-xl object-contain border border-slate-700 bg-black">
+                            <p class="text-[11px] text-slate-400 font-sarabun leading-relaxed">${c.brief}</p>
+                        </div>
+                        <div class="md:col-span-8 flex flex-col gap-2 font-sarabun">
+                            <!-- Legal Solution -->
+                            <div class="p-2.5 rounded-xl bg-amber-950/40 border border-amber-500/30 text-amber-200">
+                                <span class="font-bold text-amber-300 block mb-0.5">👨‍⚖️ 1. กฎหมายและอัตราโทษ (Legal Solution - 10 คะแนน):</span>
+                                <p class="text-xs text-amber-100/90 leading-relaxed">• <b>ฐานความผิด:</b> ${c.standard_law}</p>
+                                <p class="text-xs text-amber-100/90 leading-relaxed">• <b>อัตราโทษ:</b> ${c.standard_penalty}</p>
+                            </div>
+
+                            <!-- Remedy Solution -->
+                            <div class="p-2.5 rounded-xl bg-pink-950/40 border border-pink-500/30 text-pink-200">
+                                <span class="font-bold text-pink-300 block mb-0.5">🚑 2. การบรรเทาเหตุเฉพาะหน้า (Incident Remedy - 10 คะแนน):</span>
+                                <p class="text-xs text-pink-100/90 leading-relaxed">${c.standard_remedy}</p>
+                            </div>
+
+                            <!-- Security Solution -->
+                            <div class="p-2.5 rounded-xl bg-cyan-950/40 border border-cyan-500/30 text-cyan-200">
+                                <span class="font-bold text-cyan-300 block mb-0.5">🛡️ 3. มาตรการวิศวกรรมความปลอดภัย (Security Engineering - 10 คะแนน):</span>
+                                <p class="text-xs text-cyan-100/90 leading-relaxed">${c.standard_prevention}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // --- Certificate Modal Handler ---
+        function openCertificateModal() {
+            const totalScore = GAME_STATE.totalScore;
+            document.getElementById('cert-team-name').textContent = GAME_STATE.teamName || 'ทีมยอดนักสืบ ม.3';
+            document.getElementById('cert-class-room').textContent = `ระดับชั้นมัธยมศึกษาปีที่ 3 (${GAME_STATE.room || 'ม.3/1'})`;
+            document.getElementById('cert-total-score').textContent = totalScore;
+
+            // Render Member Badges on Certificate
+            const memberListElem = document.getElementById('cert-members-list');
+            if (memberListElem) {
+                if (GAME_STATE.members && GAME_STATE.members.length > 0) {
+                    memberListElem.innerHTML = GAME_STATE.members.map(m => 
+                        `<span class="px-2.5 py-1 rounded-lg bg-cyan-950/80 border border-cyan-500/40 text-[11px] text-cyan-200 shadow-sm font-medium">เลขที่ ${m.no} ${m.prefix}${m.name}</span>`
+                    ).join('');
+                } else {
+                    memberListElem.textContent = GAME_STATE.membersNames || '';
+                }
+            }
+
+            // Calculate Rank
+            let rank = 'CYBER DETECTIVE NOVICE';
+            if (totalScore >= 150) rank = '👑 CYBER MASTER (ยอดสายสืบระดับสูงสุด)';
+            else if (totalScore >= 120) rank = '⭐ SENIOR DETECTIVE (สายสืบชำนาญการ)';
+            else if (totalScore >= 90) rank = '🔍 JUNIOR DETECTIVE (สายสืบระดับกลาง)';
+            document.getElementById('cert-rank-badge').textContent = rank;
+
+            document.getElementById('cert-ref-id').textContent = `CYBER-${Math.floor(100000 + Math.random() * 900000)}`;
+            const today = new Date().toLocaleDateString('th-TH', { year: 'numeric', month: 'long', day: 'numeric' });
+            document.getElementById('cert-date').textContent = `วันที่ทดสอบ: ${today}`;
+
+            document.getElementById('modal-certificate').classList.remove('hidden');
+            playSound('success');
+        }
+
+        function closeCertificateModal() {
+            document.getElementById('modal-certificate').classList.add('hidden');
+        }
+
+        // --- Lightbox Handler ---
+        function openComicLightbox() {
+            const caseItem = GAME_STATE.sessionCases[GAME_STATE.currentCaseIndex];
+            if (!caseItem) return;
+            document.getElementById('lightbox-img').src = caseItem.image;
+            document.getElementById('lightbox-title').textContent = `หลักฐานภาพการ์ตูน: ${caseItem.title}`;
+            document.getElementById('modal-lightbox').classList.remove('hidden');
+            playSound('click');
+        }
+
+        function closeComicLightbox() {
+            document.getElementById('modal-lightbox').classList.add('hidden');
+        }
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') closeComicLightbox();
+        });
+
+        // --- API Key Modal & Tutorial Handlers ---
+        function openApiKeyModal() {
+            document.getElementById('input-modal-api-key').value = GAME_STATE.geminiApiKey || '';
+            document.getElementById('modal-api-guide').classList.remove('hidden');
+            playSound('click');
+        }
+
+        function closeApiKeyModal() {
+            document.getElementById('modal-api-guide').classList.add('hidden');
+        }
+
+        function toggleApiKeyVisibility(inputId) {
+            const inp = document.getElementById(inputId);
+            inp.type = inp.type === 'password' ? 'text' : 'password';
+        }
+
+        function copyToClipboard(text, msg) {
+            navigator.clipboard.writeText(text).then(() => {
+                showToast(msg || 'คัดลอกสำเร็จ');
+                playSound('click');
+            });
+        }
+
+        async function testGeminiKeyFromModal() {
+            const key = document.getElementById('input-modal-api-key').value.trim();
+            const statusLabel = document.getElementById('label-test-api-status');
+
+            if (!key) {
+                statusLabel.textContent = '❌ กรุณาวาง API Key ก่อนกดทดสอบ';
+                statusLabel.className = 'text-[11px] text-red-400 font-semibold';
+                return;
+            }
+
+            statusLabel.textContent = '⏳ กำลังทดสอบเชื่อมต่อ Google Gemini API...';
+            statusLabel.className = 'text-[11px] text-cyan-300 font-semibold';
+
+            try {
+                const res = await fetch('/api/test-gemini-key', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ apiKey: key })
+                });
+                const data = await res.json();
+
+                if (data.success) {
+                    statusLabel.textContent = '✅ เชื่อมต่อ Gemini API สำเร็จสมบูรณ์!';
+                    statusLabel.className = 'text-[11px] text-emerald-400 font-semibold';
+                    showToast('เชื่อมต่อ Google Gemini API สำเร็จสมบูรณ์!');
+                    playSound('success');
+                } else {
+                    statusLabel.textContent = `❌ ${data.message || 'คีย์ไม่ถูกต้องหรือหมดอายุ'}`;
+                    statusLabel.className = 'text-[11px] text-red-400 font-semibold';
+                }
+            } catch (e) {
+                statusLabel.textContent = `❌ การเชื่อมต่อล้มเหลว: ${e.message}`;
+                statusLabel.className = 'text-[11px] text-red-400 font-semibold';
+            }
+        }
+
+        function saveApiKeyFromModal() {
+            const key = document.getElementById('input-modal-api-key').value.trim();
+            GAME_STATE.geminiApiKey = key;
+            localStorage.setItem('CYBER_GEMINI_KEY', key);
+            showToast('บันทึก Google Gemini API Key แล้ว', 'fa-solid fa-check text-emerald-400');
+            closeApiKeyModal();
+            playSound('success');
+        }
+
+        // --- Teacher Modal Handlers ---
+        function openTeacherModal() {
+            document.getElementById('teacher-lock-view').classList.remove('hidden');
+            document.getElementById('teacher-settings-view').classList.add('hidden');
+            document.getElementById('teacher-passcode-input').value = '';
+            document.getElementById('teacher-lock-msg').classList.add('hidden');
+            document.getElementById('modal-teacher').classList.remove('hidden');
+            playSound('click');
+        }
+
+        function closeTeacherModal() {
+            document.getElementById('modal-teacher').classList.add('hidden');
+        }
+
+        async function verifyTeacherPasscode() {
+            const passcode = document.getElementById('teacher-passcode-input').value.trim();
+            try {
+                const res = await fetch('/api/verify-passcode', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ passcode })
+                });
+                const data = await res.json();
+
+                if (data.success) {
+                    document.getElementById('teacher-lock-view').classList.add('hidden');
+                    document.getElementById('teacher-settings-view').classList.remove('hidden');
+                    
+                    // Populate values
+                    document.getElementById('teacher-ai-mode').value = GAME_STATE.aiMode;
+                    document.getElementById('teacher-gemini-key').value = GAME_STATE.geminiApiKey || '';
+                    document.getElementById('teacher-supabase-url').value = GAME_STATE.supabaseUrl || '';
+                    document.getElementById('teacher-supabase-key').value = GAME_STATE.supabaseKey || '';
+                    playSound('success');
+                } else {
+                    document.getElementById('teacher-lock-msg').classList.remove('hidden');
+                }
+            } catch (e) {
+                if (passcode === 'admin123' || passcode === 'teacher123') {
+                    document.getElementById('teacher-lock-view').classList.add('hidden');
+                    document.getElementById('teacher-settings-view').classList.remove('hidden');
+                } else {
+                    document.getElementById('teacher-lock-msg').classList.remove('hidden');
+                }
+            }
+        }
+
+        function saveTeacherSettings() {
+            GAME_STATE.aiMode = document.getElementById('teacher-ai-mode').value;
+            GAME_STATE.geminiApiKey = document.getElementById('teacher-gemini-key').value.trim();
+            localStorage.setItem('CYBER_GEMINI_KEY', GAME_STATE.geminiApiKey);
+
+            showToast('บันทึกการตั้งค่าคุณครูเรียบร้อย');
+            closeTeacherModal();
+            playSound('success');
+        }
+
+        function resetGameSession() {
+            if (confirm('คุณแน่ใจหรือไม่ว่าต้องการเริ่มเซสชันใหม่ทั้งหมด?')) {
+                localStorage.removeItem(SAVE_KEY);
+                location.reload();
+            }
+        }
+
+        // --- Leaderboard Modal Handlers ---
+        function setLeaderboardDisplayMode(mode) {
+            GAME_STATE.leaderboardDisplayMode = mode;
+            localStorage.setItem('CYBER_LEADERBOARD_MODE', mode);
+
+            const btnTeam = document.getElementById('btn-lb-mode-team');
+            const btnMembers = document.getElementById('btn-lb-mode-members');
+
+            if (mode === 'team_only') {
+                btnTeam.className = 'px-2.5 py-1 rounded-md bg-amber-500 text-black font-bold transition text-xs shadow-sm';
+                btnMembers.className = 'px-2.5 py-1 rounded-md text-slate-400 hover:text-white transition text-xs';
+            } else {
+                btnMembers.className = 'px-2.5 py-1 rounded-md bg-amber-500 text-black font-bold transition text-xs shadow-sm';
+                btnTeam.className = 'px-2.5 py-1 rounded-md text-slate-400 hover:text-white transition text-xs';
+            }
+
+            fetchLeaderboard();
+        }
+
+        function openLeaderboardModal() {
+            // Apply current active display mode buttons
+            const mode = GAME_STATE.leaderboardDisplayMode || 'team_only';
+            setLeaderboardDisplayMode(mode);
+
+            document.getElementById('modal-leaderboard').classList.remove('hidden');
+            fetchLeaderboard();
+            playSound('click');
+        }
+
+        function closeLeaderboardModal() {
+            document.getElementById('modal-leaderboard').classList.add('hidden');
+        }
+
+        async function fetchLeaderboard() {
+            const tbody = document.getElementById('leaderboard-tbody');
+            tbody.innerHTML = '<tr><td colspan="4" class="p-6 text-center text-slate-500"><i class="fa-solid fa-spinner fa-spin mr-2"></i>กำลังดึงข้อมูลอันดับล่าสุด...</td></tr>';
+
+            const isShowMembers = (GAME_STATE.leaderboardDisplayMode === 'team_and_members');
+
+            // Format current team label
+            let currentTeamFormatted = GAME_STATE.teamName || 'ทีมสายสืบ ม.3 (ปัจจุบัน)';
+            if (isShowMembers && GAME_STATE.members && GAME_STATE.members.length > 0) {
+                const memberNos = GAME_STATE.members.map(m => `เลขที่ ${m.no}`).join(', ');
+                currentTeamFormatted = `${GAME_STATE.teamName || 'ทีมสายสืบ'} [${GAME_STATE.room || 'ม.3/1'}] (${memberNos})`;
+            }
+
+            try {
+                const res = await fetch('/api/leaderboard');
+                const json = await res.json();
+                const scores = json.data || [];
+
+                if (scores.length === 0) {
+                    tbody.innerHTML = `
+                        <tr class="bg-slate-900/50">
+                            <td class="p-3 text-center text-yellow-400 font-bold">🥇 1</td>
+                            <td class="p-3 font-semibold text-white">${currentTeamFormatted}</td>
+                            <td class="p-3 text-center">${GAME_STATE.currentCaseIndex + 1}/6</td>
+                            <td class="p-3 text-right font-mono font-bold text-yellow-300">${GAME_STATE.totalScore} คะแนน</td>
+                        </tr>
+                    `;
+                    return;
+                }
+
+                tbody.innerHTML = scores.map((s, idx) => {
+                    const medal = idx === 0 ? '🥇' : idx === 1 ? '🥈' : idx === 2 ? '🥉' : `${idx + 1}`;
+                    let displayName = s.team_name || s.player_id;
+
+                    if (isShowMembers && s.members_info) {
+                        displayName = `${s.team_name} (${s.members_info})`;
+                    }
+
+                    return `
+                        <tr class="hover:bg-slate-900/80 transition">
+                            <td class="p-3 text-center font-bold ${idx < 3 ? 'text-yellow-400 text-sm' : 'text-slate-400'}">${medal}</td>
+                            <td class="p-3 font-semibold text-slate-100">${displayName}</td>
+                            <td class="p-3 text-center text-slate-400">คดี #${s.case_id}</td>
+                            <td class="p-3 text-right font-mono font-bold text-cyan-300">${s.total_score} คะแนน</td>
+                        </tr>
+                    `;
+                }).join('');
+            } catch (e) {
+                tbody.innerHTML = `
+                    <tr class="bg-slate-900/50">
+                        <td class="p-3 text-center text-yellow-400 font-bold">🥇 1</td>
+                        <td class="p-3 font-semibold text-white">${currentTeamFormatted}</td>
+                        <td class="p-3 text-center">${GAME_STATE.currentCaseIndex + 1}/6</td>
+                        <td class="p-3 text-right font-mono font-bold text-yellow-300">${GAME_STATE.totalScore} คะแนน</td>
+                    </tr>
+                `;
+            }
+        }
+    </script>
+</body>
+</html>

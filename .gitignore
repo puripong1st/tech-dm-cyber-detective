@@ -5,6 +5,9 @@ node_modules/
 !favicon.png
 !logo.png
 !assets/*.png
+!assets/**/*.png
+!assets/**/*.jpg
+!assets/**/*.jpeg
 .vercel/
 *.log
 
