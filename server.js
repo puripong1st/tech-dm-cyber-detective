@@ -1217,6 +1217,51 @@ app.post('/api/test-gemini-key', async (req, res) => {
     res.status(400).json({ success: false, message: 'การเชื่อมต่อผิดพลาด: ' + (lastError || 'ไม่สามารถเรียกใช้งาน Gemini API ได้') });
 });
 
+// Helper: Multi-Key Load Balancing & Automatic Model Failover for Gemini API
+async function callGeminiApiWithMultiKey(systemPrompt, userPrompt, clientApiKey) {
+    const rawKeys = [clientApiKey, ...(process.env.GEMINI_API_KEY || '').split(','), ...(process.env.GOOGLE_AI_KEY || '').split(',')];
+    const keys = [...new Set(rawKeys.map(k => k ? k.trim() : '').filter(Boolean))];
+    
+    if (keys.length === 0) return null;
+
+    const candidateModels = ['gemini-flash-latest', 'gemini-1.5-flash', 'gemini-2.0-flash', 'gemini-2.5-flash', 'gemini-pro'];
+    const startKeyIdx = Math.floor(Math.random() * keys.length);
+
+    for (let k = 0; k < keys.length; k++) {
+        const apiKey = keys[(startKeyIdx + k) % keys.length];
+
+        for (const model of candidateModels) {
+            try {
+                const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`;
+                const response = await fetch(url, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        systemInstruction: { parts: [{ text: systemPrompt }] },
+                        contents: [{ role: 'user', parts: [{ text: userPrompt }] }],
+                        generationConfig: { responseMimeType: 'application/json', temperature: 0.1 }
+                    })
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    let rawText = data.candidates?.[0]?.content?.parts?.[0]?.text || '';
+                    rawText = rawText.replace(/```json/gi, '').replace(/```/g, '').trim();
+                    const parsed = JSON.parse(rawText);
+                    return { evaluation: parsed, model, apiKeyPrefix: apiKey.substring(0, 6) };
+                } else if (response.status === 429 || response.status === 503) {
+                    console.warn(`[Gemini Rate Limit 429] Key ${apiKey.substring(0, 6)}... busy on ${model}. Switching to next key/model...`);
+                    break;
+                }
+            } catch (err) {
+                console.warn(`[Gemini Failover] Key ${apiKey.substring(0, 6)}... on ${model}: ${err.message}`);
+            }
+        }
+    }
+
+    return null;
+}
+
 // Primary Endpoint: Evaluate Subjective Case Answers via Google Gemini AI
 app.post('/api/evaluate-case', async (req, res) => {
     const { playerId, teamName, membersInfo, caseId, caseTitle, studentAnswers, apiKey: clientApiKey } = req.body || {};
@@ -1226,27 +1271,7 @@ app.post('/api/evaluate-case', async (req, res) => {
     }
 
     const ref = CASE_REFERENCES[caseId] || CASE_REFERENCES[1];
-    const apiKey = clientApiKey || process.env.GEMINI_API_KEY || process.env.GOOGLE_AI_KEY;
 
-    // If no API key is provided, execute Smart Heuristic Evaluator
-    if (!apiKey) {
-        const heuristicResult = evaluateLocally(caseId, studentAnswers);
-        
-        // Record to Supabase if configured
-        saveToSupabase({
-            playerId,
-            teamName,
-            membersInfo,
-            caseId,
-            caseTitle: caseTitle || ref.title,
-            studentAnswers,
-            evaluation: heuristicResult
-        });
-
-        return res.json({ success: true, evaluation: heuristicResult, mode: 'heuristic' });
-    }
-
-    // Call Google Gemini API with STRICT grading prompt and NO-SPOILER rule
     const systemPrompt = `You are the "Cyber Law and PDPA Strict Academic Evaluator" for Thai Grade 9 (ม.3) students.
 Your mission is to strictly, fairly, and accurately evaluate the subjective text answers submitted by the student team based on the provided Case Scenario.
 
@@ -1320,40 +1345,10 @@ You MUST reply strictly in JSON format. Do not write any markdown backticks outs
 - 🚑 Incident Responder Answer: "${studentAnswers.remedy || ''}"
 - 🛡️ Security Engineer Answer: "${studentAnswers.security || ''}"`;
 
-    const candidateModels = ['gemini-flash-latest', 'gemini-3.5-flash', 'gemini-2.5-flash', 'gemini-1.5-flash', 'gemini-pro'];
-    let aiEvaluation = null;
-    let usedModel = null;
+    const geminiResult = await callGeminiApiWithMultiKey(systemPrompt, userPrompt, clientApiKey);
 
-    for (const model of candidateModels) {
-        try {
-            const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`;
-            const response = await fetch(url, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    systemInstruction: { parts: [{ text: systemPrompt }] },
-                    contents: [{ role: 'user', parts: [{ text: userPrompt }] }],
-                    generationConfig: {
-                        responseMimeType: 'application/json',
-                        temperature: 0.1
-                    }
-                })
-            });
-
-            if (response.ok) {
-                const data = await response.json();
-                let rawText = data.candidates?.[0]?.content?.parts?.[0]?.text || '';
-                rawText = rawText.replace(/```json/gi, '').replace(/```/g, '').trim();
-                aiEvaluation = JSON.parse(rawText);
-                usedModel = model;
-                break;
-            }
-        } catch (err) {
-            console.warn(`Attempt with ${model} failed:`, err.message);
-        }
-    }
-
-    if (aiEvaluation) {
+    if (geminiResult && geminiResult.evaluation) {
+        const aiEvaluation = geminiResult.evaluation;
         const total = (Number(aiEvaluation.legal?.score) || 0) + 
                       (Number(aiEvaluation.remedy?.score) || 0) + 
                       (Number(aiEvaluation.security?.score) || 0);
@@ -1369,10 +1364,10 @@ You MUST reply strictly in JSON format. Do not write any markdown backticks outs
             evaluation: aiEvaluation
         });
 
-        return res.json({ success: true, evaluation: aiEvaluation, mode: 'gemini', model: usedModel });
+        return res.json({ success: true, evaluation: aiEvaluation, mode: 'gemini', model: geminiResult.model });
     }
 
-    // Fallback if all Gemini models failed
+    // Fallback if all Gemini keys/models failed
     const fallbackResult = evaluateLocally(caseId, studentAnswers);
     saveToSupabase({
         playerId,
@@ -1396,7 +1391,6 @@ app.post('/api/evaluate-role', async (req, res) => {
     }
 
     const ref = CASE_REFERENCES[caseId] || CASE_REFERENCES[1];
-    const apiKey = clientApiKey || process.env.GEMINI_API_KEY || process.env.GOOGLE_AI_KEY;
 
     let roleNameThai = role === 'legal' ? '1. นักวิเคราะห์กฎหมาย (Legal Analyst)' : role === 'remedy' ? '2. เจ้าหน้าที่บรรเทาภัย (Incident Responder)' : '3. วิศวกรความปลอดภัย (Security Engineer)';
     let standardRef = role === 'legal' ? `${ref.law} (อัตราโทษ: ${ref.penalty})` : role === 'remedy' ? ref.remedy : ref.prevention;
@@ -1417,12 +1411,6 @@ app.post('/api/evaluate-role', async (req, res) => {
         });
     }
 
-    if (!apiKey) {
-        const fullLocal = evaluateLocally(caseId, { [role]: answer });
-        const resRole = fullLocal[role] || { score: 5, feedback: 'วิเคราะห์ได้ดี' };
-        return res.json({ success: true, role, score: resRole.score, feedback: resRole.feedback, mode: 'heuristic' });
-    }
-
     const systemPrompt = `You are the "Cyber Law and PDPA Academic Evaluator" for Thai Grade 9 (ม.3) students.
 Evaluate ONE SPECIFIC ROLE: "${roleNameThai}" (Max 10 points).
 
@@ -1441,36 +1429,10 @@ Reply STRICTLY in JSON format:
   "feedback": "<educational feedback in Thai explaining why and how the answer is praised or missing concepts, without spoilers>"
 }`;
 
-    const candidateModels = ['gemini-flash-latest', 'gemini-3.5-flash', 'gemini-2.5-flash', 'gemini-1.5-flash', 'gemini-pro'];
-    let aiEvaluation = null;
+    const geminiResult = await callGeminiApiWithMultiKey(systemPrompt, `Student Answer for ${roleNameThai}: "${answer}"`, clientApiKey);
 
-    for (const model of candidateModels) {
-        try {
-            const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`;
-            const response = await fetch(url, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    systemInstruction: { parts: [{ text: systemPrompt }] },
-                    contents: [{ role: 'user', parts: [{ text: `Student Answer for ${roleNameThai}: "${answer}"` }] }],
-                    generationConfig: { responseMimeType: 'application/json', temperature: 0.1 }
-                })
-            });
-
-            if (response.ok) {
-                const data = await response.json();
-                let rawText = data.candidates?.[0]?.content?.parts?.[0]?.text || '';
-                rawText = rawText.replace(/```json/gi, '').replace(/```/g, '').trim();
-                aiEvaluation = JSON.parse(rawText);
-                break;
-            }
-        } catch (err) {
-            console.warn(`Attempt with ${model} failed:`, err.message);
-        }
-    }
-
-    if (aiEvaluation && typeof aiEvaluation.score === 'number') {
-        return res.json({ success: true, role, score: aiEvaluation.score, feedback: aiEvaluation.feedback, mode: 'gemini' });
+    if (geminiResult && geminiResult.evaluation && typeof geminiResult.evaluation.score === 'number') {
+        return res.json({ success: true, role, score: geminiResult.evaluation.score, feedback: geminiResult.evaluation.feedback, mode: 'gemini', model: geminiResult.model });
     }
 
     const fullLocal = evaluateLocally(caseId, { [role]: answer });
