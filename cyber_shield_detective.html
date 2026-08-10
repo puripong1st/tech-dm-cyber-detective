@@ -104,13 +104,56 @@
         ::-webkit-scrollbar-thumb:hover { background: #06B6D4; }
 
         @media print {
-            .no-print { display: none !important; }
-            body { background: white !important; color: black !important; padding: 0 !important; }
-            .print-page { background: white !important; color: black !important; border: none !important; box-shadow: none !important; width: 100% !important; margin: 0 !important; padding: 0 !important; }
-            .print-text-dark { color: #0f172a !important; }
-            .print-table { border: 1px solid #94a3b8 !important; }
-            .print-table th, .print-table td { border: 1px solid #cbd5e1 !important; color: #0f172a !important; }
-            .print-table th { background: #f1f5f9 !important; }
+            @page {
+                size: A4 portrait;
+                margin: 0;
+            }
+            html, body {
+                background: #ffffff !important;
+                color: #0f172a !important;
+                margin: 0 !important;
+                padding: 0 !important;
+                width: 100% !important;
+                height: 100% !important;
+                -webkit-print-color-adjust: exact !important;
+                print-color-adjust: exact !important;
+                overflow: hidden !important;
+            }
+            /* Hide ALL normal body elements except the dedicated printable certificate */
+            body > header,
+            body > main,
+            body > div:not(#printable-certificate),
+            #modal-register-team,
+            #modal-comic-lightbox,
+            #modal-certificate,
+            #toast-container,
+            .no-print {
+                display: none !important;
+            }
+            /* Display ONLY the printable certificate container cleanly on exactly 1 page */
+            #printable-certificate {
+                display: flex !important;
+                flex-direction: column !important;
+                justify-content: space-between !important;
+                position: absolute !important;
+                left: 0 !important;
+                top: 0 !important;
+                width: 100% !important;
+                max-width: 210mm !important;
+                height: 297mm !important;
+                max-height: 297mm !important;
+                box-sizing: border-box !important;
+                margin: 0 auto !important;
+                padding: 10mm 12mm !important;
+                page-break-after: avoid !important;
+                page-break-before: avoid !important;
+                page-break-inside: avoid !important;
+                break-inside: avoid !important;
+                overflow: hidden !important;
+                z-index: 999999 !important;
+                background: #ffffff !important;
+                color: #0f172a !important;
+            }
         }
     </style>
 </head>
@@ -534,13 +577,100 @@
                 </div>
             </div>
 
-            <div class="flex items-center gap-3 w-full justify-center text-xs font-sarabun">
-                <button onclick="confirmResetGame()" class="px-5 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 transition flex items-center gap-2">
+            <div class="flex flex-wrap items-center gap-3 w-full justify-center text-xs font-sarabun mt-1">
+                <button onclick="printCertificate()" class="px-6 py-2.5 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-bold transition flex items-center gap-2 shadow-lg shadow-emerald-500/25">
+                    <i class="fa-solid fa-print text-sm"></i> พิมพ์ / บันทึกใบเกียรติบัตร (PDF 1 แผ่น)
+                </button>
+                <button onclick="confirmResetGame()" class="px-4 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 transition flex items-center gap-1.5">
                     <i class="fa-solid fa-rotate-right"></i> เล่นใหม่อีกรอบ
                 </button>
-                <a href="/" class="px-6 py-2.5 rounded-xl bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-500 hover:to-blue-500 text-white font-bold transition flex items-center gap-2 shadow-lg shadow-cyan-500/20">
+                <a href="/" class="px-4 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 border border-slate-700 text-white font-medium transition flex items-center gap-1.5">
                     <i class="fa-solid fa-house"></i> กลับสู่หน้าหลัก
                 </a>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- 6. PRINTABLE CERTIFICATE CONTAINER (Guaranteed 1-Page A4 Portrait) -->
+    <div id="printable-certificate" class="hidden font-sarabun text-slate-900 bg-white">
+        <div class="w-full h-full border-4 border-cyan-700 rounded-3xl p-6 relative flex flex-col justify-between items-center text-center bg-white" style="box-shadow: inset 0 0 0 3px #0891b2, inset 0 0 0 6px #f8fafc;">
+            
+            <!-- Top Corner Decors -->
+            <div class="absolute top-4 left-4 text-cyan-600 text-2xl">
+                <i class="fa-solid fa-award"></i>
+            </div>
+            <div class="absolute top-4 right-4 text-cyan-600 text-2xl">
+                <i class="fa-solid fa-award"></i>
+            </div>
+
+            <!-- Header Section -->
+            <div class="flex flex-col items-center gap-1 mt-1">
+                <div class="w-14 h-14 rounded-2xl bg-cyan-50 border-2 border-cyan-600 text-cyan-700 flex items-center justify-center text-2xl shadow-sm mb-1">
+                    <i class="fa-solid fa-shield-halved"></i>
+                </div>
+                <h2 class="text-xl font-black text-cyan-950 font-kanit tracking-wide">
+                    เกียรติบัตรรับรองยอดนักสืบไซเบอร์และผู้พิทักษ์ข้อมูลส่วนบุคคล
+                </h2>
+                <p class="text-[11px] text-slate-500 font-medium tracking-wider uppercase">
+                    Cyber Shield Detective & Digital Citizenship Academic Certification (Grade 9)
+                </p>
+                <div class="w-28 h-1 bg-gradient-to-r from-cyan-500 via-pink-500 to-amber-400 rounded-full my-1"></div>
+            </div>
+
+            <!-- Recipient Section -->
+            <div class="flex flex-col items-center gap-1.5 my-1 w-full">
+                <p class="text-xs text-slate-600 font-medium">เกียรติบัตรฉบับนี้ขอมอบให้แก่</p>
+                
+                <!-- Team & Room Title -->
+                <div class="text-xl font-black text-cyan-950 font-kanit" id="print-cert-team">
+                    ทีมสายสืบเยาวชน
+                </div>
+                <div class="text-xs font-bold text-cyan-800 font-kanit px-3.5 py-0.5 rounded-full bg-cyan-50 border border-cyan-300 inline-block" id="print-cert-room">
+                    ระดับชั้นมัธยมศึกษาปีที่ 3 (ห้อง ม.3/1)
+                </div>
+
+                <!-- Members Roster Grid -->
+                <div class="mt-1 w-full max-w-lg p-2.5 rounded-2xl bg-slate-50 border border-slate-200 flex flex-col gap-1 text-xs text-slate-800">
+                    <div class="font-bold text-cyan-900 text-[11px] uppercase tracking-wider flex items-center justify-center gap-1">
+                        <i class="fa-solid fa-users"></i> สมาชิกทีมผู้ร่วมปฏิบัติการสืบคดี:
+                    </div>
+                    <div id="print-cert-members" class="grid grid-cols-2 gap-x-4 gap-y-0.5 text-xs text-slate-700 text-left px-3">
+                        <!-- Populated by JS -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Achievement Statement -->
+            <div class="max-w-lg mx-auto text-xs text-slate-600 leading-relaxed px-2">
+                ได้ผ่านการทดสอบปฏิบัติการสืบคดีความผิดตาม <b>พ.ร.บ. ว่าด้วยการกระทำความผิดเกี่ยวกับคอมพิวเตอร์</b> และ <b>กฎหมายคุ้มครองข้อมูลส่วนบุคคล (PDPA)</b> ครบทั้ง 6 คดี พร้อมผ่านการประเมินทักษะการคิดวิเคราะห์เชิงลึกด้วยคะแนนอัตนัยจาก <b>Google Gemini AI</b>
+            </div>
+
+            <!-- Score & Title Badges -->
+            <div class="grid grid-cols-2 gap-3 w-full max-w-md my-1">
+                <div class="p-2.5 rounded-2xl bg-amber-50 border-2 border-amber-400 text-center flex flex-col justify-center">
+                    <span class="text-[10px] text-amber-800 font-bold uppercase tracking-wider">คะแนนรวมสะสม</span>
+                    <span class="text-lg font-black text-amber-600 font-mono" id="print-cert-score">180 / 180</span>
+                </div>
+                <div class="p-2.5 rounded-2xl bg-cyan-50 border-2 border-cyan-500 text-center flex flex-col justify-center">
+                    <span class="text-[10px] text-cyan-800 font-bold uppercase tracking-wider">ระดับตำแหน่งนักสืบ</span>
+                    <span class="text-xs font-bold text-cyan-800 font-kanit" id="print-cert-rank">CYBER MASTER DETECTIVE</span>
+                </div>
+            </div>
+
+            <!-- Footer Verification & Signature -->
+            <div class="w-full flex items-end justify-between text-left text-[11px] text-slate-500 pt-2 border-t border-slate-200 mt-1">
+                <div class="flex flex-col gap-0.5">
+                    <div><b>รหัสอ้างอิง:</b> <span id="print-cert-hash" class="font-mono text-slate-800 font-bold">CSD-2569-8F3A9B</span></div>
+                    <div><b>วันที่ออกเกียรติบัตร:</b> <span id="print-cert-date" class="text-slate-800 font-medium">10 สิงหาคม 2569</span></div>
+                    <div class="text-[9px] text-slate-400">ระบบประเมินผลอัตโนมัติ Cyber Shield Detective v4.5 AI</div>
+                </div>
+
+                <div class="flex flex-col items-center text-center">
+                    <div class="w-36 border-b border-slate-400 mb-1"></div>
+                    <div class="font-bold text-slate-800 text-xs">( คุณครูผู้สอน / ผู้ประเมิน )</div>
+                    <div class="text-[10px] text-slate-500">กลุ่มสาระการเรียนรู้วิทยาศาสตร์และเทคโนโลยี</div>
+                </div>
             </div>
 
         </div>
@@ -1517,7 +1647,7 @@
             document.getElementById('modal-comic-lightbox').classList.add('hidden');
         }
 
-        // --- Certificate Modal ---
+        // --- Certificate Modal & Single-Page Print ---
         function openCertificateModal() {
             document.getElementById('cert-team-name').textContent = GAME_STATE.teamName || 'นักสืบ ม.3';
             document.getElementById('cert-room-name').textContent = GAME_STATE.room || 'ม.3/1';
@@ -1526,9 +1656,51 @@
 
             try {
                 if (window.confetti) {
-                    window.confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } });
+                    window.confetti({ particleCount: 120, spread: 80, origin: { y: 0.6 } });
                 }
             } catch(e) {}
+        }
+
+        function printCertificate() {
+            // 1. Populate Team & Room
+            document.getElementById('print-cert-team').textContent = GAME_STATE.teamName || 'ทีมสายสืบเยาวชน';
+            document.getElementById('print-cert-room').textContent = `ระดับชั้นมัธยมศึกษาปีที่ 3 (ห้อง ${GAME_STATE.room || 'ม.3/1'})`;
+            document.getElementById('print-cert-score').textContent = `${GAME_STATE.totalScore || 0} / 180`;
+
+            // 2. Compute Title / Rank
+            const score = GAME_STATE.totalScore || 0;
+            let rank = 'CYBER DETECTIVE NOVICE';
+            if (score >= 160) rank = '⭐ CYBER MASTER DETECTIVE (ยอดเยี่ยม)';
+            else if (score >= 130) rank = '⭐ SENIOR CYBER DETECTIVE (ดีเด่น)';
+            else if (score >= 90) rank = '⭐ CYBER INVESTIGATOR (ดี)';
+            document.getElementById('print-cert-rank').textContent = rank;
+
+            // 3. Render Student Roster
+            const membersContainer = document.getElementById('print-cert-members');
+            if (GAME_STATE.members && GAME_STATE.members.length > 0) {
+                let html = '';
+                GAME_STATE.members.forEach(m => {
+                    html += `<div>• <b>เลขที่ ${m.no}</b> ${m.prefix || ''}${m.name || ''}</div>`;
+                });
+                membersContainer.innerHTML = html;
+            } else {
+                membersContainer.innerHTML = '<div>• นักสืบตัวแทนประจำกลุ่ม</div>';
+            }
+
+            // 4. Verification Hash & Formatted Thai Date
+            const randomHash = Math.random().toString(36).substring(2, 8).toUpperCase();
+            document.getElementById('print-cert-hash').textContent = `CSD-2569-${randomHash}`;
+            
+            const thaiMonths = ["มกราคม", "กุมภาพันธ์", "มีนาคม", "เมษายน", "พฤษภาคม", "มิถุนายน", "กรกฎาคม", "สิงหาคม", "กันยายน", "ตุลาคม", "พฤศจิกายน", "ธันวาคม"];
+            const now = new Date();
+            const thaiDate = `${now.getDate()} ${thaiMonths[now.getMonth()]} ${now.getFullYear() + 543}`;
+            document.getElementById('print-cert-date').textContent = thaiDate;
+
+            // 5. Trigger Native Print Dialog
+            playSound('click');
+            setTimeout(() => {
+                window.print();
+            }, 300);
         }
     </script>
 </body>
