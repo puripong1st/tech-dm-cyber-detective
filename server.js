@@ -621,8 +621,18 @@ app.get('/survivor', (req, res) => {
     res.sendFile(path.join(__dirname, 'cyber_survivor_game.html'));
 });
 
+app.get('/shield_teacher', (req, res) => {
+    res.sendFile(path.join(__dirname, 'cyber_shield_teacher.html'));
+});
+app.get('/cyber_shield_teacher', (req, res) => {
+    res.sendFile(path.join(__dirname, 'cyber_shield_teacher.html'));
+});
+app.get('/teacher_v4', (req, res) => {
+    res.sendFile(path.join(__dirname, 'cyber_shield_teacher.html'));
+});
+
 app.get('/teacher', (req, res) => {
-    res.sendFile(path.join(__dirname, 'teacher_dashboard.html'));
+    res.sendFile(path.join(__dirname, 'cyber_shield_teacher.html'));
 });
 app.get('/teacher_dashboard', (req, res) => {
     res.sendFile(path.join(__dirname, 'teacher_dashboard.html'));

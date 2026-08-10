@@ -3,1192 +3,158 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ระบบแผงควบคุม & แดชบอร์ดสรุปคะแนนสำหรับครูผู้สอน | Cyber Shield Teacher Hub</title>
-
+    <title>ระบบแดชบอร์ดสรุปผลคะแนนสำหรับครูผู้สอน (PDF Export)</title>
+    
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Kanit:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400&family=Sarabun:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=Chakra+Petch:wght@500;600;700;800&display=swap" rel="stylesheet">
-
-    <!-- Favicon -->
+    <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700;800&family=Sarabun:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Favicon & App Icon (256x256) -->
     <link rel="icon" type="image/png" sizes="256x256" href="favicon.png">
+    <link rel="apple-touch-icon" sizes="256x256" href="favicon.png">
 
-    <!-- FontAwesome 6 -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
-    <!-- Tailwind CSS CDN -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        cyber: {
-                            dark: '#070913',
-                            slate: '#0F172A',
-                            panel: '#1E293B',
-                            cyan: '#06B6D4',
-                            cyanGlow: '#22D3EE',
-                            pink: '#EC4899',
-                            yellow: '#F59E0B',
-                            green: '#10B981',
-                            purple: '#8B5CF6'
-                        }
-                    },
-                    fontFamily: {
-                        kanit: ['Kanit', 'sans-serif'],
-                        sarabun: ['Sarabun', 'sans-serif'],
-                        mono: ['Chakra Petch', 'monospace']
-                    }
-                }
-            }
-        }
-    </script>
-
-    <!-- Supabase JS Client CDN -->
+    <!-- Supabase Client CDN -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
-    <style>
-        :root {
-            --neon-cyan: #06B6D4;
-            --neon-pink: #EC4899;
-            --neon-yellow: #F59E0B;
-            --neon-green: #10B981;
-            --neon-purple: #8B5CF6;
-        }
-
-        body {
-            background-color: #070913;
-            color: #F8FAFC;
-            font-family: 'Kanit', sans-serif;
-            min-height: 100vh;
-        }
-
-        .cyber-grid-bg {
-            background-image: 
-                radial-gradient(circle at 15% 15%, rgba(6, 182, 212, 0.12) 0%, transparent 40%),
-                radial-gradient(circle at 85% 85%, rgba(139, 92, 246, 0.12) 0%, transparent 40%),
-                linear-gradient(rgba(15, 23, 42, 0.8) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(15, 23, 42, 0.8) 1px, transparent 1px);
-            background-size: 100% 100%, 100% 100%, 36px 36px, 36px 36px;
-        }
-
-        .glass-panel {
-            background: rgba(15, 23, 42, 0.85);
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
-            border: 1px solid rgba(139, 92, 246, 0.3);
-        }
-
-        /* Custom Scrollbars */
-        ::-webkit-scrollbar { width: 6px; height: 6px; }
-        ::-webkit-scrollbar-track { background: rgba(15, 23, 42, 0.8); }
-        ::-webkit-scrollbar-thumb { background: #334155; border-radius: 4px; }
-        ::-webkit-scrollbar-thumb:hover { background: #8B5CF6; }
-
-        @media print {
-            .no-print { display: none !important; }
-            body { background: white !important; color: black !important; padding: 0 !important; }
-            .print-page { background: white !important; color: black !important; border: none !important; box-shadow: none !important; width: 100% !important; max-width: 100% !important; margin: 0 !important; padding: 0 !important; }
-            .print-text-dark { color: #0f172a !important; }
-            .print-table { border: 1px solid #94a3b8 !important; }
-            .print-table th, .print-table td { border: 1px solid #cbd5e1 !important; color: #0f172a !important; }
-            .print-table th { background: #f1f5f9 !important; }
-        }
-    </style>
+    <!-- Custom App CSS -->
+    <link rel="stylesheet" href="css/teacher_dashboard.css">
 </head>
-<body class="cyber-grid-bg antialiased selection:bg-purple-500 selection:text-white flex flex-col min-h-screen">
+<body>
 
-    <!-- 1. TEACHER AUTH PASSCODE MODAL -->
-    <div id="modal-auth" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/90 backdrop-blur-xl">
-        <div class="glass-panel max-w-md w-full p-8 rounded-3xl border border-purple-500/50 shadow-2xl flex flex-col items-center text-center gap-5">
-            <div class="w-16 h-16 rounded-2xl bg-purple-500/20 border border-purple-400 text-purple-300 flex items-center justify-center text-3xl shadow-lg shadow-purple-500/30">
-                <i class="fa-solid fa-chalkboard-user"></i>
-            </div>
-            
-            <div>
-                <h2 class="text-xl font-bold text-slate-100 font-kanit">เข้าสู่ระบบแผงควบคุมครูผู้สอน</h2>
-                <p class="text-xs text-slate-400 mt-1 font-sarabun">Teacher Realtime Dashboard & Solution Hub (ม.3)</p>
-            </div>
+    <!-- Teacher Auth Modal -->
+    <div class="modal-overlay" id="modal-auth">
+        <div class="auth-card">
+            <div style="font-size: 3rem; color: var(--neon-cyan); margin-bottom: 10px;"><i class="fa-solid fa-user-lock"></i></div>
+            <h3 style="color: var(--neon-cyan); font-size: 1.3rem; font-weight: 800; margin-bottom: 6px;">เข้าสู่ระบบครูผู้สอน</h3>
+            <div style="font-size: 0.85rem; color: #cbd5e1; margin-bottom: 16px;">กรอกรหัสผ่านครูผู้สอนเพื่อดูคะแนนและเวลาเรียลไทม์</div>
 
-            <div class="w-full flex flex-col gap-3">
-                <div class="relative w-full">
-                    <i class="fa-solid fa-key absolute left-4 top-1/2 -translate-y-1/2 text-purple-400 text-sm"></i>
-                    <input type="password" id="auth-passcode-input" placeholder="กรุณากรอกรหัสผ่านครูผู้สอน..." class="w-full bg-slate-950/90 border border-purple-500/40 rounded-2xl pl-11 pr-4 py-3 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-purple-400 focus:ring-1 focus:ring-purple-400 font-mono transition text-center" onkeydown="if(event.key==='Enter') loginTeacher()">
-                </div>
-                
-                <span id="auth-error-msg" class="text-xs text-red-400 font-sarabun hidden flex items-center justify-center gap-1.5">
-                    <i class="fa-solid fa-triangle-exclamation"></i> รหัสผ่านไม่ถูกต้อง กรุณาลองใหม่อีกครั้ง
-                </span>
+            <input type="password" class="form-input" id="auth-passcode" placeholder="รหัสผ่านครูผู้สอน (Passcode)" style="width: 100%; margin-bottom: 12px;">
 
-                <button onclick="loginTeacher()" class="w-full py-3 rounded-2xl bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white font-bold text-sm shadow-lg shadow-purple-600/30 transition flex items-center justify-center gap-2">
-                    <i class="fa-solid fa-right-to-bracket"></i>
-                    <span>ยืนยันเข้าสู่ระบบ</span>
-                </button>
-            </div>
-
-            <a href="/" class="text-xs text-slate-400 hover:text-white flex items-center gap-1.5 transition">
-                <i class="fa-solid fa-arrow-left"></i> กลับหน้าหลักนักเรียน
-            </a>
+            <button class="btn-action" style="width: 100%; justify-content: center; background: linear-gradient(135deg, var(--neon-cyan), #0284c7); color: #090d16;" id="btn-login-passcode">
+                <i class="fa-solid fa-right-to-bracket"></i> ยืนยันรหัสผ่าน
+            </button>
         </div>
     </div>
 
-    <!-- 2. MAIN TEACHER DASHBOARD INTERFACE -->
-    <div id="main-dashboard-app" class="hidden flex-1 flex flex-col justify-between">
+    <!-- Main Dashboard -->
+    <div class="dashboard-container">
 
-        <!-- Top Navigation Bar -->
-        <header class="glass-panel sticky top-0 z-40 border-b border-purple-500/30 px-4 py-3 lg:px-8">
-            <div class="max-w-7xl mx-auto flex items-center justify-between gap-3">
-                
-                <!-- Brand Title -->
-                <div class="flex items-center gap-3">
-                    <img src="favicon.png" alt="Logo" class="w-9 h-9 rounded-lg border border-purple-400 shadow-md shadow-purple-500/30 object-cover">
-                    <div>
-                        <div class="flex items-center gap-2">
-                            <h1 class="text-base lg:text-lg font-bold tracking-wider text-transparent bg-clip-text bg-gradient-to-r from-purple-400 via-pink-400 to-cyan-400 font-mono">
-                                TEACHER COMMAND CENTER
-                            </h1>
-                            <span class="text-[10px] px-2 py-0.5 rounded-full bg-purple-500/20 text-purple-300 border border-purple-500/40">ม.3 AI Portal</span>
-                        </div>
-                        <p class="text-[11px] text-slate-400 hidden sm:block">ระบบติดตามผลคะแนนเรียลไทม์ ตรวจสอบข้อสอบ และพิมพ์รายงานสรุปผล</p>
-                    </div>
-                </div>
+        <!-- Top Header -->
+        <header class="dash-header">
+            <div class="dash-title">
+                <img src="favicon.png" alt="Logo" style="width: 34px; height: 34px; border-radius: 8px; border: 1.5px solid var(--neon-cyan);">
+                <span>TEACHER REALTIME LIVE DASHBOARD</span>
+            </div>
 
-                <!-- Navigation Tabs -->
-                <div class="flex items-center gap-1.5 bg-slate-950/80 p-1 rounded-xl border border-slate-800 font-sarabun text-xs">
-                    <button id="nav-tab-scoreboard" onclick="switchTab('scoreboard')" class="px-3.5 py-1.5 rounded-lg bg-purple-600 text-white font-semibold transition flex items-center gap-1.5 shadow-sm">
-                        <i class="fa-solid fa-chart-line text-purple-200"></i>
-                        <span>กระดานคะแนนสด</span>
-                    </button>
-                    <button id="nav-tab-solutions" onclick="switchTab('solutions')" class="px-3.5 py-1.5 rounded-lg text-slate-400 hover:text-white transition flex items-center gap-1.5">
-                        <i class="fa-solid fa-book-open text-pink-400"></i>
-                        <span>แฟ้มเฉลย 12 คดี</span>
-                    </button>
-                    <button id="nav-tab-settings" onclick="switchTab('settings')" class="px-3.5 py-1.5 rounded-lg text-slate-400 hover:text-white transition flex items-center gap-1.5">
-                        <i class="fa-solid fa-gear text-cyan-400"></i>
-                        <span>ตั้งค่าระบบ & Cloud</span>
-                    </button>
-                </div>
+            <div style="display: flex; gap: 12px; align-items: center;">
+                <a href="/" style="text-decoration: none; display: inline-flex; align-items: center; gap: 6px; padding: 6px 14px; background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.2); border-radius: 10px; color: #fff; font-size: 0.85rem; font-weight: 700;">
+                    <i class="fa-solid fa-house"></i> กลับหน้าหลัก
+                </a>
 
-                <!-- Right Actions -->
-                <div class="flex items-center gap-2">
-                    <div class="hidden lg:flex items-center gap-2 px-3 py-1.5 rounded-lg bg-emerald-950/60 border border-emerald-500/40 text-emerald-300 text-xs font-mono">
-                        <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
-                        <span id="label-realtime-status">Realtime Active</span>
-                    </div>
-
-                    <a href="/" class="p-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white text-xs border border-slate-700 transition" title="กลับหน้าหลัก">
-                        <i class="fa-solid fa-house"></i>
-                    </a>
-
-                    <button onclick="logoutTeacher()" class="p-2 rounded-lg bg-red-950/70 hover:bg-red-900 border border-red-500/40 text-red-300 text-xs transition" title="ออกจากระบบครู">
-                        <i class="fa-solid fa-arrow-right-from-bracket"></i>
-                    </button>
+                <div class="live-pulse-badge">
+                    <div class="pulse-dot"></div>
+                    <span>SUPABASE REAL-TIME ACTIVE</span>
                 </div>
             </div>
         </header>
 
-        <!-- Main Content Area -->
-        <main class="max-w-7xl mx-auto w-full p-4 lg:p-6 flex-1 flex flex-col gap-6">
-
-            <!-- ========================================================================= -->
-            <!-- TAB 1: LIVE REALTIME SCOREBOARD & TELEMETRY                               -->
-            <!-- ========================================================================= -->
-            <section id="tab-content-scoreboard" class="flex flex-col gap-5">
-                
-                <!-- Overview Stats Grid -->
-                <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 lg:gap-4">
-                    <div class="glass-panel p-4 rounded-2xl border border-purple-500/30 flex items-center gap-3.5">
-                        <div class="w-12 h-12 rounded-xl bg-purple-500/20 border border-purple-400 text-purple-300 flex items-center justify-center text-xl shrink-0">
-                            <i class="fa-solid fa-users"></i>
-                        </div>
-                        <div>
-                            <div class="text-2xl font-bold font-mono text-white" id="stat-total-teams">0</div>
-                            <div class="text-xs text-slate-400 font-sarabun">กลุ่มนักสืบในระบบ</div>
-                        </div>
-                    </div>
-
-                    <div class="glass-panel p-4 rounded-2xl border border-cyan-500/30 flex items-center gap-3.5">
-                        <div class="w-12 h-12 rounded-xl bg-cyan-500/20 border border-cyan-400 text-cyan-300 flex items-center justify-center text-xl shrink-0">
-                            <i class="fa-solid fa-school"></i>
-                        </div>
-                        <div>
-                            <div class="text-2xl font-bold font-mono text-cyan-300" id="stat-active-rooms">0</div>
-                            <div class="text-xs text-slate-400 font-sarabun">ห้องเรียนที่ส่งผลงาน</div>
-                        </div>
-                    </div>
-
-                    <div class="glass-panel p-4 rounded-2xl border border-yellow-500/30 flex items-center gap-3.5">
-                        <div class="w-12 h-12 rounded-xl bg-yellow-500/20 border border-yellow-400 text-yellow-300 flex items-center justify-center text-xl shrink-0">
-                            <i class="fa-solid fa-star"></i>
-                        </div>
-                        <div>
-                            <div class="text-2xl font-bold font-mono text-yellow-300" id="stat-avg-score">0.0</div>
-                            <div class="text-xs text-slate-400 font-sarabun">คะแนนเฉลี่ยรวม (เต็ม 30/คดี)</div>
-                        </div>
-                    </div>
-
-                    <div class="glass-panel p-4 rounded-2xl border border-emerald-500/30 flex items-center gap-3.5">
-                        <div class="w-12 h-12 rounded-xl bg-emerald-500/20 border border-emerald-400 text-emerald-300 flex items-center justify-center text-xl shrink-0">
-                            <i class="fa-solid fa-circle-check"></i>
-                        </div>
-                        <div>
-                            <div class="text-2xl font-bold font-mono text-emerald-300" id="stat-total-submissions">0</div>
-                            <div class="text-xs text-slate-400 font-sarabun">จำนวนคดีที่ส่งตรวจ AI แล้ว</div>
-                        </div>
-                    </div>
+        <!-- Top Overview Stats -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-icon"><i class="fa-solid fa-users"></i></div>
+                <div>
+                    <div class="stat-val" id="stat-total-students">0 คน</div>
+                    <div class="stat-lbl">นักเรียนในระบบทั้งหมด</div>
                 </div>
-
-                <!-- Filter, Search & Export Bar -->
-                <div class="glass-panel p-4 rounded-2xl border border-slate-700 flex flex-wrap items-center justify-between gap-3 text-xs font-sarabun">
-                    
-                    <div class="flex flex-wrap items-center gap-2.5 flex-1 min-w-[280px]">
-                        <!-- Room Selector -->
-                        <div class="flex items-center gap-1.5 bg-slate-950 px-3 py-2 rounded-xl border border-slate-700">
-                            <i class="fa-solid fa-door-open text-purple-400"></i>
-                            <select id="filter-room" onchange="renderScoreboardTable()" class="bg-transparent text-white font-medium focus:outline-none cursor-pointer">
-                                <option value="ALL">ทุกห้องเรียน (ม.3/1 - ม.3/15)</option>
-                                <option value="ม.3/1">ม.3/1</option>
-                                <option value="ม.3/2">ม.3/2</option>
-                                <option value="ม.3/3">ม.3/3</option>
-                                <option value="ม.3/4">ม.3/4</option>
-                                <option value="ม.3/5">ม.3/5</option>
-                                <option value="ม.3/6">ม.3/6</option>
-                                <option value="ม.3/7">ม.3/7</option>
-                                <option value="ม.3/8">ม.3/8</option>
-                                <option value="ม.3/9">ม.3/9</option>
-                                <option value="ม.3/10">ม.3/10</option>
-                                <option value="ม.3/11">ม.3/11</option>
-                                <option value="ม.3/12">ม.3/12</option>
-                                <option value="ม.3/13">ม.3/13</option>
-                                <option value="ม.3/14">ม.3/14</option>
-                                <option value="ม.3/15">ม.3/15</option>
-                            </select>
-                        </div>
-
-                        <!-- Sort Order Selector -->
-                        <div class="flex items-center gap-1.5 bg-slate-950 px-3 py-2 rounded-xl border border-slate-700">
-                            <i class="fa-solid fa-arrow-down-wide-short text-amber-400"></i>
-                            <select id="filter-sort" onchange="renderScoreboardTable()" class="bg-transparent text-white font-medium focus:outline-none cursor-pointer">
-                                <option value="score-desc">🏆 เรียงตามคะแนนสูงสุด (มาก ➔ น้อย)</option>
-                                <option value="score-asc">📉 เรียงตามคะแนนต่ำสุด (น้อย ➔ มาก)</option>
-                                <option value="room-asc">🏫 เรียงตามห้องและเลขที่</option>
-                                <option value="time-desc">⏱️ เรียงตามเวลาที่ส่งล่าสุด</option>
-                            </select>
-                        </div>
-
-                        <!-- Search Input -->
-                        <div class="relative flex-1 min-w-[180px]">
-                            <i class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"></i>
-                            <input type="text" id="filter-search" oninput="renderScoreboardTable()" placeholder="ค้นหาชื่อกลุ่ม / เลขที่ / ชื่อนักเรียน..." class="w-full bg-slate-950 border border-slate-700 rounded-xl pl-9 pr-3 py-2 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-purple-400">
-                        </div>
-                    </div>
-
-                    <!-- Right Controls & PDF Export -->
-                    <div class="flex items-center gap-2">
-                        <!-- Display Mode Toggle -->
-                        <div class="flex items-center gap-1 bg-slate-950 p-1 rounded-xl border border-slate-700">
-                            <button id="btn-mode-team" onclick="setScoreboardDisplayMode('team_only')" class="px-2.5 py-1.5 rounded-lg bg-purple-600 text-white font-semibold transition text-xs shadow-sm" title="แสดงเฉพาะชื่อกลุ่ม">
-                                ชื่อกลุ่ม
-                            </button>
-                            <button id="btn-mode-roster" onclick="setScoreboardDisplayMode('detailed_roster')" class="px-2.5 py-1.5 rounded-lg text-slate-400 hover:text-white transition text-xs" title="แสดงเลขที่และรายชื่อสมาชิกครบทุกคน">
-                                สมาชิก & เลขที่
-                            </button>
-                        </div>
-
-                        <!-- Export PDF Button -->
-                        <button onclick="openPrintPdfModal()" class="px-3.5 py-2 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-bold transition flex items-center gap-1.5 shadow-md shadow-emerald-500/20">
-                            <i class="fa-solid fa-file-pdf"></i>
-                            <span>Export PDF รายงาน</span>
-                        </button>
-
-                        <!-- Manual Refresh -->
-                        <button onclick="fetchLatestScores()" class="p-2 rounded-xl bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-300 hover:text-white transition" title="ดึงข้อมูลล่าสุด">
-                            <i class="fa-solid fa-rotate-right"></i>
-                        </button>
-                    </div>
-
-                </div>
-
-                <!-- Live Scoreboard Table -->
-                <div class="glass-panel rounded-2xl border border-slate-700 overflow-hidden shadow-2xl">
-                    <div class="overflow-x-auto">
-                        <table class="w-full text-left text-xs font-sarabun border-collapse">
-                            <thead class="bg-slate-900/90 text-slate-300 font-bold border-b border-slate-700">
-                                <tr>
-                                    <th class="p-3 text-center w-12 border-r border-slate-800">#</th>
-                                    <th class="p-3 border-r border-slate-800">🏷️ ชื่อกลุ่มสายสืบ</th>
-                                    <th class="p-3 text-center w-20 border-r border-slate-800">🏫 ห้อง</th>
-                                    <th class="p-3 border-r border-slate-800" id="th-members-header">👥 สมาชิกในกลุ่ม (เลขที่ / ชื่อ-นามสกุล)</th>
-                                    <th class="p-3 text-center w-28 border-r border-slate-800">🎮 คดีที่ส่งตรวจ</th>
-                                    <th class="p-3 text-center w-24 border-r border-slate-800">👨‍⚖️ กฎหมาย (10)</th>
-                                    <th class="p-3 text-center w-24 border-r border-slate-800">🚑 บรรเทา (10)</th>
-                                    <th class="p-3 text-center w-24 border-r border-slate-800">🛡️ ป้องกัน (10)</th>
-                                    <th class="p-3 text-right w-28 border-r border-slate-800">⭐ รวม (30)</th>
-                                    <th class="p-3 text-center w-28">⏱️ เวลาที่ส่ง</th>
-                                </tr>
-                            </thead>
-                            <tbody id="scoreboard-tbody" class="divide-y divide-slate-800 text-slate-200">
-                                <tr>
-                                    <td colspan="10" class="p-8 text-center text-slate-500 font-mono">
-                                        <i class="fa-solid fa-circle-notch fa-spin mr-2 text-purple-400"></i> กำลังเชื่อมต่อฐานข้อมูล Supabase และโหลดคะแนนสด...
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-
-            </section>
-
-            <!-- ========================================================================= -->
-            <!-- TAB 2: OFFICIAL 12 CASES SOLUTIONS ARCHIVE                                -->
-            <!-- ========================================================================= -->
-            <section id="tab-content-solutions" class="hidden flex flex-col gap-5">
-                
-                <div class="glass-panel p-5 rounded-2xl border border-pink-500/40 flex items-center justify-between gap-4">
-                    <div>
-                        <h2 class="text-lg font-bold text-pink-300 font-kanit flex items-center gap-2">
-                            <i class="fa-solid fa-book-open"></i> แฟ้มเฉลยเกณฑ์มาตรฐาน 12 คดี พ.ร.บ.คอมพิวเตอร์ & PDPA
-                        </h2>
-                        <p class="text-xs text-slate-300 font-sarabun mt-1">เฉลยแนวคำตอบอัตนัย 3 บทบาท พร้อมเกณฑ์ให้คะแนนฉบับทางการสำหรับครูผู้สอน</p>
-                    </div>
-
-                    <!-- Category Tabs -->
-                    <div class="flex flex-wrap gap-1.5 p-1 bg-slate-950 rounded-xl border border-slate-800 text-xs font-sarabun">
-                        <button onclick="filterTeacherSolutions('all')" class="sol-tab-btn px-3 py-1.5 rounded-lg bg-pink-600 text-white font-semibold transition" data-filter="all">ทั้งหมด (12 คดี)</button>
-                        <button onclick="filterTeacherSolutions('access')" class="sol-tab-btn px-3 py-1.5 rounded-lg text-slate-400 hover:text-white transition" data-filter="access">ม.5-8 (การเข้าถึง/ดักรับ)</button>
-                        <button onclick="filterTeacherSolutions('damage')" class="sol-tab-btn px-3 py-1.5 rounded-lg text-slate-400 hover:text-white transition" data-filter="damage">ม.9-10 (ทำลาย/รบกวน)</button>
-                        <button onclick="filterTeacherSolutions('spam')" class="sol-tab-btn px-3 py-1.5 rounded-lg text-slate-400 hover:text-white transition" data-filter="spam">ม.11 (สแปม)</button>
-                        <button onclick="filterTeacherSolutions('content')" class="sol-tab-btn px-3 py-1.5 rounded-lg text-slate-400 hover:text-white transition" data-filter="content">ม.14-16 (ข้อมูลเท็จ/ตัดต่อ)</button>
-                    </div>
-                </div>
-
-                <!-- 12 Solutions Cards Grid -->
-                <div id="teacher-solutions-grid" class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <!-- Populated dynamically from 12 cases -->
-                </div>
-
-            </section>
-
-            <!-- ========================================================================= -->
-            <!-- TAB 3: SYSTEM & CLOUD SETTINGS                                            -->
-            <!-- ========================================================================= -->
-            <section id="tab-content-settings" class="hidden flex flex-col gap-5">
-                
-                <div class="glass-panel p-6 rounded-3xl border border-cyan-500/40 flex flex-col gap-6 max-w-3xl mx-auto w-full">
-                    
-                    <div class="flex items-center gap-3 border-b border-slate-800 pb-4">
-                        <div class="w-12 h-12 rounded-2xl bg-cyan-500/20 border border-cyan-400 text-cyan-300 flex items-center justify-center text-2xl shadow-md shadow-cyan-500/30">
-                            <i class="fa-solid fa-sliders"></i>
-                        </div>
-                        <div>
-                            <h2 class="text-lg font-bold text-slate-100 font-kanit">ตั้งค่าระบบคลาวด์และฐานข้อมูล (System & Cloud Settings)</h2>
-                            <p class="text-xs text-slate-400 font-sarabun">กำหนดค่า Supabase Realtime, Google Gemini API และความถี่การดึงข้อมูลสด</p>
-                        </div>
-                    </div>
-
-                    <!-- Supabase Settings -->
-                    <div class="flex flex-col gap-3">
-                        <h3 class="text-sm font-bold text-purple-300 flex items-center gap-2">
-                            <i class="fa-solid fa-bolt text-purple-400"></i> ตั้งค่าฐานข้อมูล Supabase Realtime
-                        </h3>
-                        <div class="grid grid-cols-1 gap-3 font-sarabun text-xs">
-                            <div>
-                                <label class="block text-slate-300 font-semibold mb-1">Supabase URL</label>
-                                <input type="text" id="cfg-supabase-url" placeholder="https://xxx.supabase.co" class="w-full bg-slate-950 border border-slate-700 rounded-xl px-3.5 py-2.5 text-xs text-white font-mono focus:outline-none focus:border-purple-400">
-                            </div>
-                            <div>
-                                <label class="block text-slate-300 font-semibold mb-1">Supabase Anon Key</label>
-                                <input type="password" id="cfg-supabase-key" placeholder="eyJ..." class="w-full bg-slate-950 border border-slate-700 rounded-xl px-3.5 py-2.5 text-xs text-white font-mono focus:outline-none focus:border-purple-400">
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Gemini API Settings -->
-                    <div class="flex flex-col gap-3">
-                        <h3 class="text-sm font-bold text-cyan-300 flex items-center gap-2">
-                            <i class="fa-solid fa-wand-magic-sparkles text-cyan-400"></i> Google Gemini AI API Key
-                        </h3>
-                        <div class="font-sarabun text-xs">
-                            <label class="block text-slate-300 font-semibold mb-1">Gemini API Key</label>
-                            <input type="password" id="cfg-gemini-key" placeholder="AIzaSy..." class="w-full bg-slate-950 border border-slate-700 rounded-xl px-3.5 py-2.5 text-xs text-white font-mono focus:outline-none focus:border-cyan-400">
-                            <p class="text-[11px] text-slate-500 mt-1">* หากรันผ่าน Node.js Server คีย์จะถูกโหลดจากไฟล์ <code>.env</code> อัตโนมัติ</p>
-                        </div>
-                    </div>
-
-                    <!-- Action Buttons -->
-                    <div class="flex items-center justify-between gap-3 pt-4 border-t border-slate-800">
-                        <button onclick="clearTestScores()" class="px-4 py-2.5 rounded-xl bg-red-950/70 hover:bg-red-900 border border-red-500/40 text-red-300 text-xs font-medium transition flex items-center gap-2">
-                            <i class="fa-solid fa-trash-can"></i>
-                            <span>ล้างข้อมูลคะแนนทดสอบ</span>
-                        </button>
-                        
-                        <button onclick="saveSystemSettings()" class="px-6 py-2.5 rounded-xl bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white font-bold text-xs shadow-lg shadow-purple-600/30 transition flex items-center gap-2">
-                            <i class="fa-solid fa-floppy-disk"></i>
-                            <span>บันทึกการตั้งค่า</span>
-                        </button>
-                    </div>
-
-                </div>
-
-            </section>
-
-        </main>
-
-        <!-- Footer -->
-        <footer class="glass-panel border-t border-purple-500/20 py-3 px-4 text-center text-xs text-slate-400 font-sarabun no-print">
-            <span>Cyber Shield Detective — แผงควบคุมระบบสืบคดีกฎหมายคอมพิวเตอร์และ PDPA ระดับชั้น ม.3</span>
-        </footer>
-
-    </div>
-
-    <!-- 3. PRINTABLE FULL PDF REPORT MODAL (A4 Vertical) -->
-    <div id="modal-print-pdf" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/95 backdrop-blur-md overflow-y-auto">
-        <div class="glass-panel max-w-5xl w-full p-6 sm:p-8 rounded-3xl border border-emerald-400/50 shadow-2xl flex flex-col gap-5 relative my-6 max-h-[94vh] overflow-y-auto">
-            
-            <button onclick="closePrintPdfModal()" class="no-print absolute top-4 right-4 text-slate-400 hover:text-white p-2 rounded-lg bg-slate-800/80 border border-slate-700 transition">
-                <i class="fa-solid fa-xmark text-lg"></i>
-            </button>
-
-            <!-- Printable Sheet -->
-            <div id="printable-sheet-area" class="print-page flex flex-col gap-5 text-slate-200 font-sarabun">
-                
-                <!-- School Header -->
-                <div class="text-center flex flex-col items-center gap-1 border-b-2 border-slate-700 pb-4">
-                    <div class="flex items-center justify-center gap-2 mb-1">
-                        <img src="favicon.png" alt="Logo" class="w-10 h-10 rounded-lg object-cover no-print">
-                        <h2 class="text-lg sm:text-xl font-bold font-kanit text-slate-100 print-text-dark">
-                            แบบรายงานสรุปผลคะแนนกิจกรรมจำลองสถานการณ์สืบคดีกฎหมายคอมพิวเตอร์และ PDPA
-                        </h2>
-                    </div>
-                    <p class="text-xs text-slate-300 print-text-dark">
-                        กลุ่มสาระการเรียนรู้วิทยาศาสตร์และเทคโนโลยี (วิชาเทคโนโลยี / วิทยาการคำนวณ) ระดับชั้นมัธยมศึกษาปีที่ 3
-                    </p>
-                    <div class="flex flex-wrap items-center justify-center gap-6 text-xs text-slate-400 font-mono mt-1 print-text-dark">
-                        <span>🏫 ห้องเรียน: <b id="pdf-room-label" class="text-cyan-300 font-bold">ทุกห้องเรียน</b></span>
-                        <span>📅 วันที่พิมพ์รายงาน: <b id="pdf-date-label" class="text-slate-200 font-bold">-</b></span>
-                        <span>👥 จำนวนกลุ่มทั้งหมด: <b id="pdf-teams-count" class="text-emerald-400 font-bold">0</b> กลุ่ม</span>
-                    </div>
-                </div>
-
-                <!-- Detailed Roster Table -->
-                <div class="overflow-x-auto rounded-xl border border-slate-700 print-table bg-slate-950/80">
-                    <table class="w-full text-left text-xs border-collapse font-sarabun">
-                        <thead class="bg-slate-900 text-slate-200 font-bold border-b border-slate-700">
-                            <tr>
-                                <th class="p-2.5 text-center w-12 border-r border-slate-800">#</th>
-                                <th class="p-2.5 border-r border-slate-800">ชื่อกลุ่มสายสืบ</th>
-                                <th class="p-2.5 text-center w-16 border-r border-slate-800">ห้อง</th>
-                                <th class="p-2.5 text-center w-16 border-r border-slate-800">เลขที่</th>
-                                <th class="p-2.5 text-center w-24 border-r border-slate-800">คำนำหน้า</th>
-                                <th class="p-2.5 border-r border-slate-800">ชื่อ - นามสกุล</th>
-                                <th class="p-2.5 text-center w-24 border-r border-slate-800">👨‍⚖️ กฎหมาย (10)</th>
-                                <th class="p-2.5 text-center w-24 border-r border-slate-800">🚑 บรรเทา (10)</th>
-                                <th class="p-2.5 text-center w-24 border-r border-slate-800">🛡️ ป้องกัน (10)</th>
-                                <th class="p-2.5 text-right w-24">คะแนนรวม</th>
-                            </tr>
-                        </thead>
-                        <tbody id="pdf-report-tbody" class="divide-y divide-slate-800">
-                            <!-- Populated dynamically sorted vertically by room and student number -->
-                        </tbody>
-                    </table>
-                </div>
-
-                <!-- Signatures -->
-                <div class="grid grid-cols-2 gap-8 pt-6 mt-4 border-t border-slate-700 text-xs font-sarabun print-text-dark">
-                    <div class="flex flex-col items-center gap-1">
-                        <p>ลงชื่อ ............................................................ ผู้รายงาน</p>
-                        <p class="text-[11px] text-slate-400 print-text-dark">( ............................................................ )</p>
-                        <p class="text-[11px] text-slate-400 print-text-dark">หัวหน้ากลุ่ม / ผู้แทนนักเรียน</p>
-                    </div>
-                    <div class="flex flex-col items-center gap-1">
-                        <p>ลงชื่อ ............................................................ ครูผู้สอน</p>
-                        <p class="text-[11px] text-slate-400 print-text-dark">( ............................................................ )</p>
-                        <p class="text-[11px] text-slate-400 print-text-dark">ครูผู้สอนประจำวิชา</p>
-                    </div>
-                </div>
-
             </div>
 
-            <!-- Action Buttons (Hidden in Print) -->
-            <div class="no-print flex items-center justify-between gap-3 pt-3 border-t border-slate-800">
-                <button onclick="closePrintPdfModal()" class="px-4 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-medium transition">
-                    <i class="fa-solid fa-xmark mr-1"></i> ปิด
-                </button>
-                <button onclick="window.print()" class="px-6 py-2.5 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-bold text-xs shadow-lg shadow-emerald-500/20 transition flex items-center gap-2">
-                    <i class="fa-solid fa-print"></i>
-                    <span>พิมพ์รายงาน / บันทึกเป็น PDF</span>
-                </button>
+            <div class="stat-card">
+                <div class="stat-icon" style="border-color: var(--neon-green); color: var(--neon-green);"><i class="fa-solid fa-gamepad"></i></div>
+                <div>
+                    <div class="stat-val" id="stat-active-now" style="color: var(--neon-green);">0 คน</div>
+                    <div class="stat-lbl">กำลังทำคดีอยู่ขณะนี้</div>
+                </div>
             </div>
 
+            <div class="stat-card">
+                <div class="stat-icon" style="border-color: var(--neon-yellow); color: var(--neon-yellow);"><i class="fa-solid fa-trophy"></i></div>
+                <div>
+                    <div class="stat-val" id="stat-avg-score" style="color: var(--neon-yellow);">0 / 1080</div>
+                    <div class="stat-lbl">คะแนนเฉลี่ยดีที่สุด</div>
+                </div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-icon" style="border-color: var(--neon-purple); color: var(--neon-purple);"><i class="fa-regular fa-clock"></i></div>
+                <div>
+                    <div class="stat-val" id="stat-avg-time" style="color: var(--neon-purple);">00:00</div>
+                    <div class="stat-lbl">เวลาเฉลี่ยที่ใช้ทำคดี</div>
+                </div>
+            </div>
         </div>
-    </div>
 
-    <!-- 4. ENLARGED COMIC LIGHTBOX -->
-    <div id="modal-comic-lightbox" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/95 backdrop-blur-lg" onclick="closeTeacherLightbox()">
-        <div class="relative max-w-5xl w-full flex flex-col items-center gap-3" onclick="event.stopPropagation()">
-            <div class="w-full flex items-center justify-between text-slate-300 px-2">
-                <span id="teacher-lightbox-title" class="text-sm font-semibold text-pink-300">หลักฐานภาพการ์ตูน 9 ช่อง</span>
-                <button onclick="closeTeacherLightbox()" class="px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-white text-xs border border-slate-700">
-                    <i class="fa-solid fa-xmark mr-1"></i> ปิด (ESC)
-                </button>
+        <!-- Controls & Filters -->
+        <div class="control-bar">
+            <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
+                <select class="form-select" id="filter-room">
+                    <option value="ALL">แสดงทุกห้องเรียน (ม.3/1 - ม.3/8)</option>
+                    <option value="ม.3/1">ม.3/1</option>
+                    <option value="ม.3/2">ม.3/2</option>
+                    <option value="ม.3/3">ม.3/3</option>
+                    <option value="ม.3/4">ม.3/4</option>
+                    <option value="ม.3/5">ม.3/5</option>
+                    <option value="ม.3/6">ม.3/6</option>
+                    <option value="ม.3/7">ม.3/7</option>
+                    <option value="ม.3/8">ม.3/8</option>
+                </select>
+
+                <select class="form-select" id="filter-sort">
+                    <option value="score-desc">🏆 เรียงตามคะแนนสูงสุด (มาก ➔ น้อย)</option>
+                    <option value="score-asc">📉 เรียงตามคะแนนต่ำสุด (น้อย ➔ มาก)</option>
+                    <option value="time-asc">⏱️ เรียงตามเวลาทำคดีเร็วที่สุด</option>
+                    <option value="room-no">🏫 เรียงตามห้องและเลขที่</option>
+                    <option value="name-asc">👤 เรียงตามชื่อนักเรียน (ก-ฮ)</option>
+                </select>
+
+                <input type="text" class="form-input" id="filter-search" placeholder="🔍 ค้นหานามแฝง / ชื่อนักเรียน...">
             </div>
-            <img id="teacher-lightbox-img" src="" alt="Enlarged Comic" class="w-auto h-auto max-h-[85vh] max-w-full rounded-xl border border-pink-500/40 shadow-2xl object-contain bg-white">
+
+            <div style="display: flex; gap: 10px;">
+                <button class="btn-action" id="btn-toggle-mask" style="background: rgba(56, 189, 248, 0.15); border: 1px solid var(--neon-cyan); color: var(--neon-cyan);"><i class="fa-solid fa-eye-slash"></i> ซ่อนชื่อจริง-เลขที่</button>
+                <button class="btn-action btn-pdf" id="btn-export-pdf"><i class="fa-solid fa-file-pdf"></i> ส่งออกรายงาน PDF (คะแนนเก็บเต็ม 10)</button>
+                <button class="btn-action btn-clear" id="btn-reset-data"><i class="fa-solid fa-trash-can"></i> ล้างข้อมูลทดสอบ</button>
+            </div>
         </div>
-    </div>
 
-    <!-- ========================================================================= -->
-    <!-- 5. JAVASCRIPT TEACHER CONTROL ENGINE                                      -->
-    <!-- ========================================================================= -->
-    <script>
-        // --- 12 Official Cases Reference Archive ---
-        const ALL_12_CASES = [
-            {
-                id: 1,
-                section: "มาตรา 5",
-                cat: "access",
-                image: "assets/evidence/case_ev_8f3a9b21.png",
-                title: "แอบส่องระบบไอดีเกมของเพื่อน",
-                brief: "แชมป์แอบจำรหัสผ่านแท็บเล็ตของป๊อปตอนที่ป๊อปลุกไปเข้าห้องน้ำ แชมป์แอบเอาแท็บเล็ตมาปลดล็อกแล้วส่องดูคลังไอเทมสุดแรร์ในเกมออนไลน์",
-                standard_law: "พ.ร.บ. คอมพิวเตอร์ มาตรา 5 (แอบเข้าถึงระบบคอมพิวเตอร์ผู้อื่นโดยมิชอบ)",
-                standard_penalty: "จำคุกไม่เกิน 6 เดือน หรือปรับไม่เกิน 10,000 บาท หรือทั้งจำทั้งปรับ",
-                standard_remedy: "สั่ง Log out ออกจากระบบทุกเครื่องทันที และรีบเปลี่ยนรหัสผ่านใหม่",
-                standard_prevention: "เปิดใช้งานระบบยืนยันตัวตน 2 ชั้น (2FA / OTP) และล็อกหน้าจอทุกครั้ง"
-            },
-            {
-                id: 2,
-                section: "มาตรา 6",
-                cat: "access",
-                image: "assets/evidence/case_ev_4e7c1d89.png",
-                title: "แจกรหัสผ่านระบบในกลุ่ม Discord",
-                brief: "ทอยแอบถ่ายรูปกระดาษโน้ตรหัสผ่านเซิร์ฟเวอร์ข้อสอบที่โต๊ะครู แล้วส่งให้บีดู บีอยากได้ยอดไลก์จึงนำรูปภาพรหัสผ่านไปโพสต์แจกในกลุ่ม Discord",
-                standard_law: "พ.ร.บ. คอมพิวเตอร์ มาตรา 6 (เปิดเผยมาตรการป้องกันการเข้าถึงระบบโดยมิชอบ)",
-                standard_penalty: "จำคุกไม่เกิน 1 ปี หรือปรับไม่เกิน 20,000 บาท หรือทั้งจำทั้งปรับ",
-                standard_remedy: "รีบเปลี่ยนรหัสผ่านระบบทันที และลบข้อความที่โพสต์แจกใน Discord",
-                standard_prevention: "ตั้งรหัสผ่านซับซ้อน (ตัวพิมพ์ใหญ่+เล็ก+เลข+สัญลักษณ์) และไม่จดรหัสผ่านทิ้งไว้"
-            },
-            {
-                id: 3,
-                section: "มาตรา 7",
-                cat: "access",
-                image: "assets/evidence/case_ev_9a2b5f34.png",
-                title: "แอบคุ้ยไฟล์ไดอารี่แชทลับส่วนตัว",
-                brief: "นักเรียนแอบเปิดโฟลเดอร์ส่วนตัวของเพื่อนที่ล็อกรหัสผ่านไว้ แล้วแอบดูดไฟล์ไดอารี่และรูปถ่ายลับเอาไปเผยแพร่นินทาในกลุ่มเพื่อน",
-                standard_law: "พ.ร.บ. คอมพิวเตอร์ มาตรา 7 (เข้าถึงข้อมูลคอมพิวเตอร์ของผู้อื่นโดยมิชอบ)",
-                standard_penalty: "จำคุกไม่เกิน 2 ปี หรือปรับไม่เกิน 40,000 บาท หรือทั้งจำทั้งปรับ",
-                standard_remedy: "ลบไฟล์ที่รั่วไหล และเปลี่ยนรหัสผ่านพื้นที่จัดเก็บคลาวด์ทันที",
-                standard_prevention: "ตั้งรหัสล็อกโฟลเดอร์ด้วยสแกนใบหน้า/ลายนิ้วมือ (Face ID) และเข้ารหัสไฟล์ (Encryption)"
-            },
-            {
-                id: 4,
-                section: "มาตรา 8",
-                cat: "access",
-                image: "assets/evidence/case_ev_1c8e7b54.png",
-                title: "ดักจับข้อมูลธุรกรรมเติมเกมกลางทาง",
-                brief: "มีผู้ไม่หวังดีปล่อยสัญญาณ Wi-Fi ฟรีปลอมในโรงอาหาร เพื่อดักจับข้อมูลบัตรเติมเงินและรหัสผ่านธุรกรรมของเพื่อนที่กำลังเติมเกมออนไลน์",
-                standard_law: "พ.ร.บ. คอมพิวเตอร์ มาตรา 8 (ดักรับข้อมูลคอมพิวเตอร์ของผู้อื่นที่อยู่ระหว่างการส่งโดยมิชอบ)",
-                standard_penalty: "จำคุกไม่เกิน 3 ปี หรือปรับไม่เกิน 60,000 บาท หรือทั้งจำทั้งปรับ",
-                standard_remedy: "ตัดการเชื่อมต่อ Wi-Fi ทันที และรีบแจ้งอายัดบัตรกับธนาคารและค่ายเกม",
-                standard_prevention: "ใช้เครือข่ายที่มีการเข้ารหัส SSL / HTTPS / VPN และหลีกเลี่ยงการทำธุรกรรมบน Free Wi-Fi สาธารณะ"
-            },
-            {
-                id: 5,
-                section: "มาตรา 9",
-                cat: "damage",
-                image: "assets/evidence/case_ev_6a92f03d.png",
-                title: "มือบอนแอบลบไฟล์โครงงานวิทย์เพื่อน",
-                brief: "นักเรียนอิจฉากลุ่มเพื่อนที่ทำสไลด์โครงงานวิทย์สวยงาม จึงแอบเข้าไปใน Cloud Shared Drive แล้วกดลบไฟล์งานและแก้ไขเนื้อหาจนเสียหายทั้งหมด",
-                standard_law: "พ.ร.บ. คอมพิวเตอร์ มาตรา 9 (ทำให้เสียหาย ทำลาย แก้ไข เปลี่ยนแปลงข้อมูลคอมพิวเตอร์ผู้อื่นโดยมิชอบ)",
-                standard_penalty: "จำคุกไม่เกิน 5 ปี หรือปรับไม่เกิน 100,000 บาท หรือทั้งจำทั้งปรับ",
-                standard_remedy: "ใช้ปุ่มประวัติเวอร์ชัน (Version History) กู้คืนไฟล์ทันที และตรวจสอบ Audit Log",
-                standard_prevention: "ตั้งค่าสิทธิ์ไฟล์เป็น 'อ่านได้อย่างเดียว (Read-Only)' และจำกัดการแชร์เฉพาะอีเมลที่จำเป็น"
-            },
-            {
-                id: 6,
-                section: "มาตรา 10",
-                cat: "damage",
-                image: "assets/evidence/case_ev_3f81e6ac.png",
-                title: "ยิง DDoS พังเซิร์ฟเวอร์เว็บสอบโรงเรียน",
-                brief: "นักเรียนไม่อยากสอบเก็บคะแนน จึงใช้โปรแกรมยิงทราฟฟิกขยะ (DDoS) ถล่มเว็บไซต์ระบบสอบออนไลน์ของโรงเรียนจนเซิร์ฟเวอร์ล่ม ใช้งานไม่ได้",
-                standard_law: "พ.ร.บ. คอมพิวเตอร์ มาตรา 10 (รบกวน ขัดขวาง ทำให้ระบบคอมพิวเตอร์ผู้อื่นทำงานไม่ได้ตามปกติ)",
-                standard_penalty: "จำคุกไม่เกิน 5 ปี หรือปรับไม่เกิน 100,000 บาท หรือทั้งจำทั้งปรับ",
-                standard_remedy: "บล็อก IP Address ขยะ สลับเส้นทางเซิร์ฟเวอร์สำรอง และแจ้งฝ่ายไอที",
-                standard_prevention: "ติดตั้งไฟร์วอลล์ (Firewall) และใช้ระบบป้องกัน DDoS Protection (เช่น Cloudflare / Rate Limiting)"
-            },
-            {
-                id: 7,
-                section: "มาตรา 11 วรรคหนึ่ง",
-                cat: "spam",
-                image: "assets/evidence/case_ev_e920d57b.png",
-                title: "ส่งอีเมลสแปมขายของปลอมตัวตน",
-                brief: "ผู้ค้ายิงอีเมลขยะขายสินค้าและโฆษณาชวนเชื่อไปยังกล่องข้อความของนักเรียนนับพันคน โดยปลอมแปลงชื่อผู้ส่งและปกปิดแหล่งที่มาที่แท้จริง",
-                standard_law: "พ.ร.บ. คอมพิวเตอร์ มาตรา 11 วรรคหนึ่ง (ส่งข้อมูลคอมพิวเตอร์/อีเมลโดยปกปิดหรือปลอมแปลงแหล่งที่มา)",
-                standard_penalty: "โทษปรับทางปกครอง/อาญา ปรับสูงสุดไม่เกิน 100,000 บาท",
-                standard_remedy: "ทำเครื่องหมายเป็นสแปม (Mark as Spam) และดึงรหัส Header ส่งรายงานแบนผู้ส่ง",
-                standard_prevention: "เปิดใช้งานระบบตัวกรองอีเมลขยะ (Anti-Spam Filter Engine / SPF / DKIM verification)"
-            },
-            {
-                id: 8,
-                section: "มาตรา 11 วรรคสอง",
-                cat: "spam",
-                image: "assets/evidence/case_ev_7c3a812f.png",
-                title: "บอทสแปมรัวๆ ปิดปุ่มยกเลิกรับข่าวสาร",
-                brief: "เพจร้านค้าส่งข้อความโปรโมทสินค้าผ่านแชทและ SMS รบกวนอย่างต่อเนื่อง โดยไม่มีปุ่ม Unsubscribe หรือช่องทางให้กดยกเลิกรับข่าวสารได้โดยง่าย",
-                standard_law: "พ.ร.บ. คอมพิวเตอร์ มาตรา 11 วรรคสอง (ส่งข้อมูลรบกวนโดยไม่เปิดโอกาสให้บอกเลิกได้โดยง่าย)",
-                standard_penalty: "ปรับไม่เกิน 200,000 บาท",
-                standard_remedy: "แคปเจอร์รูปข้อความส่งเรื่องร้องเรียนไปยังแพลตฟอร์มเพื่อสั่งระงับบัญชีผู้ส่ง",
-                standard_prevention: "ไม่โพสต์เบอร์โทรหรืออีเมลบนเว็บบอร์ดสาธารณะ และใช้ฟีเจอร์ Privacy Forwarding"
-            },
-            {
-                id: 9,
-                section: "มาตรา 14(1)",
-                cat: "content",
-                image: "assets/evidence/case_ev_5b04c9e8.png",
-                title: "สร้างเว็บฟิชชิ่งหลอกสกินเกมฟรี",
-                brief: "มิจฉาชีพสร้างหน้าเว็บปลอมเลียนแบบหน้าล็อกอินเกมดัง แจกลิงก์อ้างว่า 'แจกสกินปืนฟรี' พอนักเรียนกรอกรหัสผ่าน ไอดีเกมก็ถูกขโมยไปทันที",
-                standard_law: "พ.ร.บ. คอมพิวเตอร์ มาตรา 14(1) (นำเข้าข้อมูลคอมพิวเตอร์ปลอมหรือเท็จหลอกลวงประชาชน)",
-                standard_penalty: "จำคุกไม่เกิน 5 ปี หรือปรับไม่เกิน 100,000 บาท หรือทั้งจำทั้งปรับ",
-                standard_remedy: "รีบแจ้งค่ายเกมระงับไอดีชั่วคราว และส่งหลักฐานขอกู้คืนสิทธิ์บัญชี",
-                standard_prevention: "ตรวจสอบ URL / Domain Name อย่างละเอียด และไม่คลิกลิงก์หลอกลวงจากแหล่งที่ไม่น่าเชื่อถือ"
-            },
-            {
-                id: 10,
-                section: "มาตรา 14(2)",
-                cat: "content",
-                image: "assets/evidence/case_ev_a1f9e832.png",
-                title: "โพสต์ข่าวลวงภัยพิบัติจนคนแตกตื่นวิ่งวุ่น",
-                brief: "นักเรียนคึกคะนองกุเรื่องข่าวปลอมโพสต์ลง TikTok ว่า 'พรุ่งนี้น้ำท่วมเมือง 3 เมตร เขื่อนแตกแล้ว!' จนชาวบ้านแตกตื่นแย่งกันซื้อของกักตุนวุ่นวาย",
-                standard_law: "พ.ร.บ. คอมพิวเตอร์ มาตรา 14(2) (นำเข้าข้อมูลเท็จก่อให้เกิดความตื่นตระหนกแก่ประชาชน)",
-                standard_penalty: "จำคุกไม่เกิน 5 ปี หรือปรับไม่เกิน 100,000 บาท หรือทั้งจำทั้งปรับ",
-                standard_remedy: "ลบโพสต์ข่าวปลอมทันที และโพสต์ชี้แจงแก้ไขข้อมูลพร้อมแนบลิงก์แถลงการณ์ทางการ",
-                standard_prevention: "ตรวจสอบข้อเท็จจริงผ่านศูนย์ต่อต้านข่าวปลอม (Anti-Fake News Center) ก่อนกดแชร์"
-            },
-            {
-                id: 11,
-                section: "มาตรา 14(4)",
-                cat: "content",
-                image: "assets/evidence/case_ev_2e6d9a41.png",
-                title: "โพสต์ภาพ/คลิปโป๊ลงคอมพิวเตอร์สาธารณะ",
-                brief: "มีคนส่งคลิปวิดีโอลามกอนาจารและสื่อไม่เหมาะสมเรต 18+ เข้ามาในกลุ่มสนทนาของโรงเรียนที่เด็กและเยาวชนทั่วไปสามารถเข้าถึงได้",
-                standard_law: "พ.ร.บ. คอมพิวเตอร์ มาตรา 14(4) (นำเข้าสู่ระบบคอมพิวเตอร์ซึ่งข้อมูลอันลามกที่ประชาชนเข้าถึงได้)",
-                standard_penalty: "จำคุกไม่เกิน 5 ปี หรือปรับไม่เกิน 100,000 บาท หรือทั้งจำทั้งปรับ",
-                standard_remedy: "แอดมินลบสื่อที่ไม่เหมาะสมออกจากกลุ่มทันที และบล็อก/รายงานบัญชีผู้ส่ง",
-                standard_prevention: "เปิดใช้งานตัวกรองเนื้อหาปลอดภัย (SafeSearch / Content Moderation AI Filter)"
-            },
-            {
-                id: 12,
-                section: "มาตรา 16",
-                cat: "content",
-                image: "assets/evidence/case_ev_4d9f1e8a.png",
-                title: "ตัดต่อหน้าเพื่อนใส่เอเลี่ยนประจานในโซเชียล",
-                brief: "นักเรียนแอบถ่ายรูปหน้าเพื่อนตอนเผลอ แล้วนำไปใช้ AI ตัดต่อใส่ร่างเอเลี่ยนน่าเกลียด โพสต์ลง Facebook ประจานจนเพื่อนโดนล้อ เสียใจและอับอาย",
-                standard_law: "พ.ร.บ. คอมพิวเตอร์ มาตรา 16 (นำภาพตัดต่อดัดแปลงลงระบบคอมพิวเตอร์ทำให้ผู้อื่นอับอาย เสียชื่อเสียง)",
-                standard_penalty: "จำคุกไม่เกิน 3 ปี และปรับไม่เกิน 200,000 บาท",
-                standard_remedy: "แคปเจอร์หลักฐาน แจ้งรีพอร์ตลบภาพ (Report Cyberbullying) และแจ้งครู/ผู้ปกครอง",
-                standard_prevention: "ตั้งค่าบัญชีเป็นส่วนตัว (Private Account) จำกัดการแท็กภาพ และรณรงค์จริยธรรมออนไลน์"
-            }
-        ];
-
-        // --- Teacher State ---
-        let allScoresData = [];
-        let displayMode = 'team_only'; // 'team_only' or 'detailed_roster'
-        let currentFilterCategory = 'all';
-        let supabaseClient = null;
-        let realtimeChannel = null;
-
-        // --- Initial Boot ---
-        window.addEventListener('DOMContentLoaded', () => {
-            checkTeacherAuth();
-            renderTeacherSolutions();
-        });
-
-        // --- Authentication Handlers ---
-        function checkTeacherAuth() {
-            const isAuth = sessionStorage.getItem('teacher_authenticated');
-            if (isAuth === 'true') {
-                document.getElementById('modal-auth').classList.add('hidden');
-                document.getElementById('main-dashboard-app').classList.remove('hidden');
-                initTeacherDashboard();
-            } else {
-                document.getElementById('modal-auth').classList.remove('hidden');
-                document.getElementById('main-dashboard-app').classList.add('hidden');
-            }
-        }
-
-        async function loginTeacher() {
-            const passcode = document.getElementById('auth-passcode-input').value.trim();
-            const errMsg = document.getElementById('auth-error-msg');
-            
-            if (!passcode) {
-                errMsg.textContent = 'กรุณากรอกรหัสผ่านครูผู้สอน';
-                errMsg.classList.remove('hidden');
-                return;
-            }
-
-            try {
-                let valid = false;
-                if (window.location.protocol.startsWith('http')) {
-                    const res = await fetch('/api/verify-passcode', {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ passcode })
-                    });
-                    const data = await res.json();
-                    if (data && data.success) valid = true;
-                } else {
-                    // Static fallback
-                    if (passcode.length >= 4) valid = true;
-                }
-
-                if (valid) {
-                    sessionStorage.setItem('teacher_authenticated', 'true');
-                    document.getElementById('modal-auth').classList.add('hidden');
-                    document.getElementById('main-dashboard-app').classList.remove('hidden');
-                    initTeacherDashboard();
-                } else {
-                    errMsg.textContent = 'รหัสผ่านไม่ถูกต้อง กรุณาลองใหม่อีกครั้ง';
-                    errMsg.classList.remove('hidden');
-                }
-            } catch(e) {
-                sessionStorage.setItem('teacher_authenticated', 'true');
-                document.getElementById('modal-auth').classList.add('hidden');
-                document.getElementById('main-dashboard-app').classList.remove('hidden');
-                initTeacherDashboard();
-            }
-        }
-
-        function logoutTeacher() {
-            if (confirm('คุณต้องการออกจากระบบแผงควบคุมครูผู้สอนหรือไม่?')) {
-                sessionStorage.removeItem('teacher_authenticated');
-                window.location.reload();
-            }
-        }
-
-        // --- Tab Switching ---
-        function switchTab(tabName) {
-            const tabs = ['scoreboard', 'solutions', 'settings'];
-            tabs.forEach(t => {
-                const btn = document.getElementById(`nav-tab-${t}`);
-                const content = document.getElementById(`tab-content-${t}`);
-                if (t === tabName) {
-                    btn.className = 'px-3.5 py-1.5 rounded-lg bg-purple-600 text-white font-semibold transition flex items-center gap-1.5 shadow-sm';
-                    content.classList.remove('hidden');
-                } else {
-                    btn.className = 'px-3.5 py-1.5 rounded-lg text-slate-400 hover:text-white transition flex items-center gap-1.5';
-                    content.classList.add('hidden');
-                }
-            });
-        }
-
-        // --- Dashboard Initialization ---
-        async function initTeacherDashboard() {
-            await loadConfigAndInitSupabase();
-            fetchLatestScores();
-            startRealtimeListeners();
-        }
-
-        async function loadConfigAndInitSupabase() {
-            try {
-                if (window.location.protocol.startsWith('http')) {
-                    const res = await fetch('/api/config');
-                    const config = await res.json();
-                    if (config.supabaseUrl && config.supabaseAnonKey) {
-                        document.getElementById('cfg-supabase-url').value = config.supabaseUrl;
-                        document.getElementById('cfg-supabase-key').value = config.supabaseAnonKey;
-                        if (window.supabase) {
-                            supabaseClient = window.supabase.createClient(config.supabaseUrl, config.supabaseAnonKey);
-                        }
-                    }
-                }
-            } catch(e) {
-                console.warn('Config load warning:', e);
-            }
-        }
-
-        // --- Realtime Score Fetching ---
-        async function fetchLatestScores() {
-            try {
-                let scores = [];
-                if (window.location.protocol.startsWith('http')) {
-                    const res = await fetch('/api/leaderboard');
-                    const data = await res.json();
-                    if (data && data.success && Array.isArray(data.data)) {
-                        scores = data.data;
-                    }
-                }
-
-                // If empty or offline, check localStorage fallback
-                if (scores.length === 0) {
-                    const localRaw = localStorage.getItem('CYBER_DETECTIVE_SCORES_CACHE');
-                    if (localRaw) {
-                        scores = JSON.parse(localRaw);
-                    }
-                }
-
-                allScoresData = scores;
-                renderScoreboardTable();
-                updateStatsCards();
-            } catch(e) {
-                console.error('Fetch scores error:', e);
-            }
-        }
-
-        function startRealtimeListeners() {
-            // 1. BroadcastChannel Listener (Cross-Tabs)
-            try {
-                const bc = new BroadcastChannel('cyber_detective_live');
-                bc.onmessage = (e) => {
-                    if (e.data) {
-                        fetchLatestScores();
-                    }
-                };
-            } catch(e) {}
-
-            // 2. Supabase Realtime Subscription
-            if (supabaseClient) {
-                try {
-                    realtimeChannel = supabaseClient
-                        .channel('public:game_scores')
-                        .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'game_scores' }, () => {
-                            fetchLatestScores();
-                        })
-                        .subscribe();
-                } catch(e) {}
-            }
-
-            // 3. Polling Interval (Every 5 seconds)
-            setInterval(fetchLatestScores, 5000);
-        }
-
-        // --- Display Mode Toggle ---
-        function setScoreboardDisplayMode(mode) {
-            displayMode = mode;
-            const btnTeam = document.getElementById('btn-mode-team');
-            const btnRoster = document.getElementById('btn-mode-roster');
-            if (mode === 'team_only') {
-                btnTeam.className = 'px-2.5 py-1.5 rounded-lg bg-purple-600 text-white font-semibold transition text-xs shadow-sm';
-                btnRoster.className = 'px-2.5 py-1.5 rounded-lg text-slate-400 hover:text-white transition text-xs';
-            } else {
-                btnTeam.className = 'px-2.5 py-1.5 rounded-lg text-slate-400 hover:text-white transition text-xs';
-                btnRoster.className = 'px-2.5 py-1.5 rounded-lg bg-purple-600 text-white font-semibold transition text-xs shadow-sm';
-            }
-            renderScoreboardTable();
-        }
-
-        // --- Scoreboard Table Rendering ---
-        function renderScoreboardTable() {
-            const tbody = document.getElementById('scoreboard-tbody');
-            const roomFilter = document.getElementById('filter-room').value;
-            const sortFilter = document.getElementById('filter-sort').value;
-            const searchVal = document.getElementById('filter-search').value.trim().toLowerCase();
-
-            let list = [...allScoresData];
-
-            // Filter by Room
-            if (roomFilter !== 'ALL') {
-                list = list.filter(item => {
-                    const info = item.members_info || '';
-                    return info.includes(roomFilter) || (item.team_name || '').includes(roomFilter);
-                });
-            }
-
-            // Filter by Search
-            if (searchVal) {
-                list = list.filter(item => {
-                    const team = (item.team_name || '').toLowerCase();
-                    const info = (item.members_info || '').toLowerCase();
-                    const caseTitle = (item.case_title || '').toLowerCase();
-                    return team.includes(searchVal) || info.includes(searchVal) || caseTitle.includes(searchVal);
-                });
-            }
-
-            // Sort
-            if (sortFilter === 'score-desc') {
-                list.sort((a, b) => (b.total_score || 0) - (a.total_score || 0));
-            } else if (sortFilter === 'score-asc') {
-                list.sort((a, b) => (a.total_score || 0) - (b.total_score || 0));
-            } else if (sortFilter === 'time-desc') {
-                list.sort((a, b) => new Date(b.created_at || 0) - new Date(a.created_at || 0));
-            }
-
-            if (list.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="10" class="p-8 text-center text-slate-500 font-sarabun">ไม่พบข้อมูลคะแนนตามเงื่อนไขที่เลือก</td></tr>';
-                return;
-            }
-
-            tbody.innerHTML = list.map((item, idx) => {
-                const legal = item.legal_score ?? (item.evaluation?.legal?.score || 0);
-                const remedy = item.remedy_score ?? (item.evaluation?.remedy?.score || 0);
-                const security = item.security_score ?? (item.evaluation?.security?.score || 0);
-                const total = item.total_score ?? (item.evaluation?.total_score || (legal + remedy + security));
-                
-                // Parse Room from members_info
-                let room = 'ม.3/1';
-                let membersDisplay = '-';
-                if (item.members_info) {
-                    try {
-                        const parsed = typeof item.members_info === 'string' ? JSON.parse(item.members_info) : item.members_info;
-                        if (parsed.room) room = parsed.room;
-                        if (Array.isArray(parsed.members) && parsed.members.length > 0) {
-                            if (displayMode === 'detailed_roster') {
-                                membersDisplay = parsed.members.map(m => `<span class="inline-block px-1.5 py-0.5 rounded bg-slate-800 border border-slate-700 text-[11px] mr-1 mb-1">เลขที่ ${m.no}: ${m.prefix}${m.name}</span>`).join('');
-                            } else {
-                                membersDisplay = `<span class="text-slate-400 font-mono">${parsed.members.length} คน (คลิกโหมดสมาชิกเพื่อดูเลขที่)</span>`;
-                            }
-                        } else if (typeof parsed === 'string') {
-                            membersDisplay = parsed;
-                        }
-                    } catch(e) {
-                        membersDisplay = String(item.members_info);
-                    }
-                }
-
-                const timeStr = item.created_at ? new Date(item.created_at).toLocaleTimeString('th-TH', { hour: '2-digit', minute: '2-digit' }) : '-';
-
-                return `
-                <tr class="hover:bg-slate-900/60 transition ${idx % 2 === 0 ? 'bg-slate-950/40' : 'bg-slate-900/40'}">
-                    <td class="p-3 text-center font-bold text-slate-400 border-r border-slate-800">${idx + 1}</td>
-                    <td class="p-3 font-semibold text-slate-100 border-r border-slate-800 flex items-center gap-2">
-                        <i class="fa-solid fa-users text-purple-400"></i>
-                        <span>${item.team_name || 'นักสืบเยาวชน'}</span>
-                    </td>
-                    <td class="p-3 text-center font-bold text-cyan-300 border-r border-slate-800">${room}</td>
-                    <td class="p-3 border-r border-slate-800">${membersDisplay}</td>
-                    <td class="p-3 text-center text-slate-300 border-r border-slate-800 truncate max-w-[160px]">${item.case_title || `คดี #${item.case_id || '-'}`}</td>
-                    <td class="p-3 text-center font-mono font-bold text-amber-400 border-r border-slate-800">${legal}</td>
-                    <td class="p-3 text-center font-mono font-bold text-pink-400 border-r border-slate-800">${remedy}</td>
-                    <td class="p-3 text-center font-mono font-bold text-cyan-400 border-r border-slate-800">${security}</td>
-                    <td class="p-3 text-right font-mono font-bold text-yellow-300 text-sm border-r border-slate-800">${total} คะแนน</td>
-                    <td class="p-3 text-center font-mono text-slate-400">${timeStr}</td>
-                </tr>`;
-            }).join('');
-        }
-
-        function updateStatsCards() {
-            const totalTeams = new Set(allScoresData.map(s => s.team_name || s.player_id)).size;
-            document.getElementById('stat-total-teams').textContent = totalTeams;
-            document.getElementById('stat-total-submissions').textContent = allScoresData.length;
-
-            const rooms = new Set();
-            let scoreSum = 0;
-            allScoresData.forEach(s => {
-                const total = s.total_score || 0;
-                scoreSum += total;
-                if (s.members_info && typeof s.members_info === 'string' && s.members_info.includes('ม.3/')) {
-                    const match = s.members_info.match(/ม.3/d+/);
-                    if (match) rooms.add(match[0]);
-                }
-            });
-
-            document.getElementById('stat-active-rooms').textContent = rooms.size > 0 ? `${rooms.size} ห้อง` : '0 ห้อง';
-            const avg = allScoresData.length > 0 ? (scoreSum / allScoresData.length).toFixed(1) : '0.0';
-            document.getElementById('stat-avg-score').textContent = `${avg} / 30`;
-        }
-
-        // --- 12 Solutions Rendering ---
-        function renderTeacherSolutions() {
-            const grid = document.getElementById('teacher-solutions-grid');
-            let filtered = ALL_12_CASES;
-            if (currentFilterCategory !== 'all') {
-                filtered = ALL_12_CASES.filter(c => c.cat === currentFilterCategory);
-            }
-
-            grid.innerHTML = filtered.map((c) => `
-                <div class="glass-panel p-5 rounded-3xl border border-purple-500/30 flex flex-col gap-4 shadow-xl">
-                    
-                    <div class="flex items-start justify-between gap-3 border-b border-slate-800 pb-3">
-                        <div class="flex items-center gap-2.5">
-                            <span class="px-2.5 py-1 rounded-lg bg-purple-500/20 text-purple-300 font-mono text-xs font-bold border border-purple-500/40">
-                                คดี #${String(c.id).padStart(2, '0')}
-                            </span>
-                            <span class="px-2.5 py-1 rounded-lg bg-pink-500/20 text-pink-300 font-mono text-xs font-bold border border-pink-500/40">
-                                ${c.section}
-                            </span>
-                        </div>
-                        <button onclick="openTeacherLightbox('${c.image}', '${c.section}: ${c.title}')" class="text-xs text-cyan-400 hover:underline flex items-center gap-1">
-                            <i class="fa-solid fa-magnifying-glass-plus"></i> ซูมภาพการ์ตูน
-                        </button>
-                    </div>
-
-                    <div class="flex flex-col sm:flex-row gap-4 items-start">
-                        <div class="w-full sm:w-36 shrink-0 cursor-pointer group" onclick="openTeacherLightbox('${c.image}', '${c.section}: ${c.title}')">
-                            <img src="${c.image}" alt="${c.title}" class="w-full h-auto rounded-xl border border-slate-700 group-hover:border-purple-400 transition object-contain bg-white">
-                        </div>
-                        <div class="flex-1 flex flex-col gap-2 text-xs font-sarabun">
-                            <h3 class="text-sm font-bold text-white font-kanit">${c.title}</h3>
-                            <p class="text-slate-300 bg-slate-950/70 p-2.5 rounded-xl border border-slate-800 leading-relaxed">${c.brief}</p>
-                        </div>
-                    </div>
-
-                    <!-- 3 Dimensions Answers -->
-                    <div class="flex flex-col gap-2 font-sarabun text-xs mt-1">
-                        <!-- Legal -->
-                        <div class="p-3 rounded-xl bg-amber-950/40 border border-amber-500/30 flex flex-col gap-1">
-                            <div class="flex items-center justify-between text-amber-300 font-bold">
-                                <span>👨‍⚖️ 1. ฐานความผิดและบทลงโทษ (10 คะแนน)</span>
-                                <span class="font-mono text-[10px] text-amber-400">พ.ร.บ.คอมพิวเตอร์</span>
-                            </div>
-                            <p class="text-slate-200">${c.standard_law}</p>
-                            <p class="text-amber-200/90 font-medium">⚖️ อัตราโทษ: ${c.standard_penalty}</p>
-                        </div>
-
-                        <!-- Remedy -->
-                        <div class="p-3 rounded-xl bg-pink-950/40 border border-pink-500/30 flex flex-col gap-1">
-                            <div class="text-pink-300 font-bold">🚑 2. การระงับเหตุฉุกเฉินเฉพาะหน้า (10 คะแนน)</div>
-                            <p class="text-slate-200">${c.standard_remedy}</p>
-                        </div>
-
-                        <!-- Prevention -->
-                        <div class="p-3 rounded-xl bg-cyan-950/40 border border-cyan-500/30 flex flex-col gap-1">
-                            <div class="text-cyan-300 font-bold">🛡️ 3. วิศวกรรมความปลอดภัยเชิงเทคนิค (10 คะแนน)</div>
-                            <p class="text-slate-200">${c.standard_prevention}</p>
-                        </div>
-                    </div>
-
-                </div>
-            `).join('');
-        }
-
-        function filterTeacherSolutions(cat) {
-            currentFilterCategory = cat;
-            const btns = document.querySelectorAll('.sol-tab-btn');
-            btns.forEach(btn => {
-                if (btn.dataset.filter === cat) {
-                    btn.className = 'sol-tab-btn px-3 py-1.5 rounded-lg bg-pink-600 text-white font-semibold transition';
-                } else {
-                    btn.className = 'sol-tab-btn px-3 py-1.5 rounded-lg text-slate-400 hover:text-white transition';
-                }
-            });
-            renderTeacherSolutions();
-        }
-
-        // --- Lightbox Zoom ---
-        function openTeacherLightbox(imgSrc, title) {
-            document.getElementById('teacher-lightbox-img').src = imgSrc;
-            document.getElementById('teacher-lightbox-title').textContent = title;
-            document.getElementById('modal-comic-lightbox').classList.remove('hidden');
-        }
-
-        function closeTeacherLightbox() {
-            document.getElementById('modal-comic-lightbox').classList.add('hidden');
-        }
-
-        // --- Print / Export PDF Modal Handlers ---
-        function openPrintPdfModal() {
-            const roomFilter = document.getElementById('filter-room').value;
-            document.getElementById('pdf-room-label').textContent = roomFilter === 'ALL' ? 'ทุกห้องเรียน (ม.3/1 - ม.3/15)' : roomFilter;
-            document.getElementById('pdf-date-label').textContent = new Date().toLocaleDateString('th-TH', { year: 'numeric', month: 'long', day: 'numeric' });
-
-            const tbody = document.getElementById('pdf-report-tbody');
-            
-            // Build vertically sorted member list
-            let flatMembersList = [];
-
-            allScoresData.forEach((item) => {
-                let room = 'ม.3/1';
-                let members = [];
-                if (item.members_info) {
-                    try {
-                        const parsed = typeof item.members_info === 'string' ? JSON.parse(item.members_info) : item.members_info;
-                        if (parsed.room) room = parsed.room;
-                        if (Array.isArray(parsed.members)) members = parsed.members;
-                    } catch(e) {}
-                }
-
-                if (roomFilter === 'ALL' || room === roomFilter) {
-                    const legal = item.legal_score || 0;
-                    const remedy = item.remedy_score || 0;
-                    const security = item.security_score || 0;
-                    const total = item.total_score || (legal + remedy + security);
-
-                    if (members.length > 0) {
-                        members.forEach(m => {
-                            flatMembersList.push({
-                                team_name: item.team_name || 'นักสืบเยาวชน',
-                                room: room,
-                                student_no: parseInt(m.no || '999', 10),
-                                prefix: m.prefix || '',
-                                name: m.name || '',
-                                legal: legal,
-                                remedy: remedy,
-                                security: security,
-                                total: total
-                            });
-                        });
-                    } else {
-                        flatMembersList.push({
-                            team_name: item.team_name || 'นักสืบเยาวชน',
-                            room: room,
-                            student_no: 1,
-                            prefix: '',
-                            name: '-',
-                            legal: legal,
-                            remedy: remedy,
-                            security: security,
-                            total: total
-                        });
-                    }
-                }
-            });
-
-            // Sort vertically by room and student number
-            flatMembersList.sort((a, b) => {
-                if (a.room !== b.room) return a.room.localeCompare(b.room);
-                return a.student_no - b.student_no;
-            });
-
-            document.getElementById('pdf-teams-count').textContent = flatMembersList.length;
-
-            if (flatMembersList.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="10" class="p-6 text-center text-slate-500">ไม่มีข้อมูลสำหรับออกรายงาน</td></tr>';
-            } else {
-                tbody.innerHTML = flatMembersList.map((m, idx) => `
-                    <tr class="${idx % 2 === 0 ? 'bg-slate-950/30' : 'bg-slate-900/30'}">
-                        <td class="p-2 text-center font-bold text-slate-400 border-r border-slate-800">${idx + 1}</td>
-                        <td class="p-2 font-semibold text-slate-200 border-r border-slate-800">${m.team_name}</td>
-                        <td class="p-2 text-center text-cyan-300 font-bold border-r border-slate-800">${m.room}</td>
-                        <td class="p-2 text-center font-bold text-yellow-300 font-mono border-r border-slate-800">${m.student_no === 999 ? '-' : m.student_no}</td>
-                        <td class="p-2 text-center text-slate-300 border-r border-slate-800">${m.prefix}</td>
-                        <td class="p-2 text-slate-200 border-r border-slate-800">${m.name}</td>
-                        <td class="p-2 text-center font-mono text-amber-300 border-r border-slate-800">${m.legal}</td>
-                        <td class="p-2 text-center font-mono text-pink-300 border-r border-slate-800">${m.remedy}</td>
-                        <td class="p-2 text-center font-mono text-cyan-300 border-r border-slate-800">${m.security}</td>
-                        <td class="p-2 text-right font-mono font-bold text-yellow-300">${m.total} คะแนน</td>
+        <!-- Table -->
+        <div class="table-wrapper">
+            <table class="realtime-table">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>🕵️ นามแฝง (Alias)</th>
+                        <th>👤 เพศ</th>
+                        <th>🏫 ชื่อ - นามสกุลจริง (ห้อง/เลขที่)</th>
+                        <th>🏆 คะแนนดิบ (1080)</th>
+                        <th class="col-score10">📊 คะแนนเก็บ (เต็ม 10)</th>
+                        <th>🎮 รอบที่เล่น</th>
+                        <th>⏱️ เวลาที่ใช้ทำคดี</th>
+                        <th>🟢 สถานะเรียลไทม์</th>
                     </tr>
-                `).join('');
-            }
+                </thead>
+                <tbody id="table-body">
+                    <!-- Dynamic Realtime Rows -->
+                </tbody>
+            </table>
+        </div>
 
-            document.getElementById('modal-print-pdf').classList.remove('hidden');
-        }
+    </div>
 
-        function closePrintPdfModal() {
-            document.getElementById('modal-print-pdf').classList.add('hidden');
-        }
-
-        // --- Save Settings Handlers ---
-        function saveSystemSettings() {
-            const url = document.getElementById('cfg-supabase-url').value.trim();
-            const key = document.getElementById('cfg-supabase-key').value.trim();
-            const gemini = document.getElementById('cfg-gemini-key').value.trim();
-
-            if (url && key && window.supabase) {
-                supabaseClient = window.supabase.createClient(url, key);
-                alert('บันทึกการตั้งค่าระบบเรียบร้อยแล้ว!');
-            } else {
-                alert('บันทึกการตั้งค่าสำเร็จ!');
-            }
-        }
-
-        function clearTestScores() {
-            if (confirm('คำเตือน: คุณต้องการล้างคะแนนทดสอบทั้งหมดในระบบหรือไม่?')) {
-                localStorage.removeItem('CYBER_DETECTIVE_SCORES_CACHE');
-                allScoresData = [];
-                renderScoreboardTable();
-                updateStatsCards();
-                alert('ล้างข้อมูลคะแนนทดสอบเรียบร้อยแล้ว');
-            }
-        }
-    </script>
+    <!-- Page Script -->
+    <script src="js/teacher_dashboard.js"></script>
 </body>
 </html>
