@@ -268,7 +268,7 @@
                         <div class="flex items-center gap-1.5 bg-slate-950 px-3 py-2 rounded-xl border border-slate-700">
                             <i class="fa-solid fa-door-open text-purple-400"></i>
                             <select id="filter-room" onchange="renderScoreboardTable()" class="bg-slate-950 text-white font-medium focus:outline-none cursor-pointer">
-                                <option value="ALL" class="bg-slate-900 text-white py-1">ทุกห้องเรียน (ม.3/1 - ม.3/15)</option>
+                                <option value="ALL" class="bg-slate-900 text-white py-1">ทุกห้องเรียน (ม.3/1 - ม.3/12)</option>
                                 <option value="ม.3/1" class="bg-slate-900 text-white py-1">ม.3/1</option>
                                 <option value="ม.3/2" class="bg-slate-900 text-white py-1">ม.3/2</option>
                                 <option value="ม.3/3" class="bg-slate-900 text-white py-1">ม.3/3</option>
@@ -281,9 +281,6 @@
                                 <option value="ม.3/10" class="bg-slate-900 text-white py-1">ม.3/10</option>
                                 <option value="ม.3/11" class="bg-slate-900 text-white py-1">ม.3/11</option>
                                 <option value="ม.3/12" class="bg-slate-900 text-white py-1">ม.3/12</option>
-                                <option value="ม.3/13" class="bg-slate-900 text-white py-1">ม.3/13</option>
-                                <option value="ม.3/14" class="bg-slate-900 text-white py-1">ม.3/14</option>
-                                <option value="ม.3/15" class="bg-slate-900 text-white py-1">ม.3/15</option>
                             </select>
                         </div>
 
@@ -1165,7 +1162,7 @@
         // --- Print / Export PDF Modal Handlers ---
         function openPrintPdfModal() {
             const roomFilter = document.getElementById('filter-room').value;
-            document.getElementById('pdf-room-label').textContent = roomFilter === 'ALL' ? 'ทุกห้องเรียน (ม.3/1 - ม.3/15)' : roomFilter;
+            document.getElementById('pdf-room-label').textContent = roomFilter === 'ALL' ? 'ทุกห้องเรียน (ม.3/1 - ม.3/12)' : roomFilter;
             document.getElementById('pdf-date-label').textContent = new Date().toLocaleDateString('th-TH', { year: 'numeric', month: 'long', day: 'numeric' });
 
             const tbody = document.getElementById('pdf-report-tbody');
