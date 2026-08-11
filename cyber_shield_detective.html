@@ -2459,6 +2459,13 @@
                     security_score: security,
                     total_score: total,
                     members_info: membersInfoPayload,
+                    student_answers: currentCaseObj.answers || {},
+                    ai_feedback: {
+                        legal: { score: legal, feedback: currentCaseObj.scores.legal?.feedback || '' },
+                        remedy: { score: remedy, feedback: currentCaseObj.scores.remedy?.feedback || '' },
+                        security: { score: security, feedback: currentCaseObj.scores.security?.feedback || '' },
+                        total_score: total
+                    },
                     created_at: new Date().toISOString()
                 });
                 if (cacheList.length > 200) cacheList.pop();
@@ -2474,16 +2481,16 @@
             const clean = answer.trim().toLowerCase();
             
             // Gibberish check
-            const evasive = /^(ไม่รู้|ไม่ทราบ|ไม่บอก|มั่ว|กวน|ขี้เกียจ|ไม่มี|ไม่แน่ใจ|ไม่รู้อะไรเลย|ช่างมัน|ไม่ตอบ|5555|asdf|ฟกห)/i;
-            if (clean.length < 15 || evasive.test(clean)) {
+            const evasive = /^(ไม่รู้|ไม่ทราบ|ไม่บอก|มั่ว|ขี้เกียจ|ไม่มี|ไม่แน่ใจ|ไม่รู้อะไรเลย|ช่างมัน|ไม่ตอบ|5555|asdf|ฟกห)/i;
+            if (clean.length < 10 || evasive.test(clean)) {
                 return {
                     role: roleKey,
                     score: 0,
                     feedback: roleKey === 'legal'
-                        ? 'ยังไม่สามารถให้คะแนนได้ เนื่องจากข้อความไม่ได้ระบุฐานความผิดหรือบทวิเคราะห์ที่สอดคล้องกับพฤติการณ์ในคดี โปรดอ่านรายละเอียดแล้วตอบตามหลักกฎหมาย'
+                        ? 'ยังไม่สามารถให้คะแนนได้ ลองย้อนกลับไปดูเหตุการณ์ในการ์ตูน 9 ช่อง แล้วระบุฐานความผิดหรือบทลงโทษทางกฎหมายดูนะครับ'
                         : roleKey === 'remedy'
-                        ? 'ยังไม่สามารถให้คะแนนได้ เนื่องจากไม่ได้ระบุขั้นตอนการระงับเหตุเฉพาะหน้า เมื่อเกิดเหตุไซเบอร์ต้องพิจารณาวิธีตัดวงจรความเสียหายทันที และระบุผู้เกี่ยวข้อง'
-                        : 'ยังไม่สามารถให้คะแนนได้ เนื่องจากยังไม่ได้เสนอแนะระบบหรือเครื่องมือความปลอดภัยทางเทคนิค ลองระบุเครื่องมือเทคโนโลยีที่ช่วยปิดช่องโหว่ระยะยาว'
+                        ? 'ยังไม่สามารถให้คะแนนได้ ลองระบุวิธีรับมือตัดวงจรความเสียหายทันที และบอกผู้ใหญ่หรือแอดมินให้ช่วยระงับเหตุนะครับ'
+                        : 'ยังไม่สามารถให้คะแนนได้ ลองเสนอแนะวิธีป้องกันตัวเองจากภัยไซเบอร์ง่ายๆ ในชีวิตประจำวันดูนะครับ'
                 };
             }
 
@@ -2494,105 +2501,67 @@
                 const hasLaw = (caseItem.keywords_law || []).some(k => clean.includes(k.toLowerCase())) || 
                                 (caseItem.section && clean.includes(caseItem.section.toLowerCase())) ||
                                 (caseItem.standard_law && clean.includes(caseItem.standard_law.toLowerCase()));
-                
+                const hasGeneralLawTerm = ["มาตรา", "พ.ร.บ", "pdpa", "กฎหมาย", "ผิด", "ความผิด", "แอบ", "ละเมิด", "เข้าถึง", "หลอก", "ทำลาย", "ดัก", "สแปม", "ตัดต่อ"].some(k => clean.includes(k));
                 const hasPenaltySpecific = (caseItem.keywords_penalty || []).some(k => clean.includes(k.toLowerCase()));
-                const hasPenaltyGeneral = (clean.includes("คุก") || clean.includes("จำคุก")) && (clean.includes("ปรับ") || clean.includes("บาท"));
+                const hasGeneralPenaltyTerm = ["ปรับ", "คุก", "จำคุก", "บาท", "ปี", "เดือน", "โทษ", "ลงโทษ", "แสน", "หมื่น", "ร้อย"].some(k => clean.includes(k));
 
-                if (hasLaw) {
-                    score += 4;
-                } else if (clean.includes("พ.ร.บ") || clean.includes("มาตรา") || clean.includes("pdpa") || clean.includes("กฎหมาย")) {
-                    score += 2.5;
-                }
+                if (hasLaw || hasGeneralLawTerm) score += 6;
+                else score += 4;
 
-                if (hasPenaltySpecific) {
-                    score += 3;
-                } else if (hasPenaltyGeneral || clean.includes("คุก") || clean.includes("ปรับ") || clean.includes("ปี") || clean.includes("เดือน") || clean.includes("บาท")) {
-                    score += 2;
-                }
-
-                if (hasLaw && (hasPenaltySpecific || hasPenaltyGeneral)) {
-                    score += 3; // Completeness bonus
-                } else if (hasLaw && clean.length >= 25) {
-                    score += 2;
-                } else if (clean.length >= 20) {
-                    score += 1;
-                }
+                if (hasPenaltySpecific || hasGeneralPenaltyTerm || clean.length >= 10) score += 4;
 
                 score = Math.min(10, Math.max(0, score));
 
                 if (score >= 9) {
                     feedback = 'วิเคราะห์ฐานความผิดทางกฎหมายและระบุอัตราโทษจำคุก/ปรับได้อย่างถูกต้อง แม่นยำ ครบถ้วนสมบูรณ์ตามหลัก พ.ร.บ.คอมพิวเตอร์ / PDPA';
                 } else if (score >= 6) {
-                    feedback = hasLaw 
-                        ? 'วิเคราะห์ทิศทางฐานความผิดได้ถูกต้องแล้ว และสามารถระบุรายละเอียดอัตราโทษหรือเหตุผลประกอบเพิ่มเติมให้ชัดเจนเพื่อคะแนนเต็ม'
-                        : 'ระบุอัตราโทษได้น่าสนใจ แต่ควรระบุมาตราหรือฐานความผิดตาม พ.ร.บ.คอมพิวเตอร์ / PDPA ให้ตรงประเด็นของคดี';
+                    feedback = 'วิเคราะห์ทิศทางฐานความผิดและอัตราโทษได้ดีมาก! มีความเข้าใจหลักกฎหมายไซเบอร์เบื้องต้นเป็นอย่างดี';
                 } else {
                     feedback = 'ฐานความผิดและโทษที่ระบุยังไม่สอดคล้องกับพฤติการณ์ในคดีนี้ ลองพิจารณาว่าเหตุการณ์ในการ์ตูนเป็นการกระทำต่อระบบ ข้อมูล หรือเป็นการเผยแพร่/หลอกลวง เพื่อเลือกมาตราให้ตรงจุดยิ่งขึ้น';
                 }
 
             } else if (roleKey === 'remedy') {
                 const hasRemedyAction = (caseItem.keywords_remedy || []).some(k => clean.includes(k.toLowerCase()));
-                const hasStakeholder = ["ครู", "ผู้ปกครอง", "พ่อ", "แม่", "ตำรวจ", "แอดมิน", "แพลตฟอร์ม", "ธนาคาร", "ค่ายเกม", "ผู้ดูแล"].some(s => clean.includes(s));
+                const hasGeneralRemedyTerm = ["ลบ", "เปลี่ยน", "แจ้ง", "บล็อก", "กู้", "หยุด", "อายัด", "ปิด", "ตัด", "ระงับ", "แคป", "บอก", "ช่วย", "รายงาน", "ปรึกษา", "ประสานงาน", "ติดต่อ", "ฟ้อง", "ไม่กด", "ชำระ", "ย้าย", "แก้ไข"].some(k => clean.includes(k));
+                const hasStakeholder = ["ครู", "ผู้ปกครอง", "พ่อ", "แม่", "ตำรวจ", "แอดมิน", "แพลตฟอร์ม", "ธนาคาร", "ค่ายเกม", "ผู้ดูแล", "ไอที", "ผู้ให้บริการ", "กสทช", "เจ้าหน้าที่", "อาจารย์", "ผู้บริหาร", "หัวหน้า", "โรงเรียน", "admin", "ผู้ใหญ่", "เพื่อน"].some(s => clean.includes(s));
 
-                if (hasRemedyAction) {
-                    score += 4.5;
-                } else if (clean.includes("ลบ") || clean.includes("เปลี่ยน") || clean.includes("แจ้ง") || clean.includes("บล็อก") || clean.includes("กู้") || clean.includes("หยุด") || clean.includes("อายัด")) {
-                    score += 3;
-                }
+                if (hasRemedyAction || hasGeneralRemedyTerm) score += 6;
+                else score += 4;
 
-                if (hasStakeholder) {
-                    score += 3;
-                } else if (clean.includes("บอก") || clean.includes("ช่วย") || clean.includes("รายงาน") || clean.includes("ปรึกษา")) {
-                    score += 2;
-                }
-
-                if (hasRemedyAction && (hasStakeholder || clean.length >= 30)) {
-                    score += 2.5;
-                } else if (clean.length >= 20) {
-                    score += 1;
-                }
+                if (hasStakeholder || clean.length >= 10) score += 4;
 
                 score = Math.min(10, Math.max(0, score));
 
                 if (score >= 9) {
                     feedback = 'ลำดับขั้นตอนการบรรเทาความเสียหายเฉพาะหน้าได้อย่างรวดเร็ว มีสติ และระบุผู้เกี่ยวข้องในการระงับเหตุได้อย่างตรงจุดและปฏิบัติได้จริง';
                 } else if (score >= 6) {
-                    feedback = hasRemedyAction
-                        ? 'มีแนวคิดการหยุดเหตุเฉพาะหน้าได้ดีแล้ว ควรระบุบุคคลหรือผู้ดูแลระบบที่ต้องประสานงานแจ้งเหตุฉุกเฉินเพิ่มเติมเพื่อให้การช่วยเหลือรวดเร็วยิ่งขึ้น'
-                        : 'ระบุผู้รับแจ้งเหตุได้ดี แต่ควรเพิ่มขั้นตอนการระงับความเสียหายทางเทคนิคเฉพาะหน้าด้วย';
+                    feedback = 'มีแนวคิดการหยุดเหตุเฉพาะหน้าและแจ้งผู้เกี่ยวข้องได้ดีมาก! ช่วยลดความเสียหายได้อย่างรวดเร็ว';
                 } else {
                     feedback = 'แนวทางรับมือยังไม่ตรงกับลักษณะภัยไซเบอร์ในคดีนี้ ควรพิจารณาวิธีตัดวงจรความเสียหายทันที เช่น เปลี่ยนรหัส บล็อกไอพี หรือกู้คืนข้อมูล';
                 }
 
             } else { // Security Engineer
                 const hasSecurityTool = (caseItem.keywords_security || []).some(k => clean.includes(k.toLowerCase()));
+                const hasPracticalSafetyTerm = ["ไม่กด", "ไม่คลิก", "ลิงก์", "ลิงค์", "โฆษณา", "สมัคร", "รหัส", "2fa", "ป้องกัน", "ตั้งค่า", "ล็อก", "สิทธิ์", "กรอง", "ความเป็นส่วนตัว", "ระวัง", "หลีกเลี่ยง", "ไม่แชร์", "ไม่กรอก", "แฮกเกอร์", "ระบบ", "ความปลอดภัย", "แปลก", "มั่ว"].some(k => clean.includes(k));
 
-                if (hasSecurityTool) {
-                    score += 5;
-                } else if (clean.includes("รหัส") || clean.includes("ระบบ") || clean.includes("ป้องกัน") || clean.includes("ตั้งค่า") || clean.includes("ล็อก") || clean.includes("สิทธิ์") || clean.includes("กรอง")) {
-                    score += 3;
+                if (hasSecurityTool || hasPracticalSafetyTerm) {
+                    score += 6;
+                } else {
+                    score += 4;
                 }
 
-                if (hasSecurityTool && (clean.includes("ทำได้") || clean.includes("ง่าย") || clean.includes("ตั้ง") || clean.includes("เปิด") || clean.includes("เพื่อ") || clean.includes("ป้องกัน") || clean.includes("บล็อก"))) {
-                    score += 3;
-                } else if (hasSecurityTool) {
-                    score += 2;
-                }
-
-                if (hasSecurityTool && clean.length >= 30) {
-                    score += 2;
-                } else if (clean.length >= 20) {
-                    score += 1;
+                if (clean.length >= 10 || hasSecurityTool) {
+                    score += 4;
                 }
 
                 score = Math.min(10, Math.max(0, score));
 
                 if (score >= 9) {
-                    feedback = 'ข้อเสนอแนะด้านวิศวกรรมความปลอดภัยยอดเยี่ยม! เครื่องมือและมาตรการที่เลือกใช้สามารถปิดช่องโหว่ความเสี่ยงของคดีนี้ในระยะยาวได้อย่างสมบูรณ์แบบ';
+                    feedback = 'ข้อเสนอแนะด้านวิศวกรรมความปลอดภัยยอดเยี่ยม! มาตรการที่เลือกใช้สามารถปิดช่องโหว่ความเสี่ยงในระยะยาวได้อย่างสมบูรณ์แบบ';
                 } else if (score >= 6) {
-                    feedback = 'มีแนวคิดการป้องกันที่ดีแล้ว หากระบุชื่อเครื่องมือเทคโนโลยีความปลอดภัยเฉพาะทาง (เช่น 2FA, SSL, Firewall, Read-Only, SafeSearch) จะทำให้มาตรการรัดกุมยิ่งขึ้น';
+                    feedback = 'ตอบได้ตรงประเด็นแล้ว! มีแนวคิดการป้องกันตนเองทางไซเบอร์ที่ดีเยี่ยม';
                 } else {
-                    feedback = 'มาตรการป้องกันที่เสนอยังไม่ตรงกับช่องโหว่ความเสี่ยงของคดีนี้ ลองวิเคราะห์จุดผิดพลาดของระบบแล้วเลือกเทคโนโลยีป้องกันที่เหมาะสม';
+                    feedback = 'แนวคิดการป้องกันดีขึ้นแล้ว ลองระบุเครื่องมือเทคโนโลยีความปลอดภัยเฉพาะทางเพิ่มเติมเพื่อมาตรการที่รัดกุมยิ่งขึ้น';
                 }
             }
 

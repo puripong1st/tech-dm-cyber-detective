@@ -1012,9 +1012,9 @@ function isGibberishOrNonsense(text) {
 
     // Evasive / troll phrases
     const evasivePatterns = [
-        /^(ไม่รู้|ไม่ทราบ|ไม่บอก|มั่ว|กวน|ขี้เกียจ|ไม่มี|ไม่แน่ใจ|ไม่รู้อะไรเลย|ช่างมัน|ไม่ตอบ)/i,
+        /^(ไม่รู้|ไม่ทราบ|ไม่บอก|มั่ว|ขี้เกียจ|ไม่มี|ไม่แน่ใจ|ไม่รู้อะไรเลย|ช่างมัน|ไม่ตอบ)/i,
         /^(ไม่รู้พี่|ไม่รู้อะ|ไม่รู้ครับ|ไม่รู้ค่ะ)/i,
-        /^(5555+|hahaha+|www+|กวน|บ้า|ตลก)/i
+        /^(5555+|hahaha+|www+)/i
     ];
     for (const p of evasivePatterns) {
         if (p.test(clean)) return true;
@@ -1024,7 +1024,7 @@ function isGibberishOrNonsense(text) {
     const mashPatterns = [
         /(ฟกห|กฟห|หฟก|กหฟ|กดห|ดฟก|ผปอ|ปผอ|่าส|าสด|กดฟ)/i,
         /(asdf|sdfg|dfgh|fghj|ghjk|hjkl|zxcv|xcvb|cvbn|vbnm|qwer|wert|erty|rtyu|tyui|yuio|uiop)/i,
-        /(.)\1{4,}/, // Repeated same character 5+ times (e.g. aaaaa, กกกกก)
+        /([^\d\s,.-])\1{4,}/, // Repeated non-digit character 5+ times (e.g. aaaaa, กกกกก) - Allows numbers like 200000 or 100000!
     ];
     for (const p of mashPatterns) {
         if (p.test(clean)) return true;
@@ -1053,24 +1053,20 @@ function evaluateLocally(caseId, studentAnswers) {
     } else {
         const lLower = legalText.toLowerCase();
         const hasLawMatch = ref.keywords_law.some(k => lLower.includes(k.toLowerCase())) || lLower.includes(ref.law.toLowerCase());
+        const hasGeneralLawTerm = ["มาตรา", "พ.ร.บ", "pdpa", "กฎหมาย", "ผิด", "ความผิด", "แอบ", "ละเมิด", "เข้าถึง", "หลอก", "ทำลาย", "ดัก", "สแปม", "ตัดต่อ"].some(k => lLower.includes(k));
         const hasPenaltyMatch = ref.keywords_penalty.some(k => lLower.includes(k.toLowerCase()));
-        const hasPenaltyGeneral = (lLower.includes("คุก") || lLower.includes("จำคุก")) && (lLower.includes("ปรับ") || lLower.includes("บาท"));
+        const hasGeneralPenaltyTerm = ["ปรับ", "คุก", "จำคุก", "บาท", "ปี", "เดือน", "โทษ", "ลงโทษ", "แสน", "หมื่น", "ร้อย"].some(k => lLower.includes(k));
 
-        if (hasLawMatch) legalScore += 5;
-        else if (lLower.includes("พ.ร.บ") || lLower.includes("มาตรา") || lLower.includes("pdpa") || lLower.includes("กฎหมาย") || lLower.includes("ผิดกฎหมาย") || lLower.includes("ความผิด")) legalScore += 3;
+        if (hasLawMatch || hasGeneralLawTerm) legalScore += 6;
+        else legalScore += 4;
 
-        if (hasPenaltyMatch) legalScore += 3;
-        else if (hasPenaltyGeneral || lLower.includes("คุก") || lLower.includes("ปรับ") || lLower.includes("ปี") || lLower.includes("เดือน") || lLower.includes("บาท") || lLower.includes("โทษ") || lLower.includes("ลงโทษ")) legalScore += 2;
-
-        if (hasLawMatch && (hasPenaltyMatch || hasPenaltyGeneral)) legalScore += 2;
-        else if (hasLawMatch && legalText.length >= 20) legalScore += 2;
-        else if (legalText.length >= 15) legalScore += 1;
+        if (hasPenaltyMatch || hasGeneralPenaltyTerm || legalText.length >= 10) legalScore += 4;
 
         legalScore = Math.min(10, Math.max(0, legalScore));
         legalFeedback = legalScore >= 9
             ? 'วิเคราะห์ฐานความผิดทางกฎหมายและระบุอัตราโทษจำคุก/ปรับได้อย่างถูกต้อง แม่นยำ ครบถ้วนสมบูรณ์ตามหลัก พ.ร.บ.คอมพิวเตอร์ / PDPA'
-            : hasLawMatch
-            ? 'วิเคราะห์ทิศทางฐานความผิดได้ถูกต้องแล้ว และสามารถระบุรายละเอียดอัตราโทษหรือเหตุผลประกอบเพิ่มเติมให้ชัดเจนเพื่อคะแนนเต็ม'
+            : legalScore >= 6
+            ? 'วิเคราะห์ทิศทางฐานความผิดและอัตราโทษได้ดีมาก! มีความเข้าใจหลักกฎหมายไซเบอร์เบื้องต้นเป็นอย่างดี'
             : 'ฐานความผิดและโทษที่ระบุยังไม่สอดคล้องกับพฤติการณ์ในคดีนี้ ลองพิจารณาว่าเหตุการณ์ในการ์ตูนเป็นการกระทำต่อระบบ ข้อมูล หรือเป็นการเผยแพร่/หลอกลวง เพื่อเลือกมาตราให้ตรงจุดยิ่งขึ้น';
     }
 
@@ -1083,22 +1079,19 @@ function evaluateLocally(caseId, studentAnswers) {
     } else {
         const rLower = remedyText.toLowerCase();
         const hasRemedyAction = ref.keywords_remedy.some(k => rLower.includes(k.toLowerCase()));
-        const mentionsStakeholder = ["ครู","ผู้ปกครอง","พ่อ","แม่","ตำรวจ","แอดมิน","แพลตฟอร์ม","ธนาคาร","ค่ายเกม","ผู้ดูแล","ไอที","ผู้ให้บริการ","กสทช","เจ้าหน้าที่","อาจารย์","ผู้บริหาร","หัวหน้า","โรงเรียน","admin","ผู้ใหญ่"].some(s => rLower.includes(s));
+        const hasGeneralRemedyTerm = ["ลบ", "เปลี่ยน", "แจ้ง", "บล็อก", "กู้", "หยุด", "อายัด", "ปิด", "ตัด", "ระงับ", "แคป", "บอก", "ช่วย", "รายงาน", "ปรึกษา", "ประสานงาน", "ติดต่อ", "ฟ้อง", "ไม่กด", "ชำระ", "ย้าย", "แก้ไข"].some(k => rLower.includes(k));
+        const mentionsStakeholder = ["ครู", "ผู้ปกครอง", "พ่อ", "แม่", "ตำรวจ", "แอดมิน", "แพลตฟอร์ม", "ธนาคาร", "ค่ายเกม", "ผู้ดูแล", "ไอที", "ผู้ให้บริการ", "กสทช", "เจ้าหน้าที่", "อาจารย์", "ผู้บริหาร", "หัวหน้า", "โรงเรียน", "admin", "ผู้ใหญ่", "เพื่อน"].some(s => rLower.includes(s));
 
-        if (hasRemedyAction) remedyScore += 5;
-        else if (rLower.includes("ลบ") || rLower.includes("เปลี่ยน") || rLower.includes("แจ้ง") || rLower.includes("บล็อก") || rLower.includes("กู้") || rLower.includes("หยุด") || rLower.includes("อายัด") || rLower.includes("ปิด") || rLower.includes("ตัด") || rLower.includes("ระงับ")) remedyScore += 3;
+        if (hasRemedyAction || hasGeneralRemedyTerm) remedyScore += 6;
+        else remedyScore += 4;
 
-        if (mentionsStakeholder) remedyScore += 3;
-        else if (rLower.includes("บอก") || rLower.includes("ช่วย") || rLower.includes("รายงาน") || rLower.includes("ปรึกษา") || rLower.includes("ประสานงาน") || rLower.includes("ติดต่อ")) remedyScore += 2;
-
-        if (hasRemedyAction && (mentionsStakeholder || remedyText.length >= 25)) remedyScore += 2;
-        else if (remedyText.length >= 15) remedyScore += 1;
+        if (mentionsStakeholder || remedyText.length >= 10) remedyScore += 4;
 
         remedyScore = Math.min(10, Math.max(0, remedyScore));
         remedyFeedback = remedyScore >= 9
             ? 'ลำดับขั้นตอนการบรรเทาความเสียหายเฉพาะหน้าได้อย่างรวดเร็ว มีสติ และระบุผู้เกี่ยวข้องในการระงับเหตุได้อย่างตรงจุดและปฏิบัติได้จริง'
-            : hasRemedyAction
-            ? 'มีแนวคิดการหยุดเหตุเฉพาะหน้าได้ดีแล้ว ควรระบุบุคคลหรือผู้ดูแลระบบที่ต้องประสานงานแจ้งเหตุฉุกเฉินเพิ่มเติมเพื่อให้การช่วยเหลือรวดเร็วยิ่งขึ้น'
+            : remedyScore >= 6
+            ? 'มีแนวคิดการหยุดเหตุเฉพาะหน้าและแจ้งผู้เกี่ยวข้องได้ดีมาก! ช่วยลดความเสียหายได้อย่างรวดเร็ว'
             : 'แนวทางรับมือยังไม่ตรงกับลักษณะภัยไซเบอร์ในคดีนี้ ควรพิจารณาวิธีตัดวงจรความเสียหายทันที เช่น เปลี่ยนรหัส บล็อกไอพี หรือกู้คืนข้อมูล';
     }
 
@@ -1107,24 +1100,28 @@ function evaluateLocally(caseId, studentAnswers) {
     let securityFeedback = '';
     if (isGibberishOrNonsense(securityText)) {
         securityScore = 0;
-        securityFeedback = 'ยังไม่สามารถให้คะแนนได้ เนื่องจากยังไม่ได้เสนอแนะระบบหรือเครื่องมือความปลอดภัยทางเทคนิค ลองระบุเครื่องมือเทคโนโลยีที่ช่วยปิดช่องโหว่ระยะยาว';
+        securityFeedback = 'ยังไม่สามารถให้คะแนนได้ เนื่องจากยังไม่ได้เสนอแนะระบบหรือเครื่องมือความปลอดภัยทางเทคนิค ลองระบุเครื่องมือเทคโนโลยีหรือแนวทางป้องกันระยะยาว';
     } else {
         const sLower = securityText.toLowerCase();
         const hasSecurityTool = ref.keywords_security.some(k => sLower.includes(k.toLowerCase()));
+        const hasPracticalSafetyTerm = ["ไม่กด", "ไม่คลิก", "ลิงก์", "ลิงค์", "โฆษณา", "สมัคร", "รหัส", "2fa", "ป้องกัน", "ตั้งค่า", "ล็อก", "สิทธิ์", "กรอง", "ความเป็นส่วนตัว", "ระวัง", "หลีกเลี่ยง", "ไม่แชร์", "ไม่กรอก", "แฮกเกอร์", "ระบบ", "ความปลอดภัย", "แปลก", "มั่ว", "แอนตี้", "ไวรัส", "อัปเดต", "สแกน", "ซ่อน", "เก็บ", "ปิด", "ลายนิ้วมือ", "สแกนหน้า", "พาสเวิร์ด"].some(k => sLower.includes(k));
 
-        if (hasSecurityTool) securityScore += 5;
-        else if (sLower.includes("รหัส") || sLower.includes("ระบบ") || sLower.includes("ป้องกัน") || sLower.includes("ตั้งค่า") || sLower.includes("ล็อก") || sLower.includes("สิทธิ์") || sLower.includes("กรอง") || sLower.includes("ความปลอดภัย") || sLower.includes("ระวัง") || sLower.includes("ไม่ควร") || sLower.includes("หลีกเลี่ยง")) securityScore += 3;
+        if (hasSecurityTool || hasPracticalSafetyTerm) {
+            securityScore += 6;
+        } else {
+            securityScore += 4;
+        }
 
-        if (hasSecurityTool && (sLower.includes("ทำได้") || sLower.includes("ง่าย") || sLower.includes("ตั้ง") || sLower.includes("เปิด") || sLower.includes("เพื่อ") || sLower.includes("ป้องกัน") || sLower.includes("บล็อก") || sLower.includes("ใช้") || sLower.includes("ติดตั้ง") || sLower.includes("สมัคร"))) securityScore += 3;
-        else if (hasSecurityTool) securityScore += 2;
-
-        if (hasSecurityTool && sLower.length >= 25) securityScore += 2;
-        else if (sLower.length >= 15) securityScore += 1;
+        if (sLower.length >= 10 || hasSecurityTool || hasPracticalSafetyTerm) {
+            securityScore += 4;
+        }
 
         securityScore = Math.min(10, Math.max(0, securityScore));
         securityFeedback = securityScore >= 9
-            ? 'ข้อเสนอแนะด้านวิศวกรรมความปลอดภัยยอดเยี่ยม! เครื่องมือและมาตรการที่เลือกใช้สามารถปิดช่องโหว่ความเสี่ยงของคดีนี้ในระยะยาวได้อย่างสมบูรณ์แบบ'
-            : 'มีแนวคิดการป้องกันที่ดีแล้ว หากระบุชื่อเครื่องมือเทคโนโลยีความปลอดภัยเฉพาะทาง (เช่น 2FA, SSL, Firewall, Read-Only, SafeSearch) จะทำให้มาตรการรัดกุมยิ่งขึ้น';
+            ? 'ข้อเสนอแนะด้านวิศวกรรมความปลอดภัยยอดเยี่ยม! มาตรการที่เลือกใช้สามารถปิดช่องโหว่ความเสี่ยงในระยะยาวได้อย่างสมบูรณ์แบบ'
+            : securityScore >= 6
+            ? 'ตอบได้ตรงประเด็นแล้ว! มีแนวคิดการป้องกันตนเองทางไซเบอร์ที่ดีเยี่ยม'
+            : 'แนวคิดการป้องกันดีขึ้นแล้ว ลองระบุเครื่องมือเทคโนโลยีความปลอดภัยเฉพาะทางเพิ่มเติมเพื่อมาตรการที่รัดกุมยิ่งขึ้น';
     }
 
     const totalScore = legalScore + remedyScore + securityScore;
@@ -1272,53 +1269,39 @@ app.post('/api/evaluate-case', async (req, res) => {
 
     const ref = CASE_REFERENCES[caseId] || CASE_REFERENCES[1];
 
-    const systemPrompt = `You are the "Cyber Law and PDPA Strict Academic Evaluator" for Thai Grade 9 (ม.3) students.
-Your mission is to strictly, fairly, and accurately evaluate the subjective text answers submitted by the student team based on the provided Case Scenario.
+    const systemPrompt = `You are "พี่สายสืบไซเบอร์ใจดี" (Kind Senior Cyber Detective Coach) for Thai Grade 9 (ม.3) students aged 14-15 who are BEGINNERS LEARNING CYBER LAW FOR THE FIRST TIME.
+
+[PERSONA & TONAL REQUIREMENTS]:
+- Write in warm, encouraging, positive, simple Thai suitable for middle school students (ม.3).
+- ABSOLUTELY NO enterprise IT jargon, corporate law officer terminology, or complex engineering phrases (e.g. NEVER say "ควรระบุมาตรการสร้างความตระหนักรู้เชิงวิศวกรรมความปลอดภัยอันรัดกุม" or "ควรเสนอระบบ Authentication เพื่อจำกัดสิทธิ์ผู้ถือครอง").
+- INSTEAD use simple student concepts (e.g. "สุดยอดเลยน้องๆ! ตอบได้ตรงจุดมาก", "เก่งมาก! รู้จักป้องกันตัวเองไม่ให้โดนหลอก", "ถูกต้องครับ! รู้จักบอกครูและผู้ปกครองเมื่อเกิดเหตุ").
 
 ---
-[CASE SCENARIO REFERENCE DATA (FOR YOUR EVALUATION ONLY - DO NOT LEAK OR SPOIL TO STUDENTS)]
+[CASE SCENARIO REFERENCE DATA (CONFIDENTIAL - FOR EVALUATION ONLY - DO NOT SPOIL TO STUDENTS)]
 - Case Title: ${caseTitle || ref.title}
-- Relevant Cyber Law: ${ref.law}
-- Standard Penalty/Fine: ${ref.penalty}
-- Standard Immediate Remedy: ${ref.remedy}
-- Standard Correct Prevention Measures: ${ref.prevention}
+- Relevant Law & Penalty: ${ref.law} (โทษ: ${ref.penalty})
+- Standard Remedy Action: ${ref.remedy}
+- Standard Prevention Practice: ${ref.prevention}
 
 ---
-[CRITICAL NO-SPOILER & ZERO-TOLERANCE RULES - READ CAREFULLY]
-1. ZERO-SCORE FOR GIBBERISH / KEYBOARD MASHING / TROLLING / "ไม่รู้" / RANDOM TYPING:
-   - If an answer consists of keyboard mashing (e.g. "ฟกหฟกห", "asdfasdf", "55555"), sarcasm, trolling, "ไม่รู้", "ไม่ทราบ", "ไม่บอก", "ไม่รู้พี่ไฟก...", repeating useless characters, or random Thai consonants without actual analysis:
-     -> YOU MUST SCORE EXACTLY 0 POINTS (ZERO) for that role/section!
-     -> DO NOT give pity points. Text length does NOT grant points if the content is meaningless or troll typing!
-2. STRICT NO-SPOILER RULE IN ALL FEEDBACK:
-   - NEVER SPOIL, state directly, or reveal the exact section number or exact answer (e.g. DO NOT say "ข้อที่ถูกคือ มาตรา 8" or "อัตราโทษที่ถูกต้องคือ..." or "แนวทางที่ถูกต้องคือ...").
-   - INSTEAD: Explain HOW and WHY the student's answer is flawed, which concepts they misunderstood, and guide their thinking without giving away the exact section number:
-     * For Legal (0 points / wrong): Explain what wrongful behavior occurred in the comic scenario (e.g. unauthorized data interception vs unauthorized access vs data damage vs defamation) and why their answer fails to address the specific violation and penalties, guiding them to rethink the core violation without spoon-feeding the section number.
-     * For Remedy (0 points / wrong): Explain the principle of emergency containment, why immediate action is critical to stop damage, and who should be contacted.
-     * For Security (0 points / wrong): Explain the root vulnerability in the system/environment and what security engineering principles are needed to prevent recurring exploits.
+[BEGINNER-FRIENDLY GRADING POLICY FOR GRADE 9 (ม.3) STUDENTS]:
+1. CONCISE & DIRECT ANSWERS GET FULL 10/10 POINTS:
+   - Grade 9 students write concisely in everyday student language.
+   - If an answer is SHORT or BRIEF (e.g. "ไม่กดสมัครโฆษณามั่วๆ หรือไม่กดลิงค์แปลกๆ", "แจ้งครูและแอดมินลบรูป", "ผิดมาตรา 11 ปรับไม่เกิน 200,000 บาท"), BUT it addresses the practical action/concept -> YOU MUST AWARD FULL 10/10 POINTS!
+   - NEVER DEDUCT POINTS for short answer length, everyday youth vocabulary, or absence of adult/IT officer jargon!
 
----
----
-[DETAILED SCORING RUBRICS (Max 10 points per role, Total 30 points)]
-[FAIR & REASONABLE ACADEMIC SCORING CALIBRATION FOR GRADE 9 (ม.3) STUDENTS]:
-- 🏆 FULL 10/10 SCORE: If the student correctly identifies the main law/section/concept (e.g. มาตรา 5 / แอบเข้าถึงระบบ) AND states the standard penalty (e.g. จำคุกไม่เกิน 6 เดือน หรือปรับไม่เกิน 10,000 บาท) AND includes the wrongful action/damage, YOU MUST AWARD FULL 10/10 POINTS! Do not deduct points when all requested academic criteria are accurately present.
-- 8 to 9 Points: Correct law and penalty with minor wording variation.
-- 5 to 7 Points: Partially correct concept or missing penalty details.
-- 0 Points: Pure gibberish, trolling, or complete mismatch.
+2. STRICT ROLE SEPARATION FOR BEGINNERS:
+   - 👨‍⚖️ Legal Analyst (0-10 pts): Evaluate ONLY law section/concept + penalty. DO NOT ask for IT tools.
+   - 🚑 Incident Responder (0-10 pts): Evaluate ONLY immediate action (ลบ, บล็อก, แคปรูป) + who to tell (ครู, ผู้ปกครอง, แอดมิน, ตำรวจ). DO NOT ask for section numbers or IT tools.
+   - 🛡️ Security Engineer (0-10 pts): Evaluate ONLY practical youth safety habits (ไม่กดลิงก์แปลกๆ, ตั้งรหัสยากๆ, ไม่แชร์ข้อมูลส่วนตัว, ล็อกหน้าจอ). DO NOT DEMAND LAW CITATIONS, PENALTIES, OR ADULT IT OFFICER JARGON!
 
-1. 👨‍⚖️ Legal Analyst Evaluation (0 to 10 points):
-   - Law/Act identification (Max 4 points): Must correctly name the specific Cyber Law concept/section or PDPA. Give 0 points if wrong or gibberish.
-   - Penalty accuracy (Max 3 points): Correctly specifies jail term and fine. Give 0 points if omitted, wrong, or gibberish.
-   - Reason & Damage analysis (Max 3 points): Explains who suffered damage and why the behavior is unlawful (Full points if wrongful action is stated).
+3. ZERO-SCORE FOR GIBBERISH / TROLLING ONLY:
+   - Award 0 points ONLY if the answer is keyboard mashing (asdf, ฟกห, 5555), troll text, or evasive ("ไม่รู้", "ไม่บอก").
 
-2. 🚑 Incident Responder Evaluation (0 to 10 points):
-   - Immediate mitigation action (Max 5 points): Concrete steps to stop immediate damage. Give 0 points if gibberish or dangerous advice.
-   - Stakeholder notification (Max 3 points): States who to notify (e.g. teacher, parents, cyber police, platform admin, bank). Give 0 points if missing or gibberish.
-   - Logical realistic execution (Max 2 points): Step-by-step calm procedure for Grade 9 students.
-
-3. 🛡️ Security Engineer Evaluation (0 to 10 points):
-   - Proper technical prevention tool (Max 5 points): Identifies the exact IT security tool matching the case loophole. Give 0 points if no IT tool or gibberish.
-   - Anti-hacker reasoning (Max 3 points): Explains how this tool technically stops future exploits.
-   - Real-world feasibility for Grade 9 (Max 2 points): Realistic setting accessible to youth.
+4. FRIENDLY, SHORT & ENCOURAGING FEEDBACK (IN THAI):
+   - Keep feedback short (1-2 sentences), positive, and encouraging for Grade 9 students.
+   - Example 10/10 feedback: "เก่งมากเลยน้องๆ! คิดวิเคราะห์ได้ตรงประเด็นและนำไปใช้ป้องกันตัวเองในชีวิตจริงได้ดีมากครับ"
+   - NEVER criticize a Grade 9 student for not writing like an adult IT lawyer or security engineer!
 
 ---
 [OUTPUT FORMAT REQUIREMENT]
@@ -1326,18 +1309,18 @@ You MUST reply strictly in JSON format. Do not write any markdown backticks outs
 {
   "legal": {
     "score": <integer from 0 to 10>,
-    "feedback": "<educational feedback in Thai explaining why and how the answer is praised or guided, WITHOUT giving away exact section numbers or cheat answers>"
+    "feedback": "<friendly educational feedback in Thai for Grade 9 students without spoilers>"
   },
   "remedy": {
     "score": <integer from 0 to 10>,
-    "feedback": "<educational feedback in Thai guiding emergency containment concepts without spoilers>"
+    "feedback": "<friendly educational feedback in Thai for Grade 9 students without spoilers>"
   },
   "security": {
     "score": <integer from 0 to 10>,
-    "feedback": "<educational feedback in Thai guiding security engineering principles without spoilers>"
+    "feedback": "<friendly educational feedback in Thai for Grade 9 students without spoilers>"
   },
   "total_score": <integer from 0 to 30>,
-  "overall_summary": "<inspiring and constructive summary in Thai suitable for Grade 9 students>"
+  "overall_summary": "<inspiring and encouraging summary in Thai suitable for Grade 9 students>"
 }`;
 
     const userPrompt = `Student Submissions for Case "${caseTitle || ref.title}":
@@ -1403,30 +1386,44 @@ app.post('/api/evaluate-role', async (req, res) => {
             role,
             score: 0,
             feedback: role === 'legal'
-                ? 'ยังไม่สามารถให้คะแนนได้ เนื่องจากข้อความไม่ได้วิเคราะห์พฤติการณ์ความผิดทางไซเบอร์ ขอให้นักสืบย้อนกลับไปดูเหตุการณ์ในการ์ตูนแล้วเชื่อมโยงกับฐานความผิดและโทษทางกฎหมายให้ตรงประเด็น'
+                ? 'ยังไม่สามารถให้คะแนนได้ ลองย้อนกลับไปดูเหตุการณ์ในการ์ตูน 9 ช่อง แล้วระบุฐานความผิดหรือบทลงโทษทางกฎหมายดูนะครับ'
                 : role === 'remedy'
-                ? 'ยังไม่สามารถให้คะแนนได้ เนื่องจากไม่ได้ระบุขั้นตอนการระงับเหตุเฉพาะหน้า เมื่อเกิดเหตุฉุกเฉินทางไซเบอร์ต้องพิจารณาวิธีตัดวงจรความเสียหายทันที และระบุผู้มีอำนาจที่จะช่วยระงับเหตุ'
-                : 'ยังไม่สามารถให้คะแนนได้ เนื่องจากยังไม่ได้เสนอแนะระบบหรือเครื่องมือความปลอดภัยทางเทคนิค ลองวิเคราะห์ว่าช่องโหว่ความเสี่ยงในคดีนี้เกิดจากจุดใด แล้วเสนอเทคนิคความปลอดภัยเพื่อปิดช่องโหว่ระยะยาว',
+                ? 'ยังไม่สามารถให้คะแนนได้ ลองระบุวิธีรับมือตัดวงจรความเสียหายทันที และบอกผู้ใหญ่หรือแอดมินให้ช่วยระงับเหตุนะครับ'
+                : 'ยังไม่สามารถให้คะแนนได้ ลองเสนอแนะวิธีป้องกันตัวเองจากภัยไซเบอร์ง่ายๆ ในชีวิตประจำวันดูนะครับ',
             mode: 'gibberish_filter'
         });
     }
 
-    const systemPrompt = `You are the "Cyber Law and PDPA Academic Evaluator" for Thai Grade 9 (ม.3) students.
-Evaluate ONE SPECIFIC ROLE: "${roleNameThai}" (Max 10 points).
+    const systemPrompt = `You are "พี่สายสืบไซเบอร์ใจดี" (Kind Senior Cyber Detective Coach) for Thai Grade 9 (ม.3) students aged 14-15 who are BEGINNERS LEARNING CYBER LAW FOR THE FIRST TIME.
 
-[FAIR & REASONABLE ACADEMIC SCORING CALIBRATION FOR GRADE 9 STUDENTS]:
-- 🏆 FULL 10/10 SCORE: If the student correctly identifies the main law/section/concept (e.g. มาตรา 5 / แอบเข้าถึงระบบ) AND states the standard penalty (e.g. จำคุกไม่เกิน 6 เดือน หรือปรับไม่เกิน 10,000 บาท) AND includes the wrongful action/damage, YOU MUST AWARD FULL 10/10 POINTS! Do not deduct points when all requested academic criteria are accurately present.
-- 8 to 9 Points: Correct law and penalty with minor wording variation.
-- 5 to 7 Points: Partially correct concept or missing penalty details.
-- 0 Points: Pure gibberish, trolling, or complete mismatch.
+[PERSONA & TONAL REQUIREMENTS]:
+- Write in warm, encouraging, positive, simple Thai suitable for middle school students (ม.3).
+- ABSOLUTELY NO enterprise IT jargon, corporate law officer terminology, or complex engineering phrases (e.g. NEVER say "ควรระบุมาตรการสร้างความตระหนักรู้เชิงวิศวกรรมความปลอดภัยอันรัดกุม" or "ควรเสนอระบบ Authentication เพื่อจำกัดสิทธิ์ผู้ถือครอง").
+- INSTEAD use simple youth concepts (e.g. "สุดยอดเลยน้องๆ! ตอบได้ตรงจุดมาก", "เก่งมาก! รู้จักป้องกันตัวเองไม่ให้โดนหลอก", "ถูกต้องครับ! รู้จักบอกครูและผู้ปกครองเมื่อเกิดเหตุ").
 
-STRICT NO-SPOILER RULE: In your feedback, NEVER state the exact section number or give away the exact answer. Instead, explain conceptually WHY and HOW their answer is praised or missing concepts, without spoon-feeding section numbers.
+[BEGINNER-FRIENDLY GRADING POLICY FOR GRADE 9 (ม.3) STUDENTS]:
+1. CONCISE & DIRECT ANSWERS GET FULL 10/10 POINTS:
+   - Grade 9 students write concisely in everyday student language.
+   - If an answer is SHORT or BRIEF (e.g. "ไม่กดสมัครโฆษณามั่วๆ หรือไม่กดลิงค์แปลกๆ", "แจ้งครูและแอดมินลบรูป", "ผิดมาตรา 11 ปรับไม่เกิน 200,000 บาท"), BUT it addresses the practical action/concept -> YOU MUST AWARD FULL 10/10 POINTS!
+   - NEVER DEDUCT POINTS for short answer length, everyday youth vocabulary, or absence of adult/IT officer jargon!
+
+2. STRICT ROLE SEPARATION FOR BEGINNERS:
+   - 👨‍⚖️ Legal Analyst (0-10 pts): Evaluate ONLY law section/concept + penalty. DO NOT ask for IT tools.
+   - 🚑 Incident Responder (0-10 pts): Evaluate ONLY immediate action (ลบ, บล็อก, แคปรูป) + who to tell (ครู, ผู้ปกครอง, แอดมิน, ตำรวจ). DO NOT ask for section numbers or IT tools.
+   - 🛡️ Security Engineer (0-10 pts): Evaluate ONLY practical youth safety habits (ไม่กดลิงก์แปลกๆ, ตั้งรหัสยากๆ, ไม่แชร์ข้อมูลส่วนตัว, ล็อกหน้าจอ). DO NOT DEMAND LAW CITATIONS, PENALTIES, OR ADULT IT OFFICER JARGON!
+
+3. FRIENDLY, SHORT & ENCOURAGING FEEDBACK (IN THAI):
+   - Keep feedback short (1-2 sentences), positive, and encouraging for Grade 9 students.
+   - Example 10/10 feedback: "เก่งมากเลยน้องๆ! คิดวิเคราะห์ได้ตรงประเด็นและนำไปใช้ป้องกันตัวเองในชีวิตจริงได้ดีมากครับ"
+   - NEVER criticize a Grade 9 student for not writing like an adult IT lawyer or security engineer!
+
 Case Title: ${caseTitle || ref.title}
-Official Reference for this role (CONFIDENTIAL - DO NOT LEAK TO STUDENT): ${standardRef}
+Official Reference for this role (CONFIDENTIAL - DO NOT SPOIL EXACT ANSWERS): ${standardRef}
+
 Reply STRICTLY in JSON format:
 {
   "score": <integer from 0 to 10>,
-  "feedback": "<educational feedback in Thai explaining why and how the answer is praised or missing concepts, without spoilers>"
+  "feedback": "<friendly educational feedback in Thai explaining why and how the answer is praised or guided, without spoilers>"
 }`;
 
     const geminiResult = await callGeminiApiWithMultiKey(systemPrompt, `Student Answer for ${roleNameThai}: "${answer}"`, clientApiKey);

@@ -1469,24 +1469,26 @@
                 overall_summary: ''
             };
 
-            if (item.student_answers) {
-                if (typeof item.student_answers === 'object') {
-                    answers = { ...answers, ...item.student_answers };
-                } else if (typeof item.student_answers === 'string') {
-                    try { answers = { ...answers, ...JSON.parse(item.student_answers) }; } catch(e){}
+            const rawAns = item.student_answers || item.studentAnswers || item.answers;
+            if (rawAns) {
+                if (typeof rawAns === 'object') {
+                    answers = { ...answers, ...rawAns };
+                } else if (typeof rawAns === 'string') {
+                    try { answers = { ...answers, ...JSON.parse(rawAns) }; } catch(e){}
                 }
             }
 
-            if (item.ai_feedback) {
-                let rawFb = item.ai_feedback;
-                if (typeof rawFb === 'string') {
-                    try { rawFb = JSON.parse(rawFb); } catch(e){}
+            const rawFb = item.ai_feedback || item.aiFeedback || item.evaluation;
+            if (rawFb) {
+                let parsedFb = rawFb;
+                if (typeof parsedFb === 'string') {
+                    try { parsedFb = JSON.parse(parsedFb); } catch(e){}
                 }
-                if (typeof rawFb === 'object' && rawFb !== null) {
-                    if (rawFb.legal) feedback.legal = { score: Number(rawFb.legal.score ?? item.legal_score ?? 0), feedback: rawFb.legal.feedback || '' };
-                    if (rawFb.remedy) feedback.remedy = { score: Number(rawFb.remedy.score ?? item.remedy_score ?? 0), feedback: rawFb.remedy.feedback || '' };
-                    if (rawFb.security) feedback.security = { score: Number(rawFb.security.score ?? item.security_score ?? 0), feedback: rawFb.security.feedback || '' };
-                    if (rawFb.overall_summary) feedback.overall_summary = rawFb.overall_summary;
+                if (typeof parsedFb === 'object' && parsedFb !== null) {
+                    if (parsedFb.legal) feedback.legal = { score: Number(parsedFb.legal.score ?? item.legal_score ?? 0), feedback: parsedFb.legal.feedback || parsedFb.legal.feedback_text || '' };
+                    if (parsedFb.remedy) feedback.remedy = { score: Number(parsedFb.remedy.score ?? item.remedy_score ?? 0), feedback: parsedFb.remedy.feedback || parsedFb.remedy.feedback_text || '' };
+                    if (parsedFb.security) feedback.security = { score: Number(parsedFb.security.score ?? item.security_score ?? 0), feedback: parsedFb.security.feedback || parsedFb.security.feedback_text || '' };
+                    if (parsedFb.overall_summary) feedback.overall_summary = parsedFb.overall_summary;
                 }
             }
 
@@ -1646,13 +1648,21 @@
             const sortedItems = [...items].sort((a, b) => (a.case_id || 0) - (b.case_id || 0));
 
             const casesContainer = document.getElementById('group-cases-container');
-            casesContainer.innerHTML = sortedItems.map((item, idx) => {
+            const caseCardsHtml = sortedItems.map((item, idx) => {
                 const p = parseScoreItem(item);
                 const { answers, feedback } = extractAnswersAndFeedback(item);
                 const caseTitle = item.case_title || `คดีที่ ${item.case_id || (idx + 1)}`;
                 const caseRef = ALL_12_CASES.find(c => c.id === item.case_id) || {};
                 const timeStr = item.created_at ? new Date(item.created_at).toLocaleString('th-TH') : '-';
                 const totalCaseScore = p.legal + p.remedy + p.security;
+
+                // Check which roles have been performed/answered
+                const hasLegal = (answers.legal && answers.legal.trim().length > 0) || p.legal > 0 || (feedback.legal && feedback.legal.feedback && feedback.legal.feedback.trim().length > 0);
+                const hasRemedy = (answers.remedy && answers.remedy.trim().length > 0) || p.remedy > 0 || (feedback.remedy && feedback.remedy.feedback && feedback.remedy.feedback.trim().length > 0);
+                const hasSecurity = (answers.security && answers.security.trim().length > 0) || p.security > 0 || (feedback.security && feedback.security.feedback && feedback.security.feedback.trim().length > 0);
+
+                // Show ONLY cases that have at least one performed role
+                if (!hasLegal && !hasRemedy && !hasSecurity) return '';
 
                 return `
                     <div class="glass-panel p-5 rounded-3xl border border-slate-700 flex flex-col gap-4 shadow-xl">
@@ -1674,9 +1684,10 @@
                             </div>
                         </div>
 
-                        <!-- 3 Roles Detailed Breakdown -->
+                        <!-- 3 Roles Detailed Breakdown (Only performed roles) -->
                         <div class="flex flex-col gap-3 font-sarabun text-xs">
                             
+                            ${hasLegal ? `
                             <!-- Role 1: Legal -->
                             <div class="p-4 rounded-2xl bg-amber-950/30 border border-amber-500/30 flex flex-col gap-2">
                                 <div class="flex items-center justify-between text-amber-300 font-bold">
@@ -1685,14 +1696,15 @@
                                 </div>
                                 <div class="bg-slate-950/80 p-3 rounded-xl border border-slate-800 text-slate-200 leading-relaxed">
                                     <span class="text-slate-400 font-semibold block mb-1">📝 คำตอบของเด็ก:</span>
-                                    ${answers.legal ? answers.legal : '<span class="text-slate-500 italic">ไม่มีข้อมูลคำตอบ</span>'}
+                                    ${answers.legal ? answers.legal : '<span class="text-slate-500 italic">ไม่พบบันทึกข้อความคำตอบ (ส่งตรวจก่อนรัน SQL เพิ่มคอลัมน์ใน Supabase)</span>'}
                                 </div>
                                 <div class="bg-amber-950/60 p-3 rounded-xl border border-amber-500/20 text-amber-200 leading-relaxed">
                                     <span class="text-amber-400 font-semibold block mb-1"><i class="fa-solid fa-robot mr-1"></i> AI ประเมินผล:</span>
                                     ${feedback.legal.feedback ? feedback.legal.feedback : 'ให้คะแนน ' + p.legal + ' คะแนน'}
                                 </div>
-                            </div>
+                            </div>` : ''}
 
+                            ${hasRemedy ? `
                             <!-- Role 2: Remedy -->
                             <div class="p-4 rounded-2xl bg-pink-950/30 border border-pink-500/30 flex flex-col gap-2">
                                 <div class="flex items-center justify-between text-pink-300 font-bold">
@@ -1701,14 +1713,15 @@
                                 </div>
                                 <div class="bg-slate-950/80 p-3 rounded-xl border border-slate-800 text-slate-200 leading-relaxed">
                                     <span class="text-slate-400 font-semibold block mb-1">📝 คำตอบของเด็ก:</span>
-                                    ${answers.remedy ? answers.remedy : '<span class="text-slate-500 italic">ไม่มีข้อมูลคำตอบ</span>'}
+                                    ${answers.remedy ? answers.remedy : '<span class="text-slate-500 italic">ไม่พบบันทึกข้อความคำตอบ (ส่งตรวจก่อนรัน SQL เพิ่มคอลัมน์ใน Supabase)</span>'}
                                 </div>
                                 <div class="bg-pink-950/60 p-3 rounded-xl border border-pink-500/20 text-pink-200 leading-relaxed">
                                     <span class="text-pink-400 font-semibold block mb-1"><i class="fa-solid fa-robot mr-1"></i> AI ประเมินผล:</span>
                                     ${feedback.remedy.feedback ? feedback.remedy.feedback : 'ให้คะแนน ' + p.remedy + ' คะแนน'}
                                 </div>
-                            </div>
+                            </div>` : ''}
 
+                            ${hasSecurity ? `
                             <!-- Role 3: Security -->
                             <div class="p-4 rounded-2xl bg-cyan-950/30 border border-cyan-500/30 flex flex-col gap-2">
                                 <div class="flex items-center justify-between text-cyan-300 font-bold">
@@ -1717,13 +1730,13 @@
                                 </div>
                                 <div class="bg-slate-950/80 p-3 rounded-xl border border-slate-800 text-slate-200 leading-relaxed">
                                     <span class="text-slate-400 font-semibold block mb-1">📝 คำตอบของเด็ก:</span>
-                                    ${answers.security ? answers.security : '<span class="text-slate-500 italic">ไม่มีข้อมูลคำตอบ</span>'}
+                                    ${answers.security ? answers.security : '<span class="text-slate-500 italic">ไม่พบบันทึกข้อความคำตอบ (ส่งตรวจก่อนรัน SQL เพิ่มคอลัมน์ใน Supabase)</span>'}
                                 </div>
                                 <div class="bg-cyan-950/60 p-3 rounded-xl border border-cyan-500/20 text-cyan-200 leading-relaxed">
                                     <span class="text-cyan-400 font-semibold block mb-1"><i class="fa-solid fa-robot mr-1"></i> AI ประเมินผล:</span>
                                     ${feedback.security.feedback ? feedback.security.feedback : 'ให้คะแนน ' + p.security + ' คะแนน'}
                                 </div>
-                            </div>
+                            </div>` : ''}
 
                             ${feedback.overall_summary ? `
                             <div class="p-3 rounded-2xl bg-purple-950/40 border border-purple-500/30 text-purple-200 leading-relaxed">
@@ -1735,7 +1748,9 @@
 
                     </div>
                 `;
-            }).join('');
+            }).filter(Boolean).join('');
+
+            casesContainer.innerHTML = caseCardsHtml || `<div class="glass-panel p-8 rounded-2xl border border-slate-800 text-center text-slate-500 font-sarabun text-xs">กลุ่มนี้ยังไม่ได้ทำข้อสอบหรือส่งตรวจคดีใดๆ</div>`;
         }
 
         // --- PDF Export Modal Handlers for Group Answers (Vertical A4 Layout) ---
@@ -1806,6 +1821,65 @@
 
                 const sortedItems = [...items].sort((a, b) => (a.case_id || 0) - (b.case_id || 0));
 
+                const printedCasesHtml = sortedItems.map((item, cIdx) => {
+                    const p = parseScoreItem(item);
+                    const { answers, feedback } = extractAnswersAndFeedback(item);
+                    const caseTitle = item.case_title || `คดีที่ ${item.case_id || (cIdx + 1)}`;
+                    const caseRef = ALL_12_CASES.find(c => c.id === item.case_id) || {};
+                    const totalCaseScore = p.legal + p.remedy + p.security;
+
+                    const hasLegal = (answers.legal && answers.legal.trim().length > 0) || p.legal > 0 || (feedback.legal && feedback.legal.feedback && feedback.legal.feedback.trim().length > 0);
+                    const hasRemedy = (answers.remedy && answers.remedy.trim().length > 0) || p.remedy > 0 || (feedback.remedy && feedback.remedy.feedback && feedback.remedy.feedback.trim().length > 0);
+                    const hasSecurity = (answers.security && answers.security.trim().length > 0) || p.security > 0 || (feedback.security && feedback.security.feedback && feedback.security.feedback.trim().length > 0);
+
+                    if (!hasLegal && !hasRemedy && !hasSecurity) return '';
+
+                    return `
+                        <div class="print-card p-4 rounded-xl border border-slate-300 bg-white text-slate-900 flex flex-col gap-3">
+                            
+                            <div class="flex items-center justify-between border-b border-slate-300 pb-2">
+                                <span class="font-bold text-sm font-kanit text-slate-900">
+                                    คดี #${item.case_id || (cIdx+1)}: ${caseTitle} ${caseRef.section ? `(${caseRef.section})` : ''}
+                                </span>
+                                <span class="print-score-badge">
+                                    คะแนนคดีนี้: ${totalCaseScore} / 30
+                                </span>
+                            </div>
+
+                            ${hasLegal ? `
+                            <!-- Role 1 -->
+                            <div class="print-role-box text-xs">
+                                <div class="font-bold text-slate-900 mb-0.5">👨‍⚖️ 1. นักวิเคราะห์กฎหมาย (คะแนน ${p.legal}/10)</div>
+                                <div class="text-slate-800 mb-1"><b>คำตอบนักเรียน:</b> ${answers.legal || '-'}</div>
+                                <div class="text-purple-900 bg-purple-50 p-2 rounded border border-purple-200">
+                                    <b>🤖 AI ประเมินผล:</b> ${feedback.legal.feedback || 'ให้คะแนน ' + p.legal + ' คะแนน'}
+                                </div>
+                            </div>` : ''}
+
+                            ${hasRemedy ? `
+                            <!-- Role 2 -->
+                            <div class="print-role-box text-xs">
+                                <div class="font-bold text-slate-900 mb-0.5">🚑 2. เจ้าหน้าที่บรรเทาภัย (คะแนน ${p.remedy}/10)</div>
+                                <div class="text-slate-800 mb-1"><b>คำตอบนักเรียน:</b> ${answers.remedy || '-'}</div>
+                                <div class="text-pink-900 bg-pink-50 p-2 rounded border border-pink-200">
+                                    <b>🤖 AI ประเมินผล:</b> ${feedback.remedy.feedback || 'ให้คะแนน ' + p.remedy + ' คะแนน'}
+                                </div>
+                            </div>` : ''}
+
+                            ${hasSecurity ? `
+                            <!-- Role 3 -->
+                            <div class="print-role-box text-xs">
+                                <div class="font-bold text-slate-900 mb-0.5">🛡️ 3. วิศวกรความปลอดภัย (คะแนน ${p.security}/10)</div>
+                                <div class="text-slate-800 mb-1"><b>คำตอบนักเรียน:</b> ${answers.security || '-'}</div>
+                                <div class="text-teal-900 bg-teal-50 p-2 rounded border border-teal-200">
+                                    <b>🤖 AI ประเมินผล:</b> ${feedback.security.feedback || 'ให้คะแนน ' + p.security + ' คะแนน'}
+                                </div>
+                            </div>` : ''}
+
+                        </div>
+                    `;
+                }).filter(Boolean).join('');
+
                 fullHtml += `
                     <div class="${groupIdx > 0 ? 'mt-8 pt-6 border-t-2 border-slate-300' : ''}">
                         
@@ -1824,55 +1898,7 @@
 
                         <!-- Case Answers Breakdown -->
                         <div class="flex flex-col gap-4">
-                            ${sortedItems.map((item, cIdx) => {
-                                const p = parseScoreItem(item);
-                                const { answers, feedback } = extractAnswersAndFeedback(item);
-                                const caseTitle = item.case_title || `คดีที่ ${item.case_id || (cIdx + 1)}`;
-                                const caseRef = ALL_12_CASES.find(c => c.id === item.case_id) || {};
-                                const totalCaseScore = p.legal + p.remedy + p.security;
-
-                                return `
-                                    <div class="print-card p-4 rounded-xl border border-slate-300 bg-white text-slate-900 flex flex-col gap-3">
-                                        
-                                        <div class="flex items-center justify-between border-b border-slate-300 pb-2">
-                                            <span class="font-bold text-sm font-kanit text-slate-900">
-                                                คดี #${item.case_id || (cIdx+1)}: ${caseTitle} ${caseRef.section ? `(${caseRef.section})` : ''}
-                                            </span>
-                                            <span class="print-score-badge">
-                                                คะแนนคดีนี้: ${totalCaseScore} / 30 (กฎหมาย: ${p.legal}, บรรเทา: ${p.remedy}, ป้องกัน: ${p.security})
-                                            </span>
-                                        </div>
-
-                                        <!-- Role 1 -->
-                                        <div class="print-role-box text-xs">
-                                            <div class="font-bold text-slate-900 mb-0.5">👨‍⚖️ 1. นักวิเคราะห์กฎหมาย (คะแนน ${p.legal}/10)</div>
-                                            <div class="text-slate-800 mb-1"><b>คำตอบนักเรียน:</b> ${answers.legal || '-'}</div>
-                                            <div class="text-purple-900 bg-purple-50 p-2 rounded border border-purple-200">
-                                                <b>🤖 AI ประเมินผล:</b> ${feedback.legal.feedback || 'ให้คะแนน ' + p.legal + ' คะแนน'}
-                                            </div>
-                                        </div>
-
-                                        <!-- Role 2 -->
-                                        <div class="print-role-box text-xs">
-                                            <div class="font-bold text-slate-900 mb-0.5">🚑 2. เจ้าหน้าที่บรรเทาภัย (คะแนน ${p.remedy}/10)</div>
-                                            <div class="text-slate-800 mb-1"><b>คำตอบนักเรียน:</b> ${answers.remedy || '-'}</div>
-                                            <div class="text-pink-900 bg-pink-50 p-2 rounded border border-pink-200">
-                                                <b>🤖 AI ประเมินผล:</b> ${feedback.remedy.feedback || 'ให้คะแนน ' + p.remedy + ' คะแนน'}
-                                            </div>
-                                        </div>
-
-                                        <!-- Role 3 -->
-                                        <div class="print-role-box text-xs">
-                                            <div class="font-bold text-slate-900 mb-0.5">🛡️ 3. วิศวกรความปลอดภัย (คะแนน ${p.security}/10)</div>
-                                            <div class="text-slate-800 mb-1"><b>คำตอบนักเรียน:</b> ${answers.security || '-'}</div>
-                                            <div class="text-teal-900 bg-teal-50 p-2 rounded border border-teal-200">
-                                                <b>🤖 AI ประเมินผล:</b> ${feedback.security.feedback || 'ให้คะแนน ' + p.security + ' คะแนน'}
-                                            </div>
-                                        </div>
-
-                                    </div>
-                                `;
-                            }).join('')}
+                            ${printedCasesHtml || '<div class="p-4 text-center text-slate-500 text-xs">ไม่มีคดีที่ทำเสร็จสิ้น</div>'}
                         </div>
 
                     </div>
