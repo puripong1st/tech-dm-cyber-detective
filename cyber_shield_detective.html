@@ -2515,7 +2515,7 @@
             
             // Gibberish check
             const evasive = /^(ไม่รู้|ไม่ทราบ|ไม่บอก|มั่ว|ขี้เกียจ|ไม่มี|ไม่แน่ใจ|ไม่รู้อะไรเลย|ช่างมัน|ไม่ตอบ|5555|asdf|ฟกห)/i;
-            if (clean.length < 10 || evasive.test(clean)) {
+            if (clean.length < 5 || evasive.test(clean)) {
                 return {
                     role: roleKey,
                     score: 0,
@@ -2527,74 +2527,125 @@
                 };
             }
 
+            // Check wrong section or wrong case topic across ALL 12 cases
+            const sectionCaseMap = {
+                'มาตรา 5': 1, 'มาตรา 6': 2, 'มาตรา 7': 3, 'มาตรา 8': 4,
+                'มาตรา 9': 5, 'มาตรา 10': 6, 'มาตรา 11': 7, 'มาตรา 14(1)': 9,
+                'มาตรา 14(2)': 10, 'มาตรา 14(4)': 11, 'มาตรา 16': 12
+            };
+
+            const currentCaseId = Number(caseItem.id);
+
+            // 1. Law section mismatch
+            for (const [sec, cId] of Object.entries(sectionCaseMap)) {
+                if (clean.includes(sec.toLowerCase()) && cId !== currentCaseId) {
+                    if (sec === 'มาตรา 11' && (currentCaseId === 7 || currentCaseId === 8)) continue;
+                    return {
+                        role: roleKey,
+                        score: 0,
+                        feedback: `คำตอบไม่ตรงกับคดี! ข้อความที่คุณระบุ (${sec}) เป็นเรื่องคดีอื่น ไม่ตรงกับพฤติการณ์ในคดีนี้ (${caseItem.title})`
+                    };
+                }
+            }
+
+            // 2. Topic domain mismatch across all 12 cases
+            if (currentCaseId !== 12 && ['ตัดต่อภาพ', 'ดัดแปลงภาพ', 'ภาพตัดต่อ', 'บูลลี่', 'cyberbullying', 'แท็กภาพ', 'ทำให้อับอาย'].some(k => clean.includes(k))) {
+                return { role: roleKey, score: 0, feedback: `คำตอบไม่ตรงกับคดี! ข้อความนี้เป็นเรื่องการตัดต่อรูปและบูลลี่ ไม่ตรงกับคดีนี้ (${caseItem.title})` };
+            }
+            if (currentCaseId !== 11 && ['คลิปโป๊', 'ภาพลามก', 'อนาจาร', 'สื่อลามก', 'safesearch'].some(k => clean.includes(k))) {
+                return { role: roleKey, score: 0, feedback: `คำตอบไม่ตรงกับคดี! ข้อความนี้เป็นเรื่องภาพลามกอนาจาร ไม่ตรงกับคดีนี้ (${caseItem.title})` };
+            }
+            if (currentCaseId !== 6 && ['ยิงระบบ', 'ยิงเซิร์ฟเวอร์', 'เซิร์ฟเวอร์ล่ม', 'ddos', 'cloudflare'].some(k => clean.includes(k))) {
+                return { role: roleKey, score: 0, feedback: `คำตอบไม่ตรงกับคดี! ข้อความนี้เป็นเรื่องการยิง DDoS ถล่มเซิร์ฟเวอร์ ไม่ตรงกับคดีนี้ (${caseItem.title})` };
+            }
+            if (currentCaseId !== 9 && ['phishing', 'ฟิชชิ่ง', 'เว็บปลอม', 'สกินฟรี', 'แจกเพชร'].some(k => clean.includes(k))) {
+                return { role: roleKey, score: 0, feedback: `คำตอบไม่ตรงกับคดี! ข้อความนี้เป็นเรื่องเว็บฟิชชิ่งหลอกสกินเกม ไม่ตรงกับคดีนี้ (${caseItem.title})` };
+            }
+            if (currentCaseId !== 10 && ['ข่าวปลอม', 'fake news', 'ตื่นตระหนก', 'ข่าวลวง', 'ศูนย์ต่อต้านข่าวปลอม'].some(k => clean.includes(k))) {
+                return { role: roleKey, score: 0, feedback: `คำตอบไม่ตรงกับคดี! ข้อความนี้เป็นเรื่องการโพสต์ข่าวปลอมตื่นตระหนก ไม่ตรงกับคดีนี้ (${caseItem.title})` };
+            }
+            if (currentCaseId !== 4 && ['wifi สาธารณะ', 'free wifi', 'อายัดบัตร', 'ดักฟังสัญญาณ'].some(k => clean.includes(k))) {
+                return { role: roleKey, score: 0, feedback: `คำตอบไม่ตรงกับคดี! ข้อความนี้เป็นเรื่องการดักจับข้อมูลบน Wi-Fi ไม่ตรงกับคดีนี้ (${caseItem.title})` };
+            }
+            if (currentCaseId !== 5 && ['version history', 'ประวัติเวอร์ชัน', 'กู้ไฟล์โครงงาน'].some(k => clean.includes(k))) {
+                return { role: roleKey, score: 0, feedback: `คำตอบไม่ตรงกับคดี! ข้อความนี้เป็นเรื่องการแอบลบไฟล์โครงงาน ไม่ตรงกับคดีนี้ (${caseItem.title})` };
+            }
+
             let score = 0;
             let feedback = '';
 
             if (roleKey === 'legal') {
-                const hasLaw = (caseItem.keywords_law || []).some(k => clean.includes(k.toLowerCase())) || 
-                                (caseItem.section && clean.includes(caseItem.section.toLowerCase())) ||
-                                (caseItem.standard_law && clean.includes(caseItem.standard_law.toLowerCase()));
-                const hasGeneralLawTerm = ["มาตรา", "พ.ร.บ", "pdpa", "กฎหมาย", "ผิด", "ความผิด", "แอบ", "ละเมิด", "เข้าถึง", "หลอก", "ทำลาย", "ดัก", "สแปม", "ตัดต่อ"].some(k => clean.includes(k));
-                const hasPenaltySpecific = (caseItem.keywords_penalty || []).some(k => clean.includes(k.toLowerCase()));
-                const hasGeneralPenaltyTerm = ["ปรับ", "คุก", "จำคุก", "บาท", "ปี", "เดือน", "โทษ", "ลงโทษ", "แสน", "หมื่น", "ร้อย"].some(k => clean.includes(k));
+                const hasLawSection = (clean.includes('มาตรา') || clean.includes('พ.ร.บ') || clean.includes('pdpa') || clean.includes('กฎหมาย') || clean.includes('ฐานความผิด'));
+                const hasPenalty = (clean.includes('ปรับ') || clean.includes('คุก') || clean.includes('จำคุก') || clean.includes('บาท') || clean.includes('ปี') || clean.includes('เดือน') || clean.includes('หมื่น') || clean.includes('แสน'));
 
-                if (hasLaw || hasGeneralLawTerm) score += 6;
-                else score += 4;
+                if (!hasLawSection && !hasPenalty) {
+                    return {
+                        role: roleKey,
+                        score: 0,
+                        feedback: 'ยังไม่สามารถให้คะแนนได้ ข้อความนี้เป็นวิธีระงับเหตุหรือการตั้งค่าความปลอดภัย ไม่ใช่การวิเคราะห์ฐานความผิดกฎหมายและอัตราโทษประจำคดี'
+                    };
+                }
 
-                if (hasPenaltySpecific || hasGeneralPenaltyTerm || clean.length >= 10) score += 4;
-
-                score = Math.min(10, Math.max(0, score));
-
-                if (score >= 9) {
-                    feedback = 'วิเคราะห์ฐานความผิดทางกฎหมายและระบุอัตราโทษจำคุก/ปรับได้อย่างถูกต้อง แม่นยำ ครบถ้วนสมบูรณ์ตามหลัก พ.ร.บ.คอมพิวเตอร์ / PDPA';
-                } else if (score >= 6) {
-                    feedback = 'วิเคราะห์ทิศทางฐานความผิดและอัตราโทษได้ดีมาก! มีความเข้าใจหลักกฎหมายไซเบอร์เบื้องต้นเป็นอย่างดี';
+                const hasCaseLawMatch = (caseItem.keywords_law || []).some(k => clean.includes(k.toLowerCase())) ||
+                                        (caseItem.section && clean.includes(caseItem.section.toLowerCase())) ||
+                                        (caseItem.standard_law && clean.includes(caseItem.standard_law.toLowerCase()));
+                if (hasCaseLawMatch) {
+                    score = 10;
+                    feedback = 'วิเคราะห์ฐานความผิดทางกฎหมายและอัตราโทษประจำคดีนี้ได้อย่างถูกต้อง แม่นยำ และตรงประเด็น!';
                 } else {
-                    feedback = 'ฐานความผิดและโทษที่ระบุยังไม่สอดคล้องกับพฤติการณ์ในคดีนี้ ลองพิจารณาว่าเหตุการณ์ในการ์ตูนเป็นการกระทำต่อระบบ ข้อมูล หรือเป็นการเผยแพร่/หลอกลวง เพื่อเลือกมาตราให้ตรงจุดยิ่งขึ้น';
+                    score = 5;
+                    feedback = 'วิเคราะห์ทิศทางกฎหมายได้ดีแล้ว แนะนำให้ระบุมาตราและอัตราโทษที่ตรงกับคดีนี้เพิ่มเติมเพื่อให้ได้คะแนนเต็ม';
                 }
 
             } else if (roleKey === 'remedy') {
-                const hasRemedyAction = (caseItem.keywords_remedy || []).some(k => clean.includes(k.toLowerCase()));
-                const hasGeneralRemedyTerm = ["ลบ", "เปลี่ยน", "แจ้ง", "บล็อก", "กู้", "หยุด", "อายัด", "ปิด", "ตัด", "ระงับ", "แคป", "บอก", "ช่วย", "รายงาน", "ปรึกษา", "ประสานงาน", "ติดต่อ", "ฟ้อง", "ไม่กด", "ชำระ", "ย้าย", "แก้ไข"].some(k => clean.includes(k));
-                const hasStakeholder = ["ครู", "ผู้ปกครอง", "พ่อ", "แม่", "ตำรวจ", "แอดมิน", "แพลตฟอร์ม", "ธนาคาร", "ค่ายเกม", "ผู้ดูแล", "ไอที", "ผู้ให้บริการ", "กสทช", "เจ้าหน้าที่", "อาจารย์", "ผู้บริหาร", "หัวหน้า", "โรงเรียน", "admin", "ผู้ใหญ่", "เพื่อน"].some(s => clean.includes(s));
+                const hasAction = ['ลบ','บล็อก','แจ้ง','กู้','หยุด','อายัด','สลับ','ตัด','ปิด','แคป','รายงาน','บอกครู','บอกพ่อแม่','ปรึกษา','ฟ้อง','ประสานงาน','แก้ข่าว'].some(k => clean.includes(k));
+                const mentionsLawOnly = (clean.includes('มาตรา') || clean.includes('พ.ร.บ')) && !hasAction;
 
-                if (hasRemedyAction || hasGeneralRemedyTerm) score += 6;
-                else score += 4;
+                if (mentionsLawOnly || !hasAction) {
+                    return {
+                        role: roleKey,
+                        score: 0,
+                        feedback: 'ยังไม่สามารถให้คะแนนได้ ข้อความนี้เป็นการระบุมาตรากฎหมาย ไม่ใช่ขั้นตอนการระงับเหตุเฉพาะหน้าเพื่อหยุดยั้งความเสียหาย'
+                    };
+                }
 
-                if (hasStakeholder || clean.length >= 10) score += 4;
-
-                score = Math.min(10, Math.max(0, score));
-
-                if (score >= 9) {
-                    feedback = 'ลำดับขั้นตอนการบรรเทาความเสียหายเฉพาะหน้าได้อย่างรวดเร็ว มีสติ และระบุผู้เกี่ยวข้องในการระงับเหตุได้อย่างตรงจุดและปฏิบัติได้จริง';
-                } else if (score >= 6) {
-                    feedback = 'มีแนวคิดการหยุดเหตุเฉพาะหน้าและแจ้งผู้เกี่ยวข้องได้ดีมาก! ช่วยลดความเสียหายได้อย่างรวดเร็ว';
+                const hasCaseRemedyMatch = (caseItem.keywords_remedy || []).some(k => clean.includes(k.toLowerCase()));
+                if (hasCaseRemedyMatch) {
+                    score = 10;
+                    feedback = 'ลำดับขั้นตอนการบรรเทาความเสียหายเฉพาะหน้าของคดีนี้ได้อย่างรวดเร็ว มีสติ และตรงจุด!';
                 } else {
-                    feedback = 'แนวทางรับมือยังไม่ตรงกับลักษณะภัยไซเบอร์ในคดีนี้ ควรพิจารณาวิธีตัดวงจรความเสียหายทันที เช่น เปลี่ยนรหัส บล็อกไอพี หรือกู้คืนข้อมูล';
+                    score = 5;
+                    feedback = 'มีแนวคิดการหยุดเหตุเฉพาะหน้าได้ดีแล้ว ควรระบุวิธีระงับเหตุที่ตรงกับลักษณะคดีนี้เพิ่มเติม';
                 }
 
             } else { // Security Engineer
-                const hasSecurityTool = (caseItem.keywords_security || []).some(k => clean.includes(k.toLowerCase()));
-                const hasPracticalSafetyTerm = ["ไม่กด", "ไม่คลิก", "ลิงก์", "ลิงค์", "โฆษณา", "สมัคร", "รหัส", "2fa", "ป้องกัน", "ตั้งค่า", "ล็อก", "สิทธิ์", "กรอง", "ความเป็นส่วนตัว", "ระวัง", "หลีกเลี่ยง", "ไม่แชร์", "ไม่กรอก", "แฮกเกอร์", "ระบบ", "ความปลอดภัย", "แปลก", "มั่ว"].some(k => clean.includes(k));
+                const isDDoS = currentCaseId === 6;
+                const isCyberbullyingAnswer = clean.includes('ตัดต่อ') || clean.includes('บูลลี่') || clean.includes('cyberbullying') || clean.includes('แท็กภาพ') || (clean.includes('รีพอร์ต') && clean.includes('ภาพ'));
+                const hasSecTool = ['ไม่กด','ไม่คลิก','ลิงก์','ลิงค์','โฆษณา','สมัคร','รหัส','2fa','ป้องกัน','ตั้งค่า','ล็อก','สิทธิ์','กรอง','ความเป็นส่วนตัว','ระวัง','หลีกเลี่ยง','ไม่แชร์','ไม่กรอก','แฮกเกอร์','ระบบ','ความปลอดภัย','ไฟร์วอลล์','firewall','ddos','cloudflare','safesearch','private','ส่วนตัว'].some(k => clean.includes(k));
 
-                if (hasSecurityTool || hasPracticalSafetyTerm) {
-                    score += 6;
-                } else {
-                    score += 4;
+                if (isDDoS && isCyberbullyingAnswer) {
+                    return {
+                        role: roleKey,
+                        score: 0,
+                        feedback: 'คำตอบไม่ตรงกับคดี! ข้อความนี้เป็นการแจ้งลบรูปบูลลี่ ไม่ตรงกับระบบป้องกันเซิร์ฟเวอร์สอบล่มจากการยิง DDoS'
+                    };
                 }
 
-                if (clean.length >= 10 || hasSecurityTool) {
-                    score += 4;
+                if (!hasSecTool) {
+                    return {
+                        role: roleKey,
+                        score: 0,
+                        feedback: 'ยังไม่สามารถให้คะแนนได้ ข้อความนี้ไม่ใช่มาตรการหรือแนวทางป้องกันความเสี่ยงระยะยาว'
+                    };
                 }
 
-                score = Math.min(10, Math.max(0, score));
-
-                if (score >= 9) {
-                    feedback = 'ข้อเสนอแนะด้านวิศวกรรมความปลอดภัยยอดเยี่ยม! มาตรการที่เลือกใช้สามารถปิดช่องโหว่ความเสี่ยงในระยะยาวได้อย่างสมบูรณ์แบบ';
-                } else if (score >= 6) {
-                    feedback = 'ตอบได้ตรงประเด็นแล้ว! มีแนวคิดการป้องกันตนเองทางไซเบอร์ที่ดีเยี่ยม';
+                const hasCaseSecMatch = (caseItem.keywords_security || []).some(k => clean.includes(k.toLowerCase()));
+                if (hasCaseSecMatch) {
+                    score = 10;
+                    feedback = 'ข้อเสนอแนะด้านวิศวกรรมความปลอดภัยตรงกับช่องโหว่ความเสี่ยงในคดีนี้ได้อย่างสมบูรณ์แบบ!';
                 } else {
-                    feedback = 'แนวคิดการป้องกันดีขึ้นแล้ว ลองระบุเครื่องมือเทคโนโลยีความปลอดภัยเฉพาะทางเพิ่มเติมเพื่อมาตรการที่รัดกุมยิ่งขึ้น';
+                    score = 5;
+                    feedback = 'ตอบได้ตรงประเด็นแนวทางป้องกันแล้ว หากระบุเครื่องมือป้องกันที่ตรงกับคดีนี้จะสมบูรณ์ยิ่งขึ้น';
                 }
             }
 

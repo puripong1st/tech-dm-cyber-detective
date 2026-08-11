@@ -1044,6 +1044,51 @@ function evaluateLocally(caseId, studentAnswers) {
     const remedyText = (studentAnswers.remedy || '').trim();
     const securityText = (studentAnswers.security || '').trim();
 
+    // Helper to validate wrong case section or wrong topic across ALL 12 cases
+    const sectionCaseMap = {
+        'มาตรา 5': 1, 'มาตรา 6': 2, 'มาตรา 7': 3, 'มาตรา 8': 4,
+        'มาตรา 9': 5, 'มาตรา 10': 6, 'มาตรา 11': 7, 'มาตรา 14(1)': 9,
+        'มาตรา 14(2)': 10, 'มาตรา 14(4)': 11, 'มาตรา 16': 12
+    };
+
+    function checkWrongCaseSection(text, currentCaseId) {
+        const lower = (text || '').toLowerCase();
+        const cId = Number(currentCaseId);
+
+        // 1. Law Section mismatch
+        for (const [sec, targetId] of Object.entries(sectionCaseMap)) {
+            if (lower.includes(sec.toLowerCase()) && targetId !== cId) {
+                if (sec === 'มาตรา 11' && (cId === 7 || cId === 8)) continue;
+                return `คำตอบไม่ตรงกับคดี! ข้อความที่คุณระบุ (${sec}) เป็นกฎหมายของคดีอื่น ไม่ตรงกับพฤติการณ์ในคดีนี้ (${ref.title})`;
+            }
+        }
+
+        // 2. Specific Topic Domain mismatches across all 12 cases
+        if (cId !== 12 && ['ตัดต่อภาพ', 'ดัดแปลงภาพ', 'ภาพตัดต่อ', 'บูลลี่', 'cyberbullying', 'แท็กภาพ', 'ทำให้อับอาย'].some(k => lower.includes(k))) {
+            return `คำตอบไม่ตรงกับคดี! ข้อความนี้เป็นเรื่องการตัดต่อรูปและบูลลี่ ไม่ตรงกับคดีนี้ (${ref.title})`;
+        }
+        if (cId !== 11 && ['คลิปโป๊', 'ภาพลามก', 'อนาจาร', 'สื่อลามก', 'safesearch'].some(k => lower.includes(k))) {
+            return `คำตอบไม่ตรงกับคดี! ข้อความนี้เป็นเรื่องภาพลามกอนาจาร ไม่ตรงกับคดีนี้ (${ref.title})`;
+        }
+        if (cId !== 6 && ['ยิงระบบ', 'ยิงเซิร์ฟเวอร์', 'เซิร์ฟเวอร์ล่ม', 'ddos', 'cloudflare'].some(k => lower.includes(k))) {
+            return `คำตอบไม่ตรงกับคดี! ข้อความนี้เป็นเรื่องการยิง DDoS ถล่มเซิร์ฟเวอร์ ไม่ตรงกับคดีนี้ (${ref.title})`;
+        }
+        if (cId !== 9 && ['phishing', 'ฟิชชิ่ง', 'เว็บปลอม', 'สกินฟรี', 'แจกเพชร'].some(k => lower.includes(k))) {
+            return `คำตอบไม่ตรงกับคดี! ข้อความนี้เป็นเรื่องเว็บฟิชชิ่งหลอกสกินเกม ไม่ตรงกับคดีนี้ (${ref.title})`;
+        }
+        if (cId !== 10 && ['ข่าวปลอม', 'fake news', 'ตื่นตระหนก', 'ข่าวลวง', 'ศูนย์ต่อต้านข่าวปลอม'].some(k => lower.includes(k))) {
+            return `คำตอบไม่ตรงกับคดี! ข้อความนี้เป็นเรื่องการโพสต์ข่าวปลอมตื่นตระหนก ไม่ตรงกับคดีนี้ (${ref.title})`;
+        }
+        if (cId !== 4 && ['wifi สาธารณะ', 'free wifi', 'อายัดบัตร', 'ดักฟังสัญญาณ'].some(k => lower.includes(k))) {
+            return `คำตอบไม่ตรงกับคดี! ข้อความนี้เป็นเรื่องการดักจับข้อมูลบน Wi-Fi ไม่ตรงกับคดีนี้ (${ref.title})`;
+        }
+        if (cId !== 5 && ['version history', 'ประวัติเวอร์ชัน', 'กู้ไฟล์โครงงาน'].some(k => lower.includes(k))) {
+            return `คำตอบไม่ตรงกับคดี! ข้อความนี้เป็นเรื่องการแอบลบไฟล์โครงงาน ไม่ตรงกับคดีนี้ (${ref.title})`;
+        }
+
+        return null;
+    }
+
     // 1. Legal Scoring
     let legalScore = 0;
     let legalFeedback = '';
@@ -1052,22 +1097,26 @@ function evaluateLocally(caseId, studentAnswers) {
         legalFeedback = 'ยังไม่สามารถให้คะแนนได้ เนื่องจากข้อความไม่ได้ระบุฐานความผิดหรือบทวิเคราะห์ที่สอดคล้องกับพฤติการณ์ในคดี โปรดอ่านรายละเอียดแล้วตอบตามหลักกฎหมาย';
     } else {
         const lLower = legalText.toLowerCase();
-        const hasLawMatch = ref.keywords_law.some(k => lLower.includes(k.toLowerCase())) || lLower.includes(ref.law.toLowerCase());
-        const hasGeneralLawTerm = ["มาตรา", "พ.ร.บ", "pdpa", "กฎหมาย", "ผิด", "ความผิด", "แอบ", "ละเมิด", "เข้าถึง", "หลอก", "ทำลาย", "ดัก", "สแปม", "ตัดต่อ"].some(k => lLower.includes(k));
-        const hasPenaltyMatch = ref.keywords_penalty.some(k => lLower.includes(k.toLowerCase()));
-        const hasGeneralPenaltyTerm = ["ปรับ", "คุก", "จำคุก", "บาท", "ปี", "เดือน", "โทษ", "ลงโทษ", "แสน", "หมื่น", "ร้อย"].some(k => lLower.includes(k));
+        const wrongSec = checkWrongCaseSection(lLower, caseId);
+        const hasLawSection = (lLower.includes('มาตรา') || lLower.includes('พ.ร.บ') || lLower.includes('pdpa') || lLower.includes('กฎหมาย') || lLower.includes('ฐานความผิด'));
+        const hasPenalty = (lLower.includes('ปรับ') || lLower.includes('คุก') || lLower.includes('จำคุก') || lLower.includes('บาท') || lLower.includes('ปี') || lLower.includes('เดือน') || lLower.includes('หมื่น') || lLower.includes('แสน'));
 
-        if (hasLawMatch || hasGeneralLawTerm) legalScore += 6;
-        else legalScore += 4;
-
-        if (hasPenaltyMatch || hasGeneralPenaltyTerm || legalText.length >= 10) legalScore += 4;
-
-        legalScore = Math.min(10, Math.max(0, legalScore));
-        legalFeedback = legalScore >= 9
-            ? 'วิเคราะห์ฐานความผิดทางกฎหมายและระบุอัตราโทษจำคุก/ปรับได้อย่างถูกต้อง แม่นยำ ครบถ้วนสมบูรณ์ตามหลัก พ.ร.บ.คอมพิวเตอร์ / PDPA'
-            : legalScore >= 6
-            ? 'วิเคราะห์ทิศทางฐานความผิดและอัตราโทษได้ดีมาก! มีความเข้าใจหลักกฎหมายไซเบอร์เบื้องต้นเป็นอย่างดี'
-            : 'ฐานความผิดและโทษที่ระบุยังไม่สอดคล้องกับพฤติการณ์ในคดีนี้ ลองพิจารณาว่าเหตุการณ์ในการ์ตูนเป็นการกระทำต่อระบบ ข้อมูล หรือเป็นการเผยแพร่/หลอกลวง เพื่อเลือกมาตราให้ตรงจุดยิ่งขึ้น';
+        if (wrongSec) {
+            legalScore = 0;
+            legalFeedback = wrongSec;
+        } else if (!hasLawSection && !hasPenalty) {
+            legalScore = 0;
+            legalFeedback = 'ยังไม่สามารถให้คะแนนได้ ข้อความนี้เป็นวิธีระงับเหตุหรือการตั้งค่าความปลอดภัย ไม่ใช่การวิเคราะห์ฐานความผิดกฎหมายและอัตราโทษประจำคดี';
+        } else {
+            const hasCaseLawMatch = ref.keywords_law.some(k => lLower.includes(k.toLowerCase())) || lLower.includes(ref.law.toLowerCase());
+            if (hasCaseLawMatch) {
+                legalScore = 10;
+                legalFeedback = 'วิเคราะห์ฐานความผิดทางกฎหมายและอัตราโทษประจำคดีนี้ได้อย่างถูกต้อง แม่นยำ และตรงประเด็น!';
+            } else {
+                legalScore = 5;
+                legalFeedback = 'วิเคราะห์ทิศทางกฎหมายได้ดีแล้ว แนะนำให้ระบุมาตราและอัตราโทษที่ตรงกับคดีนี้เพิ่มเติมเพื่อให้ได้คะแนนเต็ม';
+            }
+        }
     }
 
     // 2. Remedy Scoring
@@ -1078,21 +1127,26 @@ function evaluateLocally(caseId, studentAnswers) {
         remedyFeedback = 'ยังไม่สามารถให้คะแนนได้ เนื่องจากไม่ได้ระบุขั้นตอนการระงับเหตุเฉพาะหน้า เมื่อเกิดเหตุไซเบอร์ต้องพิจารณาวิธีตัดวงจรความเสียหายทันที และระบุผู้เกี่ยวข้อง';
     } else {
         const rLower = remedyText.toLowerCase();
-        const hasRemedyAction = ref.keywords_remedy.some(k => rLower.includes(k.toLowerCase()));
-        const hasGeneralRemedyTerm = ["ลบ", "เปลี่ยน", "แจ้ง", "บล็อก", "กู้", "หยุด", "อายัด", "ปิด", "ตัด", "ระงับ", "แคป", "บอก", "ช่วย", "รายงาน", "ปรึกษา", "ประสานงาน", "ติดต่อ", "ฟ้อง", "ไม่กด", "ชำระ", "ย้าย", "แก้ไข"].some(k => rLower.includes(k));
-        const mentionsStakeholder = ["ครู", "ผู้ปกครอง", "พ่อ", "แม่", "ตำรวจ", "แอดมิน", "แพลตฟอร์ม", "ธนาคาร", "ค่ายเกม", "ผู้ดูแล", "ไอที", "ผู้ให้บริการ", "กสทช", "เจ้าหน้าที่", "อาจารย์", "ผู้บริหาร", "หัวหน้า", "โรงเรียน", "admin", "ผู้ใหญ่", "เพื่อน"].some(s => rLower.includes(s));
+        const wrongSec = checkWrongCaseSection(rLower, caseId);
+        const hasAction = ['ลบ','บล็อก','แจ้ง','กู้','หยุด','อายัด','สลับ','ตัด','ปิด','แคป','รายงาน','บอกครู','บอกพ่อแม่','ปรึกษา','ฟ้อง','ประสานงาน','แก้ข่าว'].some(k => rLower.includes(k));
+        const mentionsLawOnly = (rLower.includes('มาตรา') || rLower.includes('พ.ร.บ')) && !hasAction;
 
-        if (hasRemedyAction || hasGeneralRemedyTerm) remedyScore += 6;
-        else remedyScore += 4;
-
-        if (mentionsStakeholder || remedyText.length >= 10) remedyScore += 4;
-
-        remedyScore = Math.min(10, Math.max(0, remedyScore));
-        remedyFeedback = remedyScore >= 9
-            ? 'ลำดับขั้นตอนการบรรเทาความเสียหายเฉพาะหน้าได้อย่างรวดเร็ว มีสติ และระบุผู้เกี่ยวข้องในการระงับเหตุได้อย่างตรงจุดและปฏิบัติได้จริง'
-            : remedyScore >= 6
-            ? 'มีแนวคิดการหยุดเหตุเฉพาะหน้าและแจ้งผู้เกี่ยวข้องได้ดีมาก! ช่วยลดความเสียหายได้อย่างรวดเร็ว'
-            : 'แนวทางรับมือยังไม่ตรงกับลักษณะภัยไซเบอร์ในคดีนี้ ควรพิจารณาวิธีตัดวงจรความเสียหายทันที เช่น เปลี่ยนรหัส บล็อกไอพี หรือกู้คืนข้อมูล';
+        if (wrongSec) {
+            remedyScore = 0;
+            remedyFeedback = wrongSec;
+        } else if (mentionsLawOnly || !hasAction) {
+            remedyScore = 0;
+            remedyFeedback = 'ยังไม่สามารถให้คะแนนได้ ข้อความนี้เป็นการระบุมาตรากฎหมาย ไม่ใช่ขั้นตอนการระงับเหตุเฉพาะหน้าเพื่อหยุดยั้งความเสียหาย';
+        } else {
+            const hasCaseRemedyMatch = ref.keywords_remedy.some(k => rLower.includes(k.toLowerCase()));
+            if (hasCaseRemedyMatch) {
+                remedyScore = 10;
+                remedyFeedback = 'ลำดับขั้นตอนการบรรเทาความเสียหายเฉพาะหน้าของคดีนี้ได้อย่างรวดเร็ว มีสติ และตรงจุด!';
+            } else {
+                remedyScore = 5;
+                remedyFeedback = 'มีแนวคิดการหยุดเหตุเฉพาะหน้าได้ดีแล้ว ควรระบุวิธีระงับเหตุที่ตรงกับลักษณะคดีนี้เพิ่มเติม';
+            }
+        }
     }
 
     // 3. Security Scoring
@@ -1103,25 +1157,32 @@ function evaluateLocally(caseId, studentAnswers) {
         securityFeedback = 'ยังไม่สามารถให้คะแนนได้ เนื่องจากยังไม่ได้เสนอแนะระบบหรือเครื่องมือความปลอดภัยทางเทคนิค ลองระบุเครื่องมือเทคโนโลยีหรือแนวทางป้องกันระยะยาว';
     } else {
         const sLower = securityText.toLowerCase();
-        const hasSecurityTool = ref.keywords_security.some(k => sLower.includes(k.toLowerCase()));
-        const hasPracticalSafetyTerm = ["ไม่กด", "ไม่คลิก", "ลิงก์", "ลิงค์", "โฆษณา", "สมัคร", "รหัส", "2fa", "ป้องกัน", "ตั้งค่า", "ล็อก", "สิทธิ์", "กรอง", "ความเป็นส่วนตัว", "ระวัง", "หลีกเลี่ยง", "ไม่แชร์", "ไม่กรอก", "แฮกเกอร์", "ระบบ", "ความปลอดภัย", "แปลก", "มั่ว", "แอนตี้", "ไวรัส", "อัปเดต", "สแกน", "ซ่อน", "เก็บ", "ปิด", "ลายนิ้วมือ", "สแกนหน้า", "พาสเวิร์ด"].some(k => sLower.includes(k));
+        const wrongSec = checkWrongCaseSection(sLower, caseId);
+        const hasSecTool = ['ไม่กด','ไม่คลิก','ลิงก์','ลิงค์','โฆษณา','สมัคร','รหัส','2fa','ป้องกัน','ตั้งค่า','ล็อก','สิทธิ์','กรอง','ความเป็นส่วนตัว','ระวัง','หลีกเลี่ยง','ไม่แชร์','ไม่กรอก','แฮกเกอร์','ระบบ','ความปลอดภัย','ไฟร์วอลล์','firewall','ddos','cloudflare','safesearch','private','ส่วนตัว'].some(k => sLower.includes(k));
+        
+        // Specific wrong case keyword checks (e.g. typing cyberbullying report for DDoS case)
+        const isDDoS = Number(caseId) === 6;
+        const isCyberbullyingAnswer = sLower.includes('ตัดต่อ') || sLower.includes('บูลลี่') || sLower.includes('cyberbullying') || sLower.includes('แท็กภาพ') || (sLower.includes('รีพอร์ต') && sLower.includes('ภาพ'));
 
-        if (hasSecurityTool || hasPracticalSafetyTerm) {
-            securityScore += 6;
+        if (wrongSec) {
+            securityScore = 0;
+            securityFeedback = wrongSec;
+        } else if (isDDoS && isCyberbullyingAnswer) {
+            securityScore = 0;
+            securityFeedback = 'คำตอบไม่ตรงกับคดี! ข้อความนี้เป็นการแจ้งลบรูปบูลลี่ ไม่ตรงกับระบบป้องกันเซิร์ฟเวอร์สอบล่มจากการยิง DDoS';
+        } else if (!hasSecTool) {
+            securityScore = 0;
+            securityFeedback = 'ยังไม่สามารถให้คะแนนได้ ข้อความนี้ไม่ใช่มาตรการหรือแนวทางป้องกันความเสี่ยงระยะยาว';
         } else {
-            securityScore += 4;
+            const hasCaseSecMatch = ref.keywords_security.some(k => sLower.includes(k.toLowerCase()));
+            if (hasCaseSecMatch) {
+                securityScore = 10;
+                securityFeedback = 'ข้อเสนอแนะด้านวิศวกรรมความปลอดภัยตรงกับช่องโหว่ความเสี่ยงในคดีนี้ได้อย่างสมบูรณ์แบบ!';
+            } else {
+                securityScore = 5;
+                securityFeedback = 'ตอบได้ตรงประเด็นแนวทางป้องกันแล้ว หากระบุเครื่องมือป้องกันที่ตรงกับคดีนี้จะสมบูรณ์ยิ่งขึ้น';
+            }
         }
-
-        if (sLower.length >= 10 || hasSecurityTool || hasPracticalSafetyTerm) {
-            securityScore += 4;
-        }
-
-        securityScore = Math.min(10, Math.max(0, securityScore));
-        securityFeedback = securityScore >= 9
-            ? 'ข้อเสนอแนะด้านวิศวกรรมความปลอดภัยยอดเยี่ยม! มาตรการที่เลือกใช้สามารถปิดช่องโหว่ความเสี่ยงในระยะยาวได้อย่างสมบูรณ์แบบ'
-            : securityScore >= 6
-            ? 'ตอบได้ตรงประเด็นแล้ว! มีแนวคิดการป้องกันตนเองทางไซเบอร์ที่ดีเยี่ยม'
-            : 'แนวคิดการป้องกันดีขึ้นแล้ว ลองระบุเครื่องมือเทคโนโลยีความปลอดภัยเฉพาะทางเพิ่มเติมเพื่อมาตรการที่รัดกุมยิ่งขึ้น';
     }
 
     const totalScore = legalScore + remedyScore + securityScore;
@@ -1273,8 +1334,7 @@ app.post('/api/evaluate-case', async (req, res) => {
 
 [PERSONA & TONAL REQUIREMENTS]:
 - Write in warm, encouraging, positive, simple Thai suitable for middle school students (ม.3).
-- ABSOLUTELY NO enterprise IT jargon, corporate law officer terminology, or complex engineering phrases (e.g. NEVER say "ควรระบุมาตรการสร้างความตระหนักรู้เชิงวิศวกรรมความปลอดภัยอันรัดกุม" or "ควรเสนอระบบ Authentication เพื่อจำกัดสิทธิ์ผู้ถือครอง").
-- INSTEAD use simple student concepts (e.g. "สุดยอดเลยน้องๆ! ตอบได้ตรงจุดมาก", "เก่งมาก! รู้จักป้องกันตัวเองไม่ให้โดนหลอก", "ถูกต้องครับ! รู้จักบอกครูและผู้ปกครองเมื่อเกิดเหตุ").
+- ABSOLUTELY NO enterprise IT jargon, corporate law officer terminology, or complex engineering phrases.
 
 ---
 [CASE SCENARIO REFERENCE DATA (CONFIDENTIAL - FOR EVALUATION ONLY - DO NOT SPOIL TO STUDENTS)]
@@ -1284,28 +1344,23 @@ app.post('/api/evaluate-case', async (req, res) => {
 - Standard Prevention Practice: ${ref.prevention}
 
 ---
-[BEGINNER-FRIENDLY GRADING POLICY FOR GRADE 9 (ม.3) STUDENTS]:
-1. CONCISE & DIRECT ANSWERS GET FULL 10/10 POINTS:
-   - Grade 9 students write concisely in everyday student language.
-   - If an answer is SHORT or BRIEF (e.g. "ไม่กดสมัครโฆษณามั่วๆ หรือไม่กดลิงค์แปลกๆ", "แจ้งครูและแอดมินลบรูป", "ผิดมาตรา 11 ปรับไม่เกิน 200,000 บาท"), BUT it addresses the practical action/concept -> YOU MUST AWARD FULL 10/10 POINTS!
-   - NEVER DEDUCT POINTS for short answer length, everyday youth vocabulary, or absence of adult/IT officer jargon!
+[STRICT ACCURACY & CASE RELEVANCE POLICY - PREVENT FALSE HIGH SCORES]:
+1. CASE RELEVANCE MATCH (MUST MATCH THIS SPECIFIC CASE):
+   - You MUST check if the student's answer is relevant to the CURRENT CASE SCENARIO (${caseTitle || ref.title}).
+   - Example: If the current case is "DDoS Server Crash" (ยิง DDoS พังเซิร์ฟเวอร์เว็บสอบ) and the student answers about "photo editing / cyberbullying" (ตัดต่อรูป / บูลลี่) or "private account settings" -> YOU MUST AWARD 0 TO 2 POINTS MAXIMUM! Explain clearly in feedback that their answer belongs to a different case (e.g. "คำตอบนี้เป็นการตั้งค่า/ลบรูปบูลลี่ ไม่ตรงกับคดียิง DDoS ถล่มเซิร์ฟเวอร์ล่ม โปรดอ่านคำร้องทุกข์คดีนี้ใหม่ครับ").
+   - If the student cites a law section from a DIFFERENT case (e.g. citing มาตรา 16 in a DDoS case which is มาตรา 10) -> AWARD 0 TO 2 POINTS MAXIMUM!
 
-2. STRICT ROLE SEPARATION FOR BEGINNERS:
-   - 👨‍⚖️ Legal Analyst (0-10 pts): Evaluate ONLY law section/concept + penalty. DO NOT ask for IT tools.
-   - 🚑 Incident Responder (0-10 pts): Evaluate ONLY immediate action (ลบ, บล็อก, แคปรูป) + who to tell (ครู, ผู้ปกครอง, แอดมิน, ตำรวจ). DO NOT ask for section numbers or IT tools.
-   - 🛡️ Security Engineer (0-10 pts): Evaluate ONLY practical youth safety habits (ไม่กดลิงก์แปลกๆ, ตั้งรหัสยากๆ, ไม่แชร์ข้อมูลส่วนตัว, ล็อกหน้าจอ). DO NOT DEMAND LAW CITATIONS, PENALTIES, OR ADULT IT OFFICER JARGON!
+2. ROLE MATCH (MUST MATCH THIS SPECIFIC ROLE):
+   - 👨‍⚖️ Legal Analyst (0-10 pts): MUST analyze Law Section / Offense / Penalty for THIS case. If student writes security settings ("ตั้งค่าส่วนตัว") or remedy actions ("แคปรูปแจ้งครู") -> AWARD 0 TO 2 POINTS MAXIMUM!
+   - 🚑 Incident Responder (0-10 pts): MUST provide immediate containment actions / stakeholders for THIS case. If student quotes a law section ("พ.ร.บ. มาตรา 16...") or security settings -> AWARD 0 TO 2 POINTS MAXIMUM!
+   - 🛡️ Security Engineer (0-10 pts): MUST provide long-term prevention tools/habits matching THIS case (e.g. Firewall/DDoS protection for DDoS case). If student writes cyberbullying report actions -> AWARD 0 TO 2 POINTS MAXIMUM!
 
-3. ZERO-SCORE FOR GIBBERISH / TROLLING ONLY:
-   - Award 0 points ONLY if the answer is keyboard mashing (asdf, ฟกห, 5555), troll text, or evasive ("ไม่รู้", "ไม่บอก").
-
-4. FRIENDLY, SHORT & ENCOURAGING FEEDBACK (IN THAI):
-   - Keep feedback short (1-2 sentences), positive, and encouraging for Grade 9 students.
-   - Example 10/10 feedback: "เก่งมากเลยน้องๆ! คิดวิเคราะห์ได้ตรงประเด็นและนำไปใช้ป้องกันตัวเองในชีวิตจริงได้ดีมากครับ"
-   - NEVER criticize a Grade 9 student for not writing like an adult IT lawyer or security engineer!
+3. CONCISE & DIRECT ACCURATE ANSWERS GET FULL 10/10 POINTS:
+   - When an answer IS relevant to this case and role, award full 10/10 points even if it is short or written in everyday student language.
 
 ---
 [OUTPUT FORMAT REQUIREMENT]
-You MUST reply strictly in JSON format. Do not write any markdown backticks outside the JSON block. Format:
+You MUST reply strictly in JSON format. Format:
 {
   "legal": {
     "score": <integer from 0 to 10>,
