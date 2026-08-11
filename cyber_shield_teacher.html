@@ -212,6 +212,10 @@
                         <i class="fa-solid fa-book-open text-pink-400"></i>
                         <span>แฟ้มเฉลย 12 คดี</span>
                     </button>
+                    <button id="nav-tab-g8g9-bank" onclick="switchTab('g8g9-bank')" class="px-3.5 py-1.5 rounded-lg text-slate-400 hover:text-white transition flex items-center gap-1.5" title="คลังตัวอย่างคำตอบเด็ก ม.2 - ม.3">
+                        <i class="fa-solid fa-graduation-cap text-yellow-300"></i>
+                        <span>ตัวอย่างคำตอบเด็ก ม.2-ม.3</span>
+                    </button>
                     <button id="nav-tab-settings" onclick="switchTab('settings')" class="px-3.5 py-1.5 rounded-lg text-slate-400 hover:text-white transition flex items-center gap-1.5">
                         <i class="fa-solid fa-gear text-cyan-400"></i>
                         <span>ตั้งค่าระบบ & Cloud</span>
@@ -514,6 +518,28 @@
             <!-- ========================================================================= -->
             <!-- TAB 3: SYSTEM & CLOUD SETTINGS                                            -->
             <!-- ========================================================================= -->
+            
+            <!-- ========================================================================= -->
+            <!-- TAB: GRADE 8-9 SAMPLE ANSWER BANK (คลังตัวอย่างคำตอบเด็ก ม.2 - ม.3)       -->
+            <!-- ========================================================================= -->
+            <section id="tab-content-g8g9-bank" class="hidden flex flex-col gap-6">
+                <div class="glass-panel p-6 rounded-2xl border border-yellow-500/30 bg-gradient-to-r from-slate-900/90 via-slate-950/90 to-purple-950/30">
+                    <div class="flex items-center gap-3 mb-2">
+                        <div class="w-10 h-10 rounded-xl bg-yellow-500/20 border border-yellow-400 text-yellow-300 flex items-center justify-center text-xl">
+                            <i class="fa-solid fa-graduation-cap"></i>
+                        </div>
+                        <div>
+                            <h2 class="text-xl font-bold text-white font-sarabun">คลังตัวอย่างคำตอบภาษาเด็ก ม.2 และ ม.3 (อายุ 14 - 15 ปี)</h2>
+                            <p class="text-xs text-slate-400 font-sarabun">รวบรวมตัวอย่างคำตอบภาษาพูดวัยรุ่นธรรมชาติที่ระบบ AI & Heuristic Engine ปรับผ่านประเมิน 10/10 และ 5/10 ครบทั้ง 12 คดี สำหรับใช้เป็นแนวทางสอนในห้องเรียน</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="g8g9-bank-container" class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                    <!-- Dynamic rendering by renderG8G9AnswerBank() -->
+                </div>
+            </section>
+
             <section id="tab-content-settings" class="hidden flex flex-col gap-5">
                 
                 <div class="glass-panel p-6 rounded-3xl border border-cyan-500/40 flex flex-col gap-6 max-w-3xl mx-auto w-full">
@@ -949,7 +975,7 @@
 
         // --- Tab Switching ---
         function switchTab(tabName) {
-            const tabs = ['scoreboard', 'group-answers', 'solutions', 'settings'];
+            const tabs = ['scoreboard', 'group-answers', 'solutions', 'g8g9-bank', 'settings'];
             tabs.forEach(t => {
                 const btn = document.getElementById(`nav-tab-${t}`);
                 const content = document.getElementById(`tab-content-${t}`);
@@ -964,6 +990,8 @@
 
             if (tabName === 'group-answers') {
                 renderGroupAnswersTab();
+            } else if (tabName === 'g8g9-bank') {
+                renderG8G9AnswerBank();
             }
         }
 
@@ -1922,6 +1950,153 @@
 
             sheet.innerHTML = fullHtml;
         }
+    
+        function renderG8G9AnswerBank() {
+            const container = document.getElementById('g8g9-bank-container');
+            if (!container) return;
+
+            const samples = [
+                {
+                    caseId: 1, title: 'คดี #1: แอบส่องระบบไอดีเกมของเพื่อน',
+                    legal10: 'ผิด พ.ร.บ. คอม มาตรา 5 แอบเข้าถึงไอดีเกมเพื่อนโดยมิชอบ โทษจำคุกไม่เกิน 6 เดือน ปรับไม่เกิน 1 หมื่นบาท',
+                    legal5: 'แอบดูรหัสผ่านไอดีเกมคนอื่นเป็นเรื่องผิดกฎหมายไซเบอร์',
+                    remedy10: 'รีบกดออกจากระบบ (Logout) ในคอมเครื่องนั้นทันที แล้วเปลี่ยนรหัสผ่านในมือถือ และบอกครูให้ช่วย',
+                    remedy5: 'รีบออกจากระบบและเปลี่ยนรหัสผ่านใหม่',
+                    sec10: 'ตั้งระบบยืนยันตัวตนสองชั้น (2FA / OTP) และล็อกหน้าจอมือถืออัตโนมัติ ห้ามบอกรหัสผ่านเพื่อน',
+                    sec5: 'ตั้งรหัสผ่านล็อกเครื่องคอมและมือถือไว้ตลอด'
+                },
+                {
+                    caseId: 2, title: 'คดี #2: แจกรหัสผ่านระบบในกลุ่ม Discord',
+                    legal10: 'ผิดมาตรา 6 เผยแพร่มาตรการป้องกันรหัสผ่านสู่สาธารณะ โทษจำคุกไม่เกิน 1 ปี ปรับไม่เกิน 2 หมื่นบาท',
+                    legal5: 'เอารหัสผ่านระบบโรงเรียนไปแจกในแชทกลุ่มดิสคอร์ดผิดกฎหมาย',
+                    remedy10: 'รีบเปลี่ยนรหัสผ่านใหม่ทันที ลบข้อความที่โพสต์ใน Discord และทักบอกแอดมินกลุ่ม',
+                    remedy5: 'ลบโพสต์ในดิสคอร์ดแล้วรีบเปลี่ยนรหัสผ่าน',
+                    sec10: 'ตั้งรหัสผ่านซับซ้อนมีตัวพิมพ์ใหญ่ตัวเลขสัญลักษณ์ปนกัน และไม่จดรหัสใส่กระดาษแปะทิ้งไว้',
+                    sec5: 'ตั้งรหัสผ่านยากๆ และเก็บรหัสผ่านไว้เป็นความลับ'
+                },
+                {
+                    caseId: 3, title: 'คดี #3: แอบคุ้ยไฟล์ไดอารี่แชทลับส่วนตัว',
+                    legal10: 'ผิดมาตรา 7 แอบเข้าถึงข้อมูลคอมพิวเตอร์ส่วนตัวผู้อื่น โทษจำคุกไม่เกิน 2 ปี ปรับไม่เกิน 4 หมื่นบาท',
+                    legal5: 'แอบดูแชทลับและไฟล์ไดอารี่ส่วนตัวคนอื่นผิดกฎหมาย',
+                    remedy10: 'ลบไฟล์ที่หลุด ย้ายโฟลเดอร์เก็บข้อมูล เปลี่ยนรหัสคลาวด์ และแจ้งครูผู้สอน',
+                    remedy5: 'ลบไฟล์ข้อมูลแล้วเปลี่ยนรหัสเข้าไดรฟ์ใหม่',
+                    sec10: 'ตั้งระบบล็อกโฟลเดอร์ด้วยสแกนใบหน้า (Face ID) หรือสแกนลายนิ้วมือ (Touch ID) และเข้ารหัสไฟล์',
+                    sec5: 'ใช้การสแกนลายนิ้วมือล็อกเปิดไฟล์ส่วนตัว'
+                },
+                {
+                    caseId: 4, title: 'คดี #4: ดักจับข้อมูลธุรกรรมเติมเกมกลางทาง',
+                    legal10: 'ผิดมาตรา 8 ดักรับข้อมูลคอมพิวเตอร์ผู้อื่นระหว่างส่ง โทษจำคุกไม่เกิน 3 ปี ปรับไม่เกิน 6 หมื่นบาท',
+                    legal5: 'แอบดักจับข้อมูลการเติมเงินบนไวไฟฟรีผิดกฎหมาย',
+                    remedy10: 'รีบตัดการเชื่อมต่อ Wi-Fi โทรอายัดบัตรกับธนาคารทันที และเปลี่ยนรหัสผ่าน',
+                    remedy5: 'ปิดไวไฟฟรีแล้วอายัดบัตรเติมเงิน',
+                    sec10: 'ห้ามเติมเกมผ่าน Free Wi-Fi สาธารณะ ให้ใช้เน็ตมือถือตัวเอง 4G/5G และสังเกตเว็บที่มี SSL (HTTPS)',
+                    sec5: 'ใช้ VPN หรือเน็ตมือถือตัวเองเวลาทำธุรกรรม'
+                },
+                {
+                    caseId: 5, title: 'คดี #5: มือบอนแอบลบไฟล์โครงงานวิทย์เพื่อน',
+                    legal10: 'ผิดมาตรา 9 ทำลาย แก้ไข ดัดแปลง ลบไฟล์ข้อมูลผู้อื่น โทษจำคุกไม่เกิน 5 ปี ปรับไม่เกิน 1 แสนบาท',
+                    legal5: 'แอบกดลบไฟล์งานกลุ่มเพื่อนทำให้ไฟล์เสียหายผิดกฎหมาย',
+                    remedy10: 'เปิดประวัติเวอร์ชัน (Version History / Ctrl+Z) กู้งานเก่ากลับมา แล้วแจ้งครูผู้สอน',
+                    remedy5: 'ไปเปิดดูถังขยะและกดกู้คืนไฟล์งาน',
+                    sec10: 'ตั้งสิทธิ์แชร์ไฟล์เป็นอ่านได้อย่างเดียว (Read-Only) สำรองข้อมูลขึ้น Cloud Backup สม่ำเสมอ',
+                    sec5: 'ทำสำรองข้อมูล (Backup) เก็บไว้หลายๆ ที่'
+                },
+                {
+                    caseId: 6, title: 'คดี #6: ยิง DDoS พังเซิร์ฟเวอร์เว็บสอบโรงเรียน',
+                    legal10: 'ผิดมาตรา 10 ยิงระบบขัดขวางทำให้เซิร์ฟเวอร์ทำงานไม่ได้ โทษจำคุกไม่เกิน 5 ปี ปรับไม่เกิน 1 แสนบาท',
+                    legal5: 'ใช้โปรแกรมยิง DDoS ถล่มเซิร์ฟเวอร์สอบล่มผิดกฎหมาย',
+                    remedy10: 'แอดมินบล็อกเลข IP ขยะ สลับไปใช้เซิร์ฟเวอร์สำรอง และแจ้งฝ่ายไอที',
+                    remedy5: 'สั่งบล็อก IP ที่ยิงเข้ามาและเปิดเซิร์ฟเวอร์สำรอง',
+                    sec10: 'ติดตั้งระบบไฟร์วอลล์ (Firewall) และใช้ระบบป้องกัน DDoS Protection เช่น Cloudflare / Rate Limiting',
+                    sec5: 'ใช้ Firewall ป้องกันระบบเซิร์ฟเวอร์'
+                },
+                {
+                    caseId: 9, title: 'คดี #9: สร้างเว็บฟิชชิ่งหลอกสกินเกมฟรี',
+                    legal10: 'ผิดมาตรา 14(1) นำเข้าข้อมูลปลอม/เท็จ ฟิชชิ่งหลอกลวงประชาชน โทษจำคุกไม่เกิน 5 ปี ปรับไม่เกิน 1 แสนบาท',
+                    legal5: 'ทำเว็บปลอมหลอกเอาไอดีรหัสผ่านเกมเพื่อนผิดกฎหมาย',
+                    remedy10: 'รีบทักแจ้งทีมงานค่ายเกมกู้คืนบัญชี เปลี่ยนรหัสผ่าน และโพสต์เตือนเพื่อนๆ',
+                    remedy5: 'แจ้งทีมงานค่ายเกมให้กู้ไอดีคืน',
+                    sec10: 'ตรวจสอบ URL ชื่อโดเมนเว็บจริงก่อนล็อกอิน ไม่กดลิ้งแปลกๆ และห้ามเชื่อของแจกฟรี',
+                    sec5: 'สังเกตชื่อเว็บดีๆ และไม่คลิกลิงก์แปลกๆ'
+                },
+                {
+                    caseId: 10, title: 'คดี #10: โพสต์ข่าวลวงภัยพิบัติจนคนแตกตื่นวิ่งวุ่น',
+                    legal10: 'ผิดมาตรา 14(2) โพสต์ข่าวปลอม/เท็จ ก่อให้เกิดความตระหนกตกใจ โทษจำคุกไม่เกิน 5 ปี ปรับไม่เกิน 1 แสนบาท',
+                    legal5: 'โพสต์ Fake News ข่าวลวงสร้างความตื่นตระหนกผิดกฎหมาย',
+                    remedy10: 'รีบกดลบโพสต์ข่าวปลอม โพสต์ข้อความชี้แจงความจริง และแจ้งแอดมินเพจ',
+                    remedy5: 'ลบโพสต์ออกแล้วเขียนแถลงแก้ข่าว',
+                    sec10: 'ตรวจสอบข้อมูลกับศูนย์ต่อต้านข่าวปลอม (Anti-Fake News Center) หรือเพจทางการก่อนแชร์',
+                    sec5: 'เช็กข้อมูลข่าวสารกับหน่วยงานรัฐก่อนแชร์'
+                },
+                {
+                    caseId: 11, title: 'คดี #11: โพสต์ภาพ/คลิปโป๊ลงคอมพิวเตอร์สาธารณะ',
+                    legal10: 'ผิดมาตรา 14(4) นำเข้าข้อมูลลามกอนาจารประชาชนเข้าถึงได้ โทษจำคุกไม่เกิน 5 ปี ปรับไม่เกิน 1 แสนบาท',
+                    legal5: 'โพสต์คลิปโป๊และภาพลามกอนาจารลงกลุ่มสาธารณะผิดกฎหมาย',
+                    remedy10: 'รีบลบคลิป/รูปภาพออกจากแชทกลุ่มทันที บล็อกผู้ส่ง และแจ้งครูผู้สอน',
+                    remedy5: 'กดลบสื่อลามกอนาจารออกและรายงานแอดมิน',
+                    sec10: 'ติดตั้งระบบกรองเนื้อหาปลอดภัย (SafeSearch / Content Moderation AI Filter) บนคอมโรงเรียน',
+                    sec5: 'เปิดระบบ SafeSearch กรองสื่อไม่เหมาะสม'
+                },
+                {
+                    caseId: 12, title: 'คดี #12: ตัดต่อหน้าเพื่อนใส่เอเลี่ยนประจานในโซเชียล',
+                    legal10: 'ผิดมาตรา 16 ตัดต่อดัดแปลงภาพผู้อื่นทำให้เสียชื่อเสียงอับอาย โทษจำคุกไม่เกิน 3 ปี ปรับไม่เกิน 2 แสนบาท',
+                    legal5: 'ตัดต่อรูปเพื่อนประจานบูลลี่ทำให้อับอายผิดกฎหมาย',
+                    remedy10: 'แคปรูปหลักฐานไว้ กดรีพอร์ตลบภาพ (Report Bullying) แจ้งครูและบอกพ่อแม่',
+                    remedy5: 'แคปหลักฐานแล้วรีพอร์ตแจ้งลบรูปภาพ',
+                    sec10: 'ตั้งค่าบัญชีเป็นส่วนตัว (Private Account) ปิดการแท็กรูปภาพ และไม่ยินยอมให้คนอื่นใช้รูป',
+                    sec5: 'ตั้งไอจี/เฟสบุ๊คเป็นบัญชีส่วนตัว'
+                }
+            ];
+
+            container.innerHTML = samples.map(item => `
+                <div class="glass-panel p-5 rounded-2xl border border-slate-800 flex flex-col gap-4">
+                    <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+                        <span class="font-bold text-cyan-300 font-sarabun text-base">${item.title}</span>
+                        <span class="px-2.5 py-0.5 rounded-full bg-purple-500/20 text-purple-300 border border-purple-500/30 text-xs font-mono">Grade 8-9 Sample</span>
+                    </div>
+
+                    <!-- Legal -->
+                    <div class="space-y-1.5">
+                        <div class="text-xs font-bold text-amber-400 flex items-center gap-1">
+                            <i class="fa-solid fa-gavel"></i> บทบาทนักวิเคราะห์กฎหมาย
+                        </div>
+                        <div class="p-2.5 rounded-xl bg-emerald-950/40 border border-emerald-500/30 text-xs text-emerald-200">
+                            <span class="font-bold text-emerald-400">🟢 ตัวอย่าง 10/10 (เต็ม):</span> "${item.legal10}"
+                        </div>
+                        <div class="p-2.5 rounded-xl bg-yellow-950/40 border border-yellow-500/30 text-xs text-yellow-200">
+                            <span class="font-bold text-yellow-400">🟡 ตัวอย่าง 5/10 (ผ่าน):</span> "${item.legal5}"
+                        </div>
+                    </div>
+
+                    <!-- Remedy -->
+                    <div class="space-y-1.5">
+                        <div class="text-xs font-bold text-pink-400 flex items-center gap-1">
+                            <i class="fa-solid fa-kit-medical"></i> บทบาทผู้ระงับเหตุเฉพาะหน้า
+                        </div>
+                        <div class="p-2.5 rounded-xl bg-emerald-950/40 border border-emerald-500/30 text-xs text-emerald-200">
+                            <span class="font-bold text-emerald-400">🟢 ตัวอย่าง 10/10 (เต็ม):</span> "${item.remedy10}"
+                        </div>
+                        <div class="p-2.5 rounded-xl bg-yellow-950/40 border border-yellow-500/30 text-xs text-yellow-200">
+                            <span class="font-bold text-yellow-400">🟡 ตัวอย่าง 5/10 (ผ่าน):</span> "${item.remedy5}"
+                        </div>
+                    </div>
+
+                    <!-- Security -->
+                    <div class="space-y-1.5">
+                        <div class="text-xs font-bold text-cyan-400 flex items-center gap-1">
+                            <i class="fa-solid fa-shield-halved"></i> บทบาทวิศวกรความปลอดภัย
+                        </div>
+                        <div class="p-2.5 rounded-xl bg-emerald-950/40 border border-emerald-500/30 text-xs text-emerald-200">
+                            <span class="font-bold text-emerald-400">🟢 ตัวอย่าง 10/10 (เต็ม):</span> "${item.sec10}"
+                        </div>
+                        <div class="p-2.5 rounded-xl bg-yellow-950/40 border border-yellow-500/30 text-xs text-yellow-200">
+                            <span class="font-bold text-yellow-400">🟡 ตัวอย่าง 5/10 (ผ่าน):</span> "${item.sec5}"
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
     </script>
 </body>
 </html>

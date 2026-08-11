@@ -1,3 +1,36 @@
+
+function normalizeStudentSlang(text) {
+    if (!text) return '';
+    let t = text.toLowerCase().trim();
+
+    const slangMap = [
+        [/(แคปรูป|แคปหน้าจอ|แคปหลักฐาน|ถ่ายรูปเก็บไว้|แคปภาพ|แคปไว้|เซฟรูป)/g, 'แคปเจอร์หลักฐาน'],
+        [/(ฟ้องครู|บอกครู|ทักหาครู|ถามครู|แจ้งครูผู้สอน|บอกครูผู้สอน)/g, 'แจ้งครู'],
+        [/(บอกพ่อแม่|บอกผู้ปกครอง|ฟ้องพ่อแม่|บอกผู้ปกครองทราบ|แจ้งพ่อแม่)/g, 'แจ้งผู้ปกครอง'],
+        [/(ทักแชท|ทักไปบอก|เตือนเพื่อน|บอกเพื่อน|ทักบอกเพื่อน)/g, 'แจ้งผู้เกี่ยวข้อง'],
+        [/(รีพอร์ต|กดรีพอร์ต|ฟ้องระบบ|กดรายงาน|ฟ้องแอดมิน)/g, 'รายงาน'],
+        [/(สแกนหน้า|สแกนใบหน้า)/g, 'face id'],
+        [/(สแกนนิ้ว|สแกนลายนิ้วมือ)/g, 'touch id'],
+        [/(ล็อกออก|ออกระบบ|เด้งออก)/g, 'logout'],
+        [/(กู้งาน|กดกู้|ดึงงานกลับ|ดึงไฟล์กลับ|เอาสไลด์คืน)/g, 'ประวัติเวอร์ชัน'],
+        [/(ยิงเว็บ|ยิงเซิร์ฟ|ยิงดิส|ยิงระบบ)/g, 'ddos'],
+        [/(พาสเวิร์ด|พาสเวิด|พาส)/g, 'รหัสผ่าน'],
+        [/(ไอดีเกม|ไอดี)/g, 'รหัสผ่าน'],
+        [/(ลิ้งค์|ลิงค์|ลิ้ง)/g, 'ลิงก์'],
+        [/(เว็ป)/g, 'เว็บ'],
+        [/(ดิสคอร์ด|ดิส)/g, 'discord'],
+        [/(เฟสบุ๊ค|เฟสบุ๊ก|เฟส|เฟซ)/g, 'facebook'],
+        [/(อินสตาแกรม|ไอจี)/g, 'instagram'],
+        [/(ติ๊กต๊อก|ต๊อกต๊อก)/g, 'tiktok'],
+        [/(จีเมล|เมล)/g, 'อีเมล']
+    ];
+
+    for (const [regex, replacement] of slangMap) {
+        t = t.replace(regex, replacement);
+    }
+    return t;
+}
+
 const express = require('express');
 const path = require('path');
 const cors = require('cors');
@@ -834,9 +867,9 @@ function isGibberishOrNonsense(text) {
 // Fallback Heuristic Evaluator for offline / no-key mode
 function evaluateLocally(caseId, studentAnswers) {
     const ref = CASE_REFERENCES[caseId] || CASE_REFERENCES[1];
-    const legalText = (studentAnswers.legal || '').trim();
-    const remedyText = (studentAnswers.remedy || '').trim();
-    const securityText = (studentAnswers.security || '').trim();
+    const legalText = normalizeStudentSlang(studentAnswers.legal || '');
+    const remedyText = normalizeStudentSlang(studentAnswers.remedy || '');
+    const securityText = normalizeStudentSlang(studentAnswers.security || '');
 
     // Helper to validate wrong case section or wrong topic across ALL 12 cases
     const sectionCaseMap = {
