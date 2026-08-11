@@ -1467,10 +1467,13 @@ app.post('/api/save-case-score', (req, res) => {
 // In-memory score cache buffer for fast realtime fallback
 const SERVER_SCORES_CACHE = [];
 
+// Default Supabase Fallback Credentials
+const DEFAULT_SUPABASE_URL = process.env.SUPABASE_URL || 'https://xbwlzqtvmjwucoqkyvhj.supabase.co';
+const DEFAULT_SUPABASE_ANON_KEY = process.env.SUPABASE_ANON_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inhid2x6cXR2bWp3dWNvcWt5dmhqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQ0NjE3NDEsImV4cCI6MjEwMDAzNzc0MX0.nbIkBfvTZBxBSxxYik3o3gAqlXI8ITGMvof3wvJxA7c';
+
 // Helper function to save game score to Supabase & Memory Cache
 async function saveToSupabase(record) {
     const row = {
-        id: 'rec_' + Date.now() + '_' + Math.random().toString(36).substring(2, 7),
         player_id: record.playerId || 'anonymous',
         team_name: record.teamName || 'นักสืบเยาวชน',
         case_id: record.caseId,
@@ -1488,15 +1491,19 @@ async function saveToSupabase(record) {
         row.members_info = record.membersInfo;
     }
 
-    // Save to memory cache (keep last 500 records)
-    SERVER_SCORES_CACHE.unshift(row);
+    // Save to memory cache for quick local response
+    SERVER_SCORES_CACHE.unshift({ ...row, id: 'rec_' + Date.now() });
     if (SERVER_SCORES_CACHE.length > 500) SERVER_SCORES_CACHE.pop();
 
-    if (!process.env.SUPABASE_URL || !process.env.SUPABASE_ANON_KEY) return;
     try {
         const { createClient } = require('@supabase/supabase-js');
-        const supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_ANON_KEY);
-        await supabase.from('game_scores').insert([row]);
+        const supabase = createClient(DEFAULT_SUPABASE_URL, DEFAULT_SUPABASE_ANON_KEY);
+        const { data, error } = await supabase.from('game_scores').insert([row]).select();
+        if (error) {
+            console.error('❌ Supabase Log Score Error:', error.message);
+        } else {
+            console.log('✅ Supabase Log Score Success! Inserted ID:', data[0]?.id);
+        }
     } catch (e) {
         console.error('Failed to log score to Supabase:', e.message);
     }
@@ -1505,21 +1512,19 @@ async function saveToSupabase(record) {
 // Secure API Endpoint: Leaderboard & Teacher Realtime Telemetry Data
 app.get('/api/leaderboard', async (req, res) => {
     let results = [];
-    if (process.env.SUPABASE_URL && process.env.SUPABASE_ANON_KEY) {
-        try {
-            const { createClient } = require('@supabase/supabase-js');
-            const supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_ANON_KEY);
-            const { data, error } = await supabase
-                .from('game_scores')
-                .select('*')
-                .order('created_at', { ascending: false })
-                .limit(300);
-            if (!error && Array.isArray(data) && data.length > 0) {
-                results = data;
-            }
-        } catch (e) {
-            console.warn('Supabase query error, fallback to cache:', e.message);
+    try {
+        const { createClient } = require('@supabase/supabase-js');
+        const supabase = createClient(DEFAULT_SUPABASE_URL, DEFAULT_SUPABASE_ANON_KEY);
+        const { data, error } = await supabase
+            .from('game_scores')
+            .select('*')
+            .order('created_at', { ascending: false })
+            .limit(300);
+        if (!error && Array.isArray(data) && data.length > 0) {
+            results = data;
         }
+    } catch (e) {
+        console.warn('Supabase query error, fallback to cache:', e.message);
     }
 
     if (results.length === 0 && SERVER_SCORES_CACHE.length > 0) {

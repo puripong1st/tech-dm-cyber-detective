@@ -16,6 +16,9 @@
     <!-- FontAwesome 6 -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
 
+    <!-- Supabase JS CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
@@ -2420,7 +2423,7 @@
                 members: GAME_STATE.members || []
             });
 
-            // Sync to server
+            // Sync to server API
             if (window.location.protocol.startsWith('http')) {
                 try {
                     await fetch('/api/save-case-score', {
@@ -2444,6 +2447,36 @@
                         })
                     });
                 } catch(e) {}
+            }
+
+            // Backup Direct Supabase Sync
+            if (window.supabase) {
+                try {
+                    const sbUrl = 'https://xbwlzqtvmjwucoqkyvhj.supabase.co';
+                    const sbKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inhid2x6cXR2bWp3dWNvcWt5dmhqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQ0NjE3NDEsImV4cCI6MjEwMDAzNzc0MX0.nbIkBfvTZBxBSxxYik3o3gAqlXI8ITGMvof3wvJxA7c';
+                    const sb = window.supabase.createClient(sbUrl, sbKey);
+                    await sb.from('game_scores').insert([{
+                        player_id: GAME_STATE.teamName || 'anonymous',
+                        team_name: `${GAME_STATE.teamName} (${GAME_STATE.room})`,
+                        case_id: caseItem.id,
+                        case_title: caseItem.title,
+                        legal_score: legal,
+                        remedy_score: remedy,
+                        security_score: security,
+                        total_score: total,
+                        members_info: membersInfoPayload,
+                        student_answers: currentCaseObj.answers || {},
+                        ai_feedback: {
+                            legal: { score: legal, feedback: currentCaseObj.scores.legal?.feedback || '' },
+                            remedy: { score: remedy, feedback: currentCaseObj.scores.remedy?.feedback || '' },
+                            security: { score: security, feedback: currentCaseObj.scores.security?.feedback || '' },
+                            total_score: total
+                        },
+                        created_at: new Date().toISOString()
+                    }]);
+                } catch(e) {
+                    console.warn('Direct Supabase backup insert warning:', e);
+                }
             }
 
             // Save to local scores cache and broadcast
