@@ -1566,7 +1566,9 @@ async function saveToSupabase(record) {
 
 // Secure API Endpoint: Leaderboard & Teacher Realtime Telemetry Data
 app.get('/api/leaderboard', async (req, res) => {
-    let results = [];
+    let results = null;
+    let queryError = false;
+
     try {
         const { createClient } = require('@supabase/supabase-js');
         const supabase = createClient(DEFAULT_SUPABASE_URL, DEFAULT_SUPABASE_ANON_KEY);
@@ -1575,15 +1577,24 @@ app.get('/api/leaderboard', async (req, res) => {
             .select('*')
             .order('created_at', { ascending: false })
             .limit(300);
-        if (!error && Array.isArray(data) && data.length > 0) {
+        if (!error && Array.isArray(data)) {
             results = data;
+            // If Supabase is empty, clear memory cache buffer as well
+            if (data.length === 0) {
+                SERVER_SCORES_CACHE.length = 0;
+            }
+        } else if (error) {
+            queryError = true;
         }
     } catch (e) {
+        queryError = true;
         console.warn('Supabase query error, fallback to cache:', e.message);
     }
 
-    if (results.length === 0 && SERVER_SCORES_CACHE.length > 0) {
+    if (results === null && queryError) {
         results = [...SERVER_SCORES_CACHE];
+    } else if (results === null) {
+        results = [];
     }
 
     res.json({ success: true, data: results });

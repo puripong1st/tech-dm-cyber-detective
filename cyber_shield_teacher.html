@@ -995,23 +995,24 @@
         // --- Realtime Score Fetching ---
         async function fetchLatestScores() {
             try {
-                let scores = [];
+                let scores = null;
                 if (window.location.protocol.startsWith('http')) {
                     const res = await fetch('/api/leaderboard');
                     const data = await res.json();
                     if (data && data.success && Array.isArray(data.data)) {
                         scores = data.data;
+                        localStorage.setItem('CYBER_DETECTIVE_SCORES_CACHE', JSON.stringify(scores));
                     }
                 }
 
-                if (scores.length === 0) {
+                if (scores === null) {
                     const localRaw = localStorage.getItem('CYBER_DETECTIVE_SCORES_CACHE');
                     if (localRaw) {
-                        scores = JSON.parse(localRaw);
+                        try { scores = JSON.parse(localRaw); } catch(e) {}
                     }
                 }
 
-                allScoresData = scores;
+                allScoresData = scores || [];
                 renderScoreboardTable();
                 updateStatsCards();
                 renderGroupAnswersTab();
