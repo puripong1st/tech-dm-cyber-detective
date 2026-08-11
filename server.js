@@ -916,12 +916,12 @@ function evaluateLocally(caseId, studentAnswers) {
         return null;
     }
 
-    // 1. Legal Scoring
+    // 1. Legal Scoring (10 / 8 / 5 / 0)
     let legalScore = 0;
     let legalFeedback = '';
     if (isGibberishOrNonsense(legalText)) {
         legalScore = 0;
-        legalFeedback = 'ยังไม่สามารถให้คะแนนได้ เนื่องจากข้อความไม่ได้ระบุฐานความผิดหรือบทวิเคราะห์ที่สอดคล้องกับพฤติการณ์ในคดี โปรดอ่านรายละเอียดแล้วตอบตามหลักกฎหมาย';
+        legalFeedback = 'ยังไม่สามารถให้คะแนนได้ เนื่องจากข้อความไม่ได้ระบุฐานความผิดหรือบทวิเคราะห์ที่สอดคล้องกับพฤติการณ์ในคดี';
     } else {
         const lLower = legalText.toLowerCase();
         const wrongSec = checkWrongCaseSection(lLower, caseId);
@@ -936,26 +936,30 @@ function evaluateLocally(caseId, studentAnswers) {
             legalFeedback = 'ยังไม่สามารถให้คะแนนได้ ข้อความนี้เป็นวิธีระงับเหตุหรือการตั้งค่าความปลอดภัย ไม่ใช่การวิเคราะห์ฐานความผิดกฎหมายและอัตราโทษประจำคดี';
         } else {
             const hasCaseLawMatch = ref.keywords_law.some(k => lLower.includes(k.toLowerCase())) || lLower.includes(ref.law.toLowerCase());
-            if (hasCaseLawMatch) {
+            if (hasCaseLawMatch && hasPenalty) {
                 legalScore = 10;
-                legalFeedback = 'วิเคราะห์ฐานความผิดทางกฎหมายและอัตราโทษประจำคดีนี้ได้อย่างถูกต้อง แม่นยำ และตรงประเด็น!';
+                legalFeedback = 'วิเคราะห์ฐานความผิดทางกฎหมายและอัตราโทษประจำคดีนี้ได้อย่างถูกต้อง แม่นยำ และครบถ้วนสมบูรณ์แบบ!';
+            } else if (hasCaseLawMatch) {
+                legalScore = 8;
+                legalFeedback = 'วิเคราะห์ฐานความผิดกฎหมายตรงตามคดีได้ดีมาก! หากระบุรายละเอียดอัตราโทษ (จำคุก/ปรับ) เพิ่มอีกนิด จะได้ 10 คะแนนเต็ม';
             } else {
                 legalScore = 5;
-                legalFeedback = 'วิเคราะห์ทิศทางกฎหมายได้ดีแล้ว แนะนำให้ระบุมาตราและอัตราโทษที่ตรงกับคดีนี้เพิ่มเติมเพื่อให้ได้คะแนนเต็ม';
+                legalFeedback = 'วิเคราะห์ทิศทางความผิดตรงคดีแล้ว แนะนำให้ระบุเลขมาตรากฎหมายและอัตราโทษเฉพาะคดีนี้เพิ่มเติมเพื่อให้ได้คะแนนสูงขึ้น';
             }
         }
     }
 
-    // 2. Remedy Scoring
+    // 2. Remedy Scoring (10 / 8 / 5 / 0)
     let remedyScore = 0;
     let remedyFeedback = '';
     if (isGibberishOrNonsense(remedyText)) {
         remedyScore = 0;
-        remedyFeedback = 'ยังไม่สามารถให้คะแนนได้ เนื่องจากไม่ได้ระบุขั้นตอนการระงับเหตุเฉพาะหน้า เมื่อเกิดเหตุไซเบอร์ต้องพิจารณาวิธีตัดวงจรความเสียหายทันที และระบุผู้เกี่ยวข้อง';
+        remedyFeedback = 'ยังไม่สามารถให้คะแนนได้ เนื่องจากไม่ได้ระบุขั้นตอนการระงับเหตุเฉพาะหน้า เมื่อเกิดเหตุไซเบอร์ต้องพิจารณาวิธีตัดวงจรความเสียหายทันที';
     } else {
         const rLower = remedyText.toLowerCase();
         const wrongSec = checkWrongCaseSection(rLower, caseId);
         const hasAction = ['ลบ','บล็อก','แจ้ง','กู้','หยุด','อายัด','สลับ','ตัด','ปิด','แคป','รายงาน','บอกครู','บอกพ่อแม่','ปรึกษา','ฟ้อง','ประสานงาน','แก้ข่าว'].some(k => rLower.includes(k));
+        const hasNotify = ['แจ้งครู','แจ้งผู้ปกครอง','แจ้งแอดมิน','รายงาน','แจ้งตำรวจ','แจ้งไอที','แจ้งแพลตฟอร์ม','แจ้งผู้เกี่ยวข้อง','บอกพ่อแม่','บอกครู'].some(k => rLower.includes(k));
         const mentionsLawOnly = (rLower.includes('มาตรา') || rLower.includes('พ.ร.บ')) && !hasAction;
 
         if (wrongSec) {
@@ -966,17 +970,20 @@ function evaluateLocally(caseId, studentAnswers) {
             remedyFeedback = 'ยังไม่สามารถให้คะแนนได้ ข้อความนี้เป็นการระบุมาตรากฎหมาย ไม่ใช่ขั้นตอนการระงับเหตุเฉพาะหน้าเพื่อหยุดยั้งความเสียหาย';
         } else {
             const hasCaseRemedyMatch = ref.keywords_remedy.some(k => rLower.includes(k.toLowerCase()));
-            if (hasCaseRemedyMatch) {
+            if (hasCaseRemedyMatch && hasNotify) {
                 remedyScore = 10;
-                remedyFeedback = 'ลำดับขั้นตอนการบรรเทาความเสียหายเฉพาะหน้าของคดีนี้ได้อย่างรวดเร็ว มีสติ และตรงจุด!';
+                remedyFeedback = 'ลำดับขั้นตอนการบรรเทาความเสียหายเฉพาะหน้าและระบุผู้เกี่ยวข้องของคดีนี้ได้อย่างรวดเร็ว มีสติ และสมบูรณ์แบบ!';
+            } else if (hasCaseRemedyMatch) {
+                remedyScore = 8;
+                remedyFeedback = 'ระบุขั้นตอนหยุดเหตุเฉพาะหน้าตรงคดีได้ดีมาก! หากระบุการแจ้งแอดมิน ครู หรือผู้ปกครองเพิ่มเติม จะได้ 10 คะแนนเต็ม';
             } else {
-                remedyScore = 0;
-                remedyFeedback = 'คำตอบยังไม่ตรงกับขั้นตอนระงับเหตุเฉพาะหน้าของคดีนี้ โปรดระบุวิธีบรรเทาความเสียหายที่สอดคล้องกับพฤติการณ์ในการ์ตูน';
+                remedyScore = 5;
+                remedyFeedback = 'มีแนวคิดการหยุดเหตุเฉพาะหน้าตรงคดีแล้ว ควรระบุวิธีระงับเหตุเฉพาะทางและผู้รับแจ้งเพิ่มเติมเพื่อเพิ่มคะแนน';
             }
         }
     }
 
-    // 3. Security Scoring
+    // 3. Security Scoring (10 / 8 / 5 / 0)
     let securityScore = 0;
     let securityFeedback = '';
     if (isGibberishOrNonsense(securityText)) {
@@ -985,29 +992,26 @@ function evaluateLocally(caseId, studentAnswers) {
     } else {
         const sLower = securityText.toLowerCase();
         const wrongSec = checkWrongCaseSection(sLower, caseId);
+        const hasSecToolName = ['2fa','otp','safesearch','cloudflare','firewall','ไฟร์วอลล์','vpn','ssl','https','face id','touch id','private account','anti-spam','rate limit','version history'].some(k => sLower.includes(k));
         const hasSecTool = ['ไม่กด','ไม่คลิก','ลิงก์','ลิงค์','โฆษณา','สมัคร','รหัส','2fa','ป้องกัน','ตั้งค่า','ล็อก','สิทธิ์','กรอง','ความเป็นส่วนตัว','ระวัง','หลีกเลี่ยง','ไม่แชร์','ไม่กรอก','แฮกเกอร์','ระบบ','ความปลอดภัย','ไฟร์วอลล์','firewall','ddos','cloudflare','safesearch','private','ส่วนตัว'].some(k => sLower.includes(k));
-        
-        // Specific wrong case keyword checks (e.g. typing cyberbullying report for DDoS case)
-        const isDDoS = Number(caseId) === 6;
-        const isCyberbullyingAnswer = sLower.includes('ตัดต่อ') || sLower.includes('บูลลี่') || sLower.includes('cyberbullying') || sLower.includes('แท็กภาพ') || (sLower.includes('รีพอร์ต') && sLower.includes('ภาพ'));
 
         if (wrongSec) {
             securityScore = 0;
             securityFeedback = wrongSec;
-        } else if (isDDoS && isCyberbullyingAnswer) {
-            securityScore = 0;
-            securityFeedback = 'คำตอบไม่ตรงกับคดี! ข้อความนี้เป็นการแจ้งลบรูปบูลลี่ ไม่ตรงกับระบบป้องกันเซิร์ฟเวอร์สอบล่มจากการยิง DDoS';
         } else if (!hasSecTool) {
             securityScore = 0;
             securityFeedback = 'ยังไม่สามารถให้คะแนนได้ ข้อความนี้ไม่ใช่มาตรการหรือแนวทางป้องกันความเสี่ยงระยะยาว';
         } else {
             const hasCaseSecMatch = ref.keywords_security.some(k => sLower.includes(k.toLowerCase()));
-            if (hasCaseSecMatch) {
+            if (hasCaseSecMatch && hasSecToolName) {
                 securityScore = 10;
-                securityFeedback = 'ข้อเสนอแนะด้านวิศวกรรมความปลอดภัยตรงกับช่องโหว่ความเสี่ยงในคดีนี้ได้อย่างสมบูรณ์แบบ!';
+                securityFeedback = 'ข้อเสนอแนะด้านวิศวกรรมความปลอดภัยและเครื่องมือเทคโนโลยีตรงกับช่องโหว่ความเสี่ยงในคดีนี้ได้อย่างสมบูรณ์แบบ!';
+            } else if (hasCaseSecMatch) {
+                securityScore = 8;
+                securityFeedback = 'เสนอมาตรการป้องกันความเสี่ยงระยะยาวตรงคดีได้ดีมาก! หากระบุชื่อเครื่องมือเทคโนโลยี (เช่น 2FA, SafeSearch, Firewall) จะได้ 10 คะแนนเต็ม';
             } else {
-                securityScore = 0;
-                securityFeedback = 'คำตอบยังไม่ตรงกับมาตรการป้องกันเฉพาะทางของคดีนี้ โปรดระบุเครื่องมือเทคโนโลยีหรือแนวทางป้องกันที่ตรงกับพฤติการณ์ในการ์ตูน';
+                securityScore = 5;
+                securityFeedback = 'ตอบแนวทางป้องกันตรงคดีแล้ว แนะนำให้ระบุเครื่องมือป้องกันเฉพาะทางประจำคดีนี้เพิ่มเติมเพื่อให้ได้คะแนนสูงขึ้น';
             }
         }
     }
