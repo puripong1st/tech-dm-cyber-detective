@@ -1003,15 +1003,12 @@ function evaluateLocally(caseId, studentAnswers) {
             securityFeedback = 'ยังไม่สามารถให้คะแนนได้ ข้อความนี้ไม่ใช่มาตรการหรือแนวทางป้องกันความเสี่ยงระยะยาว';
         } else {
             const hasCaseSecMatch = ref.keywords_security.some(k => sLower.includes(k.toLowerCase()));
-            if (hasCaseSecMatch && hasSecToolName) {
+            if (hasCaseSecMatch) {
                 securityScore = 10;
-                securityFeedback = 'ข้อเสนอแนะด้านวิศวกรรมความปลอดภัยและเครื่องมือเทคโนโลยีตรงกับช่องโหว่ความเสี่ยงในคดีนี้ได้อย่างสมบูรณ์แบบ!';
-            } else if (hasCaseSecMatch) {
-                securityScore = 8;
-                securityFeedback = 'เสนอมาตรการป้องกันความเสี่ยงระยะยาวตรงคดีได้ดีมาก! หากระบุชื่อเครื่องมือเทคโนโลยี (เช่น 2FA, SafeSearch, Firewall) จะได้ 10 คะแนนเต็ม';
+                securityFeedback = 'ข้อเสนอแนะแนวทางปฏิบัติหรือเครื่องมือป้องกันความปลอดภัยตรงกับคดีนี้ได้อย่างสมบูรณ์แบบ!';
             } else {
-                securityScore = 5;
-                securityFeedback = 'ตอบแนวทางป้องกันตรงคดีแล้ว แนะนำให้ระบุเครื่องมือป้องกันเฉพาะทางประจำคดีนี้เพิ่มเติมเพื่อให้ได้คะแนนสูงขึ้น';
+                securityScore = 6;
+                securityFeedback = 'ตอบแนวทางป้องกันตรงคดีแล้ว แนะนำให้ระบุวิธีหรือเครื่องมือป้องกันประจำคดีนี้เพิ่มเติมเพื่อให้ได้คะแนนสูงขึ้น';
             }
         }
     }
@@ -1184,7 +1181,7 @@ app.post('/api/evaluate-case', async (req, res) => {
 2. ROLE MATCH (MUST MATCH THIS SPECIFIC ROLE):
    - 👨‍⚖️ Legal Analyst (0-10 pts): MUST analyze Law Section / Offense / Penalty for THIS case. If student writes security settings ("ตั้งค่าส่วนตัว") or remedy actions ("แคปรูปแจ้งครู") -> AWARD 0 TO 2 POINTS MAXIMUM!
    - 🚑 Incident Responder (0-10 pts): MUST provide immediate containment actions / stakeholders for THIS case. If student quotes a law section ("พ.ร.บ. มาตรา 16...") or security settings -> AWARD 0 TO 2 POINTS MAXIMUM!
-   - 🛡️ Security Engineer (0-10 pts): MUST provide long-term prevention tools/habits matching THIS case (e.g. Firewall/DDoS protection for DDoS case). If student writes cyberbullying report actions -> AWARD 0 TO 2 POINTS MAXIMUM!
+   - 🛡️ Security Engineer (0-10 pts): MUST provide long-term prevention guidelines or tools matching THIS case (e.g. checking websites/URLs, privacy settings, 2FA, Firewall). If student writes cyberbullying report actions -> AWARD 0 TO 2 POINTS MAXIMUM!
 
 3. CONCISE & DIRECT ACCURATE ANSWERS GET FULL 10/10 POINTS:
    - When an answer IS relevant to this case and role, award full 10/10 points even if it is short or written in everyday student language.
@@ -1296,7 +1293,7 @@ app.post('/api/evaluate-role', async (req, res) => {
 2. STRICT ROLE SEPARATION FOR BEGINNERS:
    - 👨‍⚖️ Legal Analyst (0-10 pts): Evaluate ONLY law section/concept + penalty. DO NOT ask for IT tools.
    - 🚑 Incident Responder (0-10 pts): Evaluate ONLY immediate action (ลบ, บล็อก, แคปรูป) + who to tell (ครู, ผู้ปกครอง, แอดมิน, ตำรวจ). DO NOT ask for section numbers or IT tools.
-   - 🛡️ Security Engineer (0-10 pts): Evaluate ONLY practical youth safety habits (ไม่กดลิงก์แปลกๆ, ตั้งรหัสยากๆ, ไม่แชร์ข้อมูลส่วนตัว, ล็อกหน้าจอ). DO NOT DEMAND LAW CITATIONS, PENALTIES, OR ADULT IT OFFICER JARGON!
+   - 🛡️ Security Engineer (0-10 pts): Evaluate practical youth safety guidelines (เช่น ตรวจสอบเว็บ/ลิงก์ก่อนให้ข้อมูล, ไม่กดลิงก์แปลกๆ, ตั้งรหัสยากๆ, ไม่แชร์ข้อมูลส่วนตัว, ล็อกหน้าจอ) OR technical tools (2FA, SSL, SafeSearch, Firewall). Award 10/10 for clear prevention practices even without tool names! DO NOT DEMAND ADULT IT OFFICER JARGON!
 
 3. FRIENDLY, SHORT & ENCOURAGING FEEDBACK (IN THAI):
    - Keep feedback short (1-2 sentences), positive, and encouraging for Grade 9 students.
