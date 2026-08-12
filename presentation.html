@@ -51,6 +51,9 @@
             <div class="stage-indicator" id="stage-text">STAGE 1 / 8</div>
 
             <div class="header-controls">
+                <button class="quick-nav-btn" onclick="openQuickNav()" title="เลือกดู พ.ร.บ.คอมฯ 12 มาตรา">
+                    <i class="fa-solid fa-book-open"></i> 12 มาตรา
+                </button>
                 <a href="/" class="icon-btn" title="กลับหน้าหลัก"
                     style="text-decoration: none; display: inline-flex; justify-content: center; align-items: center;">
                     <i class="fa-solid fa-house"></i>
@@ -110,145 +113,212 @@
                 </div>
             </section>
 
-            <!-- Slide 3: Level 1 - พ.ร.บ.คอมฯ หมวดการแฮก -->
+            <!-- Slide 3: Level 1 - พ.ร.บ.คอมฯ หมวดการแฮก & การเข้าถึง -->
             <section class="slide" id="slide-3">
-                <div class="slide-tag">LEVEL 1 // HACKING TRAPS</div>
-                <h2 class="slide-title">Level 1: ระวังโดนแบน! <span class="magenta">พ.ร.บ.คอมพิวเตอร์ (หมวดการเจาะระบบ &
-                        ข้อมูล)</span></h2>
+                <div class="slide-tag">LEVEL 1 // HACKING & ACCESS TRAPS</div>
+                <h2 class="slide-title">Level 1: <span class="magenta">หมวดการเจาะระบบ & การเข้าถึงข้อมูล (6 มาตรา)</span></h2>
+                <p style="margin-bottom: 12px; color: var(--neon-cyan); font-size: 0.95rem;">💡 <em>คลิกการ์ดมาตราเพื่อดูสไลด์การ์ตูน 9 ช่อง, ข้อกฎหมาย, วิธีแก้ไขเมื่อเกิดเหตุ & การป้องกัน!</em></p>
 
-                <div class="penalty-list">
-                    <div class="penalty-row">
-                        <div class="row-num">01</div>
-                        <div class="row-content">
-                            <div class="row-title-wrap">
-                                <span class="law-pill magenta"><i class="fa-solid fa-scale-balanced"></i>
-                                    พ.ร.บ.คอมพิวเตอร์ มาตรา 5</span>
-                                <span class="row-title">แอบเข้าระบบคนอื่น</span>
-                            </div>
-                            <div class="row-desc">เข้าถึงโดยมิชอบซึ่ง <strong>ระบบคอมพิวเตอร์</strong>
-                                ที่มีมาตรการป้องกันการเข้าถึง</div>
+                <div class="laws-presentation-grid">
+                    <div class="law-card-item" id="card-section-5" onclick="openLawModal('section-5')">
+                        <div class="law-card-thumb-wrap">
+                            <img src="assets/chibi_comics/sec_5.png" alt="คดีที่ 1">
+                            <span class="law-card-badge" id="card-badge-section-5">คดีที่ 1</span>
+                            <span class="law-card-comic-tag"><i class="fa-solid fa-image"></i> การ์ตูน 9 ช่อง</span>
                         </div>
-                        <div class="row-badge">⚖️ โทษ: จำคุกไม่เกิน 6 เดือน / ปรับไม่เกิน 10,000 บาท</div>
+                        <div class="law-card-body">
+                            <div class="law-card-title">แอบเข้าระบบคนอื่นโดยมิชอบ</div>
+                            <div class="law-card-desc">แอบสวมรอยปลดล็อกแท็บเล็ต/ไอดีเกมเพื่อนโดยไม่ได้รับอนุญาต</div>
+                        </div>
+                        <div class="law-card-footer">
+                            <div class="law-card-penalty" id="card-penalty-section-5"><i class="fa-solid fa-lock"></i> 🔒 ทายบทลงโทษ</div>
+                            <div class="law-card-action">ดูสไลด์ <i class="fa-solid fa-chevron-right"></i></div>
+                        </div>
                     </div>
 
-                    <div class="penalty-row">
-                        <div class="row-num">02</div>
-                        <div class="row-content">
-                            <div class="row-title-wrap">
-                                <span class="law-pill magenta"><i class="fa-solid fa-scale-balanced"></i>
-                                    พ.ร.บ.คอมพิวเตอร์ มาตรา 7</span>
-                                <span class="row-title">แอบดูข้อมูลคนอื่น</span>
-                            </div>
-                            <div class="row-desc">เข้าถึงโดยมิชอบซึ่ง <strong>ข้อมูลคอมพิวเตอร์</strong>
-                                ของผู้อื่นที่มีมาตรการป้องกันไว้</div>
+                    <div class="law-card-item" id="card-section-6" onclick="openLawModal('section-6')">
+                        <div class="law-card-thumb-wrap">
+                            <img src="assets/chibi_comics/sec_6.png" alt="คดีที่ 2">
+                            <span class="law-card-badge" id="card-badge-section-6">คดีที่ 2</span>
+                            <span class="law-card-comic-tag"><i class="fa-solid fa-image"></i> การ์ตูน 9 ช่อง</span>
                         </div>
-                        <div class="row-badge">⚖️ โทษ: จำคุกไม่เกิน 2 ปี / ปรับไม่เกิน 40,000 บาท</div>
+                        <div class="law-card-body">
+                            <div class="law-card-title">แจกรหัส/วิธีเจาะระบบ</div>
+                            <div class="law-card-desc">แอบถ่ายพาสเวิร์ดโรงเรียนไปโพสต์แจกในกลุ่ม Discord สาธารณะ</div>
+                        </div>
+                        <div class="law-card-footer">
+                            <div class="law-card-penalty" id="card-penalty-section-6"><i class="fa-solid fa-lock"></i> 🔒 ทายบทลงโทษ</div>
+                            <div class="law-card-action">ดูสไลด์ <i class="fa-solid fa-chevron-right"></i></div>
+                        </div>
                     </div>
 
-                    <div class="penalty-row">
-                        <div class="row-num">03</div>
-                        <div class="row-content">
-                            <div class="row-title-wrap">
-                                <span class="law-pill magenta"><i class="fa-solid fa-scale-balanced"></i>
-                                    พ.ร.บ.คอมพิวเตอร์ มาตรา 8</span>
-                                <span class="row-title">ดักรับข้อมูลกลางทาง</span>
-                            </div>
-                            <div class="row-desc">ดักแชท ดักจับ หรือขโมยข้อมูลของผู้อื่นขณะส่งผ่านระบบเครือข่าย</div>
+                    <div class="law-card-item" id="card-section-7" onclick="openLawModal('section-7')">
+                        <div class="law-card-thumb-wrap">
+                            <img src="assets/chibi_comics/sec_7.png" alt="คดีที่ 3">
+                            <span class="law-card-badge" id="card-badge-section-7">คดีที่ 3</span>
+                            <span class="law-card-comic-tag"><i class="fa-solid fa-image"></i> การ์ตูน 9 ช่อง</span>
                         </div>
-                        <div class="row-badge">⚖️ โทษ: จำคุกไม่เกิน 3 ปี / ปรับไม่เกิน 60,000 บาท</div>
+                        <div class="law-card-body">
+                            <div class="law-card-title">แอบดูข้อมูลส่วนตัวคนอื่น</div>
+                            <div class="law-card-desc">แอบค้นแชทไดอารี่ลับและรูปภาพส่วนตัวเพื่อนเอาไปแฉนินทา</div>
+                        </div>
+                        <div class="law-card-footer">
+                            <div class="law-card-penalty" id="card-penalty-section-7"><i class="fa-solid fa-lock"></i> 🔒 ทายบทลงโทษ</div>
+                            <div class="law-card-action">ดูสไลด์ <i class="fa-solid fa-chevron-right"></i></div>
+                        </div>
                     </div>
 
-                    <div class="penalty-row">
-                        <div class="row-num">04</div>
-                        <div class="row-content">
-                            <div class="row-title-wrap">
-                                <span class="law-pill magenta"><i class="fa-solid fa-scale-balanced"></i>
-                                    พ.ร.บ.คอมพิวเตอร์ มาตรา 9</span>
-                                <span class="row-title">ทำลาย / แก้ไขข้อมูลผู้อื่น</span>
-                            </div>
-                            <div class="row-desc">ทำให้เสียหาย ทำลาย แก้ไข ดัดแปลง หรือเปลี่ยนแปลงข้อมูลผู้อื่นโดยมิชอบ
-                            </div>
+                    <div class="law-card-item" id="card-section-8" onclick="openLawModal('section-8')">
+                        <div class="law-card-thumb-wrap">
+                            <img src="assets/chibi_comics/sec_8.png" alt="คดีที่ 4">
+                            <span class="law-card-badge" id="card-badge-section-8">คดีที่ 4</span>
+                            <span class="law-card-comic-tag"><i class="fa-solid fa-image"></i> การ์ตูน 9 ช่อง</span>
                         </div>
-                        <div class="row-badge">⚖️ โทษ: จำคุกไม่เกิน 5 ปี / ปรับไม่เกิน 100,000 บาท</div>
+                        <div class="law-card-body">
+                            <div class="law-card-title">ดักรับข้อมูลกลางทาง</div>
+                            <div class="law-card-desc">ลักลอบดักสัญญาณ Wi-Fi ขโมยเหรียญเกมและพาสเวิร์ดระหว่างส่ง</div>
+                        </div>
+                        <div class="law-card-footer">
+                            <div class="law-card-penalty" id="card-penalty-section-8"><i class="fa-solid fa-lock"></i> 🔒 ทายบทลงโทษ</div>
+                            <div class="law-card-action">ดูสไลด์ <i class="fa-solid fa-chevron-right"></i></div>
+                        </div>
                     </div>
 
-                    <div class="penalty-row">
-                        <div class="row-num">05</div>
-                        <div class="row-content">
-                            <div class="row-title-wrap">
-                                <span class="law-pill magenta"><i class="fa-solid fa-scale-balanced"></i>
-                                    พ.ร.บ.คอมพิวเตอร์ มาตรา 10</span>
-                                <span class="row-title">ทำให้ระบบล่ม / ทำงานไม่ได้</span>
-                            </div>
-                            <div class="row-desc">ก่อกวน ยิงระบบ (DDoS) ทำให้การทำงานของระบบคอมพิวเตอร์ผู้อื่นถูกระงับ
-                                ชะลอ หรือล่ม</div>
+                    <div class="law-card-item" id="card-section-9" onclick="openLawModal('section-9')">
+                        <div class="law-card-thumb-wrap">
+                            <img src="assets/chibi_comics/sec_9.png" alt="คดีที่ 5">
+                            <span class="law-card-badge" id="card-badge-section-9">คดีที่ 5</span>
+                            <span class="law-card-comic-tag"><i class="fa-solid fa-image"></i> การ์ตูน 9 ช่อง</span>
                         </div>
-                        <div class="row-badge">⚖️ โทษ: จำคุกไม่เกิน 5 ปี / ปรับไม่เกิน 100,000 บาท</div>
+                        <div class="law-card-body">
+                            <div class="law-card-title">ทำลาย / แก้ไขข้อมูลผู้อื่น</div>
+                            <div class="law-card-desc">แอบลบสไลด์รายงานวิทย์และแกล้งพิมพ์พังงานกลุ่มเพื่อน</div>
+                        </div>
+                        <div class="law-card-footer">
+                            <div class="law-card-penalty" id="card-penalty-section-9"><i class="fa-solid fa-lock"></i> 🔒 ทายบทลงโทษ</div>
+                            <div class="law-card-action">ดูสไลด์ <i class="fa-solid fa-chevron-right"></i></div>
+                        </div>
+                    </div>
+
+                    <div class="law-card-item" id="card-section-10" onclick="openLawModal('section-10')">
+                        <div class="law-card-thumb-wrap">
+                            <img src="assets/chibi_comics/sec_10.png" alt="คดีที่ 6">
+                            <span class="law-card-badge" id="card-badge-section-10">คดีที่ 6</span>
+                            <span class="law-card-comic-tag"><i class="fa-solid fa-image"></i> การ์ตูน 9 ช่อง</span>
+                        </div>
+                        <div class="law-card-body">
+                            <div class="law-card-title">ทำให้ระบบล่ม / ยิงบอท DDoS</div>
+                            <div class="law-card-desc">ยิงบอททราฟฟิกถล่มเซิร์ฟเวอร์สอบออนไลน์โรงเรียนจนล่ม</div>
+                        </div>
+                        <div class="law-card-footer">
+                            <div class="law-card-penalty" id="card-penalty-section-10"><i class="fa-solid fa-lock"></i> 🔒 ทายบทลงโทษ</div>
+                            <div class="law-card-action">ดูสไลด์ <i class="fa-solid fa-chevron-right"></i></div>
+                        </div>
                     </div>
                 </div>
             </section>
 
-            <!-- Slide 4: Level 2 - พ.ร.บ.คอมฯ หมวดการโพสต์/หลอกลวง -->
+            <!-- Slide 4: Level 2 - พ.ร.บ.คอมฯ หมวดการโพสต์/สแปม/หลอกลวง -->
             <section class="slide" id="slide-4">
-                <div class="slide-tag">LEVEL 2 // FORBIDDEN SKILLS</div>
-                <h2 class="slide-title">Level 2: <span class="magenta">สกิลต้องห้ามในการโพสต์ (พ.ร.บ.คอมพิวเตอร์)</span>
-                </h2>
+                <div class="slide-tag">LEVEL 2 // FORBIDDEN SKILLS & POSTING TRAPS</div>
+                <h2 class="slide-title">Level 2: <span class="yellow">หมวดการโพสต์, สแปม, หลอกลวง & ตัดต่อ (6 มาตรา)</span></h2>
+                <p style="margin-bottom: 12px; color: var(--neon-cyan); font-size: 0.95rem;">💡 <em>คลิกการ์ดมาตราเพื่อดูสไลด์การ์ตูน 9 ช่อง, ข้อกฎหมาย, วิธีแก้ไขเมื่อเกิดเหตุ & การป้องกัน!</em></p>
 
-                <div class="penalty-list">
-                    <div class="penalty-row">
-                        <div class="row-num">01</div>
-                        <div class="row-content">
-                            <div class="row-title-wrap">
-                                <span class="law-pill yellow"><i class="fa-solid fa-scale-balanced"></i>
-                                    พ.ร.บ.คอมพิวเตอร์ มาตรา 11</span>
-                                <span class="row-title">ส่งสแปมก่อกวน</span>
-                            </div>
-                            <div class="row-desc">ส่งอีเมลหรือข้อความสแปมรบกวน โดยไม่เปิดโอกาสให้ผู้รับกดยกเลิก
-                                (Unsubscribe) ได้โดยง่าย</div>
+                <div class="laws-presentation-grid">
+                    <div class="law-card-item" id="card-section-11-1" onclick="openLawModal('section-11-1')">
+                        <div class="law-card-thumb-wrap">
+                            <img src="assets/chibi_comics/sec_11_1.png" alt="คดีที่ 7">
+                            <span class="law-card-badge" id="card-badge-section-11-1" style="background: #eab308; color: #0f172a;">คดีที่ 7</span>
+                            <span class="law-card-comic-tag"><i class="fa-solid fa-image"></i> การ์ตูน 9 ช่อง</span>
                         </div>
-                        <div class="row-badge">⚖️ โทษ: ปรับไม่เกิน 200,000 บาท</div>
+                        <div class="law-card-body">
+                            <div class="law-card-title">ส่งสแปมปกปิดแหล่งที่มา</div>
+                            <div class="law-card-desc">ส่งอีเมลหรือแชทสแปมขายของปลอมแอดเดรสปกปิดชื่อผู้ส่ง</div>
+                        </div>
+                        <div class="law-card-footer">
+                            <div class="law-card-penalty" id="card-penalty-section-11-1"><i class="fa-solid fa-lock"></i> 🔒 ทายบทลงโทษ</div>
+                            <div class="law-card-action">ดูสไลด์ <i class="fa-solid fa-chevron-right"></i></div>
+                        </div>
                     </div>
 
-                    <div class="penalty-row">
-                        <div class="row-num">02</div>
-                        <div class="row-content">
-                            <div class="row-title-wrap">
-                                <span class="law-pill yellow"><i class="fa-solid fa-scale-balanced"></i>
-                                    พ.ร.บ.คอมพิวเตอร์ มาตรา 14 (1)/(2)</span>
-                                <span class="row-title">หลอกลวง / ฟิชชิ่ง / แชร์ข่าวปลอม</span>
-                            </div>
-                            <div class="row-desc">ทำฟิชชิ่ง (Phishing) นำเข้าข้อมูลเท็จเพื่อฉ้อโกง หรือแชร์ Fake News
-                                ที่ก่อความตื่นตระหนก</div>
+                    <div class="law-card-item" id="card-section-11-2" onclick="openLawModal('section-11-2')">
+                        <div class="law-card-thumb-wrap">
+                            <img src="assets/chibi_comics/sec_11_2.png" alt="คดีที่ 8">
+                            <span class="law-card-badge" id="card-badge-section-11-2" style="background: #eab308; color: #0f172a;">คดีที่ 8</span>
+                            <span class="law-card-comic-tag"><i class="fa-solid fa-image"></i> การ์ตูน 9 ช่อง</span>
                         </div>
-                        <div class="row-badge">⚖️ โทษ: จำคุกไม่เกิน 5 ปี / ปรับไม่เกิน 100,000 บาท</div>
+                        <div class="law-card-body">
+                            <div class="law-card-title">ส่งสแปมไร้ปุ่มกดยกเลิก</div>
+                            <div class="law-card-desc">ยิงแชทสแปมตื้อรบกวนโดยไม่เปิดโอกาสให้ผู้รับกดยกเลิก</div>
+                        </div>
+                        <div class="law-card-footer">
+                            <div class="law-card-penalty" id="card-penalty-section-11-2"><i class="fa-solid fa-lock"></i> 🔒 ทายบทลงโทษ</div>
+                            <div class="law-card-action">ดูสไลด์ <i class="fa-solid fa-chevron-right"></i></div>
+                        </div>
                     </div>
 
-                    <div class="penalty-row">
-                        <div class="row-num">03</div>
-                        <div class="row-content">
-                            <div class="row-title-wrap">
-                                <span class="law-pill yellow"><i class="fa-solid fa-scale-balanced"></i>
-                                    พ.ร.บ.คอมพิวเตอร์ มาตรา 14 (4)</span>
-                                <span class="row-title">นำเข้าสื่อลามก</span>
-                            </div>
-                            <div class="row-desc">
-                                นำเข้าและเผยแพร่ข้อมูลคอมพิวเตอร์ที่มีลักษณะลามกอนาจารที่ประชาชนทั่วไปเข้าถึงได้</div>
+                    <div class="law-card-item" id="card-section-14-1" onclick="openLawModal('section-14-1')">
+                        <div class="law-card-thumb-wrap">
+                            <img src="assets/chibi_comics/sec_14_1.png" alt="คดีที่ 9">
+                            <span class="law-card-badge" id="card-badge-section-14-1" style="background: #eab308; color: #0f172a;">คดีที่ 9</span>
+                            <span class="law-card-comic-tag"><i class="fa-solid fa-image"></i> การ์ตูน 9 ช่อง</span>
                         </div>
-                        <div class="row-badge">⚖️ โทษ: จำคุกไม่เกิน 5 ปี / ปรับไม่เกิน 100,000 บาท</div>
+                        <div class="law-card-body">
+                            <div class="law-card-title">หลอกลวง / ฟิชชิ่งเว็บปลอม</div>
+                            <div class="law-card-desc">ทำเว็บปลอม Phishing บิดเบือนหลอกเอารหัสผ่านล็อกอิน</div>
+                        </div>
+                        <div class="law-card-footer">
+                            <div class="law-card-penalty" id="card-penalty-section-14-1"><i class="fa-solid fa-lock"></i> 🔒 ทายบทลงโทษ</div>
+                            <div class="law-card-action">ดูสไลด์ <i class="fa-solid fa-chevron-right"></i></div>
+                        </div>
                     </div>
 
-                    <div class="penalty-row">
-                        <div class="row-num">04</div>
-                        <div class="row-content">
-                            <div class="row-title-wrap">
-                                <span class="law-pill yellow"><i class="fa-solid fa-scale-balanced"></i>
-                                    พ.ร.บ.คอมพิวเตอร์ มาตรา 16</span>
-                                <span class="row-title">ตัดต่อภาพคนอื่นให้เสียหาย</span>
-                            </div>
-                            <div class="row-desc">นำภาพผู้อื่นมาตัดต่อ ดัดแปลง แล้วโพสต์ทำให้เสียชื่อเสียง ถูกดูหมิ่น
-                                เกลียดชัง หรืออับอาย</div>
+                    <div class="law-card-item" id="card-section-14-2" onclick="openLawModal('section-14-2')">
+                        <div class="law-card-thumb-wrap">
+                            <img src="assets/chibi_comics/sec_14_2.png" alt="คดีที่ 10">
+                            <span class="law-card-badge" id="card-badge-section-14-2" style="background: #eab308; color: #0f172a;">คดีที่ 10</span>
+                            <span class="law-card-comic-tag"><i class="fa-solid fa-image"></i> การ์ตูน 9 ช่อง</span>
                         </div>
-                        <div class="row-badge">⚖️ โทษ: จำคุกไม่เกิน 3 ปี / ปรับไม่เกิน 200,000 บาท</div>
+                        <div class="law-card-body">
+                            <div class="law-card-title">แชร์ข่าวปลอมทำคนแตกตื่น</div>
+                            <div class="law-card-desc">แชร์ข่าวปลอมภัยพิบัติสร้างความตื่นตระหนกแก่ประชาชน</div>
+                        </div>
+                        <div class="law-card-footer">
+                            <div class="law-card-penalty" id="card-penalty-section-14-2"><i class="fa-solid fa-lock"></i> 🔒 ทายบทลงโทษ</div>
+                            <div class="law-card-action">ดูสไลด์ <i class="fa-solid fa-chevron-right"></i></div>
+                        </div>
+                    </div>
+
+                    <div class="law-card-item" id="card-section-14-4" onclick="openLawModal('section-14-4')">
+                        <div class="law-card-thumb-wrap">
+                            <img src="assets/chibi_comics/sec_14_4.png" alt="คดีที่ 11">
+                            <span class="law-card-badge" id="card-badge-section-14-4" style="background: #eab308; color: #0f172a;">คดีที่ 11</span>
+                            <span class="law-card-comic-tag"><i class="fa-solid fa-image"></i> การ์ตูน 9 ช่อง</span>
+                        </div>
+                        <div class="law-card-body">
+                            <div class="law-card-title">นำเข้า/แชร์สื่อลามกอนาจาร</div>
+                            <div class="law-card-desc">นำเข้าสื่อลามกอนาจารลงสู่ระบบคอมพิวเตอร์ที่ประชาชนทั่วไปเข้าถึงได้</div>
+                        </div>
+                        <div class="law-card-footer">
+                            <div class="law-card-penalty" id="card-penalty-section-14-4"><i class="fa-solid fa-lock"></i> 🔒 ทายบทลงโทษ</div>
+                            <div class="law-card-action">ดูสไลด์ <i class="fa-solid fa-chevron-right"></i></div>
+                        </div>
+                    </div>
+
+                    <div class="law-card-item" id="card-section-16" onclick="openLawModal('section-16')">
+                        <div class="law-card-thumb-wrap">
+                            <img src="assets/chibi_comics/sec_16.png" alt="คดีที่ 12">
+                            <span class="law-card-badge" id="card-badge-section-16" style="background: #eab308; color: #0f172a;">คดีที่ 12</span>
+                            <span class="law-card-comic-tag"><i class="fa-solid fa-image"></i> การ์ตูน 9 ช่อง</span>
+                        </div>
+                        <div class="law-card-body">
+                            <div class="law-card-title">ตัดต่อภาพคนอื่นให้เสียหาย</div>
+                            <div class="law-card-desc">นำภาพผู้อื่นมาตัดต่อดัดแปลงโพสต์ล้อเลียนประจานให้อับอาย</div>
+                        </div>
+                        <div class="law-card-footer">
+                            <div class="law-card-penalty" id="card-penalty-section-16"><i class="fa-solid fa-lock"></i> 🔒 ทายบทลงโทษ</div>
+                            <div class="law-card-action">ดูสไลด์ <i class="fa-solid fa-chevron-right"></i></div>
+                        </div>
                     </div>
                 </div>
             </section>
@@ -471,8 +541,134 @@
 
     </div>
 
+    <!-- ==========================================
+         Cyber Law Interactive Modal
+         ========================================== -->
+    <div class="modal-overlay" id="law-modal">
+        <div class="law-modal-card">
+            <div class="law-modal-header">
+                <div class="modal-title-wrap">
+                    <span class="modal-section-badge" id="modal-section-badge">มาตรา 5</span>
+                    <h3 class="modal-title" id="modal-title">ชื่อมาตรา</h3>
+                </div>
+                <button class="modal-close-btn" onclick="closeLawModal()" title="ปิดหน้าต่าง">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+
+            <div class="modal-tabs">
+                <button class="modal-tab-btn active" id="tab-overview-btn" onclick="switchModalTab('overview')">
+                    <i class="fa-solid fa-image"></i> 🎨 การ์ตูน & สรุปเข้าใจง่าย
+                </button>
+                <button class="modal-tab-btn" id="tab-legal-btn" onclick="switchModalTab('legal')">
+                    <i class="fa-solid fa-scale-balanced"></i> ⚖️ ข้อกฎหมาย, วิธีแก้ & ป้องกัน
+                </button>
+            </div>
+
+            <div class="modal-body-container">
+                <!-- Tab 1: Overview & Comic Image -->
+                <div class="tab-pane active" id="pane-overview">
+                    <div class="legal-overview-grid">
+                        <div class="comic-preview-box" id="comic-preview-box" onclick="triggerLightboxFromModal()">
+                            <img id="modal-comic-img" src="" alt="การ์ตูน 9 ช่อง พ.ร.บ.คอมพิวเตอร์">
+                            <div class="zoom-overlay-badge">
+                                <i class="fa-solid fa-magnifying-glass-plus"></i> คลิกขยายรูปเต็มจอ
+                            </div>
+                        </div>
+
+                        <div class="legal-details-col">
+                            <div class="detail-box easy-box">
+                                <div class="detail-label" style="color: var(--neon-yellow);"><i class="fa-solid fa-lightbulb"></i> เข้าใจง่ายสไตล์ ม.3</div>
+                                <div class="detail-content" id="modal-easy-explain">...</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tab 2: Legal Clause, Penalties, Remediation & Prevention -->
+                <div class="tab-pane" id="pane-legal">
+                    <div class="tab-pane-action-bar">
+                        <button class="reveal-all-btn" id="reveal-all-legal-btn" onclick="toggleRevealAllLegal()">
+                            <i class="fa-solid fa-eye"></i> เปิดเฉลยเนื้อหาทั้งหมด
+                        </button>
+                    </div>
+
+                    <div class="legal-overview-grid">
+                        <div class="comic-preview-box" onclick="triggerLightboxFromModal()">
+                            <img id="modal-comic-img-legal" src="" alt="การ์ตูน 9 ช่อง พ.ร.บ.คอมพิวเตอร์">
+                            <div class="zoom-overlay-badge">
+                                <i class="fa-solid fa-magnifying-glass-plus"></i> คลิกขยายรูปเต็มจอ
+                            </div>
+                        </div>
+
+                        <div class="legal-details-col">
+                            <div class="detail-box is-hidden" onclick="revealDetailBox(this)">
+                                <div class="detail-label"><i class="fa-solid fa-book"></i> ตัวบทกฎหมาย (ตาม พ.ร.บ. คอมพิวเตอร์)</div>
+                                <div class="detail-content" id="modal-law-text">...</div>
+                                <div class="reveal-placeholder"><i class="fa-solid fa-lock"></i> 🔒 คลิกเพื่อเปิดดูตัวบทกฎหมาย</div>
+                            </div>
+
+                            <div class="detail-box penalty-box is-hidden" onclick="revealDetailBox(this)">
+                                <div class="detail-label" style="color: var(--neon-magenta);"><i class="fa-solid fa-gavel"></i> อัตราโทษสูงสุดตามกฎหมาย</div>
+                                <div class="detail-content penalty-text" id="modal-penalty-text">...</div>
+                                <div class="reveal-placeholder"><i class="fa-solid fa-lock"></i> 🔒 คลิกเพื่อเปิดดูอัตราโทษ</div>
+                            </div>
+
+                            <div class="detail-box remediation-box is-hidden" onclick="revealDetailBox(this)">
+                                <div class="detail-label" style="color: #f97316;"><i class="fa-solid fa-kit-medical"></i> 🚨 กรณีเกิดเหตุขึ้นแล้วเราแก้ไขอย่างไร</div>
+                                <div class="detail-content remediation-text" id="modal-remediation-content">...</div>
+                                <div class="reveal-placeholder"><i class="fa-solid fa-lock"></i> 🔒 คลิกเพื่อเปิดดูวิธีแก้ไขเมื่อเกิดเหตุ</div>
+                            </div>
+
+                            <div class="detail-box prevention-box is-hidden" onclick="revealDetailBox(this)">
+                                <div class="detail-label" style="color: #10b981;"><i class="fa-solid fa-shield-halved"></i> 🛡️ การเพิ่มความปลอดภัย & การป้องกัน</div>
+                                <div class="detail-content prevention-text" id="modal-prevention-content">...</div>
+                                <div class="reveal-placeholder"><i class="fa-solid fa-lock"></i> 🔒 คลิกเพื่อเปิดดูวิธีป้องกัน</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==========================================
+         Fullscreen Image Lightbox Viewer
+         ========================================== -->
+    <div class="lightbox-overlay" id="image-lightbox" onclick="closeLightbox()">
+        <button class="lightbox-close-btn" onclick="closeLightbox()" title="ปิดภาพขยาย">
+            <i class="fa-solid fa-xmark"></i>
+        </button>
+        <div class="lightbox-img-wrap" onclick="event.stopPropagation()">
+            <img id="lightbox-img" src="" alt="การ์ตูนเต็มจอ">
+        </div>
+    </div>
+
+    <!-- ==========================================
+         Quick 12-Law Navigation Modal
+         ========================================== -->
+    <div class="modal-overlay" id="quick-nav-modal">
+        <div class="law-modal-card" style="max-width: 800px;">
+            <div class="law-modal-header">
+                <div class="modal-title-wrap">
+                    <span class="modal-section-badge" style="background: var(--neon-cyan); color: #0f172a;">📜 P.R.B. NAV</span>
+                    <h3 class="modal-title">สารบัญเลือกดู พ.ร.บ.คอมฯ 12 มาตรา</h3>
+                </div>
+                <button class="modal-close-btn" onclick="closeQuickNav()" title="ปิดสารบัญ">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+            <div class="modal-body-container">
+                <p style="color: #94a3b8; margin-bottom: 12px;">คลิกเลือกมาตราที่ต้องการเพื่อเปิดดูภาพการ์ตูนโดเรม่อนและรายละเอียดทันที:</p>
+                <div class="quick-laws-grid" id="quick-laws-container">
+                    <!-- Dynamic 12 law quick cards -->
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- JS Logic -->
-    <!-- Page Script -->
+    <script src="js/law_data.js"></script>
     <script src="js/presentation.js"></script>
 </body>
 
