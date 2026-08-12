@@ -371,6 +371,72 @@ function revealLawCardAndHeader(law) {
 
     const cardItem = document.getElementById(`card-${law.id}`);
     if (cardItem) cardItem.classList.add('is-revealed');
+
+    // 4. Trigger Celebration Confetti & Neon Glow Pulse!
+    triggerConfettiCelebration();
+}
+
+function triggerConfettiCelebration() {
+    // 1. Modal pulse glow animation
+    const modalCard = document.querySelector('.law-modal-card');
+    if (modalCard) {
+        modalCard.classList.remove('celebrate-glow');
+        void modalCard.offsetWidth; // Force reflow
+        modalCard.classList.add('celebrate-glow');
+    }
+
+    // 2. Confetti Particle Burst
+    const canvas = document.getElementById('confetti-canvas');
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+
+    const colors = ['#38bdf8', '#facc15', '#f43f5e', '#a855f7', '#34d399', '#fb923c'];
+    const particles = [];
+
+    for (let i = 0; i < 45; i++) {
+        particles.push({
+            x: canvas.width / 2,
+            y: canvas.height / 3,
+            vx: (Math.random() - 0.5) * 16,
+            vy: (Math.random() - 0.75) * 18,
+            size: Math.random() * 8 + 4,
+            color: colors[Math.floor(Math.random() * colors.length)],
+            rotation: Math.random() * 360,
+            vRot: (Math.random() - 0.5) * 12,
+            opacity: 1
+        });
+    }
+
+    let startTime = Date.now();
+    function animate() {
+        const elapsed = Date.now() - startTime;
+        if (elapsed > 1600) {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            return;
+        }
+
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        particles.forEach(p => {
+            p.x += p.vx;
+            p.y += p.vy;
+            p.vy += 0.45; // gravity
+            p.rotation += p.vRot;
+            p.opacity = Math.max(0, 1 - elapsed / 1600);
+
+            ctx.save();
+            ctx.globalAlpha = p.opacity;
+            ctx.translate(p.x, p.y);
+            ctx.rotate((p.rotation * Math.PI) / 180);
+            ctx.fillStyle = p.color;
+            ctx.fillRect(-p.size / 2, -p.size / 2, p.size, p.size);
+            ctx.restore();
+        });
+
+        requestAnimationFrame(animate);
+    }
+    animate();
 }
 
 function updateRevealAllBtnState() {
@@ -379,6 +445,10 @@ function updateRevealAllBtnState() {
     const hiddenBoxes = document.querySelectorAll('#pane-legal .detail-box.is-hidden');
     if (hiddenBoxes.length === 0) {
         btn.innerHTML = `<i class="fa-solid fa-eye-slash"></i> ซ่อนเฉลยทั้งหมด`;
+        if (activeLaw && !activeLaw.isRevealed) {
+            activeLaw.isRevealed = true;
+            revealLawCardAndHeader(activeLaw);
+        }
     } else {
         btn.innerHTML = `<i class="fa-solid fa-eye"></i> เปิดเฉลยเนื้อหาทั้งหมด`;
     }
@@ -445,4 +515,34 @@ function closeQuickNav() {
     modal.classList.remove('active');
     playSound('prev');
 }
+
+// Keyboard Shortcuts for Teachers & Presenters
+document.addEventListener('keydown', (e) => {
+    // If typing in input, ignore
+    if (['INPUT', 'TEXTAREA'].includes(document.activeElement.tagName)) return;
+
+    if (e.key === 'ArrowRight' || e.key === 'PageDown' || (e.key === ' ' && !document.querySelector('.modal-overlay.active'))) {
+        e.preventDefault();
+        nextSlide();
+    } else if (e.key === 'ArrowLeft' || e.key === 'PageUp') {
+        e.preventDefault();
+        prevSlide();
+    } else if (e.key === 'Escape') {
+        const lightbox = document.getElementById('image-lightbox');
+        const lawModal = document.getElementById('law-modal');
+        const quickNav = document.getElementById('quick-nav-modal');
+        
+        if (lightbox && lightbox.classList.contains('active')) {
+            closeLightbox();
+        } else if (lawModal && lawModal.classList.contains('active')) {
+            closeLawModal();
+        } else if (quickNav && quickNav.classList.contains('active')) {
+            closeQuickNav();
+        }
+    } else if (e.key === 'm' || e.key === 'M') {
+        toggleSound();
+    } else if (e.key === 'f' || e.key === 'F') {
+        toggleFullscreen();
+    }
+});
 
