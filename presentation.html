@@ -558,15 +558,15 @@
 
             <div class="modal-tabs">
                 <button class="modal-tab-btn active" id="tab-overview-btn" onclick="switchModalTab('overview')">
-                    <i class="fa-solid fa-image"></i> 🎨 การ์ตูน & สรุปเข้าใจง่าย
+                    <i class="fa-solid fa-image"></i> 🎨 การ์ตูน 9 ช่อง & เรื่องราวคดี
                 </button>
                 <button class="modal-tab-btn" id="tab-legal-btn" onclick="switchModalTab('legal')">
-                    <i class="fa-solid fa-scale-balanced"></i> ⚖️ ข้อกฎหมาย, วิธีแก้ & ป้องกัน
+                    <i class="fa-solid fa-scale-balanced"></i> ⚖️ ข้อกฎหมาย & บทลงโทษ
                 </button>
             </div>
 
             <div class="modal-body-container">
-                <!-- Tab 1: Overview & Comic Image -->
+                <!-- Tab 1: Comic Image & Easy Explain -->
                 <div class="tab-pane active" id="pane-overview">
                     <div class="legal-overview-grid">
                         <div class="comic-preview-box" id="comic-preview-box" onclick="triggerLightboxFromModal()">
@@ -603,7 +603,7 @@
 
                         <div class="legal-details-col">
                             <div class="detail-box is-hidden" onclick="revealDetailBox(this)">
-                                <div class="detail-label"><i class="fa-solid fa-book"></i> ตัวบทกฎหมาย (ตาม พ.ร.บ. คอมพิวเตอร์)</div>
+                                <div class="detail-label" style="color: var(--neon-cyan);"><i class="fa-solid fa-book"></i> ตัวบทกฎหมาย (ตาม พ.ร.บ. คอมพิวเตอร์)</div>
                                 <div class="detail-content" id="modal-law-text">...</div>
                                 <div class="reveal-placeholder"><i class="fa-solid fa-lock"></i> 🔒 คลิกเพื่อเปิดดูตัวบทกฎหมาย</div>
                             </div>

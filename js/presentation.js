@@ -242,6 +242,19 @@ function formatShortPenalty(penalty) {
     return "⚖️ โทษ: คุกไม่เกิน 5 ปี / ปรับ 100,000 บ.";
 }
 
+function getSanitizedEasyExplain(explain, isRevealed) {
+    if (isRevealed) return explain;
+    return explain
+        .replace(/ผิดกฎหมายมาตรา\s*[\d\(\)]+/g, 'ผิดกฎหมาย')
+        .replace(/ผิดมาตรา\s*[\d\(\)]+/g, 'ผิดกฎหมาย')
+        .replace(/โดนคุกสูงสุด[^!]*!/g, 'ถือเป็นความผิดกฎหมาย!')
+        .replace(/โดนจำคุก[^!]*!/g, 'ถือเป็นความผิดกฎหมาย!')
+        .replace(/โทษคุกถึง[^!]*!/g, 'ถือเป็นความผิดกฎหมาย!')
+        .replace(/มีโทษจำคุก[^!]*!/g, 'ถือเป็นความผิดกฎหมาย!')
+        .replace(/มีโทษปรับ[^!]*!/g, 'ถือเป็นความผิดกฎหมาย!')
+        .replace(/โดนปรับอ่วม[^!]*!/g, 'ถือเป็นความผิดกฎหมาย!');
+}
+
 function openLawModal(lawId) {
     if (typeof cyberLawData === 'undefined') return;
     const law = cyberLawData.find(item => item.id === lawId);
@@ -261,11 +274,9 @@ function openLawModal(lawId) {
 
     const lawTextEl = document.getElementById('modal-law-text');
     if (lawTextEl) lawTextEl.textContent = law.lawText;
-    const shortLawEl = document.getElementById('modal-law-text-short');
-    if (shortLawEl) shortLawEl.textContent = law.lawText;
 
     document.getElementById('modal-penalty-text').textContent = law.penalty;
-    document.getElementById('modal-easy-explain').textContent = law.easyExplain;
+    document.getElementById('modal-easy-explain').textContent = getSanitizedEasyExplain(law.easyExplain, law.isRevealed);
     
     const remediationEl = document.getElementById('modal-remediation-content');
     if (remediationEl) remediationEl.textContent = law.remediation || "กรณีเกิดเหตุให้รีบเปลี่ยนรหัสผ่านและแจ้งเตือนผู้เกี่ยวข้องทันที";
@@ -347,7 +358,11 @@ function revealLawCardAndHeader(law) {
     const modalBadge = document.getElementById('modal-section-badge');
     if (modalBadge) modalBadge.textContent = law.section;
 
-    // 2. Update Presentation Card on Slide 3 / Slide 4
+    // 2. Update Tab 1 Easy Explain to full text
+    const easyExplainEl = document.getElementById('modal-easy-explain');
+    if (easyExplainEl) easyExplainEl.textContent = law.easyExplain;
+
+    // 3. Update Presentation Card on Slide 3 / Slide 4
     const cardBadge = document.getElementById(`card-badge-${law.id}`);
     if (cardBadge) cardBadge.textContent = law.section;
 
