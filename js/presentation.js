@@ -516,33 +516,23 @@ function closeQuickNav() {
     playSound('prev');
 }
 
-// Keyboard Shortcuts for Teachers & Presenters
+function toggleSound() {
+    sfxBtn.click();
+}
+
+function toggleFullscreen() {
+    fullscreenBtn.click();
+}
+
+// Extra presenter shortcuts that do not duplicate slide navigation.
 document.addEventListener('keydown', (e) => {
-    // If typing in input, ignore
     if (['INPUT', 'TEXTAREA'].includes(document.activeElement.tagName)) return;
 
-    if (e.key === 'ArrowRight' || e.key === 'PageDown' || (e.key === ' ' && !document.querySelector('.modal-overlay.active'))) {
+    if (e.key === 'm' || e.key === 'M') {
         e.preventDefault();
-        nextSlide();
-    } else if (e.key === 'ArrowLeft' || e.key === 'PageUp') {
-        e.preventDefault();
-        prevSlide();
-    } else if (e.key === 'Escape') {
-        const lightbox = document.getElementById('image-lightbox');
-        const lawModal = document.getElementById('law-modal');
-        const quickNav = document.getElementById('quick-nav-modal');
-        
-        if (lightbox && lightbox.classList.contains('active')) {
-            closeLightbox();
-        } else if (lawModal && lawModal.classList.contains('active')) {
-            closeLawModal();
-        } else if (quickNav && quickNav.classList.contains('active')) {
-            closeQuickNav();
-        }
-    } else if (e.key === 'm' || e.key === 'M') {
         toggleSound();
     } else if (e.key === 'f' || e.key === 'F') {
+        e.preventDefault();
         toggleFullscreen();
     }
 });
-

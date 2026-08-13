@@ -4,6 +4,27 @@
 
 ---
 
+### 7. Teacher Override & AI Retrain Policy
+
+ระบบให้คะแนนของ `cyber_shield_detective` ใช้เกณฑ์ประเมินหลายชั้น ไม่ให้ AI ตัดสินจากคำตอบเดียวแบบลอย ๆ:
+
+1. **Gemini AI evaluator** ตรวจคำตอบตามคดี บทบาท และ rubric
+2. **Local rubric guardrails** ใน `server.js` ตรวจคำตอบมั่ว คำตอบผิดบทบาท คำตอบผิดคดี และทำคะแนนให้อยู่ในระดับ 0 / 5 / 8 / 10
+3. **Retrained student-answer memory** ใน `scratch/retrain_supabase_scores.js` ใช้คำตอบจริงของนักเรียนจาก Supabase เพื่อเรียนรู้คำตอบใกล้เคียง คำตอบสั้น คำสะกดผิด และภาษาพูดที่ควรได้คะแนน
+4. **Teacher override** ใน `cyber_shield_teacher` ให้ครูแก้คะแนน Legal / Remedy / Security และเขียนคอมเมนต์ได้เป็นรายคดี
+
+หลักการตัดสิน:
+
+- ถ้าคำตอบถูกคดี ถูกบทบาท และแก้ปัญหาตรงจุด ให้พิจารณา 8-10 แม้ภาษาจะไม่เหมือนตัวอย่าง
+- ถ้าคำตอบถูกแนวกว้าง ๆ แต่ยังไม่ครบขั้นตอน ให้พิจารณา 5
+- ถ้าคำตอบผิดคดี ผิดบทบาท มั่ว ว่างเปล่า หรือเป็นคำตอบอันตราย ให้ 0
+- ถ้า AI ให้คะแนนผิด ครูสามารถ override ได้ และคะแนนครูถือเป็นคะแนนสุดท้าย
+- คอมเมนต์ครูควรระบุเหตุผลสั้น ๆ เช่น “ตอบถูกแนวทางแต่ขาดการแจ้งครู/ผู้ปกครอง” หรือ “ตอบผิดมาตรา แต่แนวทางบรรเทาถูก”
+
+ข้อมูล override จะถูกเก็บใน `ai_feedback.teacher_override` เพื่อใช้ตรวจสอบย้อนหลังและปรับปรุงรอบ retrain ต่อไป
+
+---
+
 ### 1. ภาพรวมและสถาปัตยกรรมระบบประเมินผล (Evaluation System Overview)
 
 แพลตฟอร์ม **Cyber Shield Detective** ใช้ระบบประเมินข้อสอบอัตนัยเชิงวิเคราะห์ (Subjective Analysis Evaluation System) แบบ 3 บทบาท โดยประเมินผ่าน **Google Gemini AI Engine** ร่วมกับ **Heuristic Evaluation Engine (4-Tier)** และ **Slang Normalizer Engine**

@@ -1,4 +1,4 @@
-<div align="center">
+﻿<div align="center">
   <img src="favicon.png" alt="Cyber Shield Detective Logo" width="128" />
   <br/>
   <h1>🛡️ Cyber Shield Detective Platform</h1>
@@ -11,6 +11,45 @@
 [![Deploy](https://img.shields.io/badge/Deploy-Vercel_|_GitHub_Pages-000?style=for-the-badge&logo=vercel)](vercel.json)
 [![License](https://img.shields.io/badge/License-MIT-f59e0b?style=for-the-badge)](package.json)
 </div>
+
+---
+
+## AI Scoring, Teacher Override, and Retrain Loop
+
+This project uses a layered scoring system for `cyber_shield_detective`:
+
+1. **Gemini AI evaluator** checks each answer against the selected case, role, and rubric.
+2. **Local rubric guardrails in `server.js`** normalize wording, reject nonsense answers, detect wrong-role or wrong-case answers, and keep scores consistent at 0, 5, 8, or 10.
+3. **Retrained student-answer memory in `scratch/retrain_supabase_scores.js`** audits real answers already submitted to Supabase and recognizes valid Thai phrasing, short answers, typos, and near-match answers that should receive credit.
+4. **Teacher override in `cyber_shield_teacher`** lets a teacher edit Legal, Remedy, and Security scores per case and write a comment. The override is saved in `game_scores` and `ai_feedback.teacher_override`.
+
+Teacher overrides are authoritative. If AI gives a wrong score, the teacher can correct it from the teacher dashboard, and the leaderboard will use the corrected score.
+
+### Teacher Score Editing
+
+- Frontend: `cyber_shield_teacher.html`
+- API: `POST /api/teacher/update-case-score`
+- Required server env: `SUPABASE_SERVICE_ROLE_KEY`
+- Auth check: `TEACHER_PASSCODE`
+- Database fields updated: `legal_score`, `remedy_score`, `security_score`, `total_score`, `ai_feedback.teacher_override`
+
+The service role key must stay server-only. Do not place `SUPABASE_SERVICE_ROLE_KEY` in browser JavaScript.
+
+### AI Quality Process
+
+Run an audit before changing production scores:
+
+```bash
+node scratch/retrain_supabase_scores.js
+```
+
+Apply reviewed improvements only after checking the audit output:
+
+```bash
+node scratch/retrain_supabase_scores.js --apply
+```
+
+The current AI approach is stronger than the older version because it no longer relies only on a single model response. It combines Gemini, deterministic rubric rules, real student-answer patterns from Supabase, nonsense detection, wrong-case detection, and manual teacher correction.
 
 ---
 
@@ -253,6 +292,7 @@ GEMINI_API_KEY=your_gemini_api_key_here
 # Supabase Realtime Database
 SUPABASE_URL=https://your-project.supabase.co
 SUPABASE_ANON_KEY=your_supabase_anon_key_here
+SUPABASE_SERVICE_ROLE_KEY=your_supabase_service_role_key_here
 
 # รหัสผ่านสำหรับแผงควบคุมครูผู้สอน
 TEACHER_PASSCODE=your_secure_teacher_passcode
@@ -289,7 +329,7 @@ npm start
 ### Deploy ขึ้น Vercel (แนะนำ — รองรับ Gemini AI เต็มรูปแบบ)
 1. เชื่อมต่อ GitHub Repository กับ Vercel Project
 2. กำหนดค่า Environment Variables ใน Vercel Dashboard:
-   - `GEMINI_API_KEY`, `SUPABASE_URL`, `SUPABASE_ANON_KEY`, `TEACHER_PASSCODE`
+   - `GEMINI_API_KEY`, `SUPABASE_URL`, `SUPABASE_ANON_KEY`, `SUPABASE_SERVICE_ROLE_KEY`, `TEACHER_PASSCODE`
 3. กด Deploy — ระบบจะรันผ่าน `vercel.json` โดยอัตโนมัติ
 
 ---
@@ -299,3 +339,4 @@ npm start
   <br/>
   <sub>© 2026 Cyber Law Detective & Teacher Platform. All rights reserved.</sub>
 </div>
+

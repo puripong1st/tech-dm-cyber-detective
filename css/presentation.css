@@ -1553,5 +1553,524 @@ h1, h2, h3, h4, h5, h6, p, span, div {
     animation: celebrateGlowPulse 1.2s ease-in-out;
 }
 
+/* ==========================================
+   UX/UI Polish Layer
+   ========================================== */
+:root {
+    --surface-glass: rgba(13, 22, 39, 0.78);
+    --surface-glass-strong: rgba(15, 23, 42, 0.92);
+    --border-soft: rgba(148, 163, 184, 0.22);
+    --focus-ring: rgba(251, 191, 36, 0.55);
+}
+
+body {
+    background:
+        radial-gradient(circle at 16% 18%, rgba(56, 189, 248, 0.18), transparent 28%),
+        radial-gradient(circle at 84% 12%, rgba(244, 63, 94, 0.16), transparent 26%),
+        radial-gradient(circle at 52% 92%, rgba(74, 222, 128, 0.12), transparent 30%),
+        linear-gradient(135deg, #080d17 0%, #111827 48%, #0b1120 100%);
+}
+
+body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    background-image:
+        linear-gradient(rgba(56, 189, 248, 0.06) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(56, 189, 248, 0.05) 1px, transparent 1px);
+    background-size: 44px 44px;
+    mask-image: radial-gradient(circle at center, black, transparent 78%);
+    z-index: 0;
+}
+
+.scanlines {
+    opacity: 0.12;
+}
+
+.app-container {
+    background: linear-gradient(145deg, rgba(15, 23, 42, 0.94), rgba(8, 13, 25, 0.96));
+    border-color: rgba(56, 189, 248, 0.72);
+    border-radius: 18px;
+    box-shadow:
+        0 24px 80px rgba(0, 0, 0, 0.46),
+        0 0 0 1px rgba(255, 255, 255, 0.05) inset,
+        0 0 42px rgba(56, 189, 248, 0.22);
+}
+
+.game-header,
+.game-footer {
+    background: rgba(8, 13, 25, 0.86);
+    backdrop-filter: blur(18px);
+    border-color: var(--border-soft);
+}
+
+.game-header {
+    min-height: 72px;
+}
+
+.player-name {
+    color: #e0f2fe;
+    letter-spacing: 0;
+}
+
+.hp-bar-container {
+    width: min(190px, 28vw);
+    height: 12px;
+    background: rgba(15, 23, 42, 0.95);
+    border: 1px solid rgba(148, 163, 184, 0.24);
+    box-shadow: inset 0 1px 8px rgba(0, 0, 0, 0.4);
+}
+
+.hp-bar-fill {
+    background: linear-gradient(90deg, #22d3ee, #4ade80, #facc15);
+    border-radius: 999px;
+    box-shadow: 0 0 16px rgba(74, 222, 128, 0.42);
+}
+
+.stage-indicator {
+    background: rgba(251, 191, 36, 0.12);
+    border: 1px solid rgba(251, 191, 36, 0.36);
+    border-radius: 999px;
+    padding: 8px 14px;
+    box-shadow: 0 0 18px rgba(251, 191, 36, 0.08);
+}
+
+.icon-btn,
+.quick-nav-btn,
+.nav-btn,
+.start-btn,
+.modal-close-btn,
+.modal-tab-btn,
+.reveal-all-btn {
+    min-height: 40px;
+}
+
+.icon-btn,
+.quick-nav-btn,
+.nav-btn {
+    border-radius: 10px;
+}
+
+.icon-btn,
+.quick-nav-btn {
+    background: rgba(30, 41, 59, 0.82);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+}
+
+button:focus-visible,
+a:focus-visible,
+.dot:focus-visible,
+.law-card-item:focus-visible,
+.quick-law-card:focus-visible {
+    outline: 3px solid var(--focus-ring);
+    outline-offset: 3px;
+}
+
+.slide {
+    padding: clamp(18px, 2.6vw, 34px) clamp(18px, 3.2vw, 44px);
+    gap: 2px;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(56, 189, 248, 0.65) rgba(15, 23, 42, 0.5);
+}
+
+.slide::-webkit-scrollbar,
+.modal-body-container::-webkit-scrollbar {
+    width: 10px;
+}
+
+.slide::-webkit-scrollbar-track,
+.modal-body-container::-webkit-scrollbar-track {
+    background: rgba(15, 23, 42, 0.55);
+}
+
+.slide::-webkit-scrollbar-thumb,
+.modal-body-container::-webkit-scrollbar-thumb {
+    background: linear-gradient(#38bdf8, #f43f5e);
+    border-radius: 999px;
+}
+
+.slide.active > * {
+    animation: slideContentIn 0.42s ease both;
+}
+
+.slide.active > *:nth-child(2) { animation-delay: 0.04s; }
+.slide.active > *:nth-child(3) { animation-delay: 0.08s; }
+.slide.active > *:nth-child(4) { animation-delay: 0.12s; }
+
+@keyframes slideContentIn {
+    from {
+        opacity: 0;
+        transform: translateY(12px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.slide-tag {
+    width: fit-content;
+    padding: 6px 10px;
+    border: 1px solid rgba(244, 63, 94, 0.36);
+    border-radius: 999px;
+    background: rgba(244, 63, 94, 0.1);
+    color: #fb7185;
+    letter-spacing: 0.5px;
+}
+
+.slide-title {
+    max-width: 1120px;
+    margin-bottom: 18px;
+    text-wrap: balance;
+    text-shadow: 0 0 18px rgba(56, 189, 248, 0.14);
+}
+
+.dialog-box,
+.caution-box,
+.speaker-hint-box,
+.pdpa-pillar-card,
+.pdpa-compare-card,
+.pdpa-right-card,
+.grid-card,
+.detail-box {
+    background: var(--surface-glass);
+    border-color: var(--border-soft);
+    box-shadow: 0 14px 34px rgba(0, 0, 0, 0.22);
+    backdrop-filter: blur(10px);
+}
+
+.dialog-box {
+    border-left: 7px solid var(--neon-cyan);
+}
+
+.dialog-box.magenta {
+    border-left-color: var(--neon-magenta);
+}
+
+.dialog-box.yellow {
+    border-left-color: var(--neon-yellow);
+}
+
+.dialog-text,
+.caution-text,
+.speaker-hint-text,
+.pdpa-pillar-desc,
+.right-easy-desc,
+.card-body-text,
+.detail-content {
+    line-height: 1.78;
+}
+
+.dialog-text strong,
+.caution-text strong,
+.pdpa-pillar-desc strong,
+.right-easy-desc strong,
+.detail-content strong {
+    color: #ffffff;
+    background: linear-gradient(transparent 58%, rgba(251, 191, 36, 0.22) 58%);
+}
+
+.game-logo {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 14px;
+    border: 1px solid rgba(56, 189, 248, 0.38);
+    border-radius: 999px;
+    background: rgba(56, 189, 248, 0.1);
+}
+
+.main-title {
+    max-width: 1050px;
+    text-wrap: balance;
+    background: linear-gradient(135deg, #ffffff 0%, #e0f2fe 46%, #fef3c7 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    filter: drop-shadow(0 18px 36px rgba(0, 0, 0, 0.28));
+}
+
+.main-title .cyan {
+    color: #67e8f9;
+    -webkit-text-fill-color: #67e8f9;
+}
+
+.center-screen {
+    position: relative;
+}
+
+.center-screen::after {
+    content: "";
+    position: absolute;
+    width: min(540px, 78vw);
+    aspect-ratio: 1;
+    border: 1px solid rgba(56, 189, 248, 0.14);
+    border-radius: 50%;
+    box-shadow: 0 0 100px rgba(56, 189, 248, 0.12) inset;
+    z-index: -1;
+}
+
+.start-btn {
+    border: 0;
+    border-radius: 12px;
+    color: #ffffff;
+    background: linear-gradient(135deg, #e11d48, #7c3aed 48%, #0284c7);
+    box-shadow: 0 16px 34px rgba(244, 63, 94, 0.32), 0 0 0 1px rgba(255, 255, 255, 0.18) inset;
+}
+
+.start-btn:hover {
+    transform: translateY(-3px) scale(1.03);
+}
+
+.laws-presentation-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: clamp(14px, 1.8vw, 22px);
+}
+
+.law-card-item {
+    border: 1px solid rgba(148, 163, 184, 0.24);
+    border-radius: 14px;
+    background:
+        linear-gradient(145deg, rgba(30, 41, 59, 0.92), rgba(10, 18, 32, 0.98)),
+        radial-gradient(circle at top left, rgba(56, 189, 248, 0.18), transparent 36%);
+    box-shadow: 0 16px 30px rgba(0, 0, 0, 0.28);
+    isolation: isolate;
+}
+
+.law-card-item::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.12), transparent 32%);
+    opacity: 0;
+    transition: opacity 0.25s ease;
+    z-index: 1;
+}
+
+.law-card-item:hover::before {
+    opacity: 1;
+}
+
+.law-card-item:hover {
+    border-color: rgba(56, 189, 248, 0.8);
+    transform: translateY(-6px);
+    box-shadow: 0 22px 45px rgba(2, 132, 199, 0.24);
+}
+
+.law-card-thumb-wrap {
+    height: clamp(138px, 15vw, 188px);
+}
+
+.law-card-thumb-wrap::after {
+    content: "";
+    position: absolute;
+    inset: auto 0 0;
+    height: 52%;
+    background: linear-gradient(transparent, rgba(7, 12, 22, 0.78));
+}
+
+.law-card-badge,
+.law-card-comic-tag,
+.law-card-footer {
+    z-index: 2;
+}
+
+.law-card-badge,
+.law-card-comic-tag,
+.law-card-penalty {
+    border-radius: 999px;
+}
+
+.law-card-title {
+    font-size: clamp(1rem, 1.1vw, 1.16rem);
+    text-wrap: balance;
+}
+
+.law-card-desc {
+    color: #cbd5e1;
+}
+
+.law-card-footer {
+    min-height: 58px;
+    gap: 10px;
+}
+
+.law-card-action {
+    white-space: nowrap;
+    padding: 5px 9px;
+    border-radius: 999px;
+    background: rgba(56, 189, 248, 0.1);
+}
+
+.law-card-item.is-revealed {
+    border-color: rgba(74, 222, 128, 0.75);
+    box-shadow: 0 18px 40px rgba(34, 197, 94, 0.18);
+}
+
+.law-modal-card {
+    background: linear-gradient(145deg, rgba(15, 23, 42, 0.98), rgba(8, 13, 25, 0.98));
+    border-radius: 18px;
+    box-shadow: 0 28px 90px rgba(0, 0, 0, 0.52), 0 0 46px rgba(56, 189, 248, 0.22);
+}
+
+.law-modal-header {
+    background: rgba(15, 23, 42, 0.92);
+}
+
+.modal-tabs {
+    overflow-x: auto;
+}
+
+.modal-tab-btn {
+    border-radius: 12px 12px 0 0;
+    white-space: nowrap;
+}
+
+.modal-tab-btn.active {
+    background: rgba(56, 189, 248, 0.1);
+}
+
+.comic-preview-box {
+    border-color: rgba(56, 189, 248, 0.62);
+    box-shadow: 0 18px 36px rgba(0, 0, 0, 0.28);
+}
+
+.quick-laws-grid {
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+}
+
+.quick-law-card {
+    border-radius: 12px;
+    min-height: 96px;
+    background: rgba(30, 41, 59, 0.78);
+}
+
+.quick-law-card:hover {
+    transform: translateY(-4px);
+}
+
+.progress-dots {
+    align-items: center;
+    gap: 9px;
+}
+
+.dot {
+    width: 34px;
+    height: 8px;
+    border-radius: 999px;
+    background: rgba(71, 85, 105, 0.9);
+}
+
+.dot.active {
+    width: 48px;
+    transform: none;
+    background: linear-gradient(90deg, #38bdf8, #4ade80);
+    box-shadow: 0 0 16px rgba(56, 189, 248, 0.42);
+}
+
+@media (max-width: 900px) {
+    .app-container {
+        width: 100%;
+        height: 100vh;
+        border-radius: 0;
+        border-left: 0;
+        border-right: 0;
+    }
+
+    .game-header {
+        align-items: stretch;
+        flex-wrap: wrap;
+        gap: 10px;
+        padding: 10px 14px;
+    }
+
+    .stage-indicator {
+        order: 3;
+        width: 100%;
+        text-align: center;
+    }
+
+    .header-controls {
+        margin-left: auto;
+    }
+
+    .game-footer {
+        gap: 10px;
+        flex-wrap: wrap;
+        padding: 10px 14px;
+    }
+
+    .progress-dots {
+        order: -1;
+        width: 100%;
+        justify-content: center;
+    }
+
+    .nav-buttons {
+        flex: 1;
+    }
+
+    .nav-btn {
+        width: 100%;
+        justify-content: center;
+        padding: 10px 12px;
+    }
+
+    .laws-presentation-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 640px) {
+    .player-name {
+        font-size: 0.9rem;
+    }
+
+    .quick-nav-btn {
+        max-width: 46px;
+        overflow: hidden;
+        padding-inline: 12px;
+    }
+
+    .main-title {
+        font-size: 1.9rem;
+    }
+
+    .dialog-text {
+        font-size: 1rem;
+    }
+
+    .laws-presentation-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .law-card-footer {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .law-card-penalty {
+        max-width: 100%;
+    }
+
+    .modal-title-wrap {
+        align-items: flex-start;
+        flex-direction: column;
+        gap: 8px;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        scroll-behavior: auto !important;
+        transition-duration: 0.01ms !important;
+    }
+}
 
 

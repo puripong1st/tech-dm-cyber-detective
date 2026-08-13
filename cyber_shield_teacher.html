@@ -1329,6 +1329,7 @@
 
                 if (valid) {
                     sessionStorage.setItem('shield_teacher_auth', 'true');
+                    sessionStorage.setItem('shield_teacher_passcode', passcode);
                     document.getElementById('modal-auth').classList.add('hidden');
                     document.getElementById('main-dashboard-app').classList.remove('hidden');
                     initTeacherDashboard();
@@ -1338,6 +1339,7 @@
                 }
             } catch (e) {
                 sessionStorage.setItem('shield_teacher_auth', 'true');
+                sessionStorage.setItem('shield_teacher_passcode', passcode);
                 document.getElementById('modal-auth').classList.add('hidden');
                 document.getElementById('main-dashboard-app').classList.remove('hidden');
                 initTeacherDashboard();
@@ -1347,6 +1349,7 @@
         function logoutTeacher() {
             if (confirm('คุณต้องการออกจากระบบแผงควบคุมครูผู้สอนหรือไม่?')) {
                 sessionStorage.removeItem('shield_teacher_auth');
+                sessionStorage.removeItem('shield_teacher_passcode');
                 window.location.reload();
             }
         }
@@ -1477,7 +1480,7 @@
                 try {
                     realtimeChannel = supabaseClient
                         .channel('public:game_scores')
-                        .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'game_scores' }, () => {
+                        .on('postgres_changes', { event: '*', schema: 'public', table: 'game_scores' }, () => {
                             fetchLatestScores();
                         })
                         .subscribe();
@@ -1913,13 +1916,86 @@
         // --- Group Answers View State & Handlers ---
         let selectedGroupTeamName = null;
 
+        function escapeHtml(value) {
+            return String(value ?? '')
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#039;');
+        }
+
+        function clampTeacherScore(value) {
+            const score = Number.parseInt(value, 10);
+            if (Number.isNaN(score)) return 0;
+            return Math.max(0, Math.min(10, score));
+        }
+
+        async function saveTeacherScoreOverride(scoreId) {
+            if (!scoreId) {
+                alert('ไม่พบรหัสรายการคะแนน จึงบันทึกไม่ได้');
+                return;
+            }
+
+            const legalScore = clampTeacherScore(document.getElementById(`teacher-legal-${scoreId}`)?.value);
+            const remedyScore = clampTeacherScore(document.getElementById(`teacher-remedy-${scoreId}`)?.value);
+            const securityScore = clampTeacherScore(document.getElementById(`teacher-security-${scoreId}`)?.value);
+            const teacherComment = document.getElementById(`teacher-comment-${scoreId}`)?.value || '';
+            let passcode = sessionStorage.getItem('shield_teacher_passcode') || '';
+
+            if (!passcode) {
+                passcode = prompt('กรอกรหัสครูเพื่อยืนยันการแก้คะแนน') || '';
+                if (!passcode.trim()) return;
+                sessionStorage.setItem('shield_teacher_passcode', passcode.trim());
+            }
+
+            const statusEl = document.getElementById(`teacher-status-${scoreId}`);
+            const saveBtn = document.getElementById(`teacher-save-${scoreId}`);
+            if (statusEl) statusEl.textContent = 'กำลังบันทึก...';
+            if (saveBtn) saveBtn.disabled = true;
+
+            try {
+                const res = await fetch('/api/teacher/update-case-score', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        scoreId,
+                        legalScore,
+                        remedyScore,
+                        securityScore,
+                        teacherComment,
+                        passcode: passcode.trim()
+                    })
+                });
+                const data = await res.json();
+                if (!res.ok || !data.success) {
+                    throw new Error(data.message || data.error || 'บันทึกไม่สำเร็จ');
+                }
+
+                if (Array.isArray(allScoresData)) {
+                    const idx = allScoresData.findIndex(item => String(item.id) === String(scoreId));
+                    if (idx >= 0) allScoresData[idx] = { ...allScoresData[idx], ...data.data };
+                }
+                renderScoreboardTable();
+                updateStatsCards();
+                renderGroupAnswersTab();
+            } catch (err) {
+                console.error('Teacher score override failed:', err);
+                if (statusEl) statusEl.textContent = `ผิดพลาด: ${err.message}`;
+                alert(`บันทึกคะแนนไม่สำเร็จ: ${err.message}`);
+            } finally {
+                if (saveBtn) saveBtn.disabled = false;
+            }
+        }
+
         function extractAnswersAndFeedback(item) {
             let answers = { legal: '', remedy: '', security: '' };
             let feedback = {
                 legal: { score: Number(item.legal_score ?? 0), feedback: '' },
                 remedy: { score: Number(item.remedy_score ?? 0), feedback: '' },
                 security: { score: Number(item.security_score ?? 0), feedback: '' },
-                overall_summary: ''
+                overall_summary: '',
+                teacher_override: null
             };
 
             const rawAns = item.student_answers || item.studentAnswers || item.answers;
@@ -1942,6 +2018,7 @@
                     if (parsedFb.remedy) feedback.remedy = { score: Number(parsedFb.remedy.score ?? item.remedy_score ?? 0), feedback: parsedFb.remedy.feedback || parsedFb.remedy.feedback_text || '' };
                     if (parsedFb.security) feedback.security = { score: Number(parsedFb.security.score ?? item.security_score ?? 0), feedback: parsedFb.security.feedback || parsedFb.security.feedback_text || '' };
                     if (parsedFb.overall_summary) feedback.overall_summary = parsedFb.overall_summary;
+                    if (parsedFb.teacher_override) feedback.teacher_override = parsedFb.teacher_override;
                 }
             }
 
@@ -2108,6 +2185,13 @@
                 const caseRef = ALL_12_CASES.find(c => c.id === item.case_id) || {};
                 const timeStr = item.created_at ? new Date(item.created_at).toLocaleString('th-TH') : '-';
                 const totalCaseScore = p.legal + p.remedy + p.security;
+                const safeScoreId = escapeHtml(item.id || '');
+                const teacherOverride = feedback.teacher_override || {};
+                const teacherComment = teacherOverride.comment || '';
+                const teacherUpdatedAt = teacherOverride.updated_at ? new Date(teacherOverride.updated_at).toLocaleString('th-TH') : '';
+                const overrideLabel = teacherUpdatedAt
+                    ? `<span class="px-2 py-0.5 rounded-lg bg-indigo-500/20 text-indigo-200 border border-indigo-500/30 font-mono text-[11px]">Teacher override: ${teacherUpdatedAt}</span>`
+                    : `<span class="px-2 py-0.5 rounded-lg bg-slate-800 text-slate-300 border border-slate-700 font-mono text-[11px]">AI score</span>`;
 
                 // Check which roles have been performed/answered
                 const hasLegal = (answers.legal && answers.legal.trim().length > 0) || p.legal > 0 || (feedback.legal && feedback.legal.feedback && feedback.legal.feedback.trim().length > 0);
@@ -2196,6 +2280,49 @@
                                 <span class="font-bold text-purple-300 block mb-1"><i class="fa-solid fa-wand-magic-sparkles mr-1"></i> สรุปภาพรวมจาก AI:</span>
                                 ${feedback.overall_summary}
                             </div>` : ''}
+
+                            <div class="p-4 rounded-2xl bg-indigo-950/30 border border-indigo-500/30 flex flex-col gap-3">
+                                <div class="flex flex-wrap items-center justify-between gap-2">
+                                    <div class="flex items-center gap-2 text-indigo-200 font-bold font-kanit text-sm">
+                                        <i class="fa-solid fa-pen-to-square text-indigo-300"></i>
+                                        ครูแก้คะแนนและคอมเมนต์
+                                    </div>
+                                    ${overrideLabel}
+                                </div>
+                                <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                                    <label class="flex flex-col gap-1 text-[11px] text-amber-200 font-semibold">
+                                        Legal Analyst
+                                        <input id="teacher-legal-${safeScoreId}" type="number" min="0" max="10" step="1" value="${p.legal}"
+                                            class="w-full rounded-xl bg-slate-950 border border-amber-500/30 px-3 py-2 text-white font-mono text-sm focus:outline-none focus:ring-2 focus:ring-amber-400">
+                                    </label>
+                                    <label class="flex flex-col gap-1 text-[11px] text-pink-200 font-semibold">
+                                        Incident Responder
+                                        <input id="teacher-remedy-${safeScoreId}" type="number" min="0" max="10" step="1" value="${p.remedy}"
+                                            class="w-full rounded-xl bg-slate-950 border border-pink-500/30 px-3 py-2 text-white font-mono text-sm focus:outline-none focus:ring-2 focus:ring-pink-400">
+                                    </label>
+                                    <label class="flex flex-col gap-1 text-[11px] text-cyan-200 font-semibold">
+                                        Security Engineer
+                                        <input id="teacher-security-${safeScoreId}" type="number" min="0" max="10" step="1" value="${p.security}"
+                                            class="w-full rounded-xl bg-slate-950 border border-cyan-500/30 px-3 py-2 text-white font-mono text-sm focus:outline-none focus:ring-2 focus:ring-cyan-400">
+                                    </label>
+                                </div>
+                                <label class="flex flex-col gap-1 text-[11px] text-indigo-100 font-semibold">
+                                    คอมเมนต์ครู
+                                    <textarea id="teacher-comment-${safeScoreId}" rows="2"
+                                        class="w-full rounded-xl bg-slate-950 border border-indigo-500/30 px-3 py-2 text-slate-100 font-sarabun text-sm leading-relaxed focus:outline-none focus:ring-2 focus:ring-indigo-400"
+                                        placeholder="เหตุผลการปรับคะแนน หรือข้อเสนอแนะให้นักเรียน">${escapeHtml(teacherComment)}</textarea>
+                                </label>
+                                <div class="flex flex-wrap items-center justify-between gap-2">
+                                    <span id="teacher-status-${safeScoreId}" class="text-[11px] text-slate-400 font-sarabun">
+                                        คะแนนรวมหลังแก้จะถูกบันทึกกลับ Supabase และใช้ใน leaderboard
+                                    </span>
+                                    <button id="teacher-save-${safeScoreId}" onclick="saveTeacherScoreOverride('${safeScoreId}')"
+                                        class="px-4 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-bold font-kanit text-xs transition disabled:opacity-50 disabled:cursor-wait flex items-center gap-2">
+                                        <i class="fa-solid fa-floppy-disk"></i>
+                                        บันทึกคะแนนครู
+                                    </button>
+                                </div>
+                            </div>
 
                         </div>
 

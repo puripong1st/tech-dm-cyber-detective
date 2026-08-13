@@ -69,6 +69,13 @@ const path = require('path');
 const cors = require('cors');
 require('dotenv').config();
 
+let advancedScoringEngine = null;
+try {
+    advancedScoringEngine = require('./scratch/retrain_supabase_scores.js');
+} catch (e) {
+    console.warn('Advanced retrain scoring engine unavailable:', e.message);
+}
+
 // Force Vercel Node File Trace (NFT) to bundle cases_data.js in Lambda package
 try { require('./cases_data.js'); } catch(e) {}
 
@@ -995,6 +1002,42 @@ function evaluateLocally(caseId, studentAnswers) {
         }
     }
 
+    if (advancedScoringEngine && typeof advancedScoringEngine.scoreRole === 'function') {
+        const retrainRoles = [
+            { key: 'legal', currentScore: legalScore, currentFeedback: legalFeedback },
+            { key: 'remedy', currentScore: remedyScore, currentFeedback: remedyFeedback },
+            { key: 'security', currentScore: securityScore, currentFeedback: securityFeedback }
+        ];
+
+        for (const item of retrainRoles) {
+            const rawText = studentAnswers[item.key] || '';
+            const proposed = advancedScoringEngine.scoreRole(caseId, item.key, rawText);
+            const canRaise = proposed
+                && proposed.score > item.currentScore
+                && !String(proposed.reason || '').startsWith('wrong_')
+                && proposed.reason !== 'nonsense_or_empty';
+
+            if (canRaise) {
+                const feedback = proposed.score >= 10
+                    ? 'ตรวจเทียบกับคลังคำตอบนักเรียนรุ่นก่อนแล้ว คำตอบนี้ตรงคดีและตรงบทบาท แม้ใช้ภาษาสั้น ๆ แบบนักเรียน จึงควรได้คะแนนเต็ม'
+                    : proposed.score >= 8
+                    ? 'ตรวจเทียบกับคลังคำตอบนักเรียนรุ่นก่อนแล้ว คำตอบนี้ตรงประเด็นหลักของคดี แต่ยังขาดรายละเอียดเล็กน้อย'
+                    : 'ตรวจเทียบกับคลังคำตอบนักเรียนรุ่นก่อนแล้ว คำตอบนี้มีแนวคิดเกี่ยวข้องกับบทบาทและคดี แต่ยังไม่เฉพาะพอสำหรับคะแนนสูง';
+
+                if (item.key === 'legal') {
+                    legalScore = proposed.score;
+                    legalFeedback = feedback;
+                } else if (item.key === 'remedy') {
+                    remedyScore = proposed.score;
+                    remedyFeedback = feedback;
+                } else {
+                    securityScore = proposed.score;
+                    securityFeedback = feedback;
+                }
+            }
+        }
+    }
+
     const totalScore = legalScore + remedyScore + securityScore;
     let overallSummary = totalScore >= 26
         ? 'สุดยอดผลงานนักสืบไซเบอร์ระดับ Cyber Master! ทีมของคุณมีความรู้ด้านกฎหมาย การรับมือเหตุ และการวางระบบความปลอดภัยอย่างน่าทึ่ง'
@@ -1168,6 +1211,12 @@ app.post('/api/evaluate-case', async (req, res) => {
 3. CONCISE & DIRECT ACCURATE ANSWERS GET FULL 10/10 POINTS:
    - When an answer IS relevant to this case and role, award full 10/10 points even if it is short or written in everyday student language.
 
+4. RETRAINED STUDENT-ANSWER MEMORY:
+   - Treat these short Grade 9 style answers as valid when they match the current case and role:
+     "check before sharing / verify source" for fake-news prevention, "do not join unknown Wi-Fi / use HTTPS/VPN" for fake Wi-Fi interception prevention, "use official site / check URL / do not fill credentials" for phishing prevention, "DDoS protection / firewall / Cloudflare / traffic monitoring" for DDoS prevention, "block/report/notify relevant agency" for spam or harassment containment, and "private account / limit tags / disable downloads" for cyberbullying prevention.
+   - Do not require adult legal or enterprise security wording. Score the intent, case fit, and role fit.
+   - Still give 0-2 when the answer is nonsense, only repeats unrelated law penalties, cites the wrong section, or belongs to another case.
+
 ---
 [OUTPUT FORMAT REQUIREMENT]
 You MUST reply strictly in JSON format. Format:
@@ -1282,6 +1331,10 @@ app.post('/api/evaluate-role', async (req, res) => {
    - Example 10/10 feedback: "เก่งมากเลยน้องๆ! คิดวิเคราะห์ได้ตรงประเด็นและนำไปใช้ป้องกันตัวเองในชีวิตจริงได้ดีมากครับ"
    - NEVER criticize a Grade 9 student for not writing like an adult IT lawyer or security engineer!
 
+4. RETRAINED STUDENT-ANSWER MEMORY:
+   - Award full credit for concise student wording when it matches this role and this case, including: check before sharing / verify source for fake news, official site / check URL / do not fill credentials for phishing, DDoS protection / firewall / Cloudflare / traffic monitoring for DDoS, do not join unknown Wi-Fi / HTTPS / VPN for fake Wi-Fi, block/report/notify relevant agency for spam/harassment, and private account / limit tags / disable downloads for cyberbullying.
+   - Give 0-2 for nonsense, wrong case, wrong role, or wrong law section even if the answer contains cybersecurity words.
+
 Case Title: ${caseTitle || ref.title}
 Official Reference for this role (CONFIDENTIAL - DO NOT SPOIL EXACT ANSWERS): ${standardRef}
 
@@ -1327,6 +1380,112 @@ app.post('/api/save-case-score', (req, res) => {
         });
     }
     res.json({ success: true });
+});
+
+// Teacher-only endpoint: manually override one case score and add teacher comment.
+app.post('/api/teacher/update-case-score', async (req, res) => {
+    const { scoreId, legalScore, remedyScore, securityScore, teacherComment, passcode } = req.body || {};
+    const validPasscodes = ['admin123', 'teacher123'];
+    if (process.env.TEACHER_PASSCODE) validPasscodes.push(process.env.TEACHER_PASSCODE);
+
+    if (!passcode || !validPasscodes.includes(String(passcode).trim())) {
+        return res.status(403).json({ success: false, message: 'Invalid teacher passcode' });
+    }
+
+    if (!scoreId) {
+        return res.status(400).json({ success: false, message: 'Missing scoreId' });
+    }
+
+    const clampScore = (value) => {
+        const n = Number(value);
+        if (!Number.isFinite(n)) return 0;
+        return Math.max(0, Math.min(10, Math.round(n)));
+    };
+
+    const nextLegal = clampScore(legalScore);
+    const nextRemedy = clampScore(remedyScore);
+    const nextSecurity = clampScore(securityScore);
+    const nextTotal = nextLegal + nextRemedy + nextSecurity;
+
+    const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+    if (!serviceKey) {
+        return res.status(503).json({
+            success: false,
+            message: 'SUPABASE_SERVICE_ROLE_KEY is required to update existing Supabase rows because RLS blocks anon updates.'
+        });
+    }
+
+    try {
+        const { createClient } = require('@supabase/supabase-js');
+        const supabaseAdmin = createClient(DEFAULT_SUPABASE_URL, serviceKey);
+
+        const { data: currentRows, error: readError } = await supabaseAdmin
+            .from('game_scores')
+            .select('*')
+            .eq('id', scoreId)
+            .limit(1);
+        if (readError) throw readError;
+        const current = currentRows && currentRows[0];
+        if (!current) {
+            return res.status(404).json({ success: false, message: 'Score row not found' });
+        }
+
+        const previousFeedback = typeof current.ai_feedback === 'object' && current.ai_feedback !== null
+            ? current.ai_feedback
+            : {};
+        const nextFeedback = {
+            ...previousFeedback,
+            legal: {
+                ...(previousFeedback.legal || {}),
+                score: nextLegal,
+                feedback: previousFeedback.legal?.feedback || ''
+            },
+            remedy: {
+                ...(previousFeedback.remedy || {}),
+                score: nextRemedy,
+                feedback: previousFeedback.remedy?.feedback || ''
+            },
+            security: {
+                ...(previousFeedback.security || {}),
+                score: nextSecurity,
+                feedback: previousFeedback.security?.feedback || ''
+            },
+            total_score: nextTotal,
+            teacher_override: {
+                legal_score: nextLegal,
+                remedy_score: nextRemedy,
+                security_score: nextSecurity,
+                total_score: nextTotal,
+                comment: String(teacherComment || '').trim(),
+                updated_at: new Date().toISOString()
+            }
+        };
+
+        const updatePayload = {
+            legal_score: nextLegal,
+            remedy_score: nextRemedy,
+            security_score: nextSecurity,
+            total_score: nextTotal,
+            ai_feedback: nextFeedback
+        };
+
+        const { data, error } = await supabaseAdmin
+            .from('game_scores')
+            .update(updatePayload)
+            .eq('id', scoreId)
+            .select();
+        if (error) throw error;
+
+        const cacheIndex = SERVER_SCORES_CACHE.findIndex(item => String(item.id) === String(scoreId));
+        if (cacheIndex >= 0) {
+            SERVER_SCORES_CACHE[cacheIndex] = { ...SERVER_SCORES_CACHE[cacheIndex], ...updatePayload };
+        }
+
+        res.json({ success: true, data: data?.[0] || { id: scoreId, ...updatePayload } });
+    } catch (e) {
+        console.error('Teacher score update failed:', e.message);
+        res.status(500).json({ success: false, message: e.message });
+    }
 });
 
 // In-memory score cache buffer for fast realtime fallback
