@@ -125,7 +125,7 @@
         @media print {
             @page {
                 size: A4 portrait;
-                margin: 10mm 8mm 10mm 8mm;
+                margin: 7mm 6mm 7mm 6mm;
             }
 
             /* Hide non-printable elements */
@@ -274,9 +274,9 @@
                 background: #ffffff !important;
                 color: #0f172a !important;
                 border: 1px solid #cbd5e1 !important;
-                border-radius: 6px !important;
-                padding: 5px 8px !important;
-                margin-bottom: 4px !important;
+                border-radius: 5px !important;
+                padding: 4px 6px !important;
+                margin-bottom: 3px !important;
                 page-break-inside: avoid !important;
                 break-inside: avoid !important;
                 box-shadow: none !important;
@@ -287,36 +287,36 @@
             .print-role-grid {
                 display: grid !important;
                 grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
-                gap: 4px !important;
-                margin-top: 3px !important;
+                gap: 3px !important;
+                margin-top: 2px !important;
             }
 
             .print-role-box {
                 background: #f8fafc !important;
                 border: 1px solid #e2e8f0 !important;
                 border-radius: 4px !important;
-                padding: 3px 5px !important;
+                padding: 2px 3px !important;
                 word-break: break-word !important;
                 overflow-wrap: break-word !important;
                 white-space: pre-wrap !important;
-                line-height: 1.25 !important;
-                font-size: 9px !important;
+                line-height: 1.12 !important;
+                font-size: 7.2px !important;
                 display: flex !important;
                 flex-direction: column !important;
                 justify-content: space-between !important;
             }
 
             .print-role-ans {
-                font-size: 8.5px !important;
-                line-height: 1.2 !important;
+                font-size: 6.8px !important;
+                line-height: 1.1 !important;
                 color: #1e293b !important;
             }
 
             .print-ai-box {
-                padding: 2px 4px !important;
-                font-size: 8.5px !important;
-                line-height: 1.2 !important;
-                margin-top: 2px !important;
+                padding: 1px 2px !important;
+                font-size: 6.8px !important;
+                line-height: 1.1 !important;
+                margin-top: 1px !important;
                 border-radius: 3px !important;
             }
 
@@ -329,7 +329,7 @@
                 font-size: 9px !important;
             }
 
-            /* Enforce strict page break per subpage (2 cases per A4 page => exactly 3 pages per group) */
+            /* One printed subpage is one group. The case grid is compact enough for 6 cases on A4. */
             .print-group-subpage {
                 break-after: page !important;
                 page-break-after: always !important;
@@ -338,18 +338,83 @@
                 width: 100% !important;
                 display: flex !important;
                 flex-direction: column !important;
-                justify-content: space-between !important;
+                justify-content: flex-start !important;
                 box-sizing: border-box !important;
                 margin: 0 !important;
                 padding: 0 !important;
                 height: auto !important;
-                max-height: 270mm !important;
-                overflow: hidden !important;
+                min-height: 283mm !important;
+                max-height: none !important;
+                overflow: visible !important;
             }
 
             .print-group-subpage:last-child {
                 break-after: auto !important;
                 page-break-after: auto !important;
+            }
+
+            .print-group-header {
+                padding-bottom: 4px !important;
+                margin-bottom: 3px !important;
+            }
+
+            .print-group-header h2 {
+                font-size: 11px !important;
+                line-height: 1.15 !important;
+            }
+
+            .print-group-header p,
+            .print-group-header div {
+                font-size: 8px !important;
+                line-height: 1.15 !important;
+            }
+
+            .print-group-meta {
+                padding: 4px 6px !important;
+                margin-bottom: 3px !important;
+                gap: 1px !important;
+            }
+
+            .print-group-meta h3 {
+                font-size: 10px !important;
+                line-height: 1.15 !important;
+            }
+
+            .print-group-meta p,
+            .print-group-meta span {
+                font-size: 8px !important;
+                line-height: 1.15 !important;
+            }
+
+            .print-case-list {
+                display: grid !important;
+                grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+                gap: 3px 4px !important;
+            }
+
+            .print-case-list .print-card {
+                margin-bottom: 0 !important;
+                break-inside: avoid !important;
+                page-break-inside: avoid !important;
+            }
+
+            .print-case-title {
+                font-size: 8.5px !important;
+                line-height: 1.12 !important;
+            }
+
+            .print-score-badge,
+            .print-case-index {
+                font-size: 7px !important;
+                padding: 1px 3px !important;
+                white-space: nowrap !important;
+            }
+
+            .print-signature-block {
+                margin-top: 4px !important;
+                padding-top: 4px !important;
+                font-size: 8px !important;
+                line-height: 1.15 !important;
             }
         }
     </style>
@@ -2407,9 +2472,9 @@
                 // Map all cases for team (fill missing cases up to 6 if needed, or use all solved cases)
                 const validCases = sortedItems;
 
-                // Chunk cases into subpages of 2 cases per A4 page (6 cases => 3 pages total)
+                // Chunk cases into subpages of 6 cases per A4 page (1 group = 1 printed page)
                 const caseChunks = [];
-                const chunkSize = 2;
+                const chunkSize = 6;
                 if (validCases.length === 0) {
                     caseChunks.push([]);
                 } else {
@@ -2438,10 +2503,10 @@
                                 
                                 <div class="flex items-center justify-between border-b border-slate-300 pb-1">
                                     <div class="flex items-center gap-1.5">
-                                        <span class="font-bold text-xs font-kanit text-slate-900">
+                                        <span class="print-case-title font-bold text-xs font-kanit text-slate-900">
                                             คดี #${item.case_id || globalCaseIdx}: ${caseTitle} ${caseRef.section ? `(${caseRef.section})` : ''}
                                         </span>
-                                        <span class="px-1.5 py-0.5 rounded bg-slate-200 text-slate-700 font-mono text-[9.5px] font-bold">
+                                        <span class="print-case-index px-1.5 py-0.5 rounded bg-slate-200 text-slate-700 font-mono text-[9.5px] font-bold">
                                             คดีที่ ${globalCaseIdx}/6
                                         </span>
                                     </div>
@@ -2492,12 +2557,12 @@
                     const isLastPageOfGroup = (pageIdx === totalSubPages - 1);
 
                     fullHtml += `
-                        <!-- Subpage (2 cases per A4 page) -->
+                        <!-- Subpage (6 cases per A4 page) -->
                         <div class="print-group-subpage flex flex-col justify-between gap-2 text-slate-200 font-sarabun">
                             
                             <div class="flex flex-col gap-2">
                                 <!-- Academic Header for every printed page -->
-                                <div class="text-center flex flex-col items-center gap-0.5 border-b-2 border-slate-700 pb-2 relative">
+                                <div class="print-group-header text-center flex flex-col items-center gap-0.5 border-b-2 border-slate-700 pb-2 relative">
                                     <div class="flex items-center justify-center gap-2">
                                         <img src="favicon.png" alt="Logo" class="w-7 h-7 rounded-lg object-cover no-print">
                                         <h2 class="text-sm sm:text-base font-bold font-kanit text-slate-100 print-text-dark">
@@ -2520,7 +2585,7 @@
                                 </div>
 
                                 <!-- Group Identity Banner ALWAYS present on every printed page -->
-                                <div class="print-card bg-slate-900 text-slate-100 p-2.5 rounded-xl border border-slate-700 flex flex-col gap-0.5 mb-1">
+                                <div class="print-group-meta print-card bg-slate-900 text-slate-100 p-2.5 rounded-xl border border-slate-700 flex flex-col gap-0.5 mb-1">
                                     <div class="flex items-center justify-between">
                                         <h3 class="text-xs sm:text-sm font-bold font-kanit print-text-dark">🏷️ กลุ่มสายสืบ: ${teamKey}</h3>
                                         <span class="px-2 py-0.5 rounded-lg bg-purple-600 text-white font-mono text-[10px] font-bold">
@@ -2532,15 +2597,15 @@
                                     </p>
                                 </div>
 
-                                <!-- 2 Case Answers Breakdown -->
-                                <div class="flex flex-col gap-2">
+                                <!-- 6 Case Answers Breakdown -->
+                                <div class="print-case-list flex flex-col gap-2">
                                     ${printedCasesHtml || '<div class="p-4 text-center text-slate-500 text-xs">ไม่มีคดีที่ทำเสร็จสิ้น</div>'}
                                 </div>
                             </div>
 
                             <!-- Footer / Signatures block -->
                             ${isLastPageOfGroup ? `
-                            <div class="grid grid-cols-2 gap-4 pt-2 border-t border-slate-700 text-[11px] font-sarabun print-text-dark pb-1">
+                            <div class="print-signature-block grid grid-cols-2 gap-4 pt-2 border-t border-slate-700 text-[11px] font-sarabun print-text-dark pb-1">
                                 <div class="flex flex-col items-center gap-0.5">
                                     <p>ลงชื่อ ............................................................ ผู้แทนกลุ่มนักเรียน</p>
                                     <p class="text-[9.5px] text-slate-500 print-text-dark">( ............................................................ )</p>
