@@ -272,9 +272,13 @@
                     </div>
 
                     <!-- Comic Image Thumbnail -->
-                    <div class="relative group cursor-pointer overflow-hidden rounded-xl border border-slate-700 bg-white/95 shadow-md flex items-center justify-center p-1" onclick="openComicLightbox()">
-                        <img id="dossier-comic-img" src="assets/evidence/case_ev_8f3a9b21.png" alt="Comic 9 Panels" class="w-full h-auto max-h-[260px] sm:max-h-[290px] object-contain mx-auto rounded transition duration-200 group-hover:scale-[1.02]">
-                        <div class="absolute inset-0 bg-slate-950/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                    <div class="relative group cursor-pointer overflow-hidden rounded-xl border border-slate-700 bg-slate-900 shadow-md flex items-center justify-center p-1 min-h-[220px]" onclick="openComicLightbox()">
+                        <div id="comic-img-spinner" class="absolute inset-0 flex flex-col items-center justify-center bg-slate-900 text-cyan-400 text-xs gap-2 z-10">
+                            <i class="fa-solid fa-circle-notch fa-spin text-2xl"></i>
+                            <span>กำลังโหลดภาพหลักฐาน...</span>
+                        </div>
+                        <img id="dossier-comic-img" src="assets/evidence/case_ev_8f3a9b21.png" alt="Comic 9 Panels" class="w-full h-auto max-h-[260px] sm:max-h-[290px] object-contain mx-auto rounded transition-all duration-300 group-hover:scale-[1.02] bg-white opacity-0 z-0" onload="onComicImageLoad(this)" onerror="onComicImageError(this)">
+                        <div class="absolute inset-0 bg-slate-950/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center z-20">
                             <span class="text-xs text-cyan-300 bg-slate-900/90 px-3 py-1.5 rounded-full border border-cyan-400/50 shadow-lg">
                                 <i class="fa-solid fa-expand mr-1"></i> คลิกเพื่อขยายเต็มจอ
                             </span>
@@ -542,7 +546,13 @@
                     <i class="fa-solid fa-xmark mr-1"></i> ปิด (ESC)
                 </button>
             </div>
-            <img id="lightbox-comic-img" src="" alt="Enlarged Comic" class="w-auto h-auto max-h-[85vh] max-w-full rounded-xl border border-cyan-500/40 shadow-2xl object-contain bg-white">
+            <div class="relative w-full flex items-center justify-center min-h-[300px]">
+                <div id="lightbox-spinner" class="absolute inset-0 flex flex-col items-center justify-center text-cyan-400 text-sm gap-2 bg-slate-900/80 rounded-xl">
+                    <i class="fa-solid fa-circle-notch fa-spin text-3xl"></i>
+                    <span>กำลังโหลดภาพขยาย...</span>
+                </div>
+                <img id="lightbox-comic-img" src="" alt="Enlarged Comic" class="w-auto h-auto max-h-[85vh] max-w-full rounded-xl border border-cyan-500/40 shadow-2xl object-contain bg-white opacity-0 transition-opacity duration-300" onload="this.classList.remove('opacity-0'); document.getElementById('lightbox-spinner')?.classList.add('hidden')" onerror="onLightboxImageError(this)">
+            </div>
         </div>
     </div>
 
@@ -1161,7 +1171,7 @@
         {
                 "id": 8,
                 "section": "มาตรา 11 วรรคสอง",
-                "image": "assets/evidence/case_ev_b2c5d810.png",
+                "image": "assets/evidence/case_ev_7c3a812f.png",
                 "title": "บอทสแปมรัวๆ ปิดปุ่มยกเลิกรับข่าวสาร",
                 "brief": "ระบบบอทยิงข้อความโฆษณารัวๆ เข้ามือถือนักเรียนตลอดทั้งวัน โดยจงใจไม่ใส่ปุ่ม Unsubscribe หรือช่องทางยกเลิกรับข่าวสาร",
                 "phases": [
@@ -1216,7 +1226,7 @@
         {
                 "id": 9,
                 "section": "มาตรา 14(1)",
-                "image": "assets/evidence/case_ev_7f1e4a9c.png",
+                "image": "assets/evidence/case_ev_5b04c9e8.png",
                 "title": "สร้างเว็บฟิชชิ่งหลอกสกินเกมฟรี",
                 "brief": "คนร้ายสร้างหน้าเว็บล็อกอินปลอมที่หน้าตาเหมือนเว็บเกมดัง อ้างแจกสกินปืนและเพชรฟรี เพื่อหลอกเอาไอดีและรหัสผ่านของเหยื่อ",
                 "phases": [
@@ -1278,7 +1288,7 @@
         {
                 "id": 10,
                 "section": "มาตรา 14(2)",
-                "image": "assets/evidence/case_ev_5d9c2e71.png",
+                "image": "assets/evidence/case_ev_a1f9e832.png",
                 "title": "โพสต์ข่าวลวงภัยพิบัติจนคนแตกตื่นวิ่งวุ่น",
                 "brief": "นักเรียนคึกคะนองกุเรื่องข่าวปลอมโพสต์ลง TikTok ว่า 'พรุ่งนี้น้ำท่วมเมือง 3 เมตร เขื่อนแตกแล้ว!' จนชาวบ้านแตกตื่นแย่งกันซื้อของกักตุนวุ่นวาย",
                 "phases": [
@@ -1339,7 +1349,7 @@
         {
                 "id": 11,
                 "section": "มาตรา 14(4)",
-                "image": "assets/evidence/case_ev_a3f8c1d5.png",
+                "image": "assets/evidence/case_ev_2e6d9a41.png",
                 "title": "โพสต์ภาพ/คลิปโป๊ลงคอมพิวเตอร์สาธารณะ",
                 "brief": "วัยรุ่นนำภาพและคลิปลามกอนาจารไปโพสต์ลงในกลุ่มเฟซบุ๊กสาธารณะและส่งต่อในดิสคอร์ดโรงเรียนที่มีคนทั่วไปเข้าถึงได้",
                 "phases": [
@@ -1400,7 +1410,7 @@
         {
                 "id": 12,
                 "section": "มาตรา 16",
-                "image": "assets/evidence/case_ev_c4e7a2b9.png",
+                "image": "assets/evidence/case_ev_4d9f1e8a.png",
                 "title": "ตัดต่อหน้าเพื่อนใส่เอเลี่ยนประจานในโซเชียล",
                 "brief": "นักเรียนแกล้งเพื่อนโดยนำรูปหน้าเพื่อนไปตัดต่อใส่ร่างเอเลี่ยนน่าเกลียดน่ากลัว แล้วโพสต์ประจานลงใน Instagram พร้อมแคปชั่นล้อเลียนทำให้อับอาย",
                 "phases": [
@@ -1736,6 +1746,30 @@
             document.getElementById('label-total-score').textContent = total;
         }
 
+        // --- Image Loading Handlers ---
+        function onComicImageLoad(img) {
+            img.classList.remove('opacity-0');
+            const spinner = document.getElementById('comic-img-spinner');
+            if (spinner) spinner.classList.add('hidden');
+        }
+
+        function onComicImageError(img) {
+            console.warn('Comic image load failed:', img.src);
+            const spinner = document.getElementById('comic-img-spinner');
+            if (spinner) {
+                spinner.innerHTML = '<i class="fa-solid fa-triangle-exclamation text-amber-400 text-2xl"></i><span class="text-amber-300 font-semibold">โหลดภาพไม่สำเร็จ (ตรวจสอบไฟล์ภาพ)</span>';
+                spinner.classList.remove('hidden');
+            }
+        }
+
+        function onLightboxImageError(img) {
+            const spinner = document.getElementById('lightbox-spinner');
+            if (spinner) {
+                spinner.innerHTML = '<i class="fa-solid fa-triangle-exclamation text-amber-400 text-3xl"></i><span class="text-amber-300 font-semibold">โหลดภาพขยายไม่สำเร็จ</span>';
+                spinner.classList.remove('hidden');
+            }
+        }
+
         // --- Load Current Case ---
         function loadCurrentCase() {
             const caseItem = GAME_STATE.sessionCases[GAME_STATE.currentCaseIndex];
@@ -1746,6 +1780,12 @@
             document.getElementById('dossier-brief').textContent = caseItem.brief;
 
             const comicImg = document.getElementById('dossier-comic-img');
+            const spinner = document.getElementById('comic-img-spinner');
+            if (spinner) {
+                spinner.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin text-2xl"></i><span>กำลังโหลดภาพหลักฐาน...</span>';
+                spinner.classList.remove('hidden');
+            }
+            comicImg.classList.add('opacity-0');
             comicImg.src = caseItem.image;
             comicImg.alt = caseItem.title;
 
@@ -2355,7 +2395,14 @@
         function openComicLightbox() {
             const caseItem = GAME_STATE.sessionCases[GAME_STATE.currentCaseIndex];
             if (!caseItem) return;
-            document.getElementById('lightbox-comic-img').src = caseItem.image;
+            const lbImg = document.getElementById('lightbox-comic-img');
+            const lbSpinner = document.getElementById('lightbox-spinner');
+            if (lbSpinner) {
+                lbSpinner.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin text-3xl"></i><span>กำลังโหลดภาพขยาย...</span>';
+                lbSpinner.classList.remove('hidden');
+            }
+            lbImg.classList.add('opacity-0');
+            lbImg.src = caseItem.image;
             document.getElementById('lightbox-title').textContent = `คดี #${GAME_STATE.currentCaseIndex + 1}: ${caseItem.title}`;
             document.getElementById('modal-comic-lightbox').classList.remove('hidden');
         }
