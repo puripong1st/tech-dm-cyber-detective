@@ -3,6 +3,7 @@ const path = require('path');
 
 const targetHtml = path.join(__dirname, '..', 'cyber_shield_detective.html');
 const targetServer = path.join(__dirname, '..', 'server.js');
+const targetCasesData = path.join(__dirname, '..', 'cases_data.js');
 
 const CASES_WITH_KEYWORDS = [
     {
@@ -20,10 +21,10 @@ const CASES_WITH_KEYWORDS = [
         standard_penalty: "จำคุกไม่เกิน 6 เดือน หรือปรับไม่เกิน 10,000 บาท หรือทั้งจำทั้งปรับ",
         standard_remedy: "สั่ง Log out ออกจากระบบทุกเครื่องทันที และรีบเปลี่ยนรหัสผ่านใหม่",
         standard_prevention: "เปิดใช้งานระบบยืนยันตัวตน 2 ชั้น (2FA / OTP) และล็อกหน้าจอทุกครั้ง",
-        keywords_law: ["มาตรา 5", "5", "เข้าระบบ", "มิชอบ", "แอบเข้า", "เข้าถึงระบบ", "แอบส่อง", "แอบล็อกอิน"],
-        keywords_penalty: ["6 เดือน", "หกเดือน", "10,000", "หนึ่งหมื่น", "10000", "หมื่นบาท", "ทั้งจำทั้งปรับ"],
-        keywords_remedy: ["logout", "log out", "ออกจากระบบ", "เปลี่ยนรหัส", "เปลี่ยนพาส", "แจ้งครู", "แจ้งผู้ปกครอง", "รายงาน"],
-        keywords_security: ["2fa", "two-factor", "otp", "ล็อกอิน 2 ชั้น", "สองชั้น", "ล็อกหน้าจอ", "ยืนยันตัวตน"]
+        keywords_law: ["มาตรา 5", "5", "เข้าระบบ", "มิชอบ", "แอบเข้า", "เข้าถึงระบบ", "แอบส่อง", "แอบล็อกอิน", "เข้าเครื่อง", "ไม่ได้รับอนุญาต", "แอบใช้", "บุกรุกระบบ", "แอบจำรหัส", "ปลดล็อก", "เข้าถึงคอมพิวเตอร์", "แอบเปิด"],
+        keywords_penalty: ["6 เดือน", "หกเดือน", "10,000", "หนึ่งหมื่น", "10000", "หมื่นบาท", "ทั้งจำทั้งปรับ", "จำคุก", "ปรับ", "ไม่เกิน 6"],
+        keywords_remedy: ["logout", "log out", "ออกจากระบบ", "เปลี่ยนรหัส", "เปลี่ยนพาส", "แจ้งครู", "แจ้งผู้ปกครอง", "รายงาน", "แจ้งตำรวจ", "ล็อกเอาต์", "ล็อกออก", "ตัดการเข้าถึง", "เปลี่ยน password", "reset password", "แจ้งเจ้าของ", "บอกเจ้าของ", "มีสติ"],
+        keywords_security: ["2fa", "two-factor", "otp", "ล็อกอิน 2 ชั้น", "สองชั้น", "2 ชั้น", "ล็อกหน้าจอ", "ยืนยันตัวตน", "พกติดตัว", "ตั้งรหัส", "ล็อกเครื่อง", "pin", "รหัสผ่านที่ซับซ้อน", "ไม่บอกรหัส", "ไม่แชร์รหัส", "ไม่วางเครื่องทิ้งไว้"]
     },
     {
         id: 2,
@@ -40,10 +41,10 @@ const CASES_WITH_KEYWORDS = [
         standard_penalty: "จำคุกไม่เกิน 1 ปี หรือปรับไม่เกิน 20,000 บาท หรือทั้งจำทั้งปรับ",
         standard_remedy: "รีบเปลี่ยนรหัสผ่านระบบทันที และลบข้อความที่โพสต์แจกใน Discord",
         standard_prevention: "ตั้งรหัสผ่านซับซ้อน (ตัวพิมพ์ใหญ่+เล็ก+เลข+สัญลักษณ์) และไม่จดรหัสผ่านทิ้งไว้",
-        keywords_law: ["มาตรา 6", "6", "เปิดเผย", "มาตรการป้องกัน", "แจกรหัส", "เผยแพร่รหัส", "ปล่อยรหัส"],
-        keywords_penalty: ["1 ปี", "หนึ่งปี", "20,000", "สองหมื่น", "20000", "หมื่น", "ทั้งจำทั้งปรับ"],
-        keywords_remedy: ["เปลี่ยนรหัส", "ลบข้อความ", "แจ้งแอดมิน", "discord", "ตัดเซสชัน", "บล็อก"],
-        keywords_security: ["รหัสผ่านซับซ้อน", "ตัวพิมพ์ใหญ่", "ตัวเลข", "สัญลักษณ์", "ห้ามจด", "password manager", "ความลับ"]
+        keywords_law: ["มาตรา 6", "6", "เปิดเผย", "มาตรการป้องกัน", "แจกรหัส", "เผยแพร่รหัส", "ปล่อยรหัส", "โพสต์รหัส", "ส่งรหัส", "แชร์รหัส", "แจกพาส", "เปิดเผยรหัสผ่าน", "เปิดเผยมาตรการ", "แอบถ่ายรหัส"],
+        keywords_penalty: ["1 ปี", "หนึ่งปี", "20,000", "สองหมื่น", "20000", "หมื่น", "ทั้งจำทั้งปรับ", "จำคุก", "ปรับ", "ไม่เกิน 1 ปี"],
+        keywords_remedy: ["เปลี่ยนรหัส", "ลบข้อความ", "แจ้งแอดมิน", "discord", "ตัดเซสชัน", "บล็อก", "ลบโพสต์", "ลบรูป", "แจ้งครู", "แจ้งตำรวจ", "แจ้งเจ้าของระบบ", "แจ้งไอที", "ลบทันที", "ลบออก", "ทำลายหลักฐาน"],
+        keywords_security: ["รหัสผ่านซับซ้อน", "ตัวพิมพ์ใหญ่", "ตัวเลข", "สัญลักษณ์", "ห้ามจด", "password manager", "ความลับ", "ไม่แปะกระดาษ", "ไม่แปะรหัส", "ไม่ถ่ายรูปรหัส", "ตั้งรหัสยาก", "เก็บบันทึกรหัส"]
     },
     {
         id: 3,
@@ -60,10 +61,10 @@ const CASES_WITH_KEYWORDS = [
         standard_penalty: "จำคุกไม่เกิน 2 ปี หรือปรับไม่เกิน 40,000 บาท หรือทั้งจำทั้งปรับ",
         standard_remedy: "ลบไฟล์ที่รั่วไหล และเปลี่ยนรหัสผ่านพื้นที่จัดเก็บคลาวด์ทันที",
         standard_prevention: "ตั้งรหัสล็อกโฟลเดอร์ด้วยสแกนใบหน้า/ลายนิ้วมือ (Face ID) และเข้ารหัสไฟล์ (Encryption)",
-        keywords_law: ["มาตรา 7", "7", "เข้าถึงข้อมูล", "ข้อมูลคอมพิวเตอร์", "ไดอารี่", "คุ้ยไฟล์", "ดูดไฟล์"],
-        keywords_penalty: ["2 ปี", "สองปี", "40,000", "สี่หมื่น", "40000", "หมื่น", "ทั้งจำทั้งปรับ"],
-        keywords_remedy: ["ลบไฟล์", "เปลี่ยนรหัส", "แจ้งระงับ", "แจ้งครู", "แจ้งแอดมิน"],
-        keywords_security: ["สแกนใบหน้า", "ลายนิ้วมือ", "face id", "biometrics", "เข้ารหัส", "encryption", "ล็อกโฟลเดอร์"]
+        keywords_law: ["มาตรา 7", "7", "เข้าถึงข้อมูล", "ข้อมูลคอมพิวเตอร์", "ไดอารี่", "คุ้ยไฟล์", "ดูดไฟล์", "แอบดู", "แอบเปิด", "ข้อมูลส่วนตัว", "แอบดาวน์โหลด", "แอบคัดลอก", "เปิดไฟล์คนอื่น", "เข้าถึงไฟล์"],
+        keywords_penalty: ["2 ปี", "สองปี", "40,000", "สี่หมื่น", "40000", "หมื่น", "ทั้งจำทั้งปรับ", "จำคุก", "ปรับ", "ไม่เกิน 2 ปี"],
+        keywords_remedy: ["ลบไฟล์", "เปลี่ยนรหัส", "แจ้งระงับ", "แจ้งครู", "แจ้งแอดมิน", "ลบโพสต์", "ลบแชท", "ลบรูป", "แจ้งตำรวจ", "แจ้งผู้ปกครอง", "ลบข้อมูล", "ลบออก", "ตัดการเชื่อมต่อ"],
+        keywords_security: ["สแกนใบหน้า", "ลายนิ้วมือ", "face id", "biometrics", "เข้ารหัส", "encryption", "ล็อกโฟลเดอร์", "ตั้งค่าส่วนตัว", "กรองความเป็นส่วนตัว", "ล็อกหน้าจอ", "ตั้งรหัสผ่านที่รัดกุม", "ล็อกไดอารี่"]
     },
     {
         id: 4,
@@ -80,10 +81,10 @@ const CASES_WITH_KEYWORDS = [
         standard_penalty: "จำคุกไม่เกิน 3 ปี หรือปรับไม่เกิน 60,000 บาท หรือทั้งจำทั้งปรับ",
         standard_remedy: "ตัดการเชื่อมต่อ Wi-Fi ทันที และรีบแจ้งอายัดบัตรกับธนาคารและค่ายเกม",
         standard_prevention: "ใช้เครือข่ายที่มีการเข้ารหัส SSL / HTTPS / VPN และหลีกเลี่ยงการทำธุรกรรมบน Free Wi-Fi สาธารณะ",
-        keywords_law: ["มาตรา 8", "8", "ดักรับ", "ดักจับ", "ระหว่างการส่ง", "ข้อมูลคอมพิวเตอร์", "ดักข้อมูล"],
-        keywords_penalty: ["3 ปี", "สามปี", "60,000", "หกหมื่น", "60000", "หมื่น", "ทั้งจำทั้งปรับ"],
-        keywords_remedy: ["ตัด wifi", "หยุดทำธุรกรรม", "อายัดบัตร", "แจ้งธนาคาร", "แจ้งค่ายเกม", "เปลี่ยนพาส"],
-        keywords_security: ["ssl", "https", "vpn", "เข้ารหัสข้อมูล", "encryption", "หลีกเลี่ยง wifi ฟรี", "public wifi"]
+        keywords_law: ["มาตรา 8", "8", "ดักรับ", "ดักจับ", "ระหว่างการส่ง", "ข้อมูลคอมพิวเตอร์", "ดักข้อมูล", "wifi ปลอม", "ดักจับข้อมูล"],
+        keywords_penalty: ["3 ปี", "สามปี", "60,000", "หกหมื่น", "60000", "หมื่น", "ทั้งจำทั้งปรับ", "จำคุก", "ปรับ", "ไม่เกิน 3 ปี"],
+        keywords_remedy: ["ตัด wifi", "หยุดทำธุรกรรม", "อายัดบัตร", "แจ้งธนาคาร", "แจ้งค่ายเกม", "เปลี่ยนพาส", "เปลี่ยนรหัส", "ตัดการเชื่อมต่อ", "แจ้งตำรวจ", "แจ้งผู้ปกครอง", "หยุดเชื่อมต่อ"],
+        keywords_security: ["ssl", "https", "vpn", "เข้ารหัสข้อมูล", "encryption", "หลีกเลี่ยง wifi ฟรี", "public wifi", "ไม่ใช้ wifi สาธารณะ", "ไม่เชื่อมต่อมั่ว", "หลีกเลี่ยง wi-fi"]
     },
     {
         id: 5,
@@ -100,10 +101,10 @@ const CASES_WITH_KEYWORDS = [
         standard_penalty: "จำคุกไม่เกิน 5 ปี หรือปรับไม่เกิน 100,000 บาท หรือทั้งจำทั้งปรับ",
         standard_remedy: "ใช้ปุ่มประวัติเวอร์ชัน (Version History) กู้คืนไฟล์ทันที และตรวจสอบ Audit Log",
         standard_prevention: "ตั้งค่าสิทธิ์ไฟล์เป็น 'อ่านได้อย่างเดียว (Read-Only)' และจำกัดการแชร์เฉพาะอีเมลที่จำเป็น",
-        keywords_law: ["มาตรา 9", "9", "ทำลาย", "แก้ไข", "ลบไฟล์", "เปลี่ยนแปลงข้อมูล", "เสียหาย"],
-        keywords_penalty: ["5 ปี", "ห้าปี", "100,000", "หนึ่งแสน", "100000", "แสนบาท", "ทั้งจำทั้งปรับ"],
-        keywords_remedy: ["version history", "ประวัติเวอร์ชัน", "กู้คืน", "restore", "ถังขยะ", "recycle bin", "activity log"],
-        keywords_security: ["read-only", "อ่านอย่างเดียว", "จำกัดสิทธิ์", "permission", "แชร์เฉพาะอีเมล", "backup", "สำรองข้อมูล"]
+        keywords_law: ["มาตรา 9", "9", "ทำลาย", "แก้ไข", "ลบไฟล์", "เปลี่ยนแปลงข้อมูล", "เสียหาย", "ดึงงาน"],
+        keywords_penalty: ["5 ปี", "ห้าปี", "100,000", "หนึ่งแสน", "100000", "แสนบาท", "ทั้งจำทั้งปรับ", "จำคุก", "ปรับ", "ไม่เกิน 5 ปี"],
+        keywords_remedy: ["version history", "ประวัติเวอร์ชัน", "กู้คืน", "restore", "ถังขยะ", "recycle bin", "activity log", "กู้ไฟล์", "แจ้งครู", "แจ้งตำรวจ", "จำกัดสิทธิ์"],
+        keywords_security: ["read-only", "อ่านอย่างเดียว", "จำกัดสิทธิ์", "permission", "แชร์เฉพาะอีเมล", "backup", "สำรองข้อมูล", "กำหนดสิทธิ์", "ดูได้อย่างเดียว", "เฉพาะฉันแก้ไขได้", "ไม่ให้แก้ไข"]
     },
     {
         id: 6,
@@ -120,10 +121,10 @@ const CASES_WITH_KEYWORDS = [
         standard_penalty: "จำคุกไม่เกิน 5 ปี หรือปรับไม่เกิน 100,000 บาท หรือทั้งจำทั้งปรับ",
         standard_remedy: "บล็อก IP Address ขยะ สลับเส้นทางเซิร์ฟเวอร์สำรอง และแจ้งฝ่ายไอที",
         standard_prevention: "ติดตั้งไฟร์วอลล์ (Firewall) และใช้ระบบป้องกัน DDoS Protection (เช่น Cloudflare / Rate Limiting)",
-        keywords_law: ["มาตรา 10", "10", "ขัดขวาง", "รบกวน", "ระงับการทำงาน", "พังระบบ", "ddos", "ระบบล่ม"],
-        keywords_penalty: ["5 ปี", "ห้าปี", "100,000", "หนึ่งแสน", "100000", "แสนบาท", "ทั้งจำทั้งปรับ"],
-        keywords_remedy: ["บล็อก ip", "block ip", "สลับเซิร์ฟเวอร์", "แจ้งไอที", "แจ้งครู", "รีสตาร์ท"],
-        keywords_security: ["firewall", "ไฟร์วอลล์", "ddos protection", "cloudflare", "waf", "rate limit", "load balancer"]
+        keywords_law: ["มาตรา 10", "10", "ขัดขวาง", "รบกวน", "ระงับการทำงาน", "พังระบบ", "ddos", "ระบบล่ม", "ยิงเว็บ", "ยิงเซิร์ฟ"],
+        keywords_penalty: ["5 ปี", "ห้าปี", "100,000", "หนึ่งแสน", "100000", "แสนบาท", "ทั้งจำทั้งปรับ", "จำคุก", "ปรับ", "ไม่เกิน 5 ปี"],
+        keywords_remedy: ["บล็อก ip", "block ip", "สลับเซิร์ฟเวอร์", "แจ้งไอที", "แจ้งครู", "รีสตาร์ท", "แจ้งตำรวจ", "ตัดการเชื่อมต่อ", "ระบบป้องกัน ddos", "เช็คที่อยู่ต้นเหตุ"],
+        keywords_security: ["firewall", "ไฟร์วอลล์", "ddos protection", "cloudflare", "waf", "rate limit", "load balancer", "ป้องกัน ddos", "ติดตั้งระบบป้องกัน", "ระบบป้องกันอัตโนมัติ"]
     },
     {
         id: 7,
@@ -142,8 +143,8 @@ const CASES_WITH_KEYWORDS = [
         standard_prevention: "ติดตั้งระบบกรองอีเมลขยะ (Anti-Spam Filter) และตรวจสอบ SPF/DKIM Record",
         keywords_law: ["มาตรา 11", "11", "วรรคหนึ่ง", "สแปม", "ปกปิดแหล่งที่มา", "ปลอมแปลง", "อีเมลขยะ"],
         keywords_penalty: ["100,000", "หนึ่งแสน", "100000", "ปรับไม่เกิน 1 แสน", "ปรับ"],
-        keywords_remedy: ["spam", "junk", "เมลขยะ", "รายงาน", "report", "แบน", "บล็อกผู้ส่ง"],
-        keywords_security: ["anti-spam", "กรองเมลขยะ", "filter", "spf", "dkim", "dmarc", "บล็อกผู้ส่งปลอม"]
+        keywords_remedy: ["spam", "junk", "เมลขยะ", "รายงาน", "report", "แบน", "บล็อกผู้ส่ง", "แจ้งแอดมิน", "ปัดทิ้ง"],
+        keywords_security: ["anti-spam", "กรองเมลขยะ", "filter", "spf", "dkim", "dmarc", "บล็อกผู้ส่งปลอม", "อัปเดตระบบ", "คัดกรองอีเมล"]
     },
     {
         id: 8,
@@ -162,8 +163,8 @@ const CASES_WITH_KEYWORDS = [
         standard_prevention: "ไม่กรอกเบอร์โทรหรืออีเมลในเว็บที่ไม่น่าเชื่อถือ และใช้ระบบ Email Alias",
         keywords_law: ["มาตรา 11", "11", "วรรคสอง", "ไม่เปิดโอกาส", "ยกเลิก", "unsubscribe", "รบกวน", "เดือดร้อนรำคาญ"],
         keywords_penalty: ["200,000", "สองแสน", "200000", "ปรับไม่เกิน 2 แสน", "ปรับ"],
-        keywords_remedy: ["แคปรูป", "ร้องเรียน", "แจ้งแพลตฟอร์ม", "บล็อก", "report"],
-        keywords_security: ["ไม่แปะเบอร์", "ไม่แปะเมล", "บอร์ดสาธารณะ", "email alias", "ความเป็นส่วนตัว", "privacy"]
+        keywords_remedy: ["แคปรูป", "แคปเจอร์หลักฐาน", "ร้องเรียน", "แจ้งแพลตฟอร์ม", "บล็อก", "report", "กสทช", "แจ้งตำรวจ", "แจ้งหน่วยงาน"],
+        keywords_security: ["ไม่แปะเบอร์", "ไม่แปะเมล", "บอร์ดสาธารณะ", "email alias", "ความเป็นส่วนตัว", "privacy", "ปิดแจ้งเตือน", "anti-spam", "ปิดกั้นข้อความ"]
     },
     {
         id: 9,
@@ -180,10 +181,10 @@ const CASES_WITH_KEYWORDS = [
         standard_penalty: "จำคุกไม่เกิน 5 ปี หรือปรับไม่เกิน 100,000 บาท หรือทั้งจำทั้งปรับ",
         standard_remedy: "รีบแจ้งทีมงานค่ายเกมเพื่อระงับและกู้คืนบัญชี และเตือนเพื่อนไม่ให้หลงเชื่อ",
         standard_prevention: "ตรวจสอบ URL และชื่อโดเมนให้ถูกต้องทุกครั้ง และไม่หลงเชื่อลิงก์แจกของฟรี",
-        keywords_law: ["มาตรา 14(1)", "14 (1)", "14(1)", "14", "ข้อมูลเท็จ", "หลอกลวง", "ฟิชชิ่ง", "phishing", "เว็บปลอม"],
-        keywords_penalty: ["5 ปี", "ห้าปี", "100,000", "หนึ่งแสน", "100000", "แสนบาท", "ทั้งจำทั้งปรับ"],
-        keywords_remedy: ["แจ้งค่ายเกม", "ระงับบัญชี", "กู้คืน", "เปลี่ยนรหัส", "เตือนเพื่อน"],
-        keywords_security: ["ตรวจ url", "domain", "โดเมน", "ลิงก์ปลอม", "ไม่คลิกลิงก์", "เว็บทางการ", "official"]
+        keywords_law: ["มาตรา 14(1)", "14 (1)", "14(1)", "14", "ข้อมูลเท็จ", "หลอกลวง", "ฟิชชิ่ง", "phishing", "เว็บปลอม", "สร้างเว็บปลอม", "ลิขสิทธิ์"],
+        keywords_penalty: ["5 ปี", "ห้าปี", "100,000", "หนึ่งแสน", "100000", "แสนบาท", "ทั้งจำทั้งปรับ", "จำคุก", "ปรับ", "ไม่เกิน 5 ปี"],
+        keywords_remedy: ["แจ้งค่ายเกม", "ระงับบัญชี", "กู้คืน", "เปลี่ยนรหัส", "เตือนเพื่อน", "แจ้งตำรวจ", "แจ้งแอดมิน", "ระงับความเสียหาย"],
+        keywords_security: ["ตรวจ url", "domain", "โดเมน", "ลิงก์ปลอม", "ไม่คลิกลิงก์", "เว็บทางการ", "official", "เช็กก่อนแชร์", "ผูกบัญชีกับแอป"]
     },
     {
         id: 10,
@@ -201,9 +202,9 @@ const CASES_WITH_KEYWORDS = [
         standard_remedy: "ลบโพสต์ข่าวปลอมทันที และโพสต์ชี้แจงความจริงพร้อมอ้างอิงแหล่งข่าวทางการ",
         standard_prevention: "ตรวจสอบข้อมูลกับศูนย์ต่อต้านข่าวปลอม (Anti-Fake News Center) หรือหน่วยงานรัฐก่อนแชร์",
         keywords_law: ["มาตรา 14(2)", "14 (2)", "14(2)", "14", "ตื่นตระหนก", "ข่าวปลอม", "fake news", "ข้อมูลเท็จ", "ตระหนกตกใจ"],
-        keywords_penalty: ["5 ปี", "ห้าปี", "100,000", "หนึ่งแสน", "100000", "แสนบาท", "ทั้งจำทั้งปรับ"],
-        keywords_remedy: ["ลบโพสต์", "ลบข่าวปลอม", "แถลงแก้ข่าว", "โพสต์แก้", "ชี้แจง"],
-        keywords_security: ["ศูนย์ต่อต้านข่าวปลอม", "anti-fake news", "เช็กก่อนแชร์", "แหล่งข่าวทางการ", "verified"]
+        keywords_penalty: ["5 ปี", "ห้าปี", "100,000", "หนึ่งแสน", "100000", "แสนบาท", "ทั้งจำทั้งปรับ", "จำคุก", "ปรับ", "ไม่เกิน 5 ปี"],
+        keywords_remedy: ["ลบโพสต์", "ลบข่าวปลอม", "แถลงแก้ข่าว", "โพสต์แก้", "ชี้แจง", "ขอโทษ", "แจ้งตำรวจ", "แจ้งครู", "ตรวจสอบแหล่งข่าว", "เช็กแหล่งข่าว"],
+        keywords_security: ["ศูนย์ต่อต้านข่าวปลอม", "anti-fake news", "เช็กก่อนแชร์", "แหล่งข่าวทางการ", "verified", "ตรวจสอบข้อมูล", "เสพข่าวอย่างมีสติ", "เช็กก่อนแชร์"]
     },
     {
         id: 11,
@@ -220,10 +221,10 @@ const CASES_WITH_KEYWORDS = [
         standard_penalty: "จำคุกไม่เกิน 5 ปี หรือปรับไม่เกิน 100,000 บาท หรือทั้งจำทั้งปรับ",
         standard_remedy: "แอดมินลบภาพและคลิปออกจากระบบทันที บล็อกผู้ส่ง และรายงานแพลตฟอร์ม",
         standard_prevention: "เปิดใช้งานระบบ SafeSearch และตัวกรองเนื้อหาลามกอัตโนมัติ (Content Filtering)",
-        keywords_law: ["มาตรา 14(4)", "14 (4)", "14(4)", "14", "ลามก", "อนาจาร", "คลิปโป๊", "18+"],
-        keywords_penalty: ["5 ปี", "ห้าปี", "100,000", "หนึ่งแสน", "100000", "แสนบาท", "ทั้งจำทั้งปรับ"],
-        keywords_remedy: ["ลบคลิป", "ลบวิดีโอ", "ลบภาพ", "แอดมินลบ", "บล็อก", "report", "รายงาน"],
-        keywords_security: ["safesearch", "safe search", "content filter", "ตัวกรอง", "กรองเนื้อหา", "moderation"]
+        keywords_law: ["มาตรา 14(4)", "14 (4)", "14(4)", "14", "ลามก", "อนาจาร", "คลิปโป๊", "18+", "ภาพลามก"],
+        keywords_penalty: ["5 ปี", "ห้าปี", "100,000", "หนึ่งแสน", "100000", "แสนบาท", "ทั้งจำทั้งปรับ", "จำคุก", "ปรับ", "ไม่เกิน 5 ปี"],
+        keywords_remedy: ["ลบคลิป", "ลบวิดีโอ", "ลบภาพ", "แอดมินลบ", "บล็อก", "report", "รายงาน", "แจ้งครู", "แจ้งตำรวจ", "ยอมรับความผิด"],
+        keywords_security: ["safesearch", "safe search", "content filter", "ตัวกรอง", "กรองเนื้อหา", "moderation", "ตั้งค่ากลุ่มส่วนตัว", "ไม่ส่งต่อคลิป"]
     },
     {
         id: 12,
@@ -241,9 +242,9 @@ const CASES_WITH_KEYWORDS = [
         standard_remedy: "แคปหลักฐานภาพและลิงก์ แจ้งแพลตฟอร์มลบภาพ และแจ้งคุณครู/ผู้ปกครอง",
         standard_prevention: "ตั้งค่าบัญชีเป็นส่วนตัว (Private Account) และไม่ยินยอมให้ผู้อื่นนำรูปไปใช้",
         keywords_law: ["มาตรา 16", "16", "ตัดต่อ", "ดัดแปลง", "เสียชื่อเสียง", "ดูหมิ่น", "อับอาย", "cyberbullying", "ประจาน"],
-        keywords_penalty: ["3 ปี", "สามปี", "200,000", "สองแสน", "200000", "แสนบาท", "ปรับ"],
-        keywords_remedy: ["แคปรูป", "แคปหลักฐาน", "แจ้งลบ", "report", "cyberbullying", "แจ้งครู", "แจ้งผู้ปกครอง"],
-        keywords_security: ["private account", "ตั้งค่าส่วนตัว", "จำกัดแท็ก", "ไม่แชร์รูปสาธารณะ", "จริยธรรม"]
+        keywords_penalty: ["3 ปี", "สามปี", "200,000", "สองแสน", "200000", "แสนบาท", "ปรับ", "จำคุก", "ไม่เกิน 3 ปี"],
+        keywords_remedy: ["แคปรูป", "แคปเจอร์หลักฐาน", "แจ้งลบ", "report", "cyberbullying", "แจ้งครู", "แจ้งผู้ปกครอง", "แจ้งตำรวจ", "ลบโพสต์"],
+        keywords_security: ["private account", "ตั้งค่าส่วนตัว", "จำกัดแท็ก", "ไม่แชร์รูปสาธารณะ", "จริยธรรม", "ปิดกั้น", "ล็อกโปรไฟล์", "จำกัดผู้เข้าชม", "ปิดการดาวน์โหลด"]
     }
 ];
 
@@ -253,269 +254,13 @@ console.log('Synchronizing ALL_12_CASES across frontend and backend...');
 let html = fs.readFileSync(targetHtml, 'utf8');
 const casesJson = JSON.stringify(CASES_WITH_KEYWORDS, null, 8);
 html = html.replace(/const ALL_12_CASES = \[[\s\S]*?\];/, `const ALL_12_CASES = ${casesJson};`);
-
-// Update local single role evaluation in HTML
-const newLocalEvalFn = `        // --- Robust Local Single Role Evaluation Fallback ---
-        function localSingleRoleEvaluation(caseItem, roleKey, answer) {
-            const clean = answer.trim().toLowerCase();
-            
-            // Gibberish check
-            const evasive = /^(ไม่รู้|ไม่ทราบ|ไม่บอก|มั่ว|กวน|ขี้เกียจ|ไม่มี|ไม่แน่ใจ|ไม่รู้อะไรเลย|ช่างมัน|ไม่ตอบ|5555|asdf|ฟกห)/i;
-            if (clean.length < 15 || evasive.test(clean)) {
-                return {
-                    role: roleKey,
-                    score: 0,
-                    feedback: roleKey === 'legal'
-                        ? 'ยังไม่สามารถให้คะแนนได้ เนื่องจากข้อความไม่ได้ระบุฐานความผิดหรือบทวิเคราะห์ที่สอดคล้องกับพฤติการณ์ในคดี โปรดอ่านรายละเอียดแล้วตอบตามหลักกฎหมาย'
-                        : roleKey === 'remedy'
-                        ? 'ยังไม่สามารถให้คะแนนได้ เนื่องจากไม่ได้ระบุขั้นตอนการระงับเหตุเฉพาะหน้า เมื่อเกิดเหตุไซเบอร์ต้องพิจารณาวิธีตัดวงจรความเสียหายทันที และระบุผู้เกี่ยวข้อง'
-                        : 'ยังไม่สามารถให้คะแนนได้ เนื่องจากยังไม่ได้เสนอแนะระบบหรือเครื่องมือความปลอดภัยทางเทคนิค ลองระบุเครื่องมือเทคโนโลยีที่ช่วยปิดช่องโหว่ระยะยาว'
-                };
-            }
-
-            let score = 0;
-            let feedback = '';
-
-            if (roleKey === 'legal') {
-                const hasLaw = (caseItem.keywords_law || []).some(k => clean.includes(k.toLowerCase())) || 
-                                (caseItem.section && clean.includes(caseItem.section.toLowerCase())) ||
-                                (caseItem.standard_law && clean.includes(caseItem.standard_law.toLowerCase()));
-                
-                const hasPenaltySpecific = (caseItem.keywords_penalty || []).some(k => clean.includes(k.toLowerCase()));
-                const hasPenaltyGeneral = (clean.includes("คุก") || clean.includes("จำคุก")) && (clean.includes("ปรับ") || clean.includes("บาท"));
-
-                if (hasLaw) {
-                    score += 4;
-                } else if (clean.includes("พ.ร.บ") || clean.includes("มาตรา") || clean.includes("pdpa") || clean.includes("กฎหมาย")) {
-                    score += 2.5;
-                }
-
-                if (hasPenaltySpecific) {
-                    score += 3;
-                } else if (hasPenaltyGeneral || clean.includes("คุก") || clean.includes("ปรับ") || clean.includes("ปี") || clean.includes("เดือน") || clean.includes("บาท")) {
-                    score += 2;
-                }
-
-                if (hasLaw && (hasPenaltySpecific || hasPenaltyGeneral)) {
-                    score += 3; // Completeness bonus
-                } else if (hasLaw && clean.length >= 25) {
-                    score += 2;
-                } else if (clean.length >= 20) {
-                    score += 1;
-                }
-
-                score = Math.min(10, Math.max(0, score));
-
-                if (score >= 9) {
-                    feedback = 'วิเคราะห์ฐานความผิดทางกฎหมายและระบุอัตราโทษจำคุก/ปรับได้อย่างถูกต้อง แม่นยำ ครบถ้วนสมบูรณ์ตามหลัก พ.ร.บ.คอมพิวเตอร์ / PDPA';
-                } else if (score >= 6) {
-                    feedback = hasLaw 
-                        ? 'วิเคราะห์ทิศทางฐานความผิดได้ถูกต้องแล้ว และสามารถระบุรายละเอียดอัตราโทษหรือเหตุผลประกอบเพิ่มเติมให้ชัดเจนเพื่อคะแนนเต็ม'
-                        : 'ระบุอัตราโทษได้น่าสนใจ แต่ควรระบุมาตราหรือฐานความผิดตาม พ.ร.บ.คอมพิวเตอร์ / PDPA ให้ตรงประเด็นของคดี';
-                } else {
-                    feedback = 'ฐานความผิดและโทษที่ระบุยังไม่สอดคล้องกับพฤติการณ์ในคดีนี้ ลองพิจารณาว่าเหตุการณ์ในการ์ตูนเป็นการกระทำต่อระบบ ข้อมูล หรือเป็นการเผยแพร่/หลอกลวง เพื่อเลือกมาตราให้ตรงจุดยิ่งขึ้น';
-                }
-
-            } else if (roleKey === 'remedy') {
-                const hasRemedyAction = (caseItem.keywords_remedy || []).some(k => clean.includes(k.toLowerCase()));
-                const hasStakeholder = ["ครู", "ผู้ปกครอง", "พ่อ", "แม่", "ตำรวจ", "แอดมิน", "แพลตฟอร์ม", "ธนาคาร", "ค่ายเกม", "ผู้ดูแล"].some(s => clean.includes(s));
-
-                if (hasRemedyAction) {
-                    score += 4.5;
-                } else if (clean.includes("ลบ") || clean.includes("เปลี่ยน") || clean.includes("แจ้ง") || clean.includes("บล็อก") || clean.includes("กู้") || clean.includes("หยุด") || clean.includes("อายัด")) {
-                    score += 3;
-                }
-
-                if (hasStakeholder) {
-                    score += 3;
-                } else if (clean.includes("บอก") || clean.includes("ช่วย") || clean.includes("รายงาน") || clean.includes("ปรึกษา")) {
-                    score += 2;
-                }
-
-                if (hasRemedyAction && (hasStakeholder || clean.length >= 30)) {
-                    score += 2.5;
-                } else if (clean.length >= 20) {
-                    score += 1;
-                }
-
-                score = Math.min(10, Math.max(0, score));
-
-                if (score >= 9) {
-                    feedback = 'ลำดับขั้นตอนการบรรเทาความเสียหายเฉพาะหน้าได้อย่างรวดเร็ว มีสติ และระบุผู้เกี่ยวข้องในการระงับเหตุได้อย่างตรงจุดและปฏิบัติได้จริง';
-                } else if (score >= 6) {
-                    feedback = hasRemedyAction
-                        ? 'มีแนวคิดการหยุดเหตุเฉพาะหน้าได้ดีแล้ว ควรระบุบุคคลหรือผู้ดูแลระบบที่ต้องประสานงานแจ้งเหตุฉุกเฉินเพิ่มเติมเพื่อให้การช่วยเหลือรวดเร็วยิ่งขึ้น'
-                        : 'ระบุผู้รับแจ้งเหตุได้ดี แต่ควรเพิ่มขั้นตอนการระงับความเสียหายทางเทคนิคเฉพาะหน้าด้วย';
-                } else {
-                    feedback = 'แนวทางรับมือยังไม่ตรงกับลักษณะภัยไซเบอร์ในคดีนี้ ควรพิจารณาวิธีตัดวงจรความเสียหายทันที เช่น เปลี่ยนรหัส บล็อกไอพี หรือกู้คืนข้อมูล';
-                }
-
-            } else { // Security Engineer
-                const hasSecurityTool = (caseItem.keywords_security || []).some(k => clean.includes(k.toLowerCase()));
-
-                if (hasSecurityTool) {
-                    score += 5;
-                } else if (clean.includes("รหัส") || clean.includes("ระบบ") || clean.includes("ป้องกัน") || clean.includes("ตั้งค่า") || clean.includes("ล็อก") || clean.includes("สิทธิ์") || clean.includes("กรอง")) {
-                    score += 3;
-                }
-
-                if (hasSecurityTool && (clean.includes("ทำได้") || clean.includes("ง่าย") || clean.includes("ตั้ง") || clean.includes("เปิด") || clean.includes("เพื่อ") || clean.includes("ป้องกัน") || clean.includes("บล็อก"))) {
-                    score += 3;
-                } else if (hasSecurityTool) {
-                    score += 2;
-                }
-
-                if (hasSecurityTool && clean.length >= 30) {
-                    score += 2;
-                } else if (clean.length >= 20) {
-                    score += 1;
-                }
-
-                score = Math.min(10, Math.max(0, score));
-
-                if (score >= 8) {
-                    feedback = 'ข้อเสนอแนะแนวทางปฏิบัติหรือเครื่องมือป้องกันความปลอดภัยตรงกับคดีนี้ได้อย่างสมบูรณ์แบบ!';
-                } else if (score >= 6) {
-                    feedback = 'ตอบแนวทางป้องกันตรงคดีแล้ว แนะนำให้ระบุวิธีหรือเครื่องมือป้องกันประจำคดีนี้เพิ่มเติมเพื่อให้ได้คะแนนสูงขึ้น';
-                } else {
-                    feedback = 'มาตรการป้องกันที่เสนอยังไม่ตรงกับช่องโหว่ความเสี่ยงของคดีนี้ ลองวิเคราะห์จุดผิดพลาดแล้วเสนอแนวทางป้องกันที่เหมาะสม';
-                }
-            }
-
-            return { role: roleKey, score, feedback, mode: 'local_heuristic' };
-        }`;
-
-html = html.replace(/\/\/ --- Local Single Role Evaluation Fallback ---[\s\S]*?return \{ role: roleKey, score, feedback, mode: 'local_heuristic' \};\s*\}/, newLocalEvalFn);
 fs.writeFileSync(targetHtml, html, 'utf8');
+console.log('Updated cyber_shield_detective.html!');
 
-// Update Server
-let server = fs.readFileSync(targetServer, 'utf8');
-const serverCasesObj = {};
-CASES_WITH_KEYWORDS.forEach(c => {
-    serverCasesObj[c.id] = {
-        title: c.title,
-        law: c.standard_law,
-        penalty: c.standard_penalty,
-        remedy: c.standard_remedy,
-        prevention: c.standard_prevention,
-        keywords_law: c.keywords_law,
-        keywords_penalty: c.keywords_penalty,
-        keywords_remedy: c.keywords_remedy,
-        keywords_security: c.keywords_security
-    };
-});
-server = server.replace(/const CASE_REFERENCES = \{[\s\S]*?\n\};/, `const CASE_REFERENCES = ${JSON.stringify(serverCasesObj, null, 4)};`);
+// Update cases_data.js
+let casesData = fs.readFileSync(targetCasesData, 'utf8');
+casesData = casesData.replace(/const ALL_12_CASES = \[[\s\S]*?\];/, `const ALL_12_CASES = ${casesJson};`);
+fs.writeFileSync(targetCasesData, casesData, 'utf8');
+console.log('Updated cases_data.js!');
 
-// Also update evaluateLocally in server.js
-const serverEvalLocallyFn = `function evaluateLocally(caseId, studentAnswers) {
-    const ref = CASE_REFERENCES[caseId] || CASE_REFERENCES[1];
-    const legalText = (studentAnswers.legal || '').trim();
-    const remedyText = (studentAnswers.remedy || '').trim();
-    const securityText = (studentAnswers.security || '').trim();
-
-    // 1. Legal Scoring
-    let legalScore = 0;
-    let legalFeedback = '';
-    if (isGibberishOrNonsense(legalText)) {
-        legalScore = 0;
-        legalFeedback = 'ยังไม่สามารถให้คะแนนได้ เนื่องจากข้อความไม่ได้ระบุฐานความผิดหรือบทวิเคราะห์ที่สอดคล้องกับพฤติการณ์ในคดี โปรดอ่านรายละเอียดแล้วตอบตามหลักกฎหมาย';
-    } else {
-        const lLower = legalText.toLowerCase();
-        const hasLawMatch = ref.keywords_law.some(k => lLower.includes(k.toLowerCase())) || lLower.includes(ref.law.toLowerCase());
-        const hasPenaltyMatch = ref.keywords_penalty.some(k => lLower.includes(k.toLowerCase()));
-        const hasPenaltyGeneral = (lLower.includes("คุก") || lLower.includes("จำคุก")) && (lLower.includes("ปรับ") || lLower.includes("บาท"));
-
-        if (hasLawMatch) legalScore += 4;
-        else if (lLower.includes("พ.ร.บ") || lLower.includes("มาตรา") || lLower.includes("pdpa") || lLower.includes("กฎหมาย")) legalScore += 2.5;
-
-        if (hasPenaltyMatch) legalScore += 3;
-        else if (hasPenaltyGeneral || lLower.includes("คุก") || lLower.includes("ปรับ") || lLower.includes("ปี") || lLower.includes("เดือน") || lLower.includes("บาท")) legalScore += 2;
-
-        if (hasLawMatch && (hasPenaltyMatch || hasPenaltyGeneral)) legalScore += 3;
-        else if (hasLawMatch && legalText.length >= 25) legalScore += 2;
-        else if (legalText.length >= 20) legalScore += 1;
-
-        legalScore = Math.min(10, Math.max(0, legalScore));
-        legalFeedback = legalScore >= 9
-            ? 'วิเคราะห์ฐานความผิดทางกฎหมายและระบุอัตราโทษจำคุก/ปรับได้อย่างถูกต้อง แม่นยำ ครบถ้วนสมบูรณ์ตามหลัก พ.ร.บ.คอมพิวเตอร์ / PDPA'
-            : hasLawMatch
-            ? 'วิเคราะห์ทิศทางฐานความผิดได้ถูกต้องแล้ว และสามารถระบุรายละเอียดอัตราโทษหรือเหตุผลประกอบเพิ่มเติมให้ชัดเจนเพื่อคะแนนเต็ม'
-            : 'ฐานความผิดและโทษที่ระบุยังไม่สอดคล้องกับพฤติการณ์ในคดีนี้ ลองพิจารณาว่าเหตุการณ์ในการ์ตูนเป็นการกระทำต่อระบบ ข้อมูล หรือเป็นการเผยแพร่/หลอกลวง เพื่อเลือกมาตราให้ตรงจุดยิ่งขึ้น';
-    }
-
-    // 2. Remedy Scoring
-    let remedyScore = 0;
-    let remedyFeedback = '';
-    if (isGibberishOrNonsense(remedyText)) {
-        remedyScore = 0;
-        remedyFeedback = 'ยังไม่สามารถให้คะแนนได้ เนื่องจากไม่ได้ระบุขั้นตอนการระงับเหตุเฉพาะหน้า เมื่อเกิดเหตุไซเบอร์ต้องพิจารณาวิธีตัดวงจรความเสียหายทันที และระบุผู้เกี่ยวข้อง';
-    } else {
-        const rLower = remedyText.toLowerCase();
-        const hasRemedyAction = ref.keywords_remedy.some(k => rLower.includes(k.toLowerCase()));
-        const mentionsStakeholder = ["ครู", "ผู้ปกครอง", "พ่อ", "แม่", "ตำรวจ", "แอดมิน", "แพลตฟอร์ม", "ธนาคาร", "ค่ายเกม", "ผู้ดูแล"].some(s => rLower.includes(s));
-
-        if (hasRemedyAction) remedyScore += 4.5;
-        else if (rLower.includes("ลบ") || rLower.includes("เปลี่ยน") || rLower.includes("แจ้ง") || rLower.includes("บล็อก") || rLower.includes("กู้") || rLower.includes("หยุด") || rLower.includes("อายัด")) remedyScore += 3;
-
-        if (mentionsStakeholder) remedyScore += 3;
-        else if (rLower.includes("บอก") || rLower.includes("ช่วย") || rLower.includes("รายงาน") || rLower.includes("ปรึกษา")) remedyScore += 2;
-
-        if (hasRemedyAction && (mentionsStakeholder || remedyText.length >= 30)) remedyScore += 2.5;
-        else if (remedyText.length >= 20) remedyScore += 1;
-
-        remedyScore = Math.min(10, Math.max(0, remedyScore));
-        remedyFeedback = remedyScore >= 9
-            ? 'ลำดับขั้นตอนการบรรเทาความเสียหายเฉพาะหน้าได้อย่างรวดเร็ว มีสติ และระบุผู้เกี่ยวข้องในการระงับเหตุได้อย่างตรงจุดและปฏิบัติได้จริง'
-            : hasRemedyAction
-            ? 'มีแนวคิดการหยุดเหตุเฉพาะหน้าได้ดีแล้ว ควรระบุบุคคลหรือผู้ดูแลระบบที่ต้องประสานงานแจ้งเหตุฉุกเฉินเพิ่มเติมเพื่อให้การช่วยเหลือรวดเร็วยิ่งขึ้น'
-            : 'แนวทางรับมือยังไม่ตรงกับลักษณะภัยไซเบอร์ในคดีนี้ ควรพิจารณาวิธีตัดวงจรความเสียหายทันที เช่น เปลี่ยนรหัส บล็อกไอพี หรือกู้คืนข้อมูล';
-    }
-
-    // 3. Security Scoring
-    let securityScore = 0;
-    let securityFeedback = '';
-    if (isGibberishOrNonsense(securityText)) {
-        securityScore = 0;
-        securityFeedback = 'ยังไม่สามารถให้คะแนนได้ เนื่องจากยังไม่ได้เสนอแนะระบบหรือเครื่องมือความปลอดภัยทางเทคนิค ลองระบุเครื่องมือเทคโนโลยีที่ช่วยปิดช่องโหว่ระยะยาว';
-    } else {
-        const sLower = securityText.toLowerCase();
-        const hasSecurityTool = ref.keywords_security.some(k => sLower.includes(k.toLowerCase()));
-
-        if (hasSecurityTool) securityScore += 5;
-        else if (sLower.includes("รหัส") || sLower.includes("ระบบ") || sLower.includes("ป้องกัน") || sLower.includes("ตั้งค่า") || sLower.includes("ล็อก") || sLower.includes("สิทธิ์") || sLower.includes("กรอง")) securityScore += 3;
-
-        if (hasSecurityTool && (sLower.includes("ทำได้") || sLower.includes("ง่าย") || sLower.includes("ตั้ง") || sLower.includes("เปิด") || sLower.includes("เพื่อ") || sLower.includes("ป้องกัน") || sLower.includes("บล็อก"))) securityScore += 3;
-        else if (hasSecurityTool) securityScore += 2;
-
-        if (hasSecurityTool && sLower.length >= 30) securityScore += 2;
-        else if (sLower.length >= 20) securityScore += 1;
-
-        securityScore = Math.min(10, Math.max(0, securityScore));
-        securityFeedback = securityScore >= 9
-            ? 'ข้อเสนอแนะด้านวิศวกรรมความปลอดภัยยอดเยี่ยม! เครื่องมือและมาตรการที่เลือกใช้สามารถปิดช่องโหว่ความเสี่ยงของคดีนี้ในระยะยาวได้อย่างสมบูรณ์แบบ'
-            : 'มีแนวคิดการป้องกันที่ดีแล้ว หากระบุชื่อเครื่องมือเทคโนโลยีความปลอดภัยเฉพาะทาง (เช่น 2FA, SSL, Firewall, Read-Only, SafeSearch) จะทำให้มาตรการรัดกุมยิ่งขึ้น';
-    }
-
-    const totalScore = legalScore + remedyScore + securityScore;
-    let overallSummary = totalScore >= 26
-        ? 'สุดยอดผลงานนักสืบไซเบอร์ระดับ Cyber Master! ทีมของคุณมีความรู้ด้านกฎหมาย การรับมือเหตุ และการวางระบบความปลอดภัยอย่างน่าทึ่ง'
-        : totalScore >= 18
-        ? 'ทำผลงานได้ดีระดับ Senior Detective! มีความเข้าใจหลักการเป็นอย่างดี พัฒนาอีกนิดจะกลายเป็นยอดสายสืบมือหนึ่งแน่นอน'
-        : totalScore > 0
-        ? 'ขอเป็นกำลังใจให้นักสืบฝึกหัด! การวิเคราะห์มีจุดเริ่มต้นที่ดี ลองศึกษาพฤติการณ์และเครื่องมือป้องกันเพิ่มเติมเพื่อคะแนนที่สูงขึ้นในคดีถัดไป'
-        : 'ตรวจพบข้อความที่ไม่สามารถประเมินผลได้ โปรดอ่านรายละเอียดคำร้องทุกข์และการ์ตูน 9 ช่อง แล้วพิมพ์วิเคราะห์เนื้อหาจริงเพื่อรับคะแนนสะสม';
-
-    return {
-        legal: { score: legalScore, feedback: legalFeedback },
-        remedy: { score: remedyScore, feedback: remedyFeedback },
-        security: { score: securityScore, feedback: securityFeedback },
-        total_score: totalScore,
-        overall_summary: overallSummary,
-        mode: "heuristic"
-    };
-}`;
-
-server = server.replace(/function evaluateLocally\(caseId, studentAnswers\) \{[\s\S]*?mode: "heuristic"\s*\};\s*\}/, serverEvalLocallyFn);
-fs.writeFileSync(targetServer, server, 'utf8');
-
-console.log('Successfully synchronized cases and updated scoring engine to guarantee 10/10 for complete answers!');
+console.log('Done sync!');
