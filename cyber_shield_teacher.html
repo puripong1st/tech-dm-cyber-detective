@@ -252,8 +252,8 @@
                 color: #0f172a !important;
                 border: 1px solid #cbd5e1 !important;
                 border-radius: 8px !important;
-                padding: 12px !important;
-                margin-bottom: 12px !important;
+                padding: 10px 12px !important;
+                margin-bottom: 8px !important;
                 page-break-inside: avoid !important;
                 break-inside: avoid !important;
                 box-shadow: none !important;
@@ -264,41 +264,41 @@
                 background: #f8fafc !important;
                 border: 1px solid #e2e8f0 !important;
                 border-radius: 6px !important;
-                padding: 8px 10px !important;
-                margin-top: 6px !important;
+                padding: 6px 8px !important;
+                margin-top: 4px !important;
                 word-break: normal !important;
                 overflow-wrap: normal !important;
                 white-space: pre-wrap !important;
-                line-height: 1.5 !important;
+                line-height: 1.4 !important;
             }
             .print-score-badge {
                 background: #e0e7ff !important;
                 color: #3730a3 !important;
                 font-weight: bold !important;
-                padding: 3px 8px !important;
+                padding: 2px 6px !important;
                 border-radius: 6px !important;
-                font-size: 11px !important;
+                font-size: 10.5px !important;
             }
 
-            /* Enforce 1 Page = 1 Group layout in PDF Print Export */
-            .print-group-page {
-                break-before: page !important;
-                page-break-before: always !important;
+            /* Enforce strict page break per subpage (2 cases per A4 page => max 3 pages per group) */
+            .print-group-subpage {
+                break-after: page !important;
+                page-break-after: always !important;
                 break-inside: avoid !important;
                 page-break-inside: avoid !important;
                 width: 100% !important;
                 display: flex !important;
                 flex-direction: column !important;
                 justify-content: space-between !important;
-                min-height: 94vh !important;
                 box-sizing: border-box !important;
                 margin: 0 !important;
                 padding: 0 !important;
+                min-height: 92vh !important;
             }
 
-            .print-group-page:first-child {
-                break-before: auto !important;
-                page-break-before: auto !important;
+            .print-group-subpage:last-child {
+                break-after: auto !important;
+                page-break-after: auto !important;
             }
         }
     </style>
@@ -343,7 +343,7 @@
     <div id="main-dashboard-app" class="hidden flex-1 flex flex-col justify-between">
 
         <!-- Top Navigation Bar -->
-        <header class="glass-panel sticky top-0 z-40 border-b border-purple-500/30 px-4 py-3 lg:px-8">
+        <header class="glass-panel sticky top-0 z-40 border-b border-purple-500/30 px-4 py-3 lg:px-8 no-print">
             <div class="max-w-7xl mx-auto flex items-center justify-between gap-3">
                 
                 <!-- Brand Title -->
@@ -1601,7 +1601,10 @@
         }
 
         function openPrintPdfModal(overrideRoom) {
-            const roomFilter = overrideRoom || document.getElementById('pdf-summary-room-select')?.value || document.getElementById('filter-room')?.value || 'ALL';
+            const roomFilter = overrideRoom !== undefined 
+                ? overrideRoom 
+                : (document.getElementById('filter-room')?.value || 'ALL');
+
             const roomSelect = document.getElementById('pdf-summary-room-select');
             if (roomSelect) roomSelect.value = roomFilter;
 
@@ -2097,118 +2100,148 @@
 
                 const sortedItems = [...items].sort((a, b) => (a.case_id || 0) - (b.case_id || 0));
 
-                const printedCasesHtml = sortedItems.map((item, cIdx) => {
+                // Filter cases that have student answers, scores, or AI feedback
+                const validCases = sortedItems.filter(item => {
                     const p = parseScoreItem(item);
                     const { answers, feedback } = extractAnswersAndFeedback(item);
-                    const caseTitle = item.case_title || `คดีที่ ${item.case_id || (cIdx + 1)}`;
-                    const caseRef = ALL_12_CASES.find(c => c.id === item.case_id) || {};
-                    const totalCaseScore = p.legal + p.remedy + p.security;
-
                     const hasLegal = (answers.legal && answers.legal.trim().length > 0) || p.legal > 0 || (feedback.legal && feedback.legal.feedback && feedback.legal.feedback.trim().length > 0);
                     const hasRemedy = (answers.remedy && answers.remedy.trim().length > 0) || p.remedy > 0 || (feedback.remedy && feedback.remedy.feedback && feedback.remedy.feedback.trim().length > 0);
                     const hasSecurity = (answers.security && answers.security.trim().length > 0) || p.security > 0 || (feedback.security && feedback.security.feedback && feedback.security.feedback.trim().length > 0);
+                    return hasLegal || hasRemedy || hasSecurity;
+                });
 
-                    if (!hasLegal && !hasRemedy && !hasSecurity) return '';
+                // Chunk cases into subpages of 2 cases per A4 page (6 cases => 3 pages)
+                const caseChunks = [];
+                const chunkSize = 2;
+                if (validCases.length === 0) {
+                    caseChunks.push([]);
+                } else {
+                    for (let i = 0; i < validCases.length; i += chunkSize) {
+                        caseChunks.push(validCases.slice(i, i + chunkSize));
+                    }
+                }
 
-                    return `
-                        <div class="print-card p-3 rounded-xl border border-slate-300 bg-white text-slate-900 flex flex-col gap-2">
+                const totalSubPages = caseChunks.length;
+
+                caseChunks.forEach((chunk, pageIdx) => {
+                    const printedCasesHtml = chunk.map((item, cIdx) => {
+                        const p = parseScoreItem(item);
+                        const { answers, feedback } = extractAnswersAndFeedback(item);
+                        const caseTitle = item.case_title || `คดีที่ ${item.case_id || (cIdx + 1)}`;
+                        const caseRef = ALL_12_CASES.find(c => c.id === item.case_id) || {};
+                        const totalCaseScore = p.legal + p.remedy + p.security;
+
+                        const hasLegal = (answers.legal && answers.legal.trim().length > 0) || p.legal > 0 || (feedback.legal && feedback.legal.feedback && feedback.legal.feedback.trim().length > 0);
+                        const hasRemedy = (answers.remedy && answers.remedy.trim().length > 0) || p.remedy > 0 || (feedback.remedy && feedback.remedy.feedback && feedback.remedy.feedback.trim().length > 0);
+                        const hasSecurity = (answers.security && answers.security.trim().length > 0) || p.security > 0 || (feedback.security && feedback.security.feedback && feedback.security.feedback.trim().length > 0);
+
+                        return `
+                            <div class="print-card p-3 rounded-xl border border-slate-300 bg-white text-slate-900 flex flex-col gap-2">
+                                
+                                <div class="flex items-center justify-between border-b border-slate-300 pb-1">
+                                    <span class="font-bold text-xs font-kanit text-slate-900">
+                                        คดี #${item.case_id || (cIdx+1)}: ${caseTitle} ${caseRef.section ? `(${caseRef.section})` : ''}
+                                    </span>
+                                    <span class="print-score-badge text-[10.5px]">
+                                        คะแนนคดีนี้: ${totalCaseScore} / 30
+                                    </span>
+                                </div>
+
+                                ${hasLegal ? `
+                                <div class="print-role-box text-[10.5px]">
+                                    <div class="font-bold text-slate-900 mb-0.5">👨‍⚖️ 1. นักวิเคราะห์กฎหมาย (คะแนน ${p.legal}/10)</div>
+                                    <div class="text-slate-800 mb-0.5"><b>คำตอบนักเรียน:</b> ${answers.legal || '-'}</div>
+                                    <div class="text-purple-900 bg-purple-50 p-1.5 rounded border border-purple-200">
+                                        <b>🤖 AI ประเมินผล:</b> ${feedback.legal.feedback || 'ให้คะแนน ' + p.legal + ' คะแนน'}
+                                    </div>
+                                </div>` : ''}
+
+                                ${hasRemedy ? `
+                                <div class="print-role-box text-[10.5px]">
+                                    <div class="font-bold text-slate-900 mb-0.5">🚑 2. เจ้าหน้าที่บรรเทาภัย (คะแนน ${p.remedy}/10)</div>
+                                    <div class="text-slate-800 mb-0.5"><b>คำตอบนักเรียน:</b> ${answers.remedy || '-'}</div>
+                                    <div class="text-pink-900 bg-pink-50 p-1.5 rounded border border-pink-200">
+                                        <b>🤖 AI ประเมินผล:</b> ${feedback.remedy.feedback || 'ให้คะแนน ' + p.remedy + ' คะแนน'}
+                                    </div>
+                                </div>` : ''}
+
+                                ${hasSecurity ? `
+                                <div class="print-role-box text-[10.5px]">
+                                    <div class="font-bold text-slate-900 mb-0.5">🛡️ 3. วิศวกรความปลอดภัย (คะแนน ${p.security}/10)</div>
+                                    <div class="text-slate-800 mb-0.5"><b>คำตอบนักเรียน:</b> ${answers.security || '-'}</div>
+                                    <div class="text-teal-900 bg-teal-50 p-1.5 rounded border border-teal-200">
+                                        <b>🤖 AI ประเมินผล:</b> ${feedback.security.feedback || 'ให้คะแนน ' + p.security + ' คะแนน'}
+                                    </div>
+                                </div>` : ''}
+
+                            </div>
+                        `;
+                    }).join('');
+
+                    const isLastPageOfGroup = (pageIdx === totalSubPages - 1);
+
+                    fullHtml += `
+                        <!-- Subpage (2 cases per A4 page) -->
+                        <div class="print-group-subpage flex flex-col justify-between gap-2 text-slate-200 font-sarabun">
                             
-                            <div class="flex items-center justify-between border-b border-slate-300 pb-1.5">
-                                <span class="font-bold text-xs font-kanit text-slate-900">
-                                    คดี #${item.case_id || (cIdx+1)}: ${caseTitle} ${caseRef.section ? `(${caseRef.section})` : ''}
-                                </span>
-                                <span class="print-score-badge text-[11px]">
-                                    คะแนนคดีนี้: ${totalCaseScore} / 30
-                                </span>
+                            <div class="flex flex-col gap-2">
+                                <!-- Academic Header for every printed page -->
+                                <div class="text-center flex flex-col items-center gap-0.5 border-b-2 border-slate-700 pb-2">
+                                    <div class="flex items-center justify-center gap-2">
+                                        <img src="favicon.png" alt="Logo" class="w-7 h-7 rounded-lg object-cover no-print">
+                                        <h2 class="text-sm sm:text-base font-bold font-kanit text-slate-100 print-text-dark">
+                                            แบบรายงานคำตอบและการประเมินผล AI กิจกรรมสืบคดีกฎหมายคอมพิวเตอร์และ PDPA
+                                        </h2>
+                                    </div>
+                                    <p class="text-[10px] text-slate-300 print-text-dark">
+                                        กลุ่มสาระการเรียนรู้วิทยาศาสตร์และเทคโนโลยี ระดับชั้นมัธยมศึกษาปีที่ 3 (วิชาเทคโนโลยี / วิทยาการคำนวณ)
+                                    </p>
+                                    <div class="flex flex-wrap items-center justify-center gap-4 text-[10px] text-slate-400 font-mono print-text-dark">
+                                        <span>🏫 ห้องเรียน: <b class="text-cyan-300 font-bold print-text-dark">${roomLabelText}</b></span>
+                                        <span>📅 วันที่พิมพ์: <b class="text-slate-200 font-bold print-text-dark">${printDateStr}</b></span>
+                                        <span>👥 กลุ่มที่: <b class="text-emerald-400 font-bold print-text-dark">${groupIdx + 1} / ${targetTeams.length}</b></span>
+                                        <span>📄 หน้า: <b class="text-purple-400 font-bold print-text-dark">${pageIdx + 1} / ${totalSubPages}</b></span>
+                                    </div>
+                                </div>
+
+                                <!-- Group Identity Banner ALWAYS present on every printed page -->
+                                <div class="print-card bg-slate-900 text-slate-100 p-2.5 rounded-xl border border-slate-700 flex flex-col gap-0.5 mb-1">
+                                    <div class="flex items-center justify-between">
+                                        <h3 class="text-xs sm:text-sm font-bold font-kanit print-text-dark">🏷️ กลุ่มสายสืบ: ${teamKey}</h3>
+                                        <span class="px-2 py-0.5 rounded-lg bg-purple-600 text-white font-mono text-[10px] font-bold">
+                                            ห้อง ${firstParsed.room} | คะแนนรวม ${groupTotalScore} / ${items.length * 30} คะแนน
+                                        </span>
+                                    </div>
+                                    <p class="text-[10.5px] text-slate-300 print-text-dark">
+                                        <b>👥 สมาชิกในกลุ่ม:</b> ${membersStr}
+                                    </p>
+                                </div>
+
+                                <!-- 2 Case Answers Breakdown -->
+                                <div class="flex flex-col gap-2">
+                                    ${printedCasesHtml || '<div class="p-4 text-center text-slate-500 text-xs">ไม่มีคดีที่ทำเสร็จสิ้น</div>'}
+                                </div>
                             </div>
 
-                            ${hasLegal ? `
-                            <div class="print-role-box text-[11px]">
-                                <div class="font-bold text-slate-900 mb-0.5">👨‍⚖️ 1. นักวิเคราะห์กฎหมาย (คะแนน ${p.legal}/10)</div>
-                                <div class="text-slate-800 mb-1"><b>คำตอบนักเรียน:</b> ${answers.legal || '-'}</div>
-                                <div class="text-purple-900 bg-purple-50 p-1.5 rounded border border-purple-200">
-                                    <b>🤖 AI ประเมินผล:</b> ${feedback.legal.feedback || 'ให้คะแนน ' + p.legal + ' คะแนน'}
+                            <!-- Footer / Signatures block -->
+                            ${isLastPageOfGroup ? `
+                            <div class="grid grid-cols-2 gap-4 pt-2 border-t border-slate-700 text-[11px] font-sarabun print-text-dark pb-1">
+                                <div class="flex flex-col items-center gap-0.5">
+                                    <p>ลงชื่อ ............................................................ ผู้แทนกลุ่มนักเรียน</p>
+                                    <p class="text-[9.5px] text-slate-500 print-text-dark">( ............................................................ )</p>
                                 </div>
-                            </div>` : ''}
-
-                            ${hasRemedy ? `
-                            <div class="print-role-box text-[11px]">
-                                <div class="font-bold text-slate-900 mb-0.5">🚑 2. เจ้าหน้าที่บรรเทาภัย (คะแนน ${p.remedy}/10)</div>
-                                <div class="text-slate-800 mb-1"><b>คำตอบนักเรียน:</b> ${answers.remedy || '-'}</div>
-                                <div class="text-pink-900 bg-pink-50 p-1.5 rounded border border-pink-200">
-                                    <b>🤖 AI ประเมินผล:</b> ${feedback.remedy.feedback || 'ให้คะแนน ' + p.remedy + ' คะแนน'}
+                                <div class="flex flex-col items-center gap-0.5">
+                                    <p>ลงชื่อ ............................................................ ครูผู้สอนประจำวิชา</p>
+                                    <p class="text-[9.5px] text-slate-500 print-text-dark">( ............................................................ )</p>
                                 </div>
-                            </div>` : ''}
-
-                            ${hasSecurity ? `
-                            <div class="print-role-box text-[11px]">
-                                <div class="font-bold text-slate-900 mb-0.5">🛡️ 3. วิศวกรความปลอดภัย (คะแนน ${p.security}/10)</div>
-                                <div class="text-slate-800 mb-1"><b>คำตอบนักเรียน:</b> ${answers.security || '-'}</div>
-                                <div class="text-teal-900 bg-teal-50 p-1.5 rounded border border-teal-200">
-                                    <b>🤖 AI ประเมินผล:</b> ${feedback.security.feedback || 'ให้คะแนน ' + p.security + ' คะแนน'}
-                                </div>
-                            </div>` : ''}
+                            </div>` : `
+                            <div class="text-right text-[10px] text-slate-400 font-mono pt-1 border-t border-slate-700 print-text-dark">
+                                (โปรดอ่านต่อหน้าถัดไป ➔ หน้า ${pageIdx + 2}/${totalSubPages})
+                            </div>`}
 
                         </div>
                     `;
-                }).filter(Boolean).join('');
-
-                fullHtml += `
-                    <!-- 1 Page per Group Wrapper -->
-                    <div class="print-group-page flex flex-col justify-between gap-3 text-slate-200 font-sarabun ${groupIdx > 0 ? 'mt-6' : ''}">
-                        
-                        <div class="flex flex-col gap-3">
-                            <!-- Academic Header for Group Page -->
-                            <div class="text-center flex flex-col items-center gap-1 border-b-2 border-slate-700 pb-3">
-                                <div class="flex items-center justify-center gap-2 mb-0.5">
-                                    <img src="favicon.png" alt="Logo" class="w-8 h-8 rounded-lg object-cover no-print">
-                                    <h2 class="text-base sm:text-lg font-bold font-kanit text-slate-100 print-text-dark">
-                                        แบบรายงานคำตอบและการประเมินผล AI กิจกรรมสืบคดีกฎหมายคอมพิวเตอร์และ PDPA
-                                    </h2>
-                                </div>
-                                <p class="text-[11px] text-slate-300 print-text-dark">
-                                    กลุ่มสาระการเรียนรู้วิทยาศาสตร์และเทคโนโลยี ระดับชั้นมัธยมศึกษาปีที่ 3 (วิชาเทคโนโลยี / วิทยาการคำนวณ)
-                                </p>
-                                <div class="flex flex-wrap items-center justify-center gap-4 text-[11px] text-slate-400 font-mono mt-0.5 print-text-dark">
-                                    <span>🏫 ห้องเรียน: <b class="text-cyan-300 font-bold print-text-dark">${roomLabelText}</b></span>
-                                    <span>📅 วันที่พิมพ์: <b class="text-slate-200 font-bold print-text-dark">${printDateStr}</b></span>
-                                    <span>👥 กลุ่มที่: <b class="text-emerald-400 font-bold print-text-dark">${groupIdx + 1} / ${targetTeams.length}</b></span>
-                                </div>
-                            </div>
-
-                            <!-- Group Identity Banner -->
-                            <div class="print-card bg-slate-900 text-slate-100 p-3 rounded-xl border border-slate-700 flex flex-col gap-1">
-                                <div class="flex items-center justify-between">
-                                    <h3 class="text-sm font-bold font-kanit print-text-dark">🏷️ กลุ่มสายสืบ: ${teamKey}</h3>
-                                    <span class="px-2.5 py-0.5 rounded-lg bg-purple-600 text-white font-mono text-[11px] font-bold">
-                                        ห้อง ${firstParsed.room} | คะแนนรวม ${groupTotalScore} / ${items.length * 30} คะแนน
-                                    </span>
-                                </div>
-                                <p class="text-[11px] text-slate-300 print-text-dark">
-                                    <b>👥 สมาชิกในกลุ่ม:</b> ${membersStr}
-                                </p>
-                            </div>
-
-                            <!-- Case Answers Breakdown -->
-                            <div class="flex flex-col gap-3">
-                                ${printedCasesHtml || '<div class="p-4 text-center text-slate-500 text-xs">ไม่มีคดีที่ทำเสร็จสิ้น</div>'}
-                            </div>
-                        </div>
-
-                        <!-- Signatures block at bottom of each group page -->
-                        <div class="grid grid-cols-2 gap-6 pt-3 mt-2 border-t border-slate-700 text-xs font-sarabun print-text-dark pb-1">
-                            <div class="flex flex-col items-center gap-0.5">
-                                <p>ลงชื่อ ............................................................ ผู้แทนกลุ่มนักเรียน</p>
-                                <p class="text-[10px] text-slate-500 print-text-dark">( ............................................................ )</p>
-                            </div>
-                            <div class="flex flex-col items-center gap-0.5">
-                                <p>ลงชื่อ ............................................................ ครูผู้สอนประจำวิชา</p>
-                                <p class="text-[10px] text-slate-500 print-text-dark">( ............................................................ )</p>
-                            </div>
-                        </div>
-
-                    </div>
-                `;
+                });
             });
 
             sheet.innerHTML = fullHtml;
