@@ -2100,17 +2100,10 @@
 
                 const sortedItems = [...items].sort((a, b) => (a.case_id || 0) - (b.case_id || 0));
 
-                // Filter cases that have student answers, scores, or AI feedback
-                const validCases = sortedItems.filter(item => {
-                    const p = parseScoreItem(item);
-                    const { answers, feedback } = extractAnswersAndFeedback(item);
-                    const hasLegal = (answers.legal && answers.legal.trim().length > 0) || p.legal > 0 || (feedback.legal && feedback.legal.feedback && feedback.legal.feedback.trim().length > 0);
-                    const hasRemedy = (answers.remedy && answers.remedy.trim().length > 0) || p.remedy > 0 || (feedback.remedy && feedback.remedy.feedback && feedback.remedy.feedback.trim().length > 0);
-                    const hasSecurity = (answers.security && answers.security.trim().length > 0) || p.security > 0 || (feedback.security && feedback.security.feedback && feedback.security.feedback.trim().length > 0);
-                    return hasLegal || hasRemedy || hasSecurity;
-                });
+                // Map all cases for team (fill missing cases up to 6 if needed, or use all solved cases)
+                const validCases = sortedItems;
 
-                // Chunk cases into subpages of 2 cases per A4 page (6 cases => 3 pages)
+                // Chunk cases into subpages of 2 cases per A4 page (6 cases => 3 pages total)
                 const caseChunks = [];
                 const chunkSize = 2;
                 if (validCases.length === 0) {
@@ -2127,7 +2120,8 @@
                     const printedCasesHtml = chunk.map((item, cIdx) => {
                         const p = parseScoreItem(item);
                         const { answers, feedback } = extractAnswersAndFeedback(item);
-                        const caseTitle = item.case_title || `คดีที่ ${item.case_id || (cIdx + 1)}`;
+                        const globalCaseIdx = (pageIdx * chunkSize) + cIdx + 1;
+                        const caseTitle = item.case_title || `คดีที่ ${item.case_id || globalCaseIdx}`;
                         const caseRef = ALL_12_CASES.find(c => c.id === item.case_id) || {};
                         const totalCaseScore = p.legal + p.remedy + p.security;
 
@@ -2140,7 +2134,7 @@
                                 
                                 <div class="flex items-center justify-between border-b border-slate-300 pb-1">
                                     <span class="font-bold text-xs font-kanit text-slate-900">
-                                        คดี #${item.case_id || (cIdx+1)}: ${caseTitle} ${caseRef.section ? `(${caseRef.section})` : ''}
+                                        คดี #${item.case_id || globalCaseIdx}: ${caseTitle} ${caseRef.section ? `(${caseRef.section})` : ''}
                                     </span>
                                     <span class="print-score-badge text-[10.5px]">
                                         คะแนนคดีนี้: ${totalCaseScore} / 30
@@ -2154,7 +2148,7 @@
                                     <div class="text-purple-900 bg-purple-50 p-1.5 rounded border border-purple-200">
                                         <b>🤖 AI ประเมินผล:</b> ${feedback.legal.feedback || 'ให้คะแนน ' + p.legal + ' คะแนน'}
                                     </div>
-                                </div>` : ''}
+                                </div>` : '<div class="text-[10px] text-slate-400 italic">👨‍⚖️ 1. นักวิเคราะห์กฎหมาย: ยังไม่ได้ทำ/ไม่มีข้อมูล</div>'}
 
                                 ${hasRemedy ? `
                                 <div class="print-role-box text-[10.5px]">
@@ -2163,7 +2157,7 @@
                                     <div class="text-pink-900 bg-pink-50 p-1.5 rounded border border-pink-200">
                                         <b>🤖 AI ประเมินผล:</b> ${feedback.remedy.feedback || 'ให้คะแนน ' + p.remedy + ' คะแนน'}
                                     </div>
-                                </div>` : ''}
+                                </div>` : '<div class="text-[10px] text-slate-400 italic">🚑 2. เจ้าหน้าที่บรรเทาภัย: ยังไม่ได้ทำ/ไม่มีข้อมูล</div>'}
 
                                 ${hasSecurity ? `
                                 <div class="print-role-box text-[10.5px]">
@@ -2172,7 +2166,7 @@
                                     <div class="text-teal-900 bg-teal-50 p-1.5 rounded border border-teal-200">
                                         <b>🤖 AI ประเมินผล:</b> ${feedback.security.feedback || 'ให้คะแนน ' + p.security + ' คะแนน'}
                                     </div>
-                                </div>` : ''}
+                                </div>` : '<div class="text-[10px] text-slate-400 italic">🛡️ 3. วิศวกรความปลอดภัย: ยังไม่ได้ทำ/ไม่มีข้อมูล</div>'}
 
                             </div>
                         `;
@@ -2186,7 +2180,7 @@
                             
                             <div class="flex flex-col gap-2">
                                 <!-- Academic Header for every printed page -->
-                                <div class="text-center flex flex-col items-center gap-0.5 border-b-2 border-slate-700 pb-2">
+                                <div class="text-center flex flex-col items-center gap-0.5 border-b-2 border-slate-700 pb-2 relative">
                                     <div class="flex items-center justify-center gap-2">
                                         <img src="favicon.png" alt="Logo" class="w-7 h-7 rounded-lg object-cover no-print">
                                         <h2 class="text-sm sm:text-base font-bold font-kanit text-slate-100 print-text-dark">
@@ -2200,7 +2194,11 @@
                                         <span>🏫 ห้องเรียน: <b class="text-cyan-300 font-bold print-text-dark">${roomLabelText}</b></span>
                                         <span>📅 วันที่พิมพ์: <b class="text-slate-200 font-bold print-text-dark">${printDateStr}</b></span>
                                         <span>👥 กลุ่มที่: <b class="text-emerald-400 font-bold print-text-dark">${groupIdx + 1} / ${targetTeams.length}</b></span>
-                                        <span>📄 หน้า: <b class="text-purple-400 font-bold print-text-dark">${pageIdx + 1} / ${totalSubPages}</b></span>
+                                    </div>
+                                    
+                                    <!-- Page Number Badge at Top Right Corner (e.g. 1/3, 2/3, 3/3) -->
+                                    <div class="absolute top-0 right-0 px-2.5 py-1 rounded-lg bg-slate-900 border border-slate-700 text-purple-300 font-mono text-[11px] font-bold print-text-dark">
+                                        หน้า ${pageIdx + 1} / ${totalSubPages}
                                     </div>
                                 </div>
 
