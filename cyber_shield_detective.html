@@ -2218,9 +2218,10 @@
             });
 
             // Sync to server API
+            let syncedViaApi = false;
             if (window.location.protocol.startsWith('http')) {
                 try {
-                    await fetch('/api/save-case-score', {
+                    const res = await fetch('/api/save-case-score', {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify({
@@ -2240,11 +2241,14 @@
                             }
                         })
                     });
+                    if (res.ok) {
+                        syncedViaApi = true;
+                    }
                 } catch(e) {}
             }
 
-            // Backup Direct Supabase Sync
-            if (window.supabase) {
+            // Backup Direct Supabase Sync (Only if backend server API is unavailable/failed)
+            if (!syncedViaApi && window.supabase) {
                 try {
                     const sbUrl = 'https://xbwlzqtvmjwucoqkyvhj.supabase.co';
                     const sbKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inhid2x6cXR2bWp3dWNvcWt5dmhqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQ0NjE3NDEsImV4cCI6MjEwMDAzNzc0MX0.nbIkBfvTZBxBSxxYik3o3gAqlXI8ITGMvof3wvJxA7c';

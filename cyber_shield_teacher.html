@@ -1055,6 +1055,42 @@
             }
         }
 
+        function getDeduplicatedScoresData(rawScores) {
+            if (!Array.isArray(rawScores)) return [];
+            
+            const teamMap = new Map();
+            rawScores.forEach(item => {
+                const teamKey = item.team_name || item.player_id || 'นักสืบเยาวชน';
+                if (!teamMap.has(teamKey)) teamMap.set(teamKey, new Map());
+                
+                const caseKey = item.case_id !== undefined && item.case_id !== null ? `case_${item.case_id}` : (item.case_title || `idx_${Math.random()}`);
+                const existing = teamMap.get(teamKey).get(caseKey);
+                
+                if (!existing) {
+                    teamMap.get(teamKey).set(caseKey, item);
+                } else {
+                    const tExisting = existing.created_at ? new Date(existing.created_at).getTime() : 0;
+                    const tNew = item.created_at ? new Date(item.created_at).getTime() : 0;
+                    
+                    if (tNew > tExisting) {
+                        teamMap.get(teamKey).set(caseKey, item);
+                    } else if (tNew === tExisting) {
+                        const existingHasAns = existing.student_answers && Object.keys(existing.student_answers).length > 0;
+                        const newHasAns = item.student_answers && Object.keys(item.student_answers).length > 0;
+                        if (newHasAns && !existingHasAns) {
+                            teamMap.get(teamKey).set(caseKey, item);
+                        }
+                    }
+                }
+            });
+
+            const result = [];
+            teamMap.forEach(caseMap => {
+                caseMap.forEach(item => result.push(item));
+            });
+            return result;
+        }
+
         // --- Realtime Score Fetching ---
         async function fetchLatestScores() {
             try {
@@ -1075,7 +1111,7 @@
                     }
                 }
 
-                allScoresData = scores || [];
+                allScoresData = getDeduplicatedScoresData(scores || []);
                 renderScoreboardTable();
                 updateStatsCards();
                 renderGroupAnswersTab();

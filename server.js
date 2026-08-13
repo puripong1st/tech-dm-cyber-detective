@@ -1392,6 +1392,32 @@ async function saveToSupabase(record) {
     }
 }
 
+// Helper function to deduplicate scores by team and case ID
+function deduplicateScores(rawScores) {
+    if (!Array.isArray(rawScores)) return [];
+    const teamMap = new Map();
+    rawScores.forEach(item => {
+        const teamKey = item.team_name || item.player_id || 'นักสืบเยาวชน';
+        if (!teamMap.has(teamKey)) teamMap.set(teamKey, new Map());
+        const caseKey = item.case_id !== undefined && item.case_id !== null ? `case_${item.case_id}` : (item.case_title || `idx_${Math.random()}`);
+        const existing = teamMap.get(teamKey).get(caseKey);
+        if (!existing) {
+            teamMap.get(teamKey).set(caseKey, item);
+        } else {
+            const tExisting = existing.created_at ? new Date(existing.created_at).getTime() : 0;
+            const tNew = item.created_at ? new Date(item.created_at).getTime() : 0;
+            if (tNew >= tExisting) {
+                teamMap.get(teamKey).set(caseKey, item);
+            }
+        }
+    });
+    const result = [];
+    teamMap.forEach(caseMap => {
+        caseMap.forEach(item => result.push(item));
+    });
+    return result;
+}
+
 // Secure API Endpoint: Leaderboard & Teacher Realtime Telemetry Data
 app.get('/api/leaderboard', async (req, res) => {
     let results = null;
@@ -1404,7 +1430,7 @@ app.get('/api/leaderboard', async (req, res) => {
             .from('game_scores')
             .select('*')
             .order('created_at', { ascending: false })
-            .limit(300);
+            .limit(500);
         if (!error && Array.isArray(data)) {
             results = data;
             // If Supabase is empty, clear memory cache buffer as well
@@ -1425,7 +1451,9 @@ app.get('/api/leaderboard', async (req, res) => {
         results = [];
     }
 
-    res.json({ success: true, data: results });
+    const cleanResults = deduplicateScores(results);
+
+    res.json({ success: true, data: cleanResults });
 });
 
 // Health check endpoint for Vercel
