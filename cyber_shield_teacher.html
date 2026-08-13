@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="th">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,7 +9,9 @@
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Kanit:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400&family=Sarabun:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=Chakra+Petch:wght@500;600;700;800&display=swap" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Kanit:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400&family=Sarabun:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=Chakra+Petch:wght@500;600;700;800&display=swap"
+        rel="stylesheet">
 
     <!-- Favicon -->
     <link rel="icon" type="image/png" sizes="256x256" href="favicon.png">
@@ -65,7 +68,7 @@
         }
 
         .cyber-grid-bg {
-            background-image: 
+            background-image:
                 radial-gradient(circle at 15% 15%, rgba(6, 182, 212, 0.12) 0%, transparent 40%),
                 radial-gradient(circle at 85% 85%, rgba(139, 92, 246, 0.12) 0%, transparent 40%),
                 linear-gradient(rgba(15, 23, 42, 0.8) 1px, transparent 1px),
@@ -81,10 +84,23 @@
         }
 
         /* Custom Scrollbars */
-        ::-webkit-scrollbar { width: 6px; height: 6px; }
-        ::-webkit-scrollbar-track { background: rgba(15, 23, 42, 0.8); }
-        ::-webkit-scrollbar-thumb { background: #334155; border-radius: 4px; }
-        ::-webkit-scrollbar-thumb:hover { background: #8B5CF6; }
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: rgba(15, 23, 42, 0.8);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #334155;
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #8B5CF6;
+        }
 
         /* Force dark style on select dropdowns and options */
         select {
@@ -92,12 +108,16 @@
             background-color: #0f172a !important;
             color: #f8fafc !important;
         }
+
         select option {
             background-color: #0f172a !important;
             color: #f8fafc !important;
             padding: 10px 14px !important;
         }
-        select option:hover, select option:focus, select option:checked {
+
+        select option:hover,
+        select option:focus,
+        select option:checked {
             background-color: #8b5cf6 !important;
             color: #ffffff !important;
         }
@@ -107,7 +127,7 @@
                 size: A4 portrait;
                 margin: 10mm 8mm 10mm 8mm;
             }
-            
+
             /* Hide non-printable elements */
             .no-print,
             nav,
@@ -157,8 +177,8 @@
                 display: none !important;
             }
 
-            #modal-print-pdf > div,
-            #modal-print-group-answers > div {
+            #modal-print-pdf>div,
+            #modal-print-group-answers>div {
                 background: white !important;
                 color: #0f172a !important;
                 border: none !important;
@@ -183,7 +203,9 @@
                 padding: 0 !important;
             }
 
-            .print-text-dark { color: #0f172a !important; }
+            .print-text-dark {
+                color: #0f172a !important;
+            }
 
             .print-table {
                 border: 1px solid #64748b !important;
@@ -202,7 +224,8 @@
                 table-layout: auto !important;
             }
 
-            .print-table th, .print-table td {
+            .print-table th,
+            .print-table td {
                 border: 1px solid #94a3b8 !important;
                 color: #0f172a !important;
                 padding: 5px 6px !important;
@@ -260,12 +283,14 @@
                 word-break: normal !important;
                 overflow-wrap: normal !important;
             }
+
             .print-role-grid {
                 display: grid !important;
                 grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
                 gap: 4px !important;
                 margin-top: 3px !important;
             }
+
             .print-role-box {
                 background: #f8fafc !important;
                 border: 1px solid #e2e8f0 !important;
@@ -280,11 +305,13 @@
                 flex-direction: column !important;
                 justify-content: space-between !important;
             }
+
             .print-role-ans {
                 font-size: 8.5px !important;
                 line-height: 1.2 !important;
                 color: #1e293b !important;
             }
+
             .print-ai-box {
                 padding: 2px 4px !important;
                 font-size: 8.5px !important;
@@ -292,6 +319,7 @@
                 margin-top: 2px !important;
                 border-radius: 3px !important;
             }
+
             .print-score-badge {
                 background: #e0e7ff !important;
                 color: #3730a3 !important;
@@ -326,31 +354,39 @@
         }
     </style>
 </head>
+
 <body class="cyber-grid-bg antialiased selection:bg-purple-500 selection:text-white flex flex-col min-h-screen">
 
     <!-- 1. TEACHER AUTH PASSCODE MODAL -->
     <div id="modal-auth" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/90 backdrop-blur-xl">
-        <div class="glass-panel max-w-md w-full p-8 rounded-3xl border border-purple-500/50 shadow-2xl flex flex-col items-center text-center gap-5">
-            <div class="w-16 h-16 rounded-2xl bg-purple-500/20 border border-purple-400 text-purple-300 flex items-center justify-center text-3xl shadow-lg shadow-purple-500/30">
+        <div
+            class="glass-panel max-w-md w-full p-8 rounded-3xl border border-purple-500/50 shadow-2xl flex flex-col items-center text-center gap-5">
+            <div
+                class="w-16 h-16 rounded-2xl bg-purple-500/20 border border-purple-400 text-purple-300 flex items-center justify-center text-3xl shadow-lg shadow-purple-500/30">
                 <i class="fa-solid fa-chalkboard-user"></i>
             </div>
-            
+
             <div>
                 <h2 class="text-xl font-bold text-slate-100 font-kanit">เข้าสู่ระบบแผงควบคุมครูผู้สอน</h2>
-                <p class="text-xs text-slate-400 mt-1 font-sarabun">Cyber Shield Detective: Teacher Command Center (ม.3)</p>
+                <p class="text-xs text-slate-400 mt-1 font-sarabun">Cyber Shield Detective: Teacher Command Center (ม.3)
+                </p>
             </div>
 
             <div class="w-full flex flex-col gap-3">
                 <div class="relative w-full">
                     <i class="fa-solid fa-key absolute left-4 top-1/2 -translate-y-1/2 text-purple-400 text-sm"></i>
-                    <input type="password" id="auth-passcode-input" placeholder="กรุณากรอกรหัสผ่านครูผู้สอน..." class="w-full bg-slate-950/90 border border-purple-500/40 rounded-2xl pl-11 pr-4 py-3 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-purple-400 focus:ring-1 focus:ring-purple-400 font-mono transition text-center" onkeydown="if(event.key==='Enter') loginTeacher()">
+                    <input type="password" id="auth-passcode-input" placeholder="กรุณากรอกรหัสผ่านครูผู้สอน..."
+                        class="w-full bg-slate-950/90 border border-purple-500/40 rounded-2xl pl-11 pr-4 py-3 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-purple-400 focus:ring-1 focus:ring-purple-400 font-mono transition text-center"
+                        onkeydown="if(event.key==='Enter') loginTeacher()">
                 </div>
-                
-                <span id="auth-error-msg" class="text-xs text-red-400 font-sarabun hidden flex items-center justify-center gap-1.5">
+
+                <span id="auth-error-msg"
+                    class="text-xs text-red-400 font-sarabun hidden flex items-center justify-center gap-1.5">
                     <i class="fa-solid fa-triangle-exclamation"></i> รหัสผ่านไม่ถูกต้อง กรุณาลองใหม่อีกครั้ง
                 </span>
 
-                <button onclick="loginTeacher()" class="w-full py-3 rounded-2xl bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white font-bold text-sm shadow-lg shadow-purple-600/30 transition flex items-center justify-center gap-2">
+                <button onclick="loginTeacher()"
+                    class="w-full py-3 rounded-2xl bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white font-bold text-sm shadow-lg shadow-purple-600/30 transition flex items-center justify-center gap-2">
                     <i class="fa-solid fa-right-to-bracket"></i>
                     <span>ยืนยันเข้าสู่ระบบ</span>
                 </button>
@@ -368,40 +404,52 @@
         <!-- Top Navigation Bar -->
         <header class="glass-panel sticky top-0 z-40 border-b border-purple-500/30 px-4 py-3 lg:px-8 no-print">
             <div class="max-w-7xl mx-auto flex items-center justify-between gap-3">
-                
+
                 <!-- Brand Title -->
                 <div class="flex items-center gap-3">
-                    <img src="favicon.png" alt="Logo" class="w-9 h-9 rounded-lg border border-purple-400 shadow-md shadow-purple-500/30 object-cover">
+                    <img src="favicon.png" alt="Logo"
+                        class="w-9 h-9 rounded-lg border border-purple-400 shadow-md shadow-purple-500/30 object-cover">
                     <div>
                         <div class="flex items-center gap-2">
-                            <h1 class="text-base lg:text-lg font-bold tracking-wider text-transparent bg-clip-text bg-gradient-to-r from-purple-400 via-pink-400 to-cyan-400 font-mono">
+                            <h1
+                                class="text-base lg:text-lg font-bold tracking-wider text-transparent bg-clip-text bg-gradient-to-r from-purple-400 via-pink-400 to-cyan-400 font-mono">
                                 CYBER SHIELD TEACHER CENTER
                             </h1>
-                            <span class="text-[10px] px-2 py-0.5 rounded-full bg-purple-500/20 text-purple-300 border border-purple-500/40">ม.3 AI Portal</span>
+                            <span
+                                class="text-[10px] px-2 py-0.5 rounded-full bg-purple-500/20 text-purple-300 border border-purple-500/40">ม.3
+                                AI Portal</span>
                         </div>
-                        <p class="text-[11px] text-slate-400 hidden sm:block">ระบบติดตามผลคะแนนเรียลไทม์ ตรวจสอบข้อสอบ และพิมพ์รายงานสรุปผล</p>
+                        <p class="text-[11px] text-slate-400 hidden sm:block">ระบบติดตามผลคะแนนเรียลไทม์ ตรวจสอบข้อสอบ
+                            และพิมพ์รายงานสรุปผล</p>
                     </div>
                 </div>
 
                 <!-- Navigation Tabs -->
-                <div class="flex items-center gap-1.5 bg-slate-950/80 p-1 rounded-xl border border-slate-800 font-sarabun text-xs">
-                    <button id="nav-tab-scoreboard" onclick="switchTab('scoreboard')" class="px-3.5 py-1.5 rounded-lg bg-purple-600 text-white font-semibold transition flex items-center gap-1.5 shadow-sm">
+                <div
+                    class="flex items-center gap-1.5 bg-slate-950/80 p-1 rounded-xl border border-slate-800 font-sarabun text-xs">
+                    <button id="nav-tab-scoreboard" onclick="switchTab('scoreboard')"
+                        class="px-3.5 py-1.5 rounded-lg bg-purple-600 text-white font-semibold transition flex items-center gap-1.5 shadow-sm">
                         <i class="fa-solid fa-chart-line text-purple-200"></i>
                         <span>กระดานคะแนนสด</span>
                     </button>
-                    <button id="nav-tab-group-answers" onclick="switchTab('group-answers')" class="px-3.5 py-1.5 rounded-lg text-slate-400 hover:text-white transition flex items-center gap-1.5">
+                    <button id="nav-tab-group-answers" onclick="switchTab('group-answers')"
+                        class="px-3.5 py-1.5 rounded-lg text-slate-400 hover:text-white transition flex items-center gap-1.5">
                         <i class="fa-solid fa-comments text-emerald-400"></i>
                         <span>ดูคำตอบรายกลุ่ม</span>
                     </button>
-                    <button id="nav-tab-solutions" onclick="switchTab('solutions')" class="px-3.5 py-1.5 rounded-lg text-slate-400 hover:text-white transition flex items-center gap-1.5">
+                    <button id="nav-tab-solutions" onclick="switchTab('solutions')"
+                        class="px-3.5 py-1.5 rounded-lg text-slate-400 hover:text-white transition flex items-center gap-1.5">
                         <i class="fa-solid fa-book-open text-pink-400"></i>
                         <span>แฟ้มเฉลย 12 คดี</span>
                     </button>
-                    <button id="nav-tab-g8g9-bank" onclick="switchTab('g8g9-bank')" class="px-3.5 py-1.5 rounded-lg text-slate-400 hover:text-white transition flex items-center gap-1.5" title="คลังตัวอย่างคำตอบเด็ก ม.2 - ม.3">
+                    <button id="nav-tab-g8g9-bank" onclick="switchTab('g8g9-bank')"
+                        class="px-3.5 py-1.5 rounded-lg text-slate-400 hover:text-white transition flex items-center gap-1.5"
+                        title="คลังตัวอย่างคำตอบเด็ก ม.2 - ม.3">
                         <i class="fa-solid fa-graduation-cap text-yellow-300"></i>
                         <span>ตัวอย่างคำตอบเด็ก ม.2-ม.3</span>
                     </button>
-                    <button id="nav-tab-settings" onclick="switchTab('settings')" class="px-3.5 py-1.5 rounded-lg text-slate-400 hover:text-white transition flex items-center gap-1.5">
+                    <button id="nav-tab-settings" onclick="switchTab('settings')"
+                        class="px-3.5 py-1.5 rounded-lg text-slate-400 hover:text-white transition flex items-center gap-1.5">
                         <i class="fa-solid fa-gear text-cyan-400"></i>
                         <span>ตั้งค่าระบบ & Cloud</span>
                     </button>
@@ -409,21 +457,28 @@
 
                 <!-- Right Actions -->
                 <div class="flex items-center gap-2">
-                    <div class="hidden lg:flex items-center gap-2 px-3 py-1.5 rounded-lg bg-emerald-950/60 border border-emerald-500/40 text-emerald-300 text-xs font-mono">
+                    <div
+                        class="hidden lg:flex items-center gap-2 px-3 py-1.5 rounded-lg bg-emerald-950/60 border border-emerald-500/40 text-emerald-300 text-xs font-mono">
                         <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
                         <span id="label-realtime-status">Realtime Active</span>
                     </div>
 
-                    <a href="/shield_detective" class="px-3 py-1.5 rounded-lg bg-cyan-950/70 hover:bg-cyan-900 border border-cyan-500/40 text-cyan-300 text-xs font-medium transition flex items-center gap-1.5" title="เปิดหน้าเล่นเกม">
+                    <a href="/shield_detective"
+                        class="px-3 py-1.5 rounded-lg bg-cyan-950/70 hover:bg-cyan-900 border border-cyan-500/40 text-cyan-300 text-xs font-medium transition flex items-center gap-1.5"
+                        title="เปิดหน้าเล่นเกม">
                         <i class="fa-solid fa-gamepad"></i>
                         <span class="hidden sm:inline">หน้าเล่นเกม</span>
                     </a>
 
-                    <a href="/" class="p-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white text-xs border border-slate-700 transition" title="กลับหน้าหลัก">
+                    <a href="/"
+                        class="p-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white text-xs border border-slate-700 transition"
+                        title="กลับหน้าหลัก">
                         <i class="fa-solid fa-house"></i>
                     </a>
 
-                    <button onclick="logoutTeacher()" class="p-2 rounded-lg bg-red-950/70 hover:bg-red-900 border border-red-500/40 text-red-300 text-xs transition" title="ออกจากระบบครู">
+                    <button onclick="logoutTeacher()"
+                        class="p-2 rounded-lg bg-red-950/70 hover:bg-red-900 border border-red-500/40 text-red-300 text-xs transition"
+                        title="ออกจากระบบครู">
                         <i class="fa-solid fa-arrow-right-from-bracket"></i>
                     </button>
                 </div>
@@ -437,11 +492,12 @@
             <!-- TAB 1: LIVE REALTIME SCOREBOARD & TELEMETRY                               -->
             <!-- ========================================================================= -->
             <section id="tab-content-scoreboard" class="flex flex-col gap-5">
-                
+
                 <!-- Overview Stats Grid -->
                 <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 lg:gap-4">
                     <div class="glass-panel p-4 rounded-2xl border border-purple-500/30 flex items-center gap-3.5">
-                        <div class="w-12 h-12 rounded-xl bg-purple-500/20 border border-purple-400 text-purple-300 flex items-center justify-center text-xl shrink-0">
+                        <div
+                            class="w-12 h-12 rounded-xl bg-purple-500/20 border border-purple-400 text-purple-300 flex items-center justify-center text-xl shrink-0">
                             <i class="fa-solid fa-users"></i>
                         </div>
                         <div>
@@ -451,7 +507,8 @@
                     </div>
 
                     <div class="glass-panel p-4 rounded-2xl border border-cyan-500/30 flex items-center gap-3.5">
-                        <div class="w-12 h-12 rounded-xl bg-cyan-500/20 border border-cyan-400 text-cyan-300 flex items-center justify-center text-xl shrink-0">
+                        <div
+                            class="w-12 h-12 rounded-xl bg-cyan-500/20 border border-cyan-400 text-cyan-300 flex items-center justify-center text-xl shrink-0">
                             <i class="fa-solid fa-school"></i>
                         </div>
                         <div>
@@ -461,7 +518,8 @@
                     </div>
 
                     <div class="glass-panel p-4 rounded-2xl border border-yellow-500/30 flex items-center gap-3.5">
-                        <div class="w-12 h-12 rounded-xl bg-yellow-500/20 border border-yellow-400 text-yellow-300 flex items-center justify-center text-xl shrink-0">
+                        <div
+                            class="w-12 h-12 rounded-xl bg-yellow-500/20 border border-yellow-400 text-yellow-300 flex items-center justify-center text-xl shrink-0">
                             <i class="fa-solid fa-star"></i>
                         </div>
                         <div>
@@ -471,25 +529,31 @@
                     </div>
 
                     <div class="glass-panel p-4 rounded-2xl border border-emerald-500/30 flex items-center gap-3.5">
-                        <div class="w-12 h-12 rounded-xl bg-emerald-500/20 border border-emerald-400 text-emerald-300 flex items-center justify-center text-xl shrink-0">
+                        <div
+                            class="w-12 h-12 rounded-xl bg-emerald-500/20 border border-emerald-400 text-emerald-300 flex items-center justify-center text-xl shrink-0">
                             <i class="fa-solid fa-circle-check"></i>
                         </div>
                         <div>
-                            <div class="text-2xl font-bold font-mono text-emerald-300" id="stat-total-submissions">0</div>
+                            <div class="text-2xl font-bold font-mono text-emerald-300" id="stat-total-submissions">0
+                            </div>
                             <div class="text-xs text-slate-400 font-sarabun">จำนวนคดีที่ส่งตรวจ AI แล้ว</div>
                         </div>
                     </div>
                 </div>
 
                 <!-- Filter, Search & Export Bar -->
-                <div class="glass-panel p-4 rounded-2xl border border-slate-700 flex flex-wrap items-center justify-between gap-3 text-xs font-sarabun">
-                    
+                <div
+                    class="glass-panel p-4 rounded-2xl border border-slate-700 flex flex-wrap items-center justify-between gap-3 text-xs font-sarabun">
+
                     <div class="flex flex-wrap items-center gap-2.5 flex-1 min-w-[280px]">
                         <!-- Room Selector -->
-                        <div class="flex items-center gap-1.5 bg-slate-950 px-3 py-2 rounded-xl border border-slate-700">
+                        <div
+                            class="flex items-center gap-1.5 bg-slate-950 px-3 py-2 rounded-xl border border-slate-700">
                             <i class="fa-solid fa-door-open text-purple-400"></i>
-                            <select id="filter-room" onchange="renderScoreboardTable()" class="bg-slate-950 text-white font-medium focus:outline-none cursor-pointer">
-                                <option value="ALL" class="bg-slate-900 text-white py-1">ทุกห้องเรียน (ม.3/1 - ม.3/12)</option>
+                            <select id="filter-room" onchange="renderScoreboardTable()"
+                                class="bg-slate-950 text-white font-medium focus:outline-none cursor-pointer">
+                                <option value="ALL" class="bg-slate-900 text-white py-1">ทุกห้องเรียน (ม.3/1 - ม.3/12)
+                                </option>
                                 <option value="ม.3/1" class="bg-slate-900 text-white py-1">ม.3/1</option>
                                 <option value="ม.3/2" class="bg-slate-900 text-white py-1">ม.3/2</option>
                                 <option value="ม.3/3" class="bg-slate-900 text-white py-1">ม.3/3</option>
@@ -506,20 +570,29 @@
                         </div>
 
                         <!-- Sort Order Selector -->
-                        <div class="flex items-center gap-1.5 bg-slate-950 px-3 py-2 rounded-xl border border-slate-700">
+                        <div
+                            class="flex items-center gap-1.5 bg-slate-950 px-3 py-2 rounded-xl border border-slate-700">
                             <i class="fa-solid fa-arrow-down-wide-short text-amber-400"></i>
-                            <select id="filter-sort" onchange="renderScoreboardTable()" class="bg-slate-950 text-white font-medium focus:outline-none cursor-pointer">
-                                <option value="score-desc" class="bg-slate-900 text-white py-1">🏆 เรียงตามคะแนนสูงสุด (มาก ➔ น้อย)</option>
-                                <option value="score-asc" class="bg-slate-900 text-white py-1">📉 เรียงตามคะแนนต่ำสุด (น้อย ➔ มาก)</option>
-                                <option value="room-asc" class="bg-slate-900 text-white py-1">🏫 เรียงตามห้องและเลขที่</option>
-                                <option value="time-desc" class="bg-slate-900 text-white py-1">⏱️ เรียงตามเวลาที่ส่งล่าสุด</option>
+                            <select id="filter-sort" onchange="renderScoreboardTable()"
+                                class="bg-slate-950 text-white font-medium focus:outline-none cursor-pointer">
+                                <option value="score-desc" class="bg-slate-900 text-white py-1">🏆 เรียงตามคะแนนสูงสุด
+                                    (มาก ➔ น้อย)</option>
+                                <option value="score-asc" class="bg-slate-900 text-white py-1">📉 เรียงตามคะแนนต่ำสุด
+                                    (น้อย ➔ มาก)</option>
+                                <option value="room-asc" class="bg-slate-900 text-white py-1">🏫 เรียงตามห้องและเลขที่
+                                </option>
+                                <option value="time-desc" class="bg-slate-900 text-white py-1">⏱️
+                                    เรียงตามเวลาที่ส่งล่าสุด</option>
                             </select>
                         </div>
 
                         <!-- Search Input -->
                         <div class="relative flex-1 min-w-[180px]">
-                            <i class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"></i>
-                            <input type="text" id="filter-search" oninput="renderScoreboardTable()" placeholder="ค้นหาชื่อกลุ่ม / เลขที่ / ชื่อนักเรียน..." class="w-full bg-slate-950 border border-slate-700 rounded-xl pl-9 pr-3 py-2 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-purple-400">
+                            <i
+                                class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"></i>
+                            <input type="text" id="filter-search" oninput="renderScoreboardTable()"
+                                placeholder="ค้นหาชื่อกลุ่ม / เลขที่ / ชื่อนักเรียน..."
+                                class="w-full bg-slate-950 border border-slate-700 rounded-xl pl-9 pr-3 py-2 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-purple-400">
                         </div>
                     </div>
 
@@ -527,22 +600,29 @@
                     <div class="flex items-center gap-2">
                         <!-- Display Mode Toggle -->
                         <div class="flex items-center gap-1 bg-slate-950 p-1 rounded-xl border border-slate-700">
-                            <button id="btn-mode-team" onclick="setScoreboardDisplayMode('team_only')" class="px-2.5 py-1.5 rounded-lg bg-purple-600 text-white font-semibold transition text-xs shadow-sm" title="แสดงเฉพาะชื่อกลุ่ม">
+                            <button id="btn-mode-team" onclick="setScoreboardDisplayMode('team_only')"
+                                class="px-2.5 py-1.5 rounded-lg bg-purple-600 text-white font-semibold transition text-xs shadow-sm"
+                                title="แสดงเฉพาะชื่อกลุ่ม">
                                 ชื่อกลุ่ม
                             </button>
-                            <button id="btn-mode-roster" onclick="setScoreboardDisplayMode('detailed_roster')" class="px-2.5 py-1.5 rounded-lg text-slate-400 hover:text-white transition text-xs" title="แสดงเลขที่และรายชื่อสมาชิกครบทุกคน">
+                            <button id="btn-mode-roster" onclick="setScoreboardDisplayMode('detailed_roster')"
+                                class="px-2.5 py-1.5 rounded-lg text-slate-400 hover:text-white transition text-xs"
+                                title="แสดงเลขที่และรายชื่อสมาชิกครบทุกคน">
                                 สมาชิก & เลขที่
                             </button>
                         </div>
 
                         <!-- Export PDF Button -->
-                        <button onclick="openPrintPdfModal()" class="px-3.5 py-2 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-bold transition flex items-center gap-1.5 shadow-md shadow-emerald-500/20">
+                        <button onclick="openPrintPdfModal()"
+                            class="px-3.5 py-2 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-bold transition flex items-center gap-1.5 shadow-md shadow-emerald-500/20">
                             <i class="fa-solid fa-file-pdf"></i>
                             <span>Export PDF รายงาน</span>
                         </button>
 
                         <!-- Manual Refresh -->
-                        <button onclick="fetchLatestScores()" class="p-2 rounded-xl bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-300 hover:text-white transition" title="ดึงข้อมูลล่าสุด">
+                        <button onclick="fetchLatestScores()"
+                            class="p-2 rounded-xl bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-300 hover:text-white transition"
+                            title="ดึงข้อมูลล่าสุด">
                             <i class="fa-solid fa-rotate-right"></i>
                         </button>
                     </div>
@@ -558,7 +638,8 @@
                                     <th class="p-3 text-center w-12 border-r border-slate-800">#</th>
                                     <th class="p-3 border-r border-slate-800">🏷️ ชื่อกลุ่มสายสืบ</th>
                                     <th class="p-3 text-center w-20 border-r border-slate-800">🏫 ห้อง</th>
-                                    <th class="p-3 border-r border-slate-800" id="th-members-header">👥 สมาชิกในกลุ่ม (เลขที่ / ชื่อ-นามสกุล)</th>
+                                    <th class="p-3 border-r border-slate-800" id="th-members-header">👥 สมาชิกในกลุ่ม
+                                        (เลขที่ / ชื่อ-นามสกุล)</th>
                                     <th class="p-3 text-center w-28 border-r border-slate-800">🎮 จำนวนคดี</th>
                                     <th class="p-3 text-center w-24 border-r border-slate-800">👨‍⚖️ กฎหมาย</th>
                                     <th class="p-3 text-center w-24 border-r border-slate-800">🚑 บรรเทา</th>
@@ -570,7 +651,8 @@
                             <tbody id="scoreboard-tbody" class="divide-y divide-slate-800 text-slate-200">
                                 <tr>
                                     <td colspan="10" class="p-8 text-center text-slate-500 font-mono">
-                                        <i class="fa-solid fa-circle-notch fa-spin mr-2 text-purple-400"></i> กำลังเชื่อมต่อฐานข้อมูล Supabase และโหลดคะแนนสด...
+                                        <i class="fa-solid fa-circle-notch fa-spin mr-2 text-purple-400"></i>
+                                        กำลังเชื่อมต่อฐานข้อมูล Supabase และโหลดคะแนนสด...
                                     </td>
                                 </tr>
                             </tbody>
@@ -584,15 +666,19 @@
             <!-- TAB: GROUP ANSWERS & AI EVALUATIONS VIEW                                  -->
             <!-- ========================================================================= -->
             <section id="tab-content-group-answers" class="hidden flex flex-col gap-5">
-                
+
                 <!-- Header Control & Filter Bar -->
-                <div class="glass-panel p-4 rounded-2xl border border-slate-700 flex flex-wrap items-center justify-between gap-3 text-xs font-sarabun">
+                <div
+                    class="glass-panel p-4 rounded-2xl border border-slate-700 flex flex-wrap items-center justify-between gap-3 text-xs font-sarabun">
                     <div class="flex flex-wrap items-center gap-2.5 flex-1 min-w-[280px]">
                         <!-- Room Selector -->
-                        <div class="flex items-center gap-1.5 bg-slate-950 px-3 py-2 rounded-xl border border-slate-700">
+                        <div
+                            class="flex items-center gap-1.5 bg-slate-950 px-3 py-2 rounded-xl border border-slate-700">
                             <i class="fa-solid fa-door-open text-purple-400"></i>
-                            <select id="filter-group-room" onchange="renderGroupAnswersTab()" class="bg-slate-950 text-white font-medium focus:outline-none cursor-pointer">
-                                <option value="ALL" class="bg-slate-900 text-white py-1">ทุกห้องเรียน (ม.3/1 - ม.3/12)</option>
+                            <select id="filter-group-room" onchange="renderGroupAnswersTab()"
+                                class="bg-slate-950 text-white font-medium focus:outline-none cursor-pointer">
+                                <option value="ALL" class="bg-slate-900 text-white py-1">ทุกห้องเรียน (ม.3/1 - ม.3/12)
+                                </option>
                                 <option value="ม.3/1" class="bg-slate-900 text-white py-1">ม.3/1</option>
                                 <option value="ม.3/2" class="bg-slate-900 text-white py-1">ม.3/2</option>
                                 <option value="ม.3/3" class="bg-slate-900 text-white py-1">ม.3/3</option>
@@ -610,14 +696,18 @@
 
                         <!-- Search Input -->
                         <div class="relative flex-1 min-w-[200px]">
-                            <i class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"></i>
-                            <input type="text" id="filter-group-search" oninput="renderGroupAnswersTab()" placeholder="ค้นหาชื่อกลุ่ม / เลขที่ / ชื่อสมาชิก / ชื่อคดี..." class="w-full bg-slate-950 border border-slate-700 rounded-xl pl-9 pr-3 py-2 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-emerald-400">
+                            <i
+                                class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"></i>
+                            <input type="text" id="filter-group-search" oninput="renderGroupAnswersTab()"
+                                placeholder="ค้นหาชื่อกลุ่ม / เลขที่ / ชื่อสมาชิก / ชื่อคดี..."
+                                class="w-full bg-slate-950 border border-slate-700 rounded-xl pl-9 pr-3 py-2 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-emerald-400">
                         </div>
                     </div>
 
                     <!-- Right Controls & PDF Export -->
                     <div class="flex items-center gap-2">
-                        <button onclick="openGroupAnswersPdfModal()" class="px-3.5 py-2 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-bold transition flex items-center gap-1.5 shadow-md shadow-emerald-500/20">
+                        <button onclick="openGroupAnswersPdfModal()"
+                            class="px-3.5 py-2 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-bold transition flex items-center gap-1.5 shadow-md shadow-emerald-500/20">
                             <i class="fa-solid fa-file-pdf"></i>
                             <span>Export PDF คำตอบกลุ่ม (A4 แนวตั้ง)</span>
                         </button>
@@ -626,12 +716,14 @@
 
                 <!-- Main Group Answers Master-Detail Container -->
                 <div class="grid grid-cols-1 lg:grid-cols-12 gap-5">
-                    
+
                     <!-- Sidebar: Group List (4 Cols) -->
                     <div class="lg:col-span-4 flex flex-col gap-3">
-                        <div class="glass-panel p-3.5 rounded-2xl border border-slate-700 flex items-center justify-between">
+                        <div
+                            class="glass-panel p-3.5 rounded-2xl border border-slate-700 flex items-center justify-between">
                             <span class="text-xs font-bold text-slate-200 font-kanit flex items-center gap-2">
-                                <i class="fa-solid fa-users text-emerald-400"></i> รายชื่อกลุ่มทั้งหมด (<span id="group-answers-count">0</span>)
+                                <i class="fa-solid fa-users text-emerald-400"></i> รายชื่อกลุ่มทั้งหมด (<span
+                                    id="group-answers-count">0</span>)
                             </span>
                             <span class="text-[11px] text-slate-400 font-sarabun">คลิกเพื่อเลือกดู</span>
                         </div>
@@ -642,24 +734,30 @@
 
                     <!-- Main Detail View: Selected Group Answers & AI Feedback (8 Cols) -->
                     <div class="lg:col-span-8 flex flex-col gap-4">
-                        <div id="group-detail-header" class="glass-panel p-4 rounded-2xl border border-emerald-500/40 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+                        <div id="group-detail-header"
+                            class="glass-panel p-4 rounded-2xl border border-emerald-500/40 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
                             <div class="flex items-center gap-3">
-                                <div class="w-10 h-10 rounded-xl bg-emerald-500/20 border border-emerald-400 text-emerald-300 flex items-center justify-center text-lg shrink-0">
+                                <div
+                                    class="w-10 h-10 rounded-xl bg-emerald-500/20 border border-emerald-400 text-emerald-300 flex items-center justify-center text-lg shrink-0">
                                     <i class="fa-solid fa-graduation-cap"></i>
                                 </div>
                                 <div>
-                                    <h3 id="detail-team-name" class="text-base font-bold text-white font-kanit">กรุณาเลือกกลุ่มด้านซ้าย</h3>
-                                    <p id="detail-team-sub" class="text-xs text-slate-400 font-sarabun">ห้องเรียน / สมาชิกในกลุ่ม</p>
+                                    <h3 id="detail-team-name" class="text-base font-bold text-white font-kanit">
+                                        กรุณาเลือกกลุ่มด้านซ้าย</h3>
+                                    <p id="detail-team-sub" class="text-xs text-slate-400 font-sarabun">ห้องเรียน /
+                                        สมาชิกในกลุ่ม</p>
                                 </div>
                             </div>
-                            <div id="detail-team-score-badge" class="hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-xl bg-purple-950/60 border border-purple-500/40 text-purple-300 text-xs font-mono font-bold">
+                            <div id="detail-team-score-badge"
+                                class="hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-xl bg-purple-950/60 border border-purple-500/40 text-purple-300 text-xs font-mono font-bold">
                                 <!-- Populated dynamically -->
                             </div>
                         </div>
 
                         <!-- Case Breakdown List Container -->
                         <div id="group-cases-container" class="flex flex-col gap-4">
-                            <div class="glass-panel p-8 rounded-2xl border border-slate-800 text-center text-slate-500 font-sarabun">
+                            <div
+                                class="glass-panel p-8 rounded-2xl border border-slate-800 text-center text-slate-500 font-sarabun">
                                 <i class="fa-solid fa-hand-pointer text-3xl mb-2 text-slate-600 block"></i>
                                 เลือกกลุ่มสายสืบจากรายการด้านซ้ายเพื่อดูคำตอบของเด็กและบทวิเคราะห์จาก AI
                             </div>
@@ -674,22 +772,35 @@
             <!-- TAB 2: OFFICIAL 12 CASES SOLUTIONS ARCHIVE                                -->
             <!-- ========================================================================= -->
             <section id="tab-content-solutions" class="hidden flex flex-col gap-5">
-                
-                <div class="glass-panel p-5 rounded-2xl border border-pink-500/40 flex items-center justify-between gap-4">
+
+                <div
+                    class="glass-panel p-5 rounded-2xl border border-pink-500/40 flex items-center justify-between gap-4">
                     <div>
                         <h2 class="text-lg font-bold text-pink-300 font-kanit flex items-center gap-2">
                             <i class="fa-solid fa-book-open"></i> แฟ้มเฉลยเกณฑ์มาตรฐาน 12 คดี พ.ร.บ.คอมพิวเตอร์ & PDPA
                         </h2>
-                        <p class="text-xs text-slate-300 font-sarabun mt-1">เฉลยแนวคำตอบอัตนัย 3 บทบาท พร้อมเกณฑ์ให้คะแนนฉบับทางการสำหรับครูผู้สอน</p>
+                        <p class="text-xs text-slate-300 font-sarabun mt-1">เฉลยแนวคำตอบอัตนัย 3 บทบาท
+                            พร้อมเกณฑ์ให้คะแนนฉบับทางการสำหรับครูผู้สอน</p>
                     </div>
 
                     <!-- Category Tabs -->
-                    <div class="flex flex-wrap gap-1.5 p-1 bg-slate-950 rounded-xl border border-slate-800 text-xs font-sarabun">
-                        <button onclick="filterTeacherSolutions('all')" class="sol-tab-btn px-3 py-1.5 rounded-lg bg-pink-600 text-white font-semibold transition" data-filter="all">ทั้งหมด (12 คดี)</button>
-                        <button onclick="filterTeacherSolutions('access')" class="sol-tab-btn px-3 py-1.5 rounded-lg text-slate-400 hover:text-white transition" data-filter="access">ม.5-8 (การเข้าถึง/ดักรับ)</button>
-                        <button onclick="filterTeacherSolutions('damage')" class="sol-tab-btn px-3 py-1.5 rounded-lg text-slate-400 hover:text-white transition" data-filter="damage">ม.9-10 (ทำลาย/รบกวน)</button>
-                        <button onclick="filterTeacherSolutions('spam')" class="sol-tab-btn px-3 py-1.5 rounded-lg text-slate-400 hover:text-white transition" data-filter="spam">ม.11 (สแปม)</button>
-                        <button onclick="filterTeacherSolutions('content')" class="sol-tab-btn px-3 py-1.5 rounded-lg text-slate-400 hover:text-white transition" data-filter="content">ม.14-16 (ข้อมูลเท็จ/ตัดต่อ)</button>
+                    <div
+                        class="flex flex-wrap gap-1.5 p-1 bg-slate-950 rounded-xl border border-slate-800 text-xs font-sarabun">
+                        <button onclick="filterTeacherSolutions('all')"
+                            class="sol-tab-btn px-3 py-1.5 rounded-lg bg-pink-600 text-white font-semibold transition"
+                            data-filter="all">ทั้งหมด (12 คดี)</button>
+                        <button onclick="filterTeacherSolutions('access')"
+                            class="sol-tab-btn px-3 py-1.5 rounded-lg text-slate-400 hover:text-white transition"
+                            data-filter="access">ม.5-8 (การเข้าถึง/ดักรับ)</button>
+                        <button onclick="filterTeacherSolutions('damage')"
+                            class="sol-tab-btn px-3 py-1.5 rounded-lg text-slate-400 hover:text-white transition"
+                            data-filter="damage">ม.9-10 (ทำลาย/รบกวน)</button>
+                        <button onclick="filterTeacherSolutions('spam')"
+                            class="sol-tab-btn px-3 py-1.5 rounded-lg text-slate-400 hover:text-white transition"
+                            data-filter="spam">ม.11 (สแปม)</button>
+                        <button onclick="filterTeacherSolutions('content')"
+                            class="sol-tab-btn px-3 py-1.5 rounded-lg text-slate-400 hover:text-white transition"
+                            data-filter="content">ม.14-16 (ข้อมูลเท็จ/ตัดต่อ)</button>
                     </div>
                 </div>
 
@@ -703,19 +814,24 @@
             <!-- ========================================================================= -->
             <!-- TAB 3: SYSTEM & CLOUD SETTINGS                                            -->
             <!-- ========================================================================= -->
-            
+
             <!-- ========================================================================= -->
             <!-- TAB: GRADE 8-9 SAMPLE ANSWER BANK (คลังตัวอย่างคำตอบเด็ก ม.2 - ม.3)       -->
             <!-- ========================================================================= -->
             <section id="tab-content-g8g9-bank" class="hidden flex flex-col gap-6">
-                <div class="glass-panel p-6 rounded-2xl border border-yellow-500/30 bg-gradient-to-r from-slate-900/90 via-slate-950/90 to-purple-950/30">
+                <div
+                    class="glass-panel p-6 rounded-2xl border border-yellow-500/30 bg-gradient-to-r from-slate-900/90 via-slate-950/90 to-purple-950/30">
                     <div class="flex items-center gap-3 mb-2">
-                        <div class="w-10 h-10 rounded-xl bg-yellow-500/20 border border-yellow-400 text-yellow-300 flex items-center justify-center text-xl">
+                        <div
+                            class="w-10 h-10 rounded-xl bg-yellow-500/20 border border-yellow-400 text-yellow-300 flex items-center justify-center text-xl">
                             <i class="fa-solid fa-graduation-cap"></i>
                         </div>
                         <div>
-                            <h2 class="text-xl font-bold text-white font-sarabun">คลังตัวอย่างคำตอบภาษาเด็ก ม.2 และ ม.3 (อายุ 14 - 15 ปี)</h2>
-                            <p class="text-xs text-slate-400 font-sarabun">รวบรวมตัวอย่างคำตอบภาษาพูดวัยรุ่นธรรมชาติที่ระบบ AI & Heuristic Engine ปรับผ่านประเมิน 10/10 และ 5/10 ครบทั้ง 12 คดี สำหรับใช้เป็นแนวทางสอนในห้องเรียน</p>
+                            <h2 class="text-xl font-bold text-white font-sarabun">คลังตัวอย่างคำตอบภาษาเด็ก ม.2 และ ม.3
+                                (อายุ 14 - 15 ปี)</h2>
+                            <p class="text-xs text-slate-400 font-sarabun">
+                                รวบรวมตัวอย่างคำตอบภาษาพูดวัยรุ่นธรรมชาติที่ระบบ AI & Heuristic Engine ปรับผ่านประเมิน
+                                10/10 และ 5/10 ครบทั้ง 12 คดี สำหรับใช้เป็นแนวทางสอนในห้องเรียน</p>
                         </div>
                     </div>
                 </div>
@@ -726,16 +842,20 @@
             </section>
 
             <section id="tab-content-settings" class="hidden flex flex-col gap-5">
-                
-                <div class="glass-panel p-6 rounded-3xl border border-cyan-500/40 flex flex-col gap-6 max-w-3xl mx-auto w-full">
-                    
+
+                <div
+                    class="glass-panel p-6 rounded-3xl border border-cyan-500/40 flex flex-col gap-6 max-w-3xl mx-auto w-full">
+
                     <div class="flex items-center gap-3 border-b border-slate-800 pb-4">
-                        <div class="w-12 h-12 rounded-2xl bg-cyan-500/20 border border-cyan-400 text-cyan-300 flex items-center justify-center text-2xl shadow-md shadow-cyan-500/30">
+                        <div
+                            class="w-12 h-12 rounded-2xl bg-cyan-500/20 border border-cyan-400 text-cyan-300 flex items-center justify-center text-2xl shadow-md shadow-cyan-500/30">
                             <i class="fa-solid fa-sliders"></i>
                         </div>
                         <div>
-                            <h2 class="text-lg font-bold text-slate-100 font-kanit">ตั้งค่าระบบคลาวด์และฐานข้อมูล (System & Cloud Settings)</h2>
-                            <p class="text-xs text-slate-400 font-sarabun">กำหนดค่า Supabase Realtime, Google Gemini API และความถี่การดึงข้อมูลสด</p>
+                            <h2 class="text-lg font-bold text-slate-100 font-kanit">ตั้งค่าระบบคลาวด์และฐานข้อมูล
+                                (System & Cloud Settings)</h2>
+                            <p class="text-xs text-slate-400 font-sarabun">กำหนดค่า Supabase Realtime, Google Gemini API
+                                และความถี่การดึงข้อมูลสด</p>
                         </div>
                     </div>
 
@@ -747,11 +867,13 @@
                         <div class="grid grid-cols-1 gap-3 font-sarabun text-xs">
                             <div>
                                 <label class="block text-slate-300 font-semibold mb-1">Supabase URL</label>
-                                <input type="text" id="cfg-supabase-url" placeholder="https://xxx.supabase.co" class="w-full bg-slate-950 border border-slate-700 rounded-xl px-3.5 py-2.5 text-xs text-white font-mono focus:outline-none focus:border-purple-400">
+                                <input type="text" id="cfg-supabase-url" placeholder="https://xxx.supabase.co"
+                                    class="w-full bg-slate-950 border border-slate-700 rounded-xl px-3.5 py-2.5 text-xs text-white font-mono focus:outline-none focus:border-purple-400">
                             </div>
                             <div>
                                 <label class="block text-slate-300 font-semibold mb-1">Supabase Anon Key</label>
-                                <input type="password" id="cfg-supabase-key" placeholder="eyJ..." class="w-full bg-slate-950 border border-slate-700 rounded-xl px-3.5 py-2.5 text-xs text-white font-mono focus:outline-none focus:border-purple-400">
+                                <input type="password" id="cfg-supabase-key" placeholder="eyJ..."
+                                    class="w-full bg-slate-950 border border-slate-700 rounded-xl px-3.5 py-2.5 text-xs text-white font-mono focus:outline-none focus:border-purple-400">
                             </div>
                         </div>
                     </div>
@@ -763,19 +885,23 @@
                         </h3>
                         <div class="font-sarabun text-xs">
                             <label class="block text-slate-300 font-semibold mb-1">Gemini API Key</label>
-                            <input type="password" id="cfg-gemini-key" placeholder="AIzaSy..." class="w-full bg-slate-950 border border-slate-700 rounded-xl px-3.5 py-2.5 text-xs text-white font-mono focus:outline-none focus:border-cyan-400">
-                            <p class="text-[11px] text-slate-500 mt-1">* หากรันผ่าน Node.js Server คีย์จะถูกโหลดจากไฟล์ <code>.env</code> อัตโนมัติ</p>
+                            <input type="password" id="cfg-gemini-key" placeholder="AIzaSy..."
+                                class="w-full bg-slate-950 border border-slate-700 rounded-xl px-3.5 py-2.5 text-xs text-white font-mono focus:outline-none focus:border-cyan-400">
+                            <p class="text-[11px] text-slate-500 mt-1">* หากรันผ่าน Node.js Server คีย์จะถูกโหลดจากไฟล์
+                                <code>.env</code> อัตโนมัติ</p>
                         </div>
                     </div>
 
                     <!-- Action Buttons -->
                     <div class="flex items-center justify-between gap-3 pt-4 border-t border-slate-800">
-                        <button onclick="clearTestScores()" class="px-4 py-2.5 rounded-xl bg-red-950/70 hover:bg-red-900 border border-red-500/40 text-red-300 text-xs font-medium transition flex items-center gap-2">
+                        <button onclick="clearTestScores()"
+                            class="px-4 py-2.5 rounded-xl bg-red-950/70 hover:bg-red-900 border border-red-500/40 text-red-300 text-xs font-medium transition flex items-center gap-2">
                             <i class="fa-solid fa-trash-can"></i>
                             <span>ล้างข้อมูลคะแนนทดสอบ</span>
                         </button>
-                        
-                        <button onclick="saveSystemSettings()" class="px-6 py-2.5 rounded-xl bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white font-bold text-xs shadow-lg shadow-purple-600/30 transition flex items-center gap-2">
+
+                        <button onclick="saveSystemSettings()"
+                            class="px-6 py-2.5 rounded-xl bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white font-bold text-xs shadow-lg shadow-purple-600/30 transition flex items-center gap-2">
                             <i class="fa-solid fa-floppy-disk"></i>
                             <span>บันทึกการตั้งค่า</span>
                         </button>
@@ -788,27 +914,32 @@
         </main>
 
         <!-- Footer -->
-        <footer class="glass-panel border-t border-purple-500/20 py-3 px-4 text-center text-xs text-slate-400 font-sarabun no-print">
+        <footer
+            class="glass-panel border-t border-purple-500/20 py-3 px-4 text-center text-xs text-slate-400 font-sarabun no-print">
             <span>Cyber Shield Detective — แผงควบคุมระบบสืบคดีกฎหมายคอมพิวเตอร์และ PDPA ระดับชั้น ม.3</span>
         </footer>
 
     </div>
 
     <!-- 3. PRINTABLE FULL PDF REPORT MODAL (A4 Vertical) -->
-    <div id="modal-print-pdf" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/95 backdrop-blur-md overflow-y-auto">
-        <div class="glass-panel max-w-5xl w-full p-6 sm:p-8 rounded-3xl border border-emerald-400/50 shadow-2xl flex flex-col gap-5 relative my-6 max-h-[94vh] overflow-y-auto">
-            
+    <div id="modal-print-pdf"
+        class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/95 backdrop-blur-md overflow-y-auto">
+        <div
+            class="glass-panel max-w-5xl w-full p-6 sm:p-8 rounded-3xl border border-emerald-400/50 shadow-2xl flex flex-col gap-5 relative my-6 max-h-[94vh] overflow-y-auto">
+
             <!-- Modal Header / Controls (Hidden in print) -->
             <div class="no-print flex flex-wrap items-center justify-between gap-3 border-b border-slate-800 pb-3">
                 <div>
                     <h3 class="text-base font-bold text-white font-kanit flex items-center gap-2">
-                        <i class="fa-solid fa-file-pdf text-emerald-400"></i> พิมพ์รายงานสรุปคะแนนนักเรียนรายบุคคล/กลุ่ม (A4 แนวตั้ง)
+                        <i class="fa-solid fa-file-pdf text-emerald-400"></i> พิมพ์รายงานสรุปคะแนนนักเรียนรายบุคคล/กลุ่ม
+                        (A4 แนวตั้ง)
                     </h3>
                     <p class="text-xs text-slate-400 font-sarabun">เลือกห้องเรียนที่ต้องการออกรายงานสรุปผลคะแนน PDF</p>
                 </div>
                 <div class="flex items-center gap-2">
                     <label class="text-xs text-slate-300">เลือกห้องเรียน:</label>
-                    <select id="pdf-summary-room-select" onchange="onSummaryPdfRoomChange(this.value)" class="bg-slate-950 text-xs text-white border border-slate-700 rounded-xl px-3 py-1.5 focus:outline-none cursor-pointer">
+                    <select id="pdf-summary-room-select" onchange="onSummaryPdfRoomChange(this.value)"
+                        class="bg-slate-950 text-xs text-white border border-slate-700 rounded-xl px-3 py-1.5 focus:outline-none cursor-pointer">
                         <option value="ALL">ทุกห้องเรียน (ม.3/1 - ม.3/12)</option>
                         <option value="ม.3/1">ม.3/1</option>
                         <option value="ม.3/2">ม.3/2</option>
@@ -828,7 +959,7 @@
 
             <!-- Printable Sheet -->
             <div id="printable-sheet-area" class="print-page flex flex-col gap-5 text-slate-200 font-sarabun">
-                
+
                 <!-- School Header -->
                 <div class="text-center flex flex-col items-center gap-1 border-b-2 border-slate-700 pb-4">
                     <div class="flex items-center justify-center gap-2 mb-1">
@@ -838,12 +969,16 @@
                         </h2>
                     </div>
                     <p class="text-xs text-slate-300 print-text-dark">
-                        กลุ่มสาระการเรียนรู้วิทยาศาสตร์และเทคโนโลยี (วิชาเทคโนโลยี / วิทยาการคำนวณ) ระดับชั้นมัธยมศึกษาปีที่ 3
+                        กลุ่มสาระการเรียนรู้วิทยาศาสตร์และเทคโนโลยี (วิชาเทคโนโลยี / วิทยาการคำนวณ)
+                        ระดับชั้นมัธยมศึกษาปีที่ 3
                     </p>
-                    <div class="flex flex-wrap items-center justify-center gap-6 text-xs text-slate-400 font-mono mt-1 print-text-dark">
-                        <span>🏫 ห้องเรียน: <b id="pdf-room-label" class="text-cyan-300 font-bold">ทุกห้องเรียน</b></span>
+                    <div
+                        class="flex flex-wrap items-center justify-center gap-6 text-xs text-slate-400 font-mono mt-1 print-text-dark">
+                        <span>🏫 ห้องเรียน: <b id="pdf-room-label"
+                                class="text-cyan-300 font-bold">ทุกห้องเรียน</b></span>
                         <span>📅 วันที่พิมพ์รายงาน: <b id="pdf-date-label" class="text-slate-200 font-bold">-</b></span>
-                        <span>👥 จำนวนกลุ่มทั้งหมด: <b id="pdf-teams-count" class="text-emerald-400 font-bold">0</b> กลุ่ม</span>
+                        <span>👥 จำนวนกลุ่มทั้งหมด: <b id="pdf-teams-count" class="text-emerald-400 font-bold">0</b>
+                            กลุ่ม</span>
                     </div>
                 </div>
 
@@ -871,15 +1006,18 @@
                 </div>
 
                 <!-- Signatures -->
-                <div class="grid grid-cols-2 gap-8 pt-6 mt-4 border-t border-slate-700 text-xs font-sarabun print-text-dark">
+                <div
+                    class="grid grid-cols-2 gap-8 pt-6 mt-4 border-t border-slate-700 text-xs font-sarabun print-text-dark">
                     <div class="flex flex-col items-center gap-1">
                         <p>ลงชื่อ ............................................................ ผู้รายงาน</p>
-                        <p class="text-[11px] text-slate-400 print-text-dark">( ............................................................ )</p>
+                        <p class="text-[11px] text-slate-400 print-text-dark">(
+                            ............................................................ )</p>
                         <p class="text-[11px] text-slate-400 print-text-dark">หัวหน้ากลุ่ม / ผู้แทนนักเรียน</p>
                     </div>
                     <div class="flex flex-col items-center gap-1">
                         <p>ลงชื่อ ............................................................ ครูผู้สอน</p>
-                        <p class="text-[11px] text-slate-400 print-text-dark">( ............................................................ )</p>
+                        <p class="text-[11px] text-slate-400 print-text-dark">(
+                            ............................................................ )</p>
                         <p class="text-[11px] text-slate-400 print-text-dark">ครูผู้สอนประจำวิชา</p>
                     </div>
                 </div>
@@ -888,10 +1026,12 @@
 
             <!-- Action Buttons (Hidden in Print) -->
             <div class="no-print flex items-center justify-between gap-3 pt-3 border-t border-slate-800">
-                <button onclick="closePrintPdfModal()" class="px-4 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-medium transition">
+                <button onclick="closePrintPdfModal()"
+                    class="px-4 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-medium transition">
                     <i class="fa-solid fa-xmark mr-1"></i> ปิด
                 </button>
-                <button onclick="window.print()" class="px-6 py-2.5 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-bold text-xs shadow-lg shadow-emerald-500/20 transition flex items-center gap-2">
+                <button onclick="window.print()"
+                    class="px-6 py-2.5 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-bold text-xs shadow-lg shadow-emerald-500/20 transition flex items-center gap-2">
                     <i class="fa-solid fa-print"></i>
                     <span>พิมพ์รายงาน / บันทึกเป็น PDF</span>
                 </button>
@@ -901,10 +1041,13 @@
     </div>
 
     <!-- 3.5 PRINTABLE GROUP ANSWERS PDF MODAL (A4 Vertical) -->
-    <div id="modal-print-group-answers" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/95 backdrop-blur-md overflow-y-auto">
-        <div class="glass-panel max-w-4xl w-full p-6 sm:p-8 rounded-3xl border border-emerald-400/50 shadow-2xl flex flex-col gap-5 relative my-6 max-h-[94vh] overflow-y-auto">
-            
-            <button onclick="closeGroupAnswersPdfModal()" class="no-print absolute top-4 right-4 text-slate-400 hover:text-white p-2 rounded-lg bg-slate-800/80 border border-slate-700 transition">
+    <div id="modal-print-group-answers"
+        class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/95 backdrop-blur-md overflow-y-auto">
+        <div
+            class="glass-panel max-w-4xl w-full p-6 sm:p-8 rounded-3xl border border-emerald-400/50 shadow-2xl flex flex-col gap-5 relative my-6 max-h-[94vh] overflow-y-auto">
+
+            <button onclick="closeGroupAnswersPdfModal()"
+                class="no-print absolute top-4 right-4 text-slate-400 hover:text-white p-2 rounded-lg bg-slate-800/80 border border-slate-700 transition">
                 <i class="fa-solid fa-xmark text-lg"></i>
             </button>
 
@@ -912,12 +1055,15 @@
             <div class="no-print flex flex-wrap items-center justify-between gap-3 border-b border-slate-800 pb-3">
                 <div>
                     <h3 class="text-base font-bold text-white font-kanit flex items-center gap-2">
-                        <i class="fa-solid fa-file-pdf text-emerald-400"></i> พิมพ์รายงานสรุปคำตอบของกลุ่ม (1 หน้า = 1 กลุ่ม)
+                        <i class="fa-solid fa-file-pdf text-emerald-400"></i> พิมพ์รายงานสรุปคำตอบของกลุ่ม (1 หน้า = 1
+                        กลุ่ม)
                     </h3>
-                    <p class="text-xs text-slate-400 font-sarabun">เลือกห้องเรียนและขอบเขตกลุ่ม โดยระบบจะจัด 1 กลุ่ม ต่อ 1 หน้า A4 อย่างเรียบร้อย</p>
+                    <p class="text-xs text-slate-400 font-sarabun">เลือกห้องเรียนและขอบเขตกลุ่ม โดยระบบจะจัด 1 กลุ่ม ต่อ
+                        1 หน้า A4 อย่างเรียบร้อย</p>
                 </div>
                 <div class="flex flex-wrap items-center gap-2">
-                    <select id="pdf-group-room-select" onchange="renderGroupAnswersPdfContent()" class="bg-slate-950 text-xs text-white border border-slate-700 rounded-xl px-3 py-1.5 focus:outline-none cursor-pointer">
+                    <select id="pdf-group-room-select" onchange="renderGroupAnswersPdfContent()"
+                        class="bg-slate-950 text-xs text-white border border-slate-700 rounded-xl px-3 py-1.5 focus:outline-none cursor-pointer">
                         <option value="ALL">ทุกห้องเรียน (ม.3/1 - ม.3/12)</option>
                         <option value="ม.3/1">เฉพาะห้อง ม.3/1</option>
                         <option value="ม.3/2">เฉพาะห้อง ม.3/2</option>
@@ -932,7 +1078,8 @@
                         <option value="ม.3/11">เฉพาะห้อง ม.3/11</option>
                         <option value="ม.3/12">เฉพาะห้อง ม.3/12</option>
                     </select>
-                    <select id="pdf-group-select" onchange="renderGroupAnswersPdfContent()" class="bg-slate-950 text-xs text-white border border-slate-700 rounded-xl px-3 py-1.5 focus:outline-none cursor-pointer">
+                    <select id="pdf-group-select" onchange="renderGroupAnswersPdfContent()"
+                        class="bg-slate-950 text-xs text-white border border-slate-700 rounded-xl px-3 py-1.5 focus:outline-none cursor-pointer">
                         <option value="ALL">รวมทุกกลุ่มในห้องเรียนที่เลือก</option>
                         <option value="SELECTED">เฉพาะกลุ่มที่เลือกปัจจุบัน</option>
                     </select>
@@ -946,10 +1093,12 @@
 
             <!-- Action Buttons (Hidden in Print) -->
             <div class="no-print flex items-center justify-between gap-3 pt-3 border-t border-slate-800">
-                <button onclick="closeGroupAnswersPdfModal()" class="px-4 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-medium transition">
+                <button onclick="closeGroupAnswersPdfModal()"
+                    class="px-4 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-medium transition">
                     <i class="fa-solid fa-xmark mr-1"></i> ปิด
                 </button>
-                <button onclick="window.print()" class="px-6 py-2.5 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-bold text-xs shadow-lg shadow-emerald-500/20 transition flex items-center gap-2">
+                <button onclick="window.print()"
+                    class="px-6 py-2.5 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-bold text-xs shadow-lg shadow-emerald-500/20 transition flex items-center gap-2">
                     <i class="fa-solid fa-print"></i>
                     <span>พิมพ์รายงาน / บันทึกเป็น PDF (A4 แนวตั้ง)</span>
                 </button>
@@ -959,15 +1108,20 @@
     </div>
 
     <!-- 4. ENLARGED COMIC LIGHTBOX -->
-    <div id="modal-comic-lightbox" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/95 backdrop-blur-lg" onclick="closeTeacherLightbox()">
+    <div id="modal-comic-lightbox"
+        class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/95 backdrop-blur-lg"
+        onclick="closeTeacherLightbox()">
         <div class="relative max-w-5xl w-full flex flex-col items-center gap-3" onclick="event.stopPropagation()">
             <div class="w-full flex items-center justify-between text-slate-300 px-2">
-                <span id="teacher-lightbox-title" class="text-sm font-semibold text-pink-300">หลักฐานภาพการ์ตูน 9 ช่อง</span>
-                <button onclick="closeTeacherLightbox()" class="px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-white text-xs border border-slate-700">
+                <span id="teacher-lightbox-title" class="text-sm font-semibold text-pink-300">หลักฐานภาพการ์ตูน 9
+                    ช่อง</span>
+                <button onclick="closeTeacherLightbox()"
+                    class="px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-white text-xs border border-slate-700">
                     <i class="fa-solid fa-xmark mr-1"></i> ปิด (ESC)
                 </button>
             </div>
-            <img id="teacher-lightbox-img" src="" alt="Enlarged Comic" class="w-auto h-auto max-h-[85vh] max-w-full rounded-xl border border-pink-500/40 shadow-2xl object-contain bg-white">
+            <img id="teacher-lightbox-img" src="" alt="Enlarged Comic"
+                class="w-auto h-auto max-h-[85vh] max-w-full rounded-xl border border-pink-500/40 shadow-2xl object-contain bg-white">
         </div>
     </div>
 
@@ -1152,7 +1306,7 @@
         async function loginTeacher() {
             const passcode = document.getElementById('auth-passcode-input').value.trim();
             const errMsg = document.getElementById('auth-error-msg');
-            
+
             if (!passcode) {
                 errMsg.textContent = 'กรุณากรอกรหัสผ่านครูผู้สอน';
                 errMsg.classList.remove('hidden');
@@ -1182,7 +1336,7 @@
                     errMsg.textContent = 'รหัสผ่านไม่ถูกต้อง กรุณาลองใหม่อีกครั้ง';
                     errMsg.classList.remove('hidden');
                 }
-            } catch(e) {
+            } catch (e) {
                 sessionStorage.setItem('shield_teacher_auth', 'true');
                 document.getElementById('modal-auth').classList.add('hidden');
                 document.getElementById('main-dashboard-app').classList.remove('hidden');
@@ -1239,28 +1393,28 @@
                         }
                     }
                 }
-            } catch(e) {
+            } catch (e) {
                 console.warn('Config load warning:', e);
             }
         }
 
         function getDeduplicatedScoresData(rawScores) {
             if (!Array.isArray(rawScores)) return [];
-            
+
             const teamMap = new Map();
             rawScores.forEach(item => {
                 const teamKey = item.team_name || item.player_id || 'นักสืบเยาวชน';
                 if (!teamMap.has(teamKey)) teamMap.set(teamKey, new Map());
-                
+
                 const caseKey = item.case_id !== undefined && item.case_id !== null ? `case_${item.case_id}` : (item.case_title || `idx_${Math.random()}`);
                 const existing = teamMap.get(teamKey).get(caseKey);
-                
+
                 if (!existing) {
                     teamMap.get(teamKey).set(caseKey, item);
                 } else {
                     const tExisting = existing.created_at ? new Date(existing.created_at).getTime() : 0;
                     const tNew = item.created_at ? new Date(item.created_at).getTime() : 0;
-                    
+
                     if (tNew > tExisting) {
                         teamMap.get(teamKey).set(caseKey, item);
                     } else if (tNew === tExisting) {
@@ -1296,7 +1450,7 @@
                 if (scores === null) {
                     const localRaw = localStorage.getItem('CYBER_DETECTIVE_SCORES_CACHE');
                     if (localRaw) {
-                        try { scores = JSON.parse(localRaw); } catch(e) {}
+                        try { scores = JSON.parse(localRaw); } catch (e) { }
                     }
                 }
 
@@ -1304,7 +1458,7 @@
                 renderScoreboardTable();
                 updateStatsCards();
                 renderGroupAnswersTab();
-            } catch(e) {
+            } catch (e) {
                 console.error('Fetch scores error:', e);
             }
         }
@@ -1317,7 +1471,7 @@
                         fetchLatestScores();
                     }
                 };
-            } catch(e) {}
+            } catch (e) { }
 
             if (supabaseClient) {
                 try {
@@ -1327,7 +1481,7 @@
                             fetchLatestScores();
                         })
                         .subscribe();
-                } catch(e) {}
+                } catch (e) { }
             }
 
             setInterval(fetchLatestScores, 5000);
@@ -1365,7 +1519,7 @@
                             if (parsed.room) room = parsed.room;
                             if (Array.isArray(parsed.members)) members = parsed.members;
                         }
-                    } catch(e) {
+                    } catch (e) {
                         const mRoom = rawInfo.match(/ม\.3\/\d+/);
                         if (mRoom) room = mRoom[0];
                     }
@@ -1471,7 +1625,7 @@
                 }
 
                 const timeStr = row.latestTime ? row.latestTime.toLocaleTimeString('th-TH', { hour: '2-digit', minute: '2-digit' }) : '-';
-                const casesTooltip = row.caseNames.length > 0 ? row.caseNames.map((c, i) => `${i+1}. ${c}`).join('\n') : '-';
+                const casesTooltip = row.caseNames.length > 0 ? row.caseNames.map((c, i) => `${i + 1}. ${c}`).join('\n') : '-';
                 const pct = row.caseCount > 0 ? Math.round((row.total / (row.caseCount * 30)) * 100) : 0;
                 const scoreColor = pct >= 80 ? 'text-emerald-400' : pct >= 50 ? 'text-yellow-300' : 'text-pink-400';
 
@@ -1624,8 +1778,8 @@
         }
 
         function openPrintPdfModal(overrideRoom) {
-            const roomFilter = overrideRoom !== undefined 
-                ? overrideRoom 
+            const roomFilter = overrideRoom !== undefined
+                ? overrideRoom
                 : (document.getElementById('filter-room')?.value || 'ALL');
 
             const roomSelect = document.getElementById('pdf-summary-room-select');
@@ -1773,7 +1927,7 @@
                 if (typeof rawAns === 'object') {
                     answers = { ...answers, ...rawAns };
                 } else if (typeof rawAns === 'string') {
-                    try { answers = { ...answers, ...JSON.parse(rawAns) }; } catch(e){}
+                    try { answers = { ...answers, ...JSON.parse(rawAns) }; } catch (e) { }
                 }
             }
 
@@ -1781,7 +1935,7 @@
             if (rawFb) {
                 let parsedFb = rawFb;
                 if (typeof parsedFb === 'string') {
-                    try { parsedFb = JSON.parse(parsedFb); } catch(e){}
+                    try { parsedFb = JSON.parse(parsedFb); } catch (e) { }
                 }
                 if (typeof parsedFb === 'object' && parsedFb !== null) {
                     if (parsedFb.legal) feedback.legal = { score: Number(parsedFb.legal.score ?? item.legal_score ?? 0), feedback: parsedFb.legal.feedback || parsedFb.legal.feedback_text || '' };
@@ -1808,7 +1962,7 @@
             const filteredMap = new Map();
             teamMap.forEach((items, teamKey) => {
                 const firstParsed = parseScoreItem(items[0]);
-                
+
                 // Room Filter
                 if (roomFilter !== 'ALL' && firstParsed.room !== roomFilter && !teamKey.includes(roomFilter)) {
                     return;
@@ -1818,9 +1972,9 @@
                 if (searchVal) {
                     const membersStr = firstParsed.members.map(m => `${m.no} ${m.prefix}${m.name}`).join(' ').toLowerCase();
                     const caseTitles = items.map(i => i.case_title || '').join(' ').toLowerCase();
-                    const matchesSearch = teamKey.toLowerCase().includes(searchVal) || 
-                                          membersStr.includes(searchVal) || 
-                                          caseTitles.includes(searchVal);
+                    const matchesSearch = teamKey.toLowerCase().includes(searchVal) ||
+                        membersStr.includes(searchVal) ||
+                        caseTitles.includes(searchVal);
                     if (!matchesSearch) return;
                 }
 
@@ -1938,7 +2092,7 @@
                 ? firstParsed.members.map(m => `เลขที่ ${m.no}: ${m.prefix}${m.name}`).join(' | ')
                 : 'ไม่ระบุรายชื่อสมาชิก';
             document.getElementById('detail-team-sub').textContent = `ห้อง ${firstParsed.room} — ${membersText}`;
-            
+
             const badge = document.getElementById('detail-team-score-badge');
             badge.classList.remove('hidden');
             badge.innerHTML = `<i class="fa-solid fa-star text-yellow-400"></i> คะแนนรวมสะสม: <span class="text-yellow-300 font-bold text-sm ml-1">${totalScore}</span> / ${items.length * 30} คะแนน`;
@@ -1970,7 +2124,7 @@
                         <div class="flex flex-wrap items-center justify-between gap-3 border-b border-slate-800 pb-3">
                             <div class="flex items-center gap-2.5">
                                 <span class="px-3 py-1 rounded-xl bg-purple-500/20 text-purple-300 font-mono text-xs font-bold border border-purple-500/40">
-                                    คดี #${String(item.case_id || (idx+1)).padStart(2, '0')}
+                                    คดี #${String(item.case_id || (idx + 1)).padStart(2, '0')}
                                 </span>
                                 <h4 class="text-sm font-bold text-white font-kanit">${caseTitle}</h4>
                                 ${caseRef.section ? `<span class="px-2 py-0.5 rounded-lg bg-pink-500/20 text-pink-300 font-mono text-[11px] font-bold border border-pink-500/30">${caseRef.section}</span>` : ''}
@@ -2007,7 +2161,7 @@
                             <!-- Role 2: Remedy -->
                             <div class="p-4 rounded-2xl bg-pink-950/30 border border-pink-500/30 flex flex-col gap-2">
                                 <div class="flex items-center justify-between text-pink-300 font-bold">
-                                    <span class="flex items-center gap-1.5">🚑 2. คำตอบเจ้าหน้าที่บรรเทาภัย (Incident Responder)</span>
+                                    <span class="flex items-center gap-1.5">🚑 2. คำตอบเจ้าหน้าที่แก้ไข (Incident Responder)</span>
                                     <span class="px-2.5 py-0.5 rounded-lg bg-pink-500/20 text-pink-300 font-mono text-xs font-bold border border-pink-500/40">${p.remedy} / 10 คะแนน</span>
                                 </div>
                                 <div class="bg-slate-950/80 p-3 rounded-xl border border-slate-800 text-slate-200 leading-relaxed">
@@ -2083,7 +2237,7 @@
             let targetTeams = [];
             teamMap.forEach((items, teamKey) => {
                 const firstParsed = parseScoreItem(items[0]);
-                
+
                 // Filter by Room
                 if (roomFilter !== 'ALL' && firstParsed.room !== roomFilter && !teamKey.includes(roomFilter)) {
                     return;
@@ -2280,7 +2434,7 @@
 
             sheet.innerHTML = fullHtml;
         }
-    
+
         function renderG8G9AnswerBank() {
             const container = document.getElementById('g8g9-bank-container');
             if (!container) return;
@@ -2429,4 +2583,5 @@
 
     </script>
 </body>
+
 </html>
