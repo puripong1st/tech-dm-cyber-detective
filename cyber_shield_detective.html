@@ -1615,7 +1615,30 @@
                 try {
                     const parsed = JSON.parse(saved);
                     if (parsed && parsed.teamName && Array.isArray(parsed.sessionCases) && parsed.sessionCases.length > 0) {
+                        // Re-sync sessionCases with latest ALL_12_CASES master data to fix any stale image paths from old localStorage
+                        parsed.sessionCases = parsed.sessionCases.map(sc => {
+                            const master = ALL_12_CASES.find(c => c.id === sc.id || c.section === sc.section || c.title === sc.title);
+                            if (master) {
+                                return {
+                                    ...sc,
+                                    image: master.image,
+                                    title: master.title,
+                                    brief: master.brief,
+                                    phases: master.phases,
+                                    standard_law: master.standard_law,
+                                    standard_penalty: master.standard_penalty,
+                                    standard_remedy: master.standard_remedy,
+                                    standard_prevention: master.standard_prevention,
+                                    keywords_law: master.keywords_law,
+                                    keywords_penalty: master.keywords_penalty,
+                                    keywords_remedy: master.keywords_remedy,
+                                    keywords_security: master.keywords_security
+                                };
+                            }
+                            return sc;
+                        });
                         GAME_STATE = parsed;
+                        saveSession();
                         document.getElementById('modal-register-team').classList.add('hidden');
                         updateHeaderInfo();
                         loadCurrentCase();
@@ -1755,6 +1778,29 @@
 
         function onComicImageError(img) {
             console.warn('Comic image load failed:', img.src);
+            const caseItem = GAME_STATE.sessionCases[GAME_STATE.currentCaseIndex];
+            
+            // Fallback Level 1: Re-sync from master ALL_12_CASES array
+            if (!img.dataset.fallbackMasterTried && caseItem) {
+                img.dataset.fallbackMasterTried = 'true';
+                const master = ALL_12_CASES.find(c => c.id === caseItem.id || c.section === caseItem.section || c.title === caseItem.title);
+                if (master && master.image) {
+                    caseItem.image = master.image;
+                    img.src = master.image;
+                    return;
+                }
+            }
+
+            // Fallback Level 2: Toggle leading slash for relative/absolute host pathing
+            if (!img.dataset.fallbackSlashTried) {
+                img.dataset.fallbackSlashTried = 'true';
+                if (img.src.includes('assets/evidence/')) {
+                    const cleanPath = img.src.substring(img.src.indexOf('assets/evidence/'));
+                    img.src = cleanPath;
+                    return;
+                }
+            }
+
             const spinner = document.getElementById('comic-img-spinner');
             if (spinner) {
                 spinner.innerHTML = '<i class="fa-solid fa-triangle-exclamation text-amber-400 text-2xl"></i><span class="text-amber-300 font-semibold">โหลดภาพไม่สำเร็จ (ตรวจสอบไฟล์ภาพ)</span>';
@@ -1763,6 +1809,15 @@
         }
 
         function onLightboxImageError(img) {
+            const caseItem = GAME_STATE.sessionCases[GAME_STATE.currentCaseIndex];
+            if (!img.dataset.fallbackMasterTried && caseItem) {
+                img.dataset.fallbackMasterTried = 'true';
+                const master = ALL_12_CASES.find(c => c.id === caseItem.id || c.section === caseItem.section || c.title === caseItem.title);
+                if (master && master.image) {
+                    img.src = master.image;
+                    return;
+                }
+            }
             const spinner = document.getElementById('lightbox-spinner');
             if (spinner) {
                 spinner.innerHTML = '<i class="fa-solid fa-triangle-exclamation text-amber-400 text-3xl"></i><span class="text-amber-300 font-semibold">โหลดภาพขยายไม่สำเร็จ</span>';
@@ -1775,6 +1830,12 @@
             const caseItem = GAME_STATE.sessionCases[GAME_STATE.currentCaseIndex];
             if (!caseItem) return;
 
+            // Ensure caseItem image is strictly synced with master ALL_12_CASES
+            const master = ALL_12_CASES.find(c => c.id === caseItem.id || c.section === caseItem.section || c.title === caseItem.title);
+            if (master && master.image) {
+                caseItem.image = master.image;
+            }
+
             document.getElementById('dossier-case-num').textContent = String(GAME_STATE.currentCaseIndex + 1).padStart(2, '0');
             document.getElementById('dossier-title').textContent = `คดี #${GAME_STATE.currentCaseIndex + 1}: ${caseItem.title}`;
             document.getElementById('dossier-brief').textContent = caseItem.brief;
@@ -1786,6 +1847,8 @@
                 spinner.classList.remove('hidden');
             }
             comicImg.classList.add('opacity-0');
+            delete comicImg.dataset.fallbackMasterTried;
+            delete comicImg.dataset.fallbackSlashTried;
             comicImg.src = caseItem.image;
             comicImg.alt = caseItem.title;
 
