@@ -1,15 +1,21 @@
-﻿<div align="center">
+<div align="center">
   <img src="favicon.png" alt="Cyber Shield Detective Logo" width="128" />
   <br/>
   <h1>🛡️ Cyber Shield Detective Platform</h1>
-  <h3>แพลตฟอร์มเกมการเรียนรู้กฎหมายคอมพิวเตอร์ & PDPA สำหรับนักเรียน ม.2 และ ม.3 (อายุ 14 - 15 ปี)</h3>
-  <p>ประเมินผลอัตนัยด้วย Google Gemini AI | ระบบแปลงภาษาวัยรุ่น Slang Normalizer | กรอบคะแนน 4 ระดับ (10/8/5/0) | ตรวจคะแนนเรียลไทม์ผ่าน Supabase</p>
+  <h3>สื่อและเกมการเรียนรู้กฎหมายคอมพิวเตอร์ (พ.ร.บ. คอมพิวเตอร์ 2560) & PDPA สำหรับนักเรียน ม.2 และ ม.3</h3>
+  <p><b>ระบบประเมินผลอัตนัยด้วย Google Gemini AI | สไลด์บทเรียนอินเทอร์แอคทีฟ 12 มาตรา | ระบบแปลงภาษาวัยรุ่น Slang Normalizer | ตรวจคะแนนเรียลไทม์ผ่าน Supabase</b></p>
 
 [![Platform](https://img.shields.io/badge/Platform-พ.ร.บ.คอมพิวเตอร์_&_PDPA-0284c7?style=for-the-badge&logo=shield)](cyber_shield_detective.html)
+[![Slides](https://img.shields.io/badge/Slides-สไลด์บทเรียน_12_มาตรา-8b5cf6?style=for-the-badge&logo=slideshare)](presentation.html)
 [![AI Engine](https://img.shields.io/badge/AI-Google_Gemini_API-ea4335?style=for-the-badge&logo=google)](https://aistudio.google.com)
 [![Database](https://img.shields.io/badge/DB-Supabase_Realtime-3ecf8e?style=for-the-badge&logo=supabase)](https://supabase.com)
 [![Deploy](https://img.shields.io/badge/Deploy-Vercel_|_GitHub_Pages-000?style=for-the-badge&logo=vercel)](vercel.json)
 [![License](https://img.shields.io/badge/License-MIT-f59e0b?style=for-the-badge)](package.json)
+
+<br/>
+
+[🏠 หน้าหลัก (Hub)](index.html) • [🎮 เกมสืบคดี AI (Shield Detective)](cyber_shield_detective.html) • [📖 สไลด์บทเรียน 12 มาตรา (Slides)](presentation.html) • [👩‍🏫 แดชบอร์ดครู (Teacher Command)](cyber_shield_teacher.html) • [📂 คลัง 12 คดี & เฉลย (Case Bank)](cases_reference.html)
+
 </div>
 
 ---
@@ -69,6 +75,7 @@ The current AI approach is stronger than the older version because it no longer 
 - [การตั้งค่า Environment Variables](#️-การตั้งค่า-environment-variables)
 - [วิธีรันในเครื่อง (Local Setup)](#-วิธีรันในเครื่อง-local-setup)
 - [Deploy ขึ้น Vercel / GitHub Pages](#-deploy-ขึ้น-vercel--github-pages)
+- [คลังคำค้นหา & การจัดหมวดหมู่ SEO (Search & Discovery Index)](#-คลังคำค้นหา--การจัดหมวดหมู่-seo-search--discovery-index)
 
 ---
 
@@ -331,6 +338,44 @@ npm start
 2. กำหนดค่า Environment Variables ใน Vercel Dashboard:
    - `GEMINI_API_KEY`, `SUPABASE_URL`, `SUPABASE_ANON_KEY`, `SUPABASE_SERVICE_ROLE_KEY`, `TEACHER_PASSCODE`
 3. กด Deploy — ระบบจะรันผ่าน `vercel.json` โดยอัตโนมัติ
+
+---
+
+## 🔍 คลังคำค้นหา & การจัดหมวดหมู่ SEO (Search & Discovery Index)
+
+โปรเจกต์นี้ได้รับการปรับแต่งโครงสร้างเนื้อหาและการค้นหา (SEO, Semantic Markup & Metadata) เพื่อให้ครูผู้สอน นักเรียน และผู้สนใจสามารถค้นพบบทเรียน เกมจำลอง และสไลด์การสอนได้ง่ายผ่าน Google, Bing, และ GitHub Search:
+
+### 🏷️ GitHub Repository Topics (แนะนำสำหรับใส่ในหน้า Settings ของ GitHub)
+```text
+thai-cyber-law, computer-crime-act-2017, pdpa-thailand, cybersecurity-education, educational-game, interactive-slides, gemini-ai, supabase-realtime, thai-education, grade-9-computing-science, digital-citizenship, gamified-learning
+```
+
+### 📚 ความสอดคล้องกับหลักสูตรแกนกลางการศึกษาขั้นพื้นฐาน
+- **กลุ่มสาระการเรียนรู้:** วิทยาศาสตร์และเทคโนโลยี (วิทยาการคำนวณ)
+- **ระดับชั้น:** มัธยมศึกษาปีที่ 2 และ มัธยมศึกษาปีที่ 3 (อายุ 14 - 15 ปี)
+- **มาตรฐานการเรียนรู้:** มาตรฐาน ว 4.2 เข้าใจและใช้แนวคิดเชิงคำนวณในการแก้ปัญหาที่พบในชีวิตจริงอย่างเป็นขั้นตอนและเป็นระบบ ใช้เทคโนโลยีสารสนเทศและการสื่อสารในการเรียนรู้ การทำงาน และการแก้ปัญหาได้อย่างมีประสิทธิภาพ รู้เท่าทัน และมีจริยธรรม
+- **ตัวชี้วัดสำคัญ:**
+  - ใช้เทคโนโลยีสารสนเทศอย่างปลอดภัย มีความรับผิดชอบ สร้างและแสดงสิทธิในการเผยแพร่ผลงาน
+  - รู้เท่าทันสื่อ ข่าวปลอม (Fake News) และการคุ้มครองข้อมูลส่วนบุคคล (PDPA)
+  - เข้าใจข้อกฎหมายเกี่ยวกับคอมพิวเตอร์และบทลงโทษตาม พ.ร.บ.ว่าด้วยการกระทำความผิดเกี่ยวกับคอมพิวเตอร์ พ.ศ. 2560 (ฉบับที่ 2)
+
+### 📖 สรุปสาระสำคัญ 12 มาตราตาม พ.ร.บ.คอมพิวเตอร์ 2560 ในระบบ
+1. **มาตรา 5:** เข้าถึงระบบคอมพิวเตอร์ของผู้อื่นโดยมิชอบ (แอบเข้าไอดี / รหัสผ่าน)
+2. **มาตรา 6:** ล่วงรู้มาตรการป้องกันการเข้าถึงและนำไปเปิดเผยโดยมิชอบ
+3. **มาตรา 7:** เข้าถึงข้อมูลคอมพิวเตอร์ของผู้อื่นโดยมิชอบ (แอบดูข้อมูลส่วนตัว / แชท)
+4. **มาตรา 8:** ดักรับข้อมูลคอมพิวเตอร์ของผู้อื่นโดยมิชอบ (ดักฟัง / ดักจับสัญญาณ Wi-Fi)
+5. **มาตรา 9:** แก้ไข ดัดแปลง หรือทำลายข้อมูลคอมพิวเตอร์ของผู้อื่น (ลบงาน / แก้เกรด / ส่งไวรัส)
+6. **มาตรา 10:** รบกวน ขัดขวาง หรือระงับระบบคอมพิวเตอร์ของผู้อื่น (ยิง DDoS / ทำให้ระบบล่ม)
+7. **มาตรา 11:** ส่งสแปม ข้อมูลคอมพิวเตอร์ หรืออีเมลรบกวนโดยไม่มีทางปฏิเสธ (Spam)
+8. **มาตรา 12:** กระทำความผิดต่อระบบความมั่นคง ปลอดภัยสาธารณะ หรือเศรษฐกิจ
+9. **มาตรา 13:** จำหน่ายหรือเผยแพร่ชุดคำสั่งเพื่อใช้ในการกระทำผิด (โปรโกง / เครื่องมือแฮก)
+10. **มาตรา 14:** นำเข้าข้อมูลอันเป็นเท็จ บิดเบือน ข่าวปลอม ลามกอนาจาร หรือกระทบความมั่นคง
+11. **มาตรา 15:** ผู้ให้บริการยินยอมหรือรู้เห็นเป็นใจให้เกิดการกระทำผิดตามมาตรา 14
+12. **มาตรา 16:** ตัดต่อ เติม หรือดัดแปลงภาพของผู้อื่นที่ทำให้เสื่อมเสียชื่อเสียง ถูกดูหมิ่นเกลียดชัง
+
+### 🔑 คำสำคัญสำหรับการค้นหา (High-Intent Search Keywords)
+- **ภาษาไทย:** กฎหมายคอมพิวเตอร์, พ.ร.บ. คอมพิวเตอร์ 2560, พรบคอม 12 มาตรา, พ.ร.บ. คุ้มครองข้อมูลส่วนบุคคล, PDPA ม.3, สื่อการสอนวิทยาการคำนวณ ม.2 ม.3, สไลด์บทเรียน พ.ร.บ.คอมพิวเตอร์, เกมสืบคดีกฎหมายคอม, Cyber Shield Detective, ระบบประเมินผล AI ตรวจข้อสอบ, ข้อสอบกฎหมายคอมพิวเตอร์ 12 คดีพร้อมเฉลย, แดชบอร์ดครูวิทยาการคำนวณ
+- **English:** Thai Computer Crime Act B.E. 2560 (2017), PDPA Thailand, Cyber Law Educational Game, Interactive Presentation Slides, Generative AI Answer Evaluator, Gemini AI Education, Cyber Safety Grade 9 Thailand, Digital Citizenship Learning Platform
 
 ---
 

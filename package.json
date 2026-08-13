@@ -1,21 +1,38 @@
 {
   "name": "cyber-law-game-app",
   "version": "1.0.0",
-  "description": "Cyber Law & PDPA Educational Games and Real-time Teacher Dashboard for Grade 9 Students",
+  "description": "Cyber Shield Detective Platform - เกมการเรียนรู้กฎหมายคอมพิวเตอร์และ PDPA พร้อมระบบประเมินผลอัตนัยด้วย AI สำหรับนักเรียน ม.2 และ ม.3 (Grade 8-9)",
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
     "dev": "node server.js"
   },
   "keywords": [
-    "cyber-law",
+    "กฎหมายคอมพิวเตอร์",
+    "พรบคอม",
+    "พ.ร.บ.คอมพิวเตอร์",
     "pdpa",
+    "pdpa-thailand",
+    "cyber-law",
+    "cyber-detective",
+    "cyber-shield-detective",
+    "educational-game",
+    "teaching-materials",
+    "วิทยาการคำนวณ",
+    "สื่อการสอน-ม3",
+    "gemini-ai",
+    "interactive-slides",
+    "supabase",
     "vercel",
     "node",
-    "express",
-    "supabase"
+    "express"
   ],
-  "author": "Antigravity",
+  "homepage": "https://github.com/puripong1st/tech-dm-cyber-detective#readme",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/puripong1st/tech-dm-cyber-detective.git"
+  },
+  "author": "Cyber Shield Detective Team",
   "license": "MIT",
   "dependencies": {
     "@supabase/supabase-js": "^2.39.0",

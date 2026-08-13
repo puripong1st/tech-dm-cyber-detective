@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://tech-dm-cyber-detective.vercel.app/sitemap.xml
