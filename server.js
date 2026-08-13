@@ -1135,7 +1135,7 @@ async function callGeminiApiWithMultiKey(systemPrompt, userPrompt, clientApiKey)
     
     if (keys.length === 0) return null;
 
-    const candidateModels = ['gemini-flash-latest', 'gemini-1.5-flash', 'gemini-2.0-flash', 'gemini-2.5-flash', 'gemini-pro'];
+    const candidateModels = ['gemini-flash-latest', 'gemini-2.5-flash', 'gemini-2.5-flash-lite', 'gemini-3.5-flash', 'gemini-1.5-flash', 'gemini-2.0-flash', 'gemini-pro'];
     const startKeyIdx = Math.floor(Math.random() * keys.length);
 
     for (let k = 0; k < keys.length; k++) {
