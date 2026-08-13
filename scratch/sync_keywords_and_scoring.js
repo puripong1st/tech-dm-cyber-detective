@@ -9,7 +9,7 @@ const CASES_WITH_KEYWORDS = [
     {
         id: 1,
         section: "มาตรา 5",
-        image: "assets/evidence/case_ev_8f3a9b21.png",
+        image: "assets/evidence/case_ev_8f3a9b21.jpg",
         title: "แอบส่องระบบไอดีเกมของเพื่อน",
         brief: "แชมป์แอบจำรหัสผ่านแท็บเล็ตของป๊อปตอนที่ป๊อปลุกไปเข้าห้องน้ำ แชมป์แอบเอาแท็บเล็ตมาปลดล็อกแล้วส่องดูคลังไอเทมสุดแรร์ในเกมออนไลน์",
         phases: [
@@ -29,7 +29,7 @@ const CASES_WITH_KEYWORDS = [
     {
         id: 2,
         section: "มาตรา 6",
-        image: "assets/evidence/case_ev_4e7c1d89.png",
+        image: "assets/evidence/case_ev_4e7c1d89.jpg",
         title: "แจกรหัสผ่านระบบในกลุ่ม Discord",
         brief: "ทอยแอบถ่ายรูปกระดาษโน้ตรหัสผ่านเซิร์ฟเวอร์ข้อสอบที่โต๊ะครู แล้วส่งให้บีดู บีอยากได้ยอดไลก์จึงนำรูปภาพรหัสผ่านไปโพสต์แจกในกลุ่ม Discord",
         phases: [
@@ -49,7 +49,7 @@ const CASES_WITH_KEYWORDS = [
     {
         id: 3,
         section: "มาตรา 7",
-        image: "assets/evidence/case_ev_9a2b5f34.png",
+        image: "assets/evidence/case_ev_9a2b5f34.jpg",
         title: "แอบคุ้ยไฟล์ไดอารี่แชทลับส่วนตัว",
         brief: "นักเรียนแอบเปิดโฟลเดอร์ส่วนตัวของเพื่อนที่ล็อกรหัสผ่านไว้ แล้วแอบดูดไฟล์ไดอารี่และรูปถ่ายลับเอาไปเผยแพร่นินทาในกลุ่มเพื่อน",
         phases: [
@@ -69,7 +69,7 @@ const CASES_WITH_KEYWORDS = [
     {
         id: 4,
         section: "มาตรา 8",
-        image: "assets/evidence/case_ev_1c8e7b54.png",
+        image: "assets/evidence/case_ev_1c8e7b54.jpg",
         title: "ดักจับข้อมูลธุรกรรมเติมเกมกลางทาง",
         brief: "มีผู้ไม่หวังดีปล่อยสัญญาณ Wi-Fi ฟรีปลอมในโรงอาหาร เพื่อดักจับข้อมูลบัตรเติมเงินและรหัสผ่านธุรกรรมของเพื่อนที่กำลังเติมเกมออนไลน์",
         phases: [
@@ -89,7 +89,7 @@ const CASES_WITH_KEYWORDS = [
     {
         id: 5,
         section: "มาตรา 9",
-        image: "assets/evidence/case_ev_6a92f03d.png",
+        image: "assets/evidence/case_ev_6a92f03d.jpg",
         title: "มือบอนแอบลบไฟล์โครงงานวิทย์เพื่อน",
         brief: "นักเรียนอิจฉากลุ่มเพื่อนที่ทำสไลด์โครงงานวิทย์สวยงาม จึงแอบเข้าไปใน Cloud Shared Drive แล้วกดลบไฟล์งานและแก้ไขเนื้อหาจนเสียหายทั้งหมด",
         phases: [
@@ -109,7 +109,7 @@ const CASES_WITH_KEYWORDS = [
     {
         id: 6,
         section: "มาตรา 10",
-        image: "assets/evidence/case_ev_3f81e6ac.png",
+        image: "assets/evidence/case_ev_3f81e6ac.jpg",
         title: "ยิง DDoS พังเซิร์ฟเวอร์เว็บสอบโรงเรียน",
         brief: "นักเรียนไม่อยากสอบเก็บคะแนน จึงใช้โปรแกรมยิงทราฟฟิกขยะ (DDoS) ถล่มเว็บไซต์ระบบสอบออนไลน์ของโรงเรียนจนเซิร์ฟเวอร์ล่ม ใช้งานไม่ได้",
         phases: [
@@ -129,7 +129,7 @@ const CASES_WITH_KEYWORDS = [
     {
         id: 7,
         section: "มาตรา 11 วรรคหนึ่ง",
-        image: "assets/evidence/case_ev_e920d57b.png",
+        image: "assets/evidence/case_ev_e920d57b.jpg",
         title: "ส่งอีเมลสแปมขายของปลอมตัวตน",
         brief: "ผู้ค้ายิงอีเมลขยะขายสินค้าและโฆษณาชวนเชื่อไปยังกล่องข้อความของนักเรียนนับพันคน โดยปลอมแปลงชื่อผู้ส่งและปกปิดแหล่งที่มาที่แท้จริง",
         phases: [
@@ -149,7 +149,7 @@ const CASES_WITH_KEYWORDS = [
     {
         id: 8,
         section: "มาตรา 11 วรรคสอง",
-        image: "assets/evidence/case_ev_7c3a812f.png",
+        image: "assets/evidence/case_ev_7c3a812f.jpg",
         title: "บอทสแปมรัวๆ ปิดปุ่มยกเลิกรับข่าวสาร",
         brief: "ระบบบอทยิงข้อความโฆษณารัวๆ เข้ามือถือนักเรียนตลอดทั้งวัน โดยจงใจไม่ใส่ปุ่ม Unsubscribe หรือช่องทางยกเลิกรับข่าวสาร",
         phases: [
@@ -169,7 +169,7 @@ const CASES_WITH_KEYWORDS = [
     {
         id: 9,
         section: "มาตรา 14(1)",
-        image: "assets/evidence/case_ev_5b04c9e8.png",
+        image: "assets/evidence/case_ev_5b04c9e8.jpg",
         title: "สร้างเว็บฟิชชิ่งหลอกสกินเกมฟรี",
         brief: "คนร้ายสร้างหน้าเว็บล็อกอินปลอมที่หน้าตาเหมือนเว็บเกมดัง อ้างแจกสกินปืนและเพชรฟรี เพื่อหลอกเอาไอดีและรหัสผ่านของเหยื่อ",
         phases: [
@@ -189,7 +189,7 @@ const CASES_WITH_KEYWORDS = [
     {
         id: 10,
         section: "มาตรา 14(2)",
-        image: "assets/evidence/case_ev_a1f9e832.png",
+        image: "assets/evidence/case_ev_a1f9e832.jpg",
         title: "โพสต์ข่าวลวงภัยพิบัติจนคนแตกตื่นวิ่งวุ่น",
         brief: "นักเรียนคึกคะนองกุเรื่องข่าวปลอมโพสต์ลง TikTok ว่า 'พรุ่งนี้น้ำท่วมเมือง 3 เมตร เขื่อนแตกแล้ว!' จนชาวบ้านแตกตื่นแย่งกันซื้อของกักตุนวุ่นวาย",
         phases: [
@@ -209,7 +209,7 @@ const CASES_WITH_KEYWORDS = [
     {
         id: 11,
         section: "มาตรา 14(4)",
-        image: "assets/evidence/case_ev_2e6d9a41.png",
+        image: "assets/evidence/case_ev_2e6d9a41.jpg",
         title: "โพสต์ภาพ/คลิปโป๊ลงคอมพิวเตอร์สาธารณะ",
         brief: "วัยรุ่นนำภาพและคลิปลามกอนาจารไปโพสต์ลงในกลุ่มเฟซบุ๊กสาธารณะและส่งต่อในดิสคอร์ดโรงเรียนที่มีคนทั่วไปเข้าถึงได้",
         phases: [
@@ -229,7 +229,7 @@ const CASES_WITH_KEYWORDS = [
     {
         id: 12,
         section: "มาตรา 16",
-        image: "assets/evidence/case_ev_4d9f1e8a.png",
+        image: "assets/evidence/case_ev_4d9f1e8a.jpg",
         title: "ตัดต่อหน้าเพื่อนใส่เอเลี่ยนประจานในโซเชียล",
         brief: "นักเรียนแกล้งเพื่อนโดยนำรูปหน้าเพื่อนไปตัดต่อใส่ร่างเอเลี่ยนน่าเกลียดน่ากลัว แล้วโพสต์ประจานลงใน Instagram พร้อมแคปชั่นล้อเลียนทำให้อับอาย",
         phases: [
