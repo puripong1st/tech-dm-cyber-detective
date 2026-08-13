@@ -105,18 +105,73 @@
         @media print {
             @page {
                 size: A4 portrait;
-                margin: 12mm 10mm 12mm 10mm;
+                margin: 10mm 8mm 10mm 8mm;
             }
-            .no-print { display: none !important; }
+            
+            /* Hide non-printable elements */
+            .no-print,
+            nav,
+            main,
+            footer,
+            #modal-auth,
+            #modal-cases-ref,
+            #modal-team-detail,
+            #modal-rubric-detail,
+            #modal-system-config,
+            #toast-container {
+                display: none !important;
+            }
+
             body {
                 background: white !important;
                 color: #0f172a !important;
                 padding: 0 !important;
+                margin: 0 !important;
                 font-family: 'Sarabun', 'Kanit', sans-serif !important;
-                line-height: 1.6 !important;
-                word-break: break-word !important;
-                overflow-wrap: break-word !important;
+                line-height: 1.5 !important;
+                word-break: normal !important;
+                overflow-wrap: normal !important;
             }
+
+            /* Reset print modals so they expand cleanly into full-page printable documents */
+            #modal-print-pdf,
+            #modal-print-group-answers {
+                position: static !important;
+                display: block !important;
+                background: transparent !important;
+                padding: 0 !important;
+                margin: 0 !important;
+                width: 100% !important;
+                height: auto !important;
+                min-height: 0 !important;
+                max-height: none !important;
+                overflow: visible !important;
+                box-shadow: none !important;
+                border: none !important;
+                backdrop-filter: none !important;
+                -webkit-backdrop-filter: none !important;
+            }
+
+            #modal-print-pdf.hidden,
+            #modal-print-group-answers.hidden {
+                display: none !important;
+            }
+
+            #modal-print-pdf > div,
+            #modal-print-group-answers > div {
+                background: white !important;
+                color: #0f172a !important;
+                border: none !important;
+                box-shadow: none !important;
+                padding: 0 !important;
+                margin: 0 !important;
+                max-width: 100% !important;
+                width: 100% !important;
+                border-radius: 0 !important;
+                overflow: visible !important;
+                max-height: none !important;
+            }
+
             .print-page {
                 background: white !important;
                 color: #0f172a !important;
@@ -127,43 +182,94 @@
                 margin: 0 !important;
                 padding: 0 !important;
             }
+
             .print-text-dark { color: #0f172a !important; }
+
             .print-table {
-                border: 1px solid #94a3b8 !important;
+                border: 1px solid #64748b !important;
                 width: 100% !important;
                 border-collapse: collapse !important;
+                background: white !important;
+                box-shadow: none !important;
+                overflow: visible !important;
+                margin-top: 8px !important;
+                margin-bottom: 8px !important;
             }
+
+            .print-table table {
+                width: 100% !important;
+                border-collapse: collapse !important;
+                table-layout: auto !important;
+            }
+
             .print-table th, .print-table td {
-                border: 1px solid #cbd5e1 !important;
+                border: 1px solid #94a3b8 !important;
                 color: #0f172a !important;
-                padding: 8px !important;
-                word-break: break-word !important;
-                overflow-wrap: break-word !important;
+                padding: 5px 6px !important;
+                font-size: 11px !important;
+                line-height: 1.4 !important;
+                background: white !important;
+                vertical-align: middle !important;
             }
-            .print-table th { background: #f1f5f9 !important; font-weight: bold !important; }
+
+            .print-table th {
+                background-color: #f1f5f9 !important;
+                color: #0f172a !important;
+                font-weight: bold !important;
+                text-align: center !important;
+                white-space: nowrap !important;
+            }
+
+            .print-table tbody tr {
+                background-color: white !important;
+            }
+
+            .print-table tbody tr:nth-child(even) {
+                background-color: #f8fafc !important;
+            }
+
+            /* Thai text wrapping fix: prevent character-by-character vertical break */
+            .print-table td.cell-nowrap,
+            .print-table td.cell-no,
+            .print-table td.cell-room,
+            .print-table td.cell-student-no,
+            .print-table td.cell-prefix,
+            .print-table td.cell-name,
+            .print-table td.cell-score {
+                white-space: nowrap !important;
+                word-break: normal !important;
+                overflow-wrap: normal !important;
+            }
+
+            .print-table td.cell-team {
+                white-space: nowrap !important;
+                word-break: normal !important;
+                overflow-wrap: normal !important;
+            }
+
             .print-card {
                 background: #ffffff !important;
                 color: #0f172a !important;
                 border: 1px solid #cbd5e1 !important;
                 border-radius: 8px !important;
-                padding: 14px !important;
-                margin-bottom: 14px !important;
+                padding: 12px !important;
+                margin-bottom: 12px !important;
                 page-break-inside: avoid !important;
                 break-inside: avoid !important;
-                word-break: break-word !important;
-                overflow-wrap: break-word !important;
                 box-shadow: none !important;
+                word-break: normal !important;
+                overflow-wrap: normal !important;
             }
             .print-role-box {
                 background: #f8fafc !important;
                 border: 1px solid #e2e8f0 !important;
                 border-radius: 6px !important;
-                padding: 10px 12px !important;
-                margin-top: 8px !important;
-                word-break: break-word !important;
-                overflow-wrap: break-word !important;
+                padding: 8px 10px !important;
+                margin-top: 6px !important;
+                word-break: normal !important;
+                overflow-wrap: normal !important;
                 white-space: pre-wrap !important;
-                line-height: 1.6 !important;
+                line-height: 1.5 !important;
             }
             .print-score-badge {
                 background: #e0e7ff !important;
@@ -172,6 +278,27 @@
                 padding: 3px 8px !important;
                 border-radius: 6px !important;
                 font-size: 11px !important;
+            }
+
+            /* Enforce 1 Page = 1 Group layout in PDF Print Export */
+            .print-group-page {
+                break-before: page !important;
+                page-break-before: always !important;
+                break-inside: avoid !important;
+                page-break-inside: avoid !important;
+                width: 100% !important;
+                display: flex !important;
+                flex-direction: column !important;
+                justify-content: space-between !important;
+                min-height: 94vh !important;
+                box-sizing: border-box !important;
+                margin: 0 !important;
+                padding: 0 !important;
+            }
+
+            .print-group-page:first-child {
+                break-before: auto !important;
+                page-break-before: auto !important;
             }
         }
     </style>
@@ -648,9 +775,33 @@
     <div id="modal-print-pdf" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/95 backdrop-blur-md overflow-y-auto">
         <div class="glass-panel max-w-5xl w-full p-6 sm:p-8 rounded-3xl border border-emerald-400/50 shadow-2xl flex flex-col gap-5 relative my-6 max-h-[94vh] overflow-y-auto">
             
-            <button onclick="closePrintPdfModal()" class="no-print absolute top-4 right-4 text-slate-400 hover:text-white p-2 rounded-lg bg-slate-800/80 border border-slate-700 transition">
-                <i class="fa-solid fa-xmark text-lg"></i>
-            </button>
+            <!-- Modal Header / Controls (Hidden in print) -->
+            <div class="no-print flex flex-wrap items-center justify-between gap-3 border-b border-slate-800 pb-3">
+                <div>
+                    <h3 class="text-base font-bold text-white font-kanit flex items-center gap-2">
+                        <i class="fa-solid fa-file-pdf text-emerald-400"></i> พิมพ์รายงานสรุปคะแนนนักเรียนรายบุคคล/กลุ่ม (A4 แนวตั้ง)
+                    </h3>
+                    <p class="text-xs text-slate-400 font-sarabun">เลือกห้องเรียนที่ต้องการออกรายงานสรุปผลคะแนน PDF</p>
+                </div>
+                <div class="flex items-center gap-2">
+                    <label class="text-xs text-slate-300">เลือกห้องเรียน:</label>
+                    <select id="pdf-summary-room-select" onchange="onSummaryPdfRoomChange(this.value)" class="bg-slate-950 text-xs text-white border border-slate-700 rounded-xl px-3 py-1.5 focus:outline-none cursor-pointer">
+                        <option value="ALL">ทุกห้องเรียน (ม.3/1 - ม.3/12)</option>
+                        <option value="ม.3/1">ม.3/1</option>
+                        <option value="ม.3/2">ม.3/2</option>
+                        <option value="ม.3/3">ม.3/3</option>
+                        <option value="ม.3/4">ม.3/4</option>
+                        <option value="ม.3/5">ม.3/5</option>
+                        <option value="ม.3/6">ม.3/6</option>
+                        <option value="ม.3/7">ม.3/7</option>
+                        <option value="ม.3/8">ม.3/8</option>
+                        <option value="ม.3/9">ม.3/9</option>
+                        <option value="ม.3/10">ม.3/10</option>
+                        <option value="ม.3/11">ม.3/11</option>
+                        <option value="ม.3/12">ม.3/12</option>
+                    </select>
+                </div>
+            </div>
 
             <!-- Printable Sheet -->
             <div id="printable-sheet-area" class="print-page flex flex-col gap-5 text-slate-200 font-sarabun">
@@ -678,16 +829,16 @@
                     <table class="w-full text-left text-xs border-collapse font-sarabun">
                         <thead class="bg-slate-900 text-slate-200 font-bold border-b border-slate-700">
                             <tr>
-                                <th class="p-2.5 text-center w-12 border-r border-slate-800">#</th>
-                                <th class="p-2.5 border-r border-slate-800">ชื่อกลุ่มสายสืบ</th>
-                                <th class="p-2.5 text-center w-16 border-r border-slate-800">ห้อง</th>
-                                <th class="p-2.5 text-center w-16 border-r border-slate-800">เลขที่</th>
-                                <th class="p-2.5 text-center w-24 border-r border-slate-800">คำนำหน้า</th>
-                                <th class="p-2.5 border-r border-slate-800">ชื่อ - นามสกุล</th>
-                                <th class="p-2.5 text-center w-24 border-r border-slate-800">👨‍⚖️ กฎหมาย</th>
-                                <th class="p-2.5 text-center w-24 border-r border-slate-800">🚑 บรรเทา</th>
-                                <th class="p-2.5 text-center w-24 border-r border-slate-800">🛡️ ป้องกัน</th>
-                                <th class="p-2.5 text-right w-28">⭐ รวม (180)</th>
+                                <th class="p-2 text-center w-8 border-r border-slate-800">#</th>
+                                <th class="p-2 text-left border-r border-slate-800 min-w-[130px]">ชื่อกลุ่มสายสืบ</th>
+                                <th class="p-2 text-center w-12 border-r border-slate-800">ห้อง</th>
+                                <th class="p-2 text-center w-12 border-r border-slate-800">เลขที่</th>
+                                <th class="p-2 text-center w-14 border-r border-slate-800">คำนำหน้า</th>
+                                <th class="p-2 text-left border-r border-slate-800 min-w-[140px]">ชื่อ - นามสกุล</th>
+                                <th class="p-2 text-center w-16 border-r border-slate-800">👨‍⚖️ กฎหมาย</th>
+                                <th class="p-2 text-center w-16 border-r border-slate-800">🚑 บรรเทา</th>
+                                <th class="p-2 text-center w-16 border-r border-slate-800">🛡️ ป้องกัน</th>
+                                <th class="p-2 text-right w-24">⭐ รวม (180)</th>
                             </tr>
                         </thead>
                         <tbody id="pdf-report-tbody" class="divide-y divide-slate-800">
@@ -738,14 +889,29 @@
             <div class="no-print flex flex-wrap items-center justify-between gap-3 border-b border-slate-800 pb-3">
                 <div>
                     <h3 class="text-base font-bold text-white font-kanit flex items-center gap-2">
-                        <i class="fa-solid fa-file-pdf text-emerald-400"></i> พิมพ์รายงานสรุปคำตอบของกลุ่ม (A4 แนวตั้ง)
+                        <i class="fa-solid fa-file-pdf text-emerald-400"></i> พิมพ์รายงานสรุปคำตอบของกลุ่ม (1 หน้า = 1 กลุ่ม)
                     </h3>
-                    <p class="text-xs text-slate-400 font-sarabun">พรีวิวรูปแบบเอกสารก่อนสั่งพิมพ์หรือบันทึกเป็นไฟล์ PDF</p>
+                    <p class="text-xs text-slate-400 font-sarabun">เลือกห้องเรียนและขอบเขตกลุ่ม โดยระบบจะจัด 1 กลุ่ม ต่อ 1 หน้า A4 อย่างเรียบร้อย</p>
                 </div>
-                <div class="flex items-center gap-2">
+                <div class="flex flex-wrap items-center gap-2">
+                    <select id="pdf-group-room-select" onchange="renderGroupAnswersPdfContent()" class="bg-slate-950 text-xs text-white border border-slate-700 rounded-xl px-3 py-1.5 focus:outline-none cursor-pointer">
+                        <option value="ALL">ทุกห้องเรียน (ม.3/1 - ม.3/12)</option>
+                        <option value="ม.3/1">เฉพาะห้อง ม.3/1</option>
+                        <option value="ม.3/2">เฉพาะห้อง ม.3/2</option>
+                        <option value="ม.3/3">เฉพาะห้อง ม.3/3</option>
+                        <option value="ม.3/4">เฉพาะห้อง ม.3/4</option>
+                        <option value="ม.3/5">เฉพาะห้อง ม.3/5</option>
+                        <option value="ม.3/6">เฉพาะห้อง ม.3/6</option>
+                        <option value="ม.3/7">เฉพาะห้อง ม.3/7</option>
+                        <option value="ม.3/8">เฉพาะห้อง ม.3/8</option>
+                        <option value="ม.3/9">เฉพาะห้อง ม.3/9</option>
+                        <option value="ม.3/10">เฉพาะห้อง ม.3/10</option>
+                        <option value="ม.3/11">เฉพาะห้อง ม.3/11</option>
+                        <option value="ม.3/12">เฉพาะห้อง ม.3/12</option>
+                    </select>
                     <select id="pdf-group-select" onchange="renderGroupAnswersPdfContent()" class="bg-slate-950 text-xs text-white border border-slate-700 rounded-xl px-3 py-1.5 focus:outline-none cursor-pointer">
+                        <option value="ALL">รวมทุกกลุ่มในห้องเรียนที่เลือก</option>
                         <option value="SELECTED">เฉพาะกลุ่มที่เลือกปัจจุบัน</option>
-                        <option value="ALL">รวมทุกกลุ่มในห้องเรียน</option>
                     </select>
                 </div>
             </div>
@@ -1430,9 +1596,16 @@
         }
 
         // --- Print / Export PDF Modal Handlers ---
-        function openPrintPdfModal() {
-            const roomFilter = document.getElementById('filter-room').value;
-            document.getElementById('pdf-room-label').textContent = roomFilter === 'ALL' ? 'ทุกห้องเรียน (ม.3/1 - ม.3/12)' : roomFilter;
+        function onSummaryPdfRoomChange(val) {
+            openPrintPdfModal(val);
+        }
+
+        function openPrintPdfModal(overrideRoom) {
+            const roomFilter = overrideRoom || document.getElementById('pdf-summary-room-select')?.value || document.getElementById('filter-room')?.value || 'ALL';
+            const roomSelect = document.getElementById('pdf-summary-room-select');
+            if (roomSelect) roomSelect.value = roomFilter;
+
+            document.getElementById('pdf-room-label').textContent = roomFilter === 'ALL' ? 'ทุกห้องเรียน (ม.3/1 - ม.3/12)' : `ห้อง ${roomFilter}`;
             document.getElementById('pdf-date-label').textContent = new Date().toLocaleDateString('th-TH', { year: 'numeric', month: 'long', day: 'numeric' });
 
             const tbody = document.getElementById('pdf-report-tbody');
@@ -1853,8 +2026,12 @@
             casesContainer.innerHTML = caseCardsHtml || `<div class="glass-panel p-8 rounded-2xl border border-slate-800 text-center text-slate-500 font-sarabun text-xs">กลุ่มนี้ยังไม่ได้ทำข้อสอบหรือส่งตรวจคดีใดๆ</div>`;
         }
 
-        // --- PDF Export Modal Handlers for Group Answers (Vertical A4 Layout) ---
+        // --- PDF Export Modal Handlers for Group Answers (1 Page = 1 Group) ---
         function openGroupAnswersPdfModal() {
+            const currentRoom = document.getElementById('filter-group-room')?.value || document.getElementById('filter-room')?.value || 'ALL';
+            const roomSelect = document.getElementById('pdf-group-room-select');
+            if (roomSelect) roomSelect.value = currentRoom;
+
             renderGroupAnswersPdfContent();
             document.getElementById('modal-print-group-answers').classList.remove('hidden');
         }
@@ -1864,46 +2041,45 @@
         }
 
         function renderGroupAnswersPdfContent() {
-            const selectMode = document.getElementById('pdf-group-select')?.value || 'SELECTED';
+            const roomFilter = document.getElementById('pdf-group-room-select')?.value || 'ALL';
+            const selectMode = document.getElementById('pdf-group-select')?.value || 'ALL';
             const sheet = document.getElementById('printable-group-answers-sheet');
             if (!sheet) return;
 
-            const filteredMap = getFilteredGroupMap();
-            let targetTeams = [];
+            // Group by team_name
+            const teamMap = new Map();
+            allScoresData.forEach(item => {
+                const teamKey = item.team_name || item.player_id || 'นักสืบเยาวชน';
+                if (!teamMap.has(teamKey)) teamMap.set(teamKey, []);
+                teamMap.get(teamKey).push(item);
+            });
 
-            if (selectMode === 'SELECTED' && selectedGroupTeamName && filteredMap.has(selectedGroupTeamName)) {
-                targetTeams.push({ teamKey: selectedGroupTeamName, items: filteredMap.get(selectedGroupTeamName) });
-            } else {
-                filteredMap.forEach((items, teamKey) => {
-                    targetTeams.push({ teamKey, items });
-                });
-            }
+            let targetTeams = [];
+            teamMap.forEach((items, teamKey) => {
+                const firstParsed = parseScoreItem(items[0]);
+                
+                // Filter by Room
+                if (roomFilter !== 'ALL' && firstParsed.room !== roomFilter && !teamKey.includes(roomFilter)) {
+                    return;
+                }
+
+                // Filter by Group Selection Mode
+                if (selectMode === 'SELECTED' && selectedGroupTeamName && teamKey !== selectedGroupTeamName) {
+                    return;
+                }
+
+                targetTeams.push({ teamKey, items });
+            });
 
             if (targetTeams.length === 0) {
-                sheet.innerHTML = `<div class="p-8 text-center text-slate-500">ไม่มีข้อมูลคำตอบสำหรับพิมพ์รายงาน</div>`;
+                sheet.innerHTML = `<div class="p-8 text-center text-slate-500 font-sarabun text-sm">ไม่มีข้อมูลคำตอบสำหรับพิมพ์รายงานในห้องเรียนที่เลือก</div>`;
                 return;
             }
 
             const printDateStr = new Date().toLocaleDateString('th-TH', { year: 'numeric', month: 'long', day: 'numeric' });
+            const roomLabelText = roomFilter === 'ALL' ? 'ทุกห้องเรียน (ม.3/1 - ม.3/12)' : `ห้อง ${roomFilter}`;
 
-            let fullHtml = `
-                <!-- Academic Document Header -->
-                <div class="text-center flex flex-col items-center gap-1 border-b-2 border-slate-700 pb-4">
-                    <div class="flex items-center justify-center gap-2 mb-1">
-                        <img src="favicon.png" alt="Logo" class="w-10 h-10 rounded-lg object-cover no-print">
-                        <h2 class="text-lg sm:text-xl font-bold font-kanit text-slate-100 print-text-dark">
-                            แบบรายงานคำตอบและการประเมินผล AI กิจกรรมสืบคดีกฎหมายคอมพิวเตอร์และ PDPA
-                        </h2>
-                    </div>
-                    <p class="text-xs text-slate-300 print-text-dark">
-                        กลุ่มสาระการเรียนรู้วิทยาศาสตร์และเทคโนโลยี ระดับชั้นมัธยมศึกษาปีที่ 3 (วิชาเทคโนโลยี / วิทยาการคำนวณ)
-                    </p>
-                    <div class="flex flex-wrap items-center justify-center gap-6 text-xs text-slate-400 font-mono mt-1 print-text-dark">
-                        <span>📅 วันที่พิมพ์รายงาน: <b class="text-slate-200 font-bold print-text-dark">${printDateStr}</b></span>
-                        <span>👥 จำนวนกลุ่มในรายงาน: <b class="text-emerald-400 font-bold print-text-dark">${targetTeams.length}</b> กลุ่ม</span>
-                    </div>
-                </div>
-            `;
+            let fullHtml = '';
 
             targetTeams.forEach(({ teamKey, items }, groupIdx) => {
                 const firstParsed = parseScoreItem(items[0]);
@@ -1935,43 +2111,40 @@
                     if (!hasLegal && !hasRemedy && !hasSecurity) return '';
 
                     return `
-                        <div class="print-card p-4 rounded-xl border border-slate-300 bg-white text-slate-900 flex flex-col gap-3">
+                        <div class="print-card p-3 rounded-xl border border-slate-300 bg-white text-slate-900 flex flex-col gap-2">
                             
-                            <div class="flex items-center justify-between border-b border-slate-300 pb-2">
-                                <span class="font-bold text-sm font-kanit text-slate-900">
+                            <div class="flex items-center justify-between border-b border-slate-300 pb-1.5">
+                                <span class="font-bold text-xs font-kanit text-slate-900">
                                     คดี #${item.case_id || (cIdx+1)}: ${caseTitle} ${caseRef.section ? `(${caseRef.section})` : ''}
                                 </span>
-                                <span class="print-score-badge">
+                                <span class="print-score-badge text-[11px]">
                                     คะแนนคดีนี้: ${totalCaseScore} / 30
                                 </span>
                             </div>
 
                             ${hasLegal ? `
-                            <!-- Role 1 -->
-                            <div class="print-role-box text-xs">
+                            <div class="print-role-box text-[11px]">
                                 <div class="font-bold text-slate-900 mb-0.5">👨‍⚖️ 1. นักวิเคราะห์กฎหมาย (คะแนน ${p.legal}/10)</div>
                                 <div class="text-slate-800 mb-1"><b>คำตอบนักเรียน:</b> ${answers.legal || '-'}</div>
-                                <div class="text-purple-900 bg-purple-50 p-2 rounded border border-purple-200">
+                                <div class="text-purple-900 bg-purple-50 p-1.5 rounded border border-purple-200">
                                     <b>🤖 AI ประเมินผล:</b> ${feedback.legal.feedback || 'ให้คะแนน ' + p.legal + ' คะแนน'}
                                 </div>
                             </div>` : ''}
 
                             ${hasRemedy ? `
-                            <!-- Role 2 -->
-                            <div class="print-role-box text-xs">
+                            <div class="print-role-box text-[11px]">
                                 <div class="font-bold text-slate-900 mb-0.5">🚑 2. เจ้าหน้าที่บรรเทาภัย (คะแนน ${p.remedy}/10)</div>
                                 <div class="text-slate-800 mb-1"><b>คำตอบนักเรียน:</b> ${answers.remedy || '-'}</div>
-                                <div class="text-pink-900 bg-pink-50 p-2 rounded border border-pink-200">
+                                <div class="text-pink-900 bg-pink-50 p-1.5 rounded border border-pink-200">
                                     <b>🤖 AI ประเมินผล:</b> ${feedback.remedy.feedback || 'ให้คะแนน ' + p.remedy + ' คะแนน'}
                                 </div>
                             </div>` : ''}
 
                             ${hasSecurity ? `
-                            <!-- Role 3 -->
-                            <div class="print-role-box text-xs">
+                            <div class="print-role-box text-[11px]">
                                 <div class="font-bold text-slate-900 mb-0.5">🛡️ 3. วิศวกรความปลอดภัย (คะแนน ${p.security}/10)</div>
                                 <div class="text-slate-800 mb-1"><b>คำตอบนักเรียน:</b> ${answers.security || '-'}</div>
-                                <div class="text-teal-900 bg-teal-50 p-2 rounded border border-teal-200">
+                                <div class="text-teal-900 bg-teal-50 p-1.5 rounded border border-teal-200">
                                     <b>🤖 AI ประเมินผล:</b> ${feedback.security.feedback || 'ให้คะแนน ' + p.security + ' คะแนน'}
                                 </div>
                             </div>` : ''}
@@ -1981,43 +2154,62 @@
                 }).filter(Boolean).join('');
 
                 fullHtml += `
-                    <div class="${groupIdx > 0 ? 'mt-8 pt-6 border-t-2 border-slate-300' : ''}">
+                    <!-- 1 Page per Group Wrapper -->
+                    <div class="print-group-page flex flex-col justify-between gap-3 text-slate-200 font-sarabun ${groupIdx > 0 ? 'mt-6' : ''}">
                         
-                        <!-- Group Identity Banner -->
-                        <div class="print-card bg-slate-900 text-slate-100 p-4 rounded-xl border border-slate-700 flex flex-col gap-1.5 mb-4">
-                            <div class="flex items-center justify-between">
-                                <h3 class="text-base font-bold font-kanit print-text-dark">🏷️ กลุ่มสายสืบ: ${teamKey}</h3>
-                                <span class="px-3 py-1 rounded-lg bg-purple-600 text-white font-mono text-xs font-bold">
-                                    ห้อง ${firstParsed.room} | คะแนนรวม ${groupTotalScore} / ${items.length * 30} คะแนน
-                                </span>
+                        <div class="flex flex-col gap-3">
+                            <!-- Academic Header for Group Page -->
+                            <div class="text-center flex flex-col items-center gap-1 border-b-2 border-slate-700 pb-3">
+                                <div class="flex items-center justify-center gap-2 mb-0.5">
+                                    <img src="favicon.png" alt="Logo" class="w-8 h-8 rounded-lg object-cover no-print">
+                                    <h2 class="text-base sm:text-lg font-bold font-kanit text-slate-100 print-text-dark">
+                                        แบบรายงานคำตอบและการประเมินผล AI กิจกรรมสืบคดีกฎหมายคอมพิวเตอร์และ PDPA
+                                    </h2>
+                                </div>
+                                <p class="text-[11px] text-slate-300 print-text-dark">
+                                    กลุ่มสาระการเรียนรู้วิทยาศาสตร์และเทคโนโลยี ระดับชั้นมัธยมศึกษาปีที่ 3 (วิชาเทคโนโลยี / วิทยาการคำนวณ)
+                                </p>
+                                <div class="flex flex-wrap items-center justify-center gap-4 text-[11px] text-slate-400 font-mono mt-0.5 print-text-dark">
+                                    <span>🏫 ห้องเรียน: <b class="text-cyan-300 font-bold print-text-dark">${roomLabelText}</b></span>
+                                    <span>📅 วันที่พิมพ์: <b class="text-slate-200 font-bold print-text-dark">${printDateStr}</b></span>
+                                    <span>👥 กลุ่มที่: <b class="text-emerald-400 font-bold print-text-dark">${groupIdx + 1} / ${targetTeams.length}</b></span>
+                                </div>
                             </div>
-                            <p class="text-xs text-slate-300 print-text-dark">
-                                <b>👥 สมาชิกในกลุ่ม:</b> ${membersStr}
-                            </p>
+
+                            <!-- Group Identity Banner -->
+                            <div class="print-card bg-slate-900 text-slate-100 p-3 rounded-xl border border-slate-700 flex flex-col gap-1">
+                                <div class="flex items-center justify-between">
+                                    <h3 class="text-sm font-bold font-kanit print-text-dark">🏷️ กลุ่มสายสืบ: ${teamKey}</h3>
+                                    <span class="px-2.5 py-0.5 rounded-lg bg-purple-600 text-white font-mono text-[11px] font-bold">
+                                        ห้อง ${firstParsed.room} | คะแนนรวม ${groupTotalScore} / ${items.length * 30} คะแนน
+                                    </span>
+                                </div>
+                                <p class="text-[11px] text-slate-300 print-text-dark">
+                                    <b>👥 สมาชิกในกลุ่ม:</b> ${membersStr}
+                                </p>
+                            </div>
+
+                            <!-- Case Answers Breakdown -->
+                            <div class="flex flex-col gap-3">
+                                ${printedCasesHtml || '<div class="p-4 text-center text-slate-500 text-xs">ไม่มีคดีที่ทำเสร็จสิ้น</div>'}
+                            </div>
                         </div>
 
-                        <!-- Case Answers Breakdown -->
-                        <div class="flex flex-col gap-4">
-                            ${printedCasesHtml || '<div class="p-4 text-center text-slate-500 text-xs">ไม่มีคดีที่ทำเสร็จสิ้น</div>'}
+                        <!-- Signatures block at bottom of each group page -->
+                        <div class="grid grid-cols-2 gap-6 pt-3 mt-2 border-t border-slate-700 text-xs font-sarabun print-text-dark pb-1">
+                            <div class="flex flex-col items-center gap-0.5">
+                                <p>ลงชื่อ ............................................................ ผู้แทนกลุ่มนักเรียน</p>
+                                <p class="text-[10px] text-slate-500 print-text-dark">( ............................................................ )</p>
+                            </div>
+                            <div class="flex flex-col items-center gap-0.5">
+                                <p>ลงชื่อ ............................................................ ครูผู้สอนประจำวิชา</p>
+                                <p class="text-[10px] text-slate-500 print-text-dark">( ............................................................ )</p>
+                            </div>
                         </div>
 
                     </div>
                 `;
             });
-
-            // Signatures block
-            fullHtml += `
-                <div class="grid grid-cols-2 gap-8 pt-8 mt-6 border-t border-slate-700 text-xs font-sarabun print-text-dark">
-                    <div class="flex flex-col items-center gap-1">
-                        <p>ลงชื่อ ............................................................ ผู้แทนกลุ่มนักเรียน</p>
-                        <p class="text-[11px] text-slate-500 print-text-dark">( ............................................................ )</p>
-                    </div>
-                    <div class="flex flex-col items-center gap-1">
-                        <p>ลงชื่อ ............................................................ ครูผู้สอน</p>
-                        <p class="text-[11px] text-slate-500 print-text-dark">( ............................................................ )</p>
-                    </div>
-                </div>
-            `;
 
             sheet.innerHTML = fullHtml;
         }
