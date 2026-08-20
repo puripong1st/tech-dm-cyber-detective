@@ -7,6 +7,7 @@
     <title>Quest: ภารกิจพิทักษ์ข้อมูลไซเบอร์ | สไลด์สรุป พ.ร.บ.คอมพิวเตอร์ 12 มาตรา & PDPA (ม.2 - ม.3)</title>
 
     <!-- SEO Meta Tags -->
+    <meta name="referrer" content="strict-origin-when-cross-origin">
     <meta name="description" content="สไลด์บทเรียนอินเทอร์แอคทีฟ ภารกิจพิทักษ์ข้อมูลไซเบอร์ สรุปสาระสำคัญ พ.ร.บ.คอมพิวเตอร์ 2560 ครบ 12 มาตรา และกฎหมาย PDPA ด้วยตัวอย่างคดีจริง ออกแบบสำหรับการเรียนรู้วิทยาการคำนวณ ม.2 และ ม.3">
     <meta name="keywords" content="สไลด์ พ.ร.บ.คอมพิวเตอร์, สไลด์กฎหมายคอมพิวเตอร์, พรบคอม ม.3, 12 มาตรา พ.ร.บ.คอมพิวเตอร์, สรุป พรบคอม 2560, PDPA พ.ร.บ.คุ้มครองข้อมูลส่วนบุคคล, สื่อการสอนวิทยาการคำนวณ ม.3, cyber law presentation slides, บทเรียนกฎหมายไซเบอร์">
     <meta name="author" content="Cyber Shield Detective Team">
@@ -96,7 +97,7 @@
                 </div>
             </div>
 
-            <div class="stage-indicator" id="stage-text">STAGE 1 / 9</div>
+            <div class="stage-indicator" id="stage-text">STAGE 1 / 10</div>
 
             <div class="header-controls">
                 <button class="quick-nav-btn" onclick="openQuickNav()" title="เลือกดู พ.ร.บ.คอมฯ 12 มาตรา">
@@ -371,35 +372,42 @@
                 </div>
             </section>
 
-            <!-- Slide 5: Video Case Study - ข่าวจริงเตือนภัยโซเชียล (โพสต์สนุกระวัง พ.ร.บ.คอมฯ) -->
-            <section class="slide" id="slide-5">
-                <div class="slide-tag">CASE STUDY // ข่าวจริงเตือนภัยโซเชียล</div>
-                <h2 class="slide-title">🔥 โพสต์ขำๆ แต่ติดคุกจริง?! <span class="magenta">ตัดต่อหวย 30 ล้าน โดน พ.ร.บ.คอมฯ เล่นหนัก</span></h2>
+            <!-- Slide 5: Video Case Study 1 - ตัดต่อหวย 30 ล้าน -->
+            <section class="slide video-slide" id="slide-5">
+                <div class="slide-tag">CASE STUDY 01 // ข่าวจริงเตือนภัยโซเชียล</div>
+                <h2 class="slide-title">🔥 โพสต์ขำๆ แต่ติดคุกจริง?! <span class="magenta">ตัดต่อหวย 30 ล้าน พ.ร.บ.คอมฯ เล่นหนัก</span></h2>
 
-                <div class="dialog-box magenta" style="margin-bottom: 14px; padding: 12px 18px;">
-                    <p class="dialog-text" style="font-size: 1.02rem;">
+                <div class="dialog-box magenta">
+                    <p class="dialog-text">
                         🚨 <strong>เตือนภัยสายแกล้งเพื่อน:</strong> คิดว่าตัดต่อรูปเล่นๆ แค่หยอกขำๆ... แต่ตำรวจบุกจริง! ชมรายงานข่าวจริงจาก <em>เช้าข่าวชัดโซเชียล (ไทยรัฐทีวี)</em> เพื่อสรุปบทเรียนและผลกระทบจริงของ พ.ร.บ.คอมพิวเตอร์
                     </p>
                 </div>
 
                 <div class="video-slide-grid">
-                    <!-- YouTube Video Player Container -->
-                    <div class="video-player-box">
-                        <div class="video-responsive-wrap">
-                            <iframe 
-                                id="youtube-video-frame"
-                                src="https://www.youtube.com/embed/xL07Wh_Czp8" 
-                                title="เตือนชาวเน็ตสนุกระวัง พรบ.คอมพิวเตอร์ | เช้าข่าวชัดโซเชียล | ThairathTV" 
-                                referrerpolicy="strict-origin-when-cross-origin"
-                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
-                                allowfullscreen>
-                            </iframe>
+                    <!-- YouTube Video Player Container with Interactive Facade -->
+                    <div class="video-player-box" id="video-box-1">
+                        <div class="video-responsive-wrap" id="video-wrap-1">
+                            <div class="video-facade" onclick="loadYouTubeVideo('video-wrap-1', 'xL07Wh_Czp8', 'https://www.youtube.com/watch?v=xL07Wh_Czp8')">
+                                <img src="https://img.youtube.com/vi/xL07Wh_Czp8/hqdefault.jpg" alt="เตือนชาวเน็ตสนุกระวัง พรบ.คอมพิวเตอร์" class="facade-thumb">
+                                <div class="facade-overlay">
+                                    <div class="play-btn-circle">
+                                        <i class="fa-solid fa-play"></i>
+                                    </div>
+                                    <span class="play-btn-label"><i class="fa-solid fa-circle-play"></i> คลิกเพื่อเล่นวิดีโอ</span>
+                                </div>
+                                <div class="facade-badge"><i class="fa-brands fa-youtube"></i> THAIRATH TV</div>
+                            </div>
                         </div>
                         <div class="video-player-footer">
                             <span class="source-tag"><i class="fa-brands fa-youtube"></i> Thairath TV News</span>
-                            <a href="https://www.youtube.com/watch?v=xL07Wh_Czp8" target="_blank" rel="noopener noreferrer" class="youtube-direct-link" title="เปิดดูคลิปบน YouTube ในแท็บใหม่">
-                                <i class="fa-solid fa-arrow-up-right-from-square"></i> เปิดดูบน YouTube
-                            </a>
+                            <div class="footer-actions">
+                                <button class="embed-play-btn" onclick="loadYouTubeVideo('video-wrap-1', 'xL07Wh_Czp8', 'https://www.youtube.com/watch?v=xL07Wh_Czp8')">
+                                    <i class="fa-solid fa-play"></i> เล่นในสไลด์
+                                </button>
+                                <a href="https://www.youtube.com/watch?v=xL07Wh_Czp8" target="_blank" rel="noopener noreferrer" class="youtube-direct-link" title="เปิดดูคลิปบน YouTube ในแท็บใหม่">
+                                    <i class="fa-solid fa-arrow-up-right-from-square"></i> เปิดดูบน YouTube
+                                </a>
+                            </div>
                         </div>
                     </div>
 
@@ -416,10 +424,10 @@
 
                         <div class="video-case-card law-ref">
                             <div class="video-card-title">
-                                <i class="fa-solid fa-scale-balanced"></i> 2. ทบทวนข้อกฎหมาย (Level 2 ที่เพิ่งเรียน)
+                                <i class="fa-solid fa-scale-balanced"></i> 2. ทบทวนข้อกฎหมาย (Level 2)
                             </div>
                             <div class="video-card-body">
-                                <div style="margin-bottom: 6px;"><span class="video-badge-pill">มาตรา 14</span> <strong>นำเข้าข้อมูลเท็จ/บิดเบือน</strong> สังคมเข้าใจผิด โทษคุกไม่เกิน 5 ปี / ปรับ 1 แสน</div>
+                                <div style="margin-bottom: 5px;"><span class="video-badge-pill">มาตรา 14</span> <strong>นำเข้าข้อมูลเท็จ/บิดเบือน</strong> สังคมเข้าใจผิด โทษคุกไม่เกิน 5 ปี / ปรับ 1 แสน</div>
                                 <div><span class="video-badge-pill">มาตรา 16</span> <strong>ตัดต่อ/ดัดแปลงภาพ</strong> ทำให้ผู้อื่นหรือสังคมเสียหาย โทษคุกไม่เกิน 3 ปี / ปรับ 2 แสน</div>
                             </div>
                         </div>
@@ -427,8 +435,71 @@
                 </div>
             </section>
 
-            <!-- Slide 6: Boss Fight - PDPA Intro -->
-            <section class="slide" id="slide-6">
+            <!-- Slide 6: Video Case Study 2 - เขียนบอทดูดออเดอร์ไรเดอร์ -->
+            <section class="slide video-slide" id="slide-6">
+                <div class="slide-tag">CASE STUDY 02 // ข่าวจริงจับแก๊งบอทโกงระบบ</div>
+                <h2 class="slide-title">⚡ โกงระบบดูดงานคนอื่น... <span class="cyan">ตร.ไซเบอร์บุกรวบแก๊งเขียนบอทแย่งออเดอร์!</span></h2>
+
+                <div class="dialog-box" style="border-color: var(--neon-cyan);">
+                    <p class="dialog-text">
+                        🚨 <strong>เตือนภัยสายเขียนโปรแกรมโกง:</strong> ตำรวจไซเบอร์จับกุมแก๊งพัฒนาบอทแอบดูดข้อมูลและดักรับออเดอร์ไรเดอร์ส่งอาหาร แย่งงานคนอื่นทำระบบเสียหาย โดนข้อหาหนักตาม พ.ร.บ.คอมฯ
+                    </p>
+                </div>
+
+                <div class="video-slide-grid">
+                    <!-- YouTube Video Player Container with Interactive Facade -->
+                    <div class="video-player-box cyan-theme" id="video-box-2">
+                        <div class="video-responsive-wrap" id="video-wrap-2">
+                            <div class="video-facade" onclick="loadYouTubeVideo('video-wrap-2', 'e6W3bwk7wIQ', 'https://www.youtube.com/watch?v=e6W3bwk7wIQ')">
+                                <img src="https://img.youtube.com/vi/e6W3bwk7wIQ/hqdefault.jpg" alt="รวบแก๊งเขียนโปรแกรมดูดออเดอร์ไรเดอร์ส่งอาหาร" class="facade-thumb">
+                                <div class="facade-overlay">
+                                    <div class="play-btn-circle">
+                                        <i class="fa-solid fa-play"></i>
+                                    </div>
+                                    <span class="play-btn-label"><i class="fa-solid fa-circle-play"></i> คลิกเพื่อเล่นวิดีโอ</span>
+                                </div>
+                                <div class="facade-badge"><i class="fa-brands fa-youtube"></i> CYBER POLICE</div>
+                            </div>
+                        </div>
+                        <div class="video-player-footer">
+                            <span class="source-tag"><i class="fa-brands fa-youtube"></i> Cyber Police News</span>
+                            <div class="footer-actions">
+                                <button class="embed-play-btn" onclick="loadYouTubeVideo('video-wrap-2', 'e6W3bwk7wIQ', 'https://www.youtube.com/watch?v=e6W3bwk7wIQ')">
+                                    <i class="fa-solid fa-play"></i> เล่นในสไลด์
+                                </button>
+                                <a href="https://www.youtube.com/watch?v=e6W3bwk7wIQ" target="_blank" rel="noopener noreferrer" class="youtube-direct-link" title="เปิดดูคลิปบน YouTube ในแท็บใหม่">
+                                    <i class="fa-solid fa-arrow-up-right-from-square"></i> เปิดดูบน YouTube
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Side Case Analysis Cards -->
+                    <div class="video-info-cards">
+                        <div class="video-case-card bot-alert">
+                            <div class="video-card-title">
+                                <i class="fa-solid fa-robot"></i> 1. คดีจริงเกิดขึ้นอย่างไร?
+                            </div>
+                            <div class="video-card-body">
+                                ผู้ต้องหาจ้างโปรแกรมเมอร์เขียนโปรแกรมพิเศษ (Bot/Script) เข้าไปดักจับสัญญาณและดักรับออเดอร์จากเซิร์ฟเวอร์ส่งอาหารโดยอัตโนมัติ ทำให้ไรเดอร์ทั่วไปที่รับงานตามปกติถูกแย่งงานและเสียรายได้
+                            </div>
+                        </div>
+
+                        <div class="video-case-card bot-law">
+                            <div class="video-card-title">
+                                <i class="fa-solid fa-gavel"></i> 2. ทบทวนข้อกฎหมาย (Level 1 & 2)
+                            </div>
+                            <div class="video-card-body">
+                                <div style="margin-bottom: 5px;"><span class="video-badge-pill cyan">มาตรา 7 & 8</span> <strong>แอบเข้าถึงและดักรับข้อมูล</strong> กลางทางโดยมิชอบ โทษคุกไม่เกิน 2 - 3 ปี</div>
+                                <div><span class="video-badge-pill purple">มาตรา 10 & 13</span> <strong>รบกวนระบบและแจกจ่ายบอทโกง</strong> โทษคุกไม่เกิน 5 ปี / ปรับสูงสุด 1 แสนบาท</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Slide 7: Boss Fight - PDPA Intro -->
+            <section class="slide" id="slide-7">
                 <div class="boss-badge"><i class="fa-solid fa-shield-halved"></i> PDPA 101 // กฎหมายคุ้มครองข้อมูล</div>
                 <h2 class="slide-title">PDPA คืออะไร? <span class="yellow">เข้าใจง่ายใน 3 ข้อ</span></h2>
 
@@ -480,8 +551,8 @@
                 </div>
             </section>
 
-            <!-- Slide 7: Item Box - ข้อมูลส่วนบุคคล -->
-            <section class="slide" id="slide-7">
+            <!-- Slide 8: Item Box - ข้อมูลส่วนบุคคล -->
+            <section class="slide" id="slide-8">
                 <div class="slide-tag">ITEM CLASSIFICATION // รู้จักข้อมูลของเรา</div>
                 <h2 class="slide-title">ข้อมูลส่วนตัว <span class="cyan">แบ่งเป็น 2 แบบ (ดูง่าย จำง่าย)</span></h2>
 
@@ -541,8 +612,8 @@
                 </div>
             </section>
 
-            <!-- Slide 8: Player Skills - สิทธิของเจ้าของข้อมูล -->
-            <section class="slide" id="slide-8">
+            <!-- Slide 9: Player Skills - สิทธิของเจ้าของข้อมูล -->
+            <section class="slide" id="slide-9">
                 <div class="slide-tag">4 GOLDEN RIGHTS // สิทธิในมือเรา</div>
                 <h2 class="slide-title">4 สิทธิทองคำ <span class="green">จำง่าย 4 คำ "ขอ - ดู - ถอน - ลบ"</span></h2>
 
@@ -605,8 +676,8 @@
                 </div>
             </section>
 
-            <!-- Slide 9: Mission Complete -->
-            <section class="slide" id="slide-9">
+            <!-- Slide 10: Mission Complete -->
+            <section class="slide" id="slide-10">
                 <div class="center-screen">
                     <div class="victory-banner">🏆 MISSION COMPLETE!</div>
                     <h2 class="slide-title" style="font-size: 2.5rem;">ภารกิจสำเร็จแล้ว!</h2>

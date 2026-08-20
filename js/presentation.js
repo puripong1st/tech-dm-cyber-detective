@@ -50,7 +50,7 @@ function playSound(type) {
 
 function getTotalSlides() {
     const slides = document.querySelectorAll('.slide');
-    return slides.length || 9;
+    return slides.length || 10;
 }
 
 const dotsContainer = document.getElementById('dots-container');
@@ -60,6 +60,30 @@ for (let i = 0; i < totalSlidesCount; i++) {
     dot.className = `dot ${i === 0 ? 'active' : ''}`;
     dot.addEventListener('click', () => goToSlide(i));
     dotsContainer.appendChild(dot);
+}
+
+function loadYouTubeVideo(containerId, videoId, directUrl) {
+    const container = document.getElementById(containerId);
+    if (!container) return;
+
+    // Check if opened locally via file:// protocol
+    // YouTube restricts embedded iframes on file:// (Error 153) due to missing domain origin.
+    if (window.location.protocol === 'file:') {
+        window.open(directUrl, '_blank', 'noopener,noreferrer');
+        return;
+    }
+
+    // On web server (http://, https://, localhost): inject live iframe with autoplay
+    const origin = window.location.origin || 'https://tech-dm-cyber-detective.vercel.app';
+    container.innerHTML = `
+        <iframe 
+            src="https://www.youtube-nocookie.com/embed/${videoId}?autoplay=1&rel=0&enablejsapi=1&origin=${encodeURIComponent(origin)}" 
+            title="YouTube Video Player" 
+            referrerpolicy="strict-origin-when-cross-origin"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+            allowfullscreen>
+        </iframe>
+    `;
 }
 
 function pauseYouTubeVideos() {
@@ -75,7 +99,7 @@ function pauseYouTubeVideos() {
 
 function updateSlideView() {
     const slides = document.querySelectorAll('.slide');
-    const totalSlides = slides.length || 9;
+    const totalSlides = slides.length || 10;
     const dots = document.querySelectorAll('.dot');
     const hpBar = document.getElementById('hp-bar');
     const stageText = document.getElementById('stage-text');
