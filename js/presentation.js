@@ -124,6 +124,15 @@ function updateSlideView() {
 
     pauseYouTubeVideos();
 
+    // Reset interactive blur cards on slide change for fresh quiz session
+    document.querySelectorAll('.video-case-card.blur-card').forEach(card => {
+        card.classList.remove('revealed');
+        const hint = card.querySelector('.reveal-toggle-hint');
+        if (hint) {
+            hint.innerHTML = `<i class="fa-solid fa-lock"></i> คลิกเพื่อเฉลย`;
+        }
+    });
+
     slides.forEach((slide, index) => {
         slide.classList.remove('active', 'exit-left');
         if (index === currentSlide) {
