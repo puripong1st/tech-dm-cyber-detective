@@ -50,7 +50,7 @@ function playSound(type) {
 
 function getTotalSlides() {
     const slides = document.querySelectorAll('.slide');
-    return slides.length || 10;
+    return slides.length || 8;
 }
 
 const dotsContainer = document.getElementById('dots-container');
@@ -115,7 +115,7 @@ function pauseYouTubeVideos() {
 
 function updateSlideView() {
     const slides = document.querySelectorAll('.slide');
-    const totalSlides = slides.length || 10;
+    const totalSlides = slides.length || 8;
     const dots = document.querySelectorAll('.dot');
     const hpBar = document.getElementById('hp-bar');
     const stageText = document.getElementById('stage-text');
