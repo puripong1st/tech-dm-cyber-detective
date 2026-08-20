@@ -86,6 +86,22 @@ function loadYouTubeVideo(containerId, videoId, directUrl) {
     `;
 }
 
+function toggleLawReveal(cardId) {
+    const card = document.getElementById(cardId);
+    if (!card) return;
+    const isRevealed = card.classList.toggle('revealed');
+    const hint = card.querySelector('.reveal-toggle-hint');
+    if (hint) {
+        if (isRevealed) {
+            hint.innerHTML = `<i class="fa-solid fa-unlock"></i> เฉลยแล้ว (คลิกเพื่อซ่อน)`;
+            playSound('next');
+        } else {
+            hint.innerHTML = `<i class="fa-solid fa-lock"></i> คลิกเพื่อเฉลย`;
+            playSound('prev');
+        }
+    }
+}
+
 function pauseYouTubeVideos() {
     const iframes = document.querySelectorAll('iframe');
     iframes.forEach(iframe => {

@@ -422,13 +422,19 @@
                             </div>
                         </div>
 
-                        <div class="video-case-card law-ref">
+                        <div class="video-case-card law-ref blur-card" id="law-reveal-1" onclick="toggleLawReveal('law-reveal-1')" title="คลิกเพื่อเปิดเฉลยข้อกฎหมาย">
                             <div class="video-card-title">
-                                <i class="fa-solid fa-scale-balanced"></i> 2. ทบทวนข้อกฎหมาย (Level 2)
+                                <span><i class="fa-solid fa-scale-balanced"></i> 2. ทบทวนข้อกฎหมาย (Level 2)</span>
+                                <span class="reveal-toggle-hint"><i class="fa-solid fa-lock"></i> คลิกเพื่อเฉลย</span>
                             </div>
-                            <div class="video-card-body">
+                            <div class="video-card-body law-body-content blurred">
                                 <div style="margin-bottom: 5px;"><span class="video-badge-pill">มาตรา 14</span> <strong>นำเข้าข้อมูลเท็จ/บิดเบือน</strong> สังคมเข้าใจผิด โทษคุกไม่เกิน 5 ปี / ปรับ 1 แสน</div>
                                 <div><span class="video-badge-pill">มาตรา 16</span> <strong>ตัดต่อ/ดัดแปลงภาพ</strong> ทำให้ผู้อื่นหรือสังคมเสียหาย โทษคุกไม่เกิน 3 ปี / ปรับ 2 แสน</div>
+                            </div>
+                            <div class="law-blur-overlay">
+                                <div class="blur-prompt-btn">
+                                    <i class="fa-solid fa-hand-pointer"></i> <span>คลิกเพื่อเฉลยมาตรา</span>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -485,13 +491,19 @@
                             </div>
                         </div>
 
-                        <div class="video-case-card bot-law">
+                        <div class="video-case-card bot-law blur-card" id="law-reveal-2" onclick="toggleLawReveal('law-reveal-2')" title="คลิกเพื่อเปิดเฉลยข้อกฎหมาย">
                             <div class="video-card-title">
-                                <i class="fa-solid fa-gavel"></i> 2. ทบทวนข้อกฎหมาย (Level 1 & 2)
+                                <span><i class="fa-solid fa-gavel"></i> 2. ทบทวนข้อกฎหมาย (Level 1 & 2)</span>
+                                <span class="reveal-toggle-hint"><i class="fa-solid fa-lock"></i> คลิกเพื่อเฉลย</span>
                             </div>
-                            <div class="video-card-body">
+                            <div class="video-card-body law-body-content blurred">
                                 <div style="margin-bottom: 5px;"><span class="video-badge-pill cyan">มาตรา 7 & 8</span> <strong>แอบเข้าถึงและดักรับข้อมูล</strong> กลางทางโดยมิชอบ โทษคุกไม่เกิน 2 - 3 ปี</div>
                                 <div><span class="video-badge-pill purple">มาตรา 10 & 13</span> <strong>รบกวนระบบและแจกจ่ายบอทโกง</strong> โทษคุกไม่เกิน 5 ปี / ปรับสูงสุด 1 แสนบาท</div>
+                            </div>
+                            <div class="law-blur-overlay">
+                                <div class="blur-prompt-btn">
+                                    <i class="fa-solid fa-hand-pointer"></i> <span>คลิกเพื่อเฉลยมาตรา</span>
+                                </div>
                             </div>
                         </div>
                     </div>

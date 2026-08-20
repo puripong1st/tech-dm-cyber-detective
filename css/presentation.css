@@ -762,6 +762,125 @@ h1, h2, h3, h4, h5, h6, p, span, div {
     color: #e9d5ff;
 }
 
+/* Interactive Law Reveal Card (Blurred State for Teaching & Quizzing) */
+.video-case-card.blur-card {
+    position: relative;
+    cursor: pointer;
+    overflow: hidden;
+    user-select: none;
+    transition: all 0.3s ease;
+}
+
+.video-case-card.blur-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 0 15px rgba(234, 179, 8, 0.3);
+}
+
+.video-case-card.bot-law.blur-card:hover {
+    box-shadow: 0 0 15px rgba(168, 85, 247, 0.3);
+}
+
+.video-case-card.blur-card .video-card-title {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+}
+
+.reveal-toggle-hint {
+    font-size: 0.72rem;
+    font-weight: 700;
+    color: var(--neon-yellow);
+    background: rgba(234, 179, 8, 0.15);
+    border: 1px dashed var(--neon-yellow);
+    padding: 2px 7px;
+    border-radius: 4px;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    transition: all 0.2s ease;
+}
+
+.video-case-card.bot-law .reveal-toggle-hint {
+    color: #c084fc;
+    background: rgba(168, 85, 247, 0.15);
+    border-color: #a855f7;
+}
+
+.video-case-card.blur-card.revealed .reveal-toggle-hint {
+    color: var(--neon-green) !important;
+    background: rgba(34, 197, 94, 0.15) !important;
+    border-color: var(--neon-green) !important;
+    border-style: solid !important;
+}
+
+.law-body-content {
+    transition: filter 0.35s ease, opacity 0.35s ease;
+}
+
+.law-body-content.blurred {
+    filter: blur(7px);
+    opacity: 0.3;
+    pointer-events: none;
+}
+
+.video-case-card.blur-card.revealed .law-body-content.blurred {
+    filter: blur(0);
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.law-blur-overlay {
+    position: absolute;
+    top: 34px;
+    left: 0;
+    width: 100%;
+    bottom: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: rgba(15, 23, 42, 0.6);
+    backdrop-filter: blur(2px);
+    transition: opacity 0.3s ease, visibility 0.3s ease;
+    z-index: 5;
+    border-radius: 0 0 7px 7px;
+}
+
+.video-case-card.blur-card.revealed .law-blur-overlay {
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+}
+
+.blur-prompt-btn {
+    background: linear-gradient(135deg, rgba(234, 179, 8, 0.95), rgba(245, 158, 11, 0.95));
+    color: #0f172a;
+    font-weight: 800;
+    font-size: 0.8rem;
+    padding: 5px 12px;
+    border-radius: 20px;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    box-shadow: 0 0 15px rgba(234, 179, 8, 0.5);
+    animation: pulsePrompt 2s infinite ease-in-out;
+}
+
+.video-case-card.bot-law .blur-prompt-btn {
+    background: linear-gradient(135deg, rgba(168, 85, 247, 0.95), rgba(139, 92, 246, 0.95));
+    color: #ffffff;
+    box-shadow: 0 0 15px rgba(168, 85, 247, 0.5);
+}
+
+@keyframes pulsePrompt {
+    0%, 100% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.05);
+    }
+}
+
 @media (max-width: 960px) {
     .slide.video-slide {
         overflow-y: auto;
