@@ -1,5 +1,4 @@
 let currentSlide = 0;
-const totalSlides = 8;
 let soundEnabled = true;
 
 const AudioCtx = window.AudioContext || window.webkitAudioContext;
@@ -49,21 +48,41 @@ function playSound(type) {
     } catch (e) {}
 }
 
+function getTotalSlides() {
+    const slides = document.querySelectorAll('.slide');
+    return slides.length || 9;
+}
+
 const dotsContainer = document.getElementById('dots-container');
-for (let i = 0; i < totalSlides; i++) {
+const totalSlidesCount = getTotalSlides();
+for (let i = 0; i < totalSlidesCount; i++) {
     const dot = document.createElement('div');
     dot.className = `dot ${i === 0 ? 'active' : ''}`;
     dot.addEventListener('click', () => goToSlide(i));
     dotsContainer.appendChild(dot);
 }
 
+function pauseYouTubeVideos() {
+    const iframes = document.querySelectorAll('iframe');
+    iframes.forEach(iframe => {
+        try {
+            if (iframe.contentWindow) {
+                iframe.contentWindow.postMessage('{"event":"command","func":"pauseVideo","args":""}', '*');
+            }
+        } catch (e) {}
+    });
+}
+
 function updateSlideView() {
     const slides = document.querySelectorAll('.slide');
+    const totalSlides = slides.length || 9;
     const dots = document.querySelectorAll('.dot');
     const hpBar = document.getElementById('hp-bar');
     const stageText = document.getElementById('stage-text');
     const prevBtn = document.getElementById('prev-btn');
     const nextBtn = document.getElementById('next-btn');
+
+    pauseYouTubeVideos();
 
     slides.forEach((slide, index) => {
         slide.classList.remove('active', 'exit-left');
@@ -79,18 +98,21 @@ function updateSlideView() {
     });
 
     const progressPercent = ((currentSlide + 1) / totalSlides) * 100;
-    hpBar.style.width = `${progressPercent}%`;
-    stageText.textContent = `STAGE ${currentSlide + 1} / ${totalSlides}`;
+    if (hpBar) hpBar.style.width = `${progressPercent}%`;
+    if (stageText) stageText.textContent = `STAGE ${currentSlide + 1} / ${totalSlides}`;
 
-    prevBtn.disabled = currentSlide === 0;
-    if (currentSlide === totalSlides - 1) {
-        nextBtn.innerHTML = `COMPLETE <i class="fa-solid fa-flag-checkered"></i>`;
-    } else {
-        nextBtn.innerHTML = `NEXT (ต่อไป) <i class="fa-solid fa-chevron-right"></i>`;
+    if (prevBtn) prevBtn.disabled = currentSlide === 0;
+    if (nextBtn) {
+        if (currentSlide === totalSlides - 1) {
+            nextBtn.innerHTML = `COMPLETE <i class="fa-solid fa-flag-checkered"></i>`;
+        } else {
+            nextBtn.innerHTML = `NEXT (ต่อไป) <i class="fa-solid fa-chevron-right"></i>`;
+        }
     }
 }
 
 function nextSlide() {
+    const totalSlides = getTotalSlides();
     if (currentSlide < totalSlides - 1) {
         currentSlide++;
         playSound('next');
@@ -110,6 +132,7 @@ function prevSlide() {
 }
 
 function goToSlide(index) {
+    const totalSlides = getTotalSlides();
     if (index >= 0 && index < totalSlides && index !== currentSlide) {
         const dir = index > currentSlide ? 'next' : 'prev';
         currentSlide = index;

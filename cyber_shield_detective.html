@@ -1868,6 +1868,7 @@
                         document.getElementById('modal-register-team').classList.add('hidden');
                         updateHeaderInfo();
                         loadCurrentCase();
+                        preloadSessionImages();
                         return;
                     }
                 } catch (e) { }
@@ -1974,6 +1975,7 @@
             document.getElementById('modal-register-team').classList.add('hidden');
             updateHeaderInfo();
             loadCurrentCase();
+            preloadSessionImages();
             showToast('ลงทะเบียนทีมสำเร็จ! เริ่มสืบคดีที่ 1', 'fa-solid fa-circle-check text-emerald-400');
         }
 
@@ -1995,7 +1997,20 @@
             document.getElementById('label-total-score').textContent = total;
         }
 
-        // --- Image Loading Handlers ---
+        // --- Image Loading Handlers & Preloader ---
+        function preloadSessionImages() {
+            try {
+                if (GAME_STATE && Array.isArray(GAME_STATE.sessionCases)) {
+                    GAME_STATE.sessionCases.forEach(c => {
+                        if (c && c.image) {
+                            const pre = new Image();
+                            pre.src = c.image;
+                        }
+                    });
+                }
+            } catch(e) {}
+        }
+
         function onComicImageLoad(img) {
             img.classList.remove('opacity-0');
             const spinner = document.getElementById('comic-img-spinner');
@@ -2013,23 +2028,29 @@
                 if (master && master.image) {
                     caseItem.image = master.image;
                     img.src = master.image;
+                    if (img.complete && img.naturalWidth > 0) {
+                        onComicImageLoad(img);
+                    }
                     return;
                 }
             }
 
-            // Fallback Level 2: Toggle leading slash for relative/absolute host pathing
+            // Fallback Level 2: Clean relative path
             if (!img.dataset.fallbackSlashTried) {
                 img.dataset.fallbackSlashTried = 'true';
-                if (img.src.includes('assets/evidence/')) {
-                    const cleanPath = img.src.substring(img.src.indexOf('assets/evidence/'));
-                    img.src = cleanPath;
+                if (img.src.includes('assets/chibi_comics/')) {
+                    const fname = img.src.substring(img.src.indexOf('assets/chibi_comics/'));
+                    img.src = fname;
+                    if (img.complete && img.naturalWidth > 0) {
+                        onComicImageLoad(img);
+                    }
                     return;
                 }
             }
 
             const spinner = document.getElementById('comic-img-spinner');
             if (spinner) {
-                spinner.innerHTML = '<i class="fa-solid fa-triangle-exclamation text-amber-400 text-2xl"></i><span class="text-amber-300 font-semibold">โหลดภาพไม่สำเร็จ (ตรวจสอบไฟล์ภาพ)</span>';
+                spinner.innerHTML = '<i class="fa-solid fa-triangle-exclamation text-amber-400 text-2xl"></i><span class="text-amber-300 font-semibold">โหลดภาพไม่สำเร็จ (คลิกปุ่มซูมเพื่อเปิดภาพ)</span>';
                 spinner.classList.remove('hidden');
             }
         }
@@ -2077,6 +2098,11 @@
             delete comicImg.dataset.fallbackSlashTried;
             comicImg.src = caseItem.image;
             comicImg.alt = caseItem.title;
+
+            // If image is already cached or completed, show immediately
+            if (comicImg.complete && comicImg.naturalWidth > 0) {
+                onComicImageLoad(comicImg);
+            }
 
             selectStoryPhase(1);
 

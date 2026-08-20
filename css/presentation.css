@@ -409,6 +409,154 @@ h1, h2, h3, h4, h5, h6, p, span, div {
     color: #ffffff;
 }
 
+/* ==========================================
+   Case Study Video Slide (Slide 5)
+   ========================================== */
+.video-slide-grid {
+    display: grid;
+    grid-template-columns: 1.18fr 0.82fr;
+    gap: 18px;
+    width: 100%;
+    align-items: stretch;
+    margin-top: 4px;
+}
+
+.video-player-box {
+    background: var(--bg-card);
+    border: 2px solid var(--neon-magenta);
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 0 25px rgba(244, 63, 94, 0.25);
+    display: flex;
+    flex-direction: column;
+}
+
+.video-responsive-wrap {
+    position: relative;
+    width: 100%;
+    padding-top: 56.25%; /* 16:9 Aspect Ratio */
+    background: #000000;
+}
+
+.video-responsive-wrap iframe {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border: 0;
+}
+
+.video-player-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 16px;
+    background: #0f172a;
+    border-top: 1px solid rgba(244, 63, 94, 0.3);
+    font-size: 0.88rem;
+    color: var(--text-sub);
+}
+
+.video-player-footer .source-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    color: #f43f5e;
+    font-weight: 700;
+}
+
+.video-info-cards {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    height: 100%;
+}
+
+.video-case-card {
+    background: var(--bg-card);
+    border: 2px solid #334155;
+    border-radius: 10px;
+    padding: 16px 18px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    flex: 1;
+    transition: all 0.2s ease;
+}
+
+.video-case-card:hover {
+    background: var(--bg-card-hover);
+    transform: translateY(-2px);
+}
+
+.video-case-card.alert {
+    border-color: var(--neon-magenta);
+    border-left: 6px solid var(--neon-magenta);
+}
+
+.video-case-card.law-ref {
+    border-color: var(--neon-yellow);
+    border-left: 6px solid var(--neon-yellow);
+}
+
+.video-card-title {
+    font-size: 1.1rem;
+    font-weight: 800;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.video-case-card.alert .video-card-title { color: var(--neon-magenta); }
+.video-case-card.law-ref .video-card-title { color: var(--neon-yellow); }
+
+.youtube-direct-link {
+    color: var(--neon-cyan);
+    text-decoration: none;
+    font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 10px;
+    border-radius: 6px;
+    background: rgba(56, 189, 248, 0.1);
+    border: 1px solid rgba(56, 189, 248, 0.3);
+    transition: all 0.2s ease;
+}
+
+.youtube-direct-link:hover {
+    background: var(--neon-cyan);
+    color: #0f172a;
+}
+
+.video-card-body {
+    font-size: 0.9rem;
+    line-height: 1.45;
+    color: var(--text-body);
+}
+
+.video-card-body strong {
+    color: #ffffff;
+}
+
+.video-badge-pill {
+    background: rgba(244, 63, 94, 0.2);
+    border: 1px solid var(--neon-magenta);
+    color: #fca5a5;
+    padding: 1px 6px;
+    border-radius: 4px;
+    font-size: 0.78rem;
+    font-weight: 700;
+    margin-right: 4px;
+}
+
+@media (max-width: 960px) {
+    .video-slide-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
 /* PDPA 3-Column Pillar Cards (Slide 5) */
 .pdpa-3col-grid {
     display: grid;

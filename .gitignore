@@ -10,5 +10,5 @@ node_modules/
 !assets/**/*.jpeg
 .vercel/
 *.log
-
-
+assets/chibi_comics_raw/
+scratch/
