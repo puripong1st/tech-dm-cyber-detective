@@ -1,0 +1,2768 @@
+<!DOCTYPE html>
+<html lang="th">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cyber Shield Detective (3 คดี): ปฏิบัติการสายสืบพิทักษ์ไซเบอร์ | เกมการเรียนรู้กฎหมายคอมพิวเตอร์ & PDPA
+    </title>
+
+    <!-- SEO Meta Tags -->
+    <meta name="description"
+        content="เกมสืบคดีกฎหมายคอมพิวเตอร์ 2560 และ PDPA ในรูปแบบการ์ตูน 9 ช่อง วิเคราะห์บทบาท 3 ด้าน (กฎหมาย, บรรเทาภัย, ป้องกัน) ประเมินผลอัตนัยด้วย Gemini AI แบบเรียลไทม์ สำหรับนักเรียน ม.2 และ ม.3">
+    <meta name="keywords"
+        content="Cyber Shield Detective, เกมกฎหมายคอมพิวเตอร์, เกม พ.ร.บ.คอมพิวเตอร์, สืบคดีไซเบอร์, สื่อการสอน ม.3, วิทยาการคำนวณ, PDPA เกม, Gemini AI ประเมินผล, 12 คดีไซเบอร์, การ์ตูนกฎหมายคอม">
+    <meta name="author" content="Cyber Shield Detective Team">
+    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
+    <meta name="theme-color" content="#070913">
+    <link rel="canonical" href="https://tech-dm-cyber-detective.vercel.app/cyber_shield_detective.html">
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="game">
+    <meta property="og:url" content="https://tech-dm-cyber-detective.vercel.app/cyber_shield_detective.html">
+    <meta property="og:title" content="Cyber Shield Detective: ปฏิบัติการสายสืบพิทักษ์ไซเบอร์ (ม.2 - ม.3)">
+    <meta property="og:description"
+        content="เกมสืบคดีกฎหมายคอมพิวเตอร์ 3 บทบาท ตรวจคำตอบอัตนัยด้วย Google Gemini AI พร้อมระบบป้องกันการโกงและสปอยล์">
+    <meta property="og:image" content="https://tech-dm-cyber-detective.vercel.app/favicon.png">
+    <meta property="og:site_name" content="Cyber Shield Detective Platform">
+    <meta property="og:locale" content="th_TH">
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:url" content="https://tech-dm-cyber-detective.vercel.app/cyber_shield_detective.html">
+    <meta name="twitter:title" content="Cyber Shield Detective: ปฏิบัติการสายสืบพิทักษ์ไซเบอร์ (ม.2 - ม.3)">
+    <meta name="twitter:description"
+        content="เกมสืบคดีกฎหมายคอมพิวเตอร์ 3 บทบาท ตรวจคำตอบอัตนัยด้วย Google Gemini AI พร้อมระบบป้องกันการโกงและสปอยล์">
+    <meta name="twitter:image" content="https://tech-dm-cyber-detective.vercel.app/favicon.png">
+
+    <!-- Structured Data (JSON-LD) -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "VideoGame",
+      "name": "Cyber Shield Detective (ปฏิบัติการสายสืบพิทักษ์ไซเบอร์)",
+      "description": "เกมสืบคดีจำลองสถานการณ์ความผิดตาม พ.ร.บ.คอมพิวเตอร์ 2560 และ PDPA 3 บทบาท ประเมินผลอัตนัยด้วย AI สำหรับนักเรียน ม.2-ม.3",
+      "genre": ["Educational Game", "Detective", "Cyber Law Simulation"],
+      "gamePlatform": "Web Browser",
+      "inLanguage": "th",
+      "audience": {
+        "@type": "EducationalAudience",
+        "educationalRole": "student",
+        "audienceType": "Secondary School Students (Grade 8-9)"
+      },
+      "educationalUse": "Classroom Activity, Summative Assessment, Formative Assessment"
+    }
+    </script>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Kanit:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400&family=Sarabun:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=Chakra+Petch:wght@500;600;700;800&display=swap"
+        rel="stylesheet">
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" sizes="256x256" href="favicon.png">
+
+    <!-- FontAwesome 6 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+
+    <!-- Supabase JS CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        cyber: {
+                            dark: '#070913',
+                            slate: '#0F172A',
+                            panel: '#1E293B',
+                            cyan: '#06B6D4',
+                            cyanGlow: '#22D3EE',
+                            pink: '#EC4899',
+                            yellow: '#F59E0B',
+                            green: '#10B981',
+                            purple: '#8B5CF6'
+                        }
+                    },
+                    fontFamily: {
+                        kanit: ['Kanit', 'sans-serif'],
+                        sarabun: ['Sarabun', 'sans-serif'],
+                        mono: ['Chakra Petch', 'monospace']
+                    }
+                }
+            }
+        }
+    </script>
+
+    <!-- Confetti JS CDN for Victory Effects -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+    <style>
+        :root {
+            --neon-cyan: #06B6D4;
+            --neon-pink: #EC4899;
+            --neon-yellow: #F59E0B;
+            --neon-green: #10B981;
+            --neon-purple: #8B5CF6;
+        }
+
+        body {
+            background-color: #070913;
+            color: #F8FAFC;
+            font-family: 'Kanit', sans-serif;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        .cyber-grid-bg {
+            background-image:
+                radial-gradient(circle at 20% 20%, rgba(6, 182, 212, 0.1) 0%, transparent 40%),
+                radial-gradient(circle at 80% 80%, rgba(236, 72, 153, 0.1) 0%, transparent 40%),
+                linear-gradient(rgba(15, 23, 42, 0.7) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(15, 23, 42, 0.7) 1px, transparent 1px);
+            background-size: 100% 100%, 100% 100%, 32px 32px, 32px 32px;
+        }
+
+        .glass-panel {
+            background: rgba(15, 23, 42, 0.88);
+            backdrop-filter: blur(14px);
+            -webkit-backdrop-filter: blur(14px);
+            border: 1px solid rgba(6, 182, 212, 0.25);
+        }
+
+        /* Force dark style on select dropdowns and options */
+        select {
+            color-scheme: dark !important;
+            background-color: #0f172a !important;
+            color: #f8fafc !important;
+        }
+
+        select option {
+            background-color: #0f172a !important;
+            color: #f8fafc !important;
+            padding: 8px 12px !important;
+        }
+
+        select option:hover,
+        select option:focus,
+        select option:checked {
+            background-color: #06b6d4 !important;
+            color: #ffffff !important;
+        }
+
+        /* Custom Scrollbars */
+        ::-webkit-scrollbar {
+            width: 5px;
+            height: 5px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: rgba(15, 23, 42, 0.6);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #334155;
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #06B6D4;
+        }
+
+        @media print {
+            @page {
+                size: A4 portrait;
+                margin: 0;
+            }
+
+            html,
+            body {
+                background: #ffffff !important;
+                color: #0f172a !important;
+                margin: 0 !important;
+                padding: 0 !important;
+                width: 100% !important;
+                height: 100% !important;
+                -webkit-print-color-adjust: exact !important;
+                print-color-adjust: exact !important;
+                overflow: hidden !important;
+            }
+
+            /* Hide ALL normal body elements except the dedicated printable certificate */
+            body>header,
+            body>main,
+            body>div:not(#printable-certificate),
+            #modal-register-team,
+            #modal-comic-lightbox,
+            #modal-certificate,
+            #toast-container,
+            .no-print {
+                display: none !important;
+            }
+
+            /* Display ONLY the printable certificate container cleanly on exactly 1 page */
+            #printable-certificate {
+                display: flex !important;
+                flex-direction: column !important;
+                justify-content: space-between !important;
+                position: absolute !important;
+                left: 0 !important;
+                top: 0 !important;
+                width: 100% !important;
+                max-width: 210mm !important;
+                height: 297mm !important;
+                max-height: 297mm !important;
+                box-sizing: border-box !important;
+                margin: 0 auto !important;
+                padding: 10mm 12mm !important;
+                page-break-after: avoid !important;
+                page-break-before: avoid !important;
+                page-break-inside: avoid !important;
+                break-inside: avoid !important;
+                overflow: hidden !important;
+                z-index: 999999 !important;
+                background: #ffffff !important;
+                color: #0f172a !important;
+            }
+        }
+    </style>
+</head>
+
+<body class="cyber-grid-bg antialiased selection:bg-cyan-500 selection:text-black flex flex-col min-h-screen">
+
+    <!-- Anti-Cheat Security Toast Container -->
+    <div id="toast-container" class="fixed top-4 right-4 z-50 flex flex-col gap-2 pointer-events-none"></div>
+
+    <!-- 1. TOP STUDENT NAVBAR (Clean & Focused) -->
+    <header class="glass-panel sticky top-0 z-40 border-b border-cyan-500/30 px-3 py-2 sm:px-6">
+        <div class="max-w-7xl mx-auto flex items-center justify-between gap-2">
+
+            <!-- Game Brand -->
+            <div class="flex items-center gap-2.5">
+                <img src="favicon.png" alt="Logo"
+                    class="w-8 h-8 rounded-lg border border-cyan-400 shadow-md shadow-cyan-500/30 object-cover">
+                <div>
+                    <div class="flex items-center gap-1.5">
+                        <h1
+                            class="text-sm sm:text-base font-extrabold tracking-wider text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-pink-400 to-amber-300 font-mono">
+                            CYBER SHIELD DETECTIVE
+                        </h1>
+                        <span
+                            class="text-[10px] px-1.5 py-0.2 rounded bg-pink-500/20 text-pink-300 border border-pink-500/40 font-mono font-bold">v4.5
+                            AI (3 คดี)</span>
+                    </div>
+                    <p class="text-[10px] text-slate-400 hidden sm:block">สืบคดีอัตนัย ม.3 — ประเมินผลสดด้วย Google
+                        Gemini AI</p>
+                </div>
+            </div>
+
+            <!-- Header Status Pills (Team, Room, Case Progress, Score) -->
+            <div class="flex items-center gap-1.5 sm:gap-3 text-xs font-sarabun">
+
+                <!-- Team & Room Pill -->
+                <div
+                    class="flex items-center gap-1.5 px-2.5 py-1 rounded-xl bg-slate-900/90 border border-slate-700 text-slate-200">
+                    <i class="fa-solid fa-users text-cyan-400 text-xs"></i>
+                    <span id="label-team-name"
+                        class="font-semibold text-cyan-300 max-w-[90px] sm:max-w-[150px] truncate">นักสืบ ม.3</span>
+                    <span id="label-room-name"
+                        class="px-1.5 py-0.2 rounded bg-purple-500/20 text-purple-300 text-[10px] font-mono border border-purple-500/30 font-bold">ม.3/1</span>
+                </div>
+
+                <!-- Case Counter Pill -->
+                <div
+                    class="flex items-center gap-1.5 px-2.5 py-1 rounded-xl bg-slate-900/90 border border-slate-700 text-slate-200 font-mono">
+                    <i class="fa-solid fa-folder-open text-pink-400 text-xs"></i>
+                    <span>คดีที่ <b id="label-current-case" class="text-pink-300">1</b> / 3</span>
+                </div>
+
+                <!-- Total Cumulative Score Pill -->
+                <div
+                    class="flex items-center gap-1.5 px-3 py-1 rounded-xl bg-slate-900/90 border border-amber-500/40 text-amber-300 font-mono shadow-sm">
+                    <i class="fa-solid fa-star text-yellow-400 text-xs"></i>
+                    <span>คะแนน: <b id="label-total-score" class="text-yellow-300 text-sm font-bold">0</b> / 90</span>
+                </div>
+
+                <!-- Action Controls (Sound, Reset, Home) -->
+                <div class="flex items-center gap-1">
+                    <button onclick="confirmResetGame()"
+                        class="p-1.5 rounded-lg bg-slate-800 hover:bg-red-950/80 border border-slate-700 hover:border-red-500/50 text-slate-300 hover:text-red-300 text-xs transition"
+                        title="เริ่มรอบใหม่ (Reset)">
+                        <i class="fa-solid fa-arrows-rotate text-red-400"></i>
+                    </button>
+                    <button id="btn-sound-toggle" onclick="toggleAudio()"
+                        class="p-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-300 text-xs transition"
+                        title="เปิด/ปิด เสียง">
+                        <i id="sound-icon" class="fa-solid fa-volume-high text-cyan-400"></i>
+                    </button>
+                    <a href="/"
+                        class="p-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-300 hover:text-white text-xs transition"
+                        title="กลับหน้าหลัก">
+                        <i class="fa-solid fa-house"></i>
+                    </a>
+                </div>
+
+            </div>
+
+        </div>
+    </header>
+
+    <!-- ========================================================================= -->
+    <!-- 2. MAIN SINGLE-PAGE COMPACT WORKSPACE (No-Scroll Layout)                   -->
+    <!-- ========================================================================= -->
+    <main class="max-w-7xl mx-auto w-full p-2.5 sm:p-4 flex-1 flex flex-col justify-start">
+
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-3.5 items-stretch flex-1">
+
+            <!-- ================================================================= -->
+            <!-- LEFT COLUMN: Compact Case Dossier & 9-Panel Comic (5 Columns)     -->
+            <!-- ================================================================= -->
+            <section class="lg:col-span-5 flex flex-col gap-2.5">
+
+                <!-- Dossier Header & Complaint Box -->
+                <div class="glass-panel p-3.5 rounded-2xl border border-cyan-500/30 flex flex-col gap-2 shadow-lg">
+                    <div class="flex items-center justify-between">
+                        <span
+                            class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-medium bg-cyan-500/10 text-cyan-300 border border-cyan-500/30 font-mono">
+                            <i class="fa-solid fa-fingerprint"></i> DOSSIER #<span id="dossier-case-num">01</span>
+                        </span>
+                        <span id="dossier-category"
+                            class="text-[11px] px-2.5 py-0.5 rounded bg-purple-500/20 text-purple-300 border border-purple-500/30 font-semibold font-mono">
+                            พ.ร.บ. คอมพิวเตอร์
+                        </span>
+                    </div>
+
+                    <h2 id="dossier-title" class="text-sm sm:text-base font-bold text-slate-100 leading-snug">
+                        กำลังโหลดข้อมูลแฟ้มคดี...
+                    </h2>
+
+                    <!-- Complaint Summary -->
+                    <div
+                        class="bg-slate-900/90 rounded-xl p-2.5 border-l-4 border-cyan-400 text-xs text-slate-300 leading-relaxed shadow-inner">
+                        <div class="font-semibold text-cyan-300 mb-0.5 flex items-center gap-1 text-[11px]">
+                            <i class="fa-solid fa-bullhorn"></i> คำร้องทุกข์จากผู้เสียหาย:
+                        </div>
+                        <p id="dossier-brief" class="line-clamp-3 hover:line-clamp-none transition-all">...</p>
+                    </div>
+                </div>
+
+                <!-- 9-Panel Comic Thumbnail with Zoom Button -->
+                <div class="glass-panel p-3.5 rounded-2xl border border-cyan-500/30 flex flex-col gap-2.5 shadow-lg">
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center gap-1.5 text-xs text-slate-200 font-semibold">
+                            <i class="fa-solid fa-film text-pink-400"></i>
+                            <span>หลักฐานภาพการ์ตูน 9 ช่อง</span>
+                        </div>
+                        <button onclick="openComicLightbox()"
+                            class="text-[11px] px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-cyan-300 border border-cyan-500/40 flex items-center gap-1 transition shadow-sm">
+                            <i class="fa-solid fa-magnifying-glass-plus"></i> ซูมดูภาพใหญ่
+                        </button>
+                    </div>
+
+                    <!-- Comic Image Thumbnail -->
+                    <div class="relative group cursor-pointer overflow-hidden rounded-xl border border-slate-700 bg-slate-900 shadow-md flex items-center justify-center p-1 min-h-[220px]"
+                        onclick="openComicLightbox()">
+                        <div id="comic-img-spinner"
+                            class="absolute inset-0 flex flex-col items-center justify-center bg-slate-900 text-cyan-400 text-xs gap-2 z-10">
+                            <i class="fa-solid fa-circle-notch fa-spin text-2xl"></i>
+                            <span>กำลังโหลดภาพหลักฐาน...</span>
+                        </div>
+                        <img id="dossier-comic-img" src="assets/evidence/case_ev_8f3a9b21.jpg" alt="Comic 9 Panels"
+                            class="w-full h-auto max-h-[260px] sm:max-h-[290px] object-contain mx-auto rounded transition-all duration-300 group-hover:scale-[1.02] bg-white opacity-0 z-0"
+                            onload="onComicImageLoad(this)" onerror="onComicImageError(this)">
+                        <div
+                            class="absolute inset-0 bg-slate-950/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center z-20">
+                            <span
+                                class="text-xs text-cyan-300 bg-slate-900/90 px-3 py-1.5 rounded-full border border-cyan-400/50 shadow-lg">
+                                <i class="fa-solid fa-expand mr-1"></i> คลิกเพื่อขยายเต็มจอ
+                            </span>
+                        </div>
+                    </div>
+
+                    <!-- 3-Phase Story Breakdown Buttons -->
+                    <div class="flex flex-col gap-1.5 pt-0.5">
+                        <div class="grid grid-cols-3 gap-1.5 text-[11px] font-sarabun">
+                            <button onclick="selectStoryPhase(1)" id="phase-tab-1"
+                                class="px-2 py-1.5 rounded-lg bg-slate-800/90 border border-cyan-500/40 text-cyan-300 font-semibold transition shadow-sm">
+                                🚩 1. ต้นเหตุ
+                            </button>
+                            <button onclick="selectStoryPhase(2)" id="phase-tab-2"
+                                class="px-2 py-1.5 rounded-lg bg-slate-900/60 border border-slate-700 text-slate-400 hover:text-white transition">
+                                💥 2. ผลกระทบ
+                            </button>
+                            <button onclick="selectStoryPhase(3)" id="phase-tab-3"
+                                class="px-2 py-1.5 rounded-lg bg-slate-900/60 border border-slate-700 text-slate-400 hover:text-white transition">
+                                ⚖️ 3. คลี่คลาย
+                            </button>
+                        </div>
+                        <div id="story-phase-desc"
+                            class="p-2.5 rounded-xl bg-slate-900/90 border border-slate-800 text-[11px] text-slate-300 leading-relaxed min-h-[44px]">
+                            โหลดเนื้อเรื่องช่วงที่ 1...
+                        </div>
+                    </div>
+
+                </div>
+
+            </section>
+
+            <!-- ================================================================= -->
+            <!-- RIGHT COLUMN: Interactive Single-Role Console (7 Columns)         -->
+            <!-- ================================================================= -->
+            <section class="lg:col-span-7 flex flex-col gap-3">
+
+                <div
+                    class="glass-panel p-4 sm:p-5 rounded-2xl border border-cyan-500/30 flex flex-col gap-4 shadow-2xl">
+
+                    <!-- 3-Step Interactive Role Stepper at Top -->
+                    <div class="flex flex-col gap-2.5 border-b border-slate-800 pb-3">
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center gap-2">
+                                <span
+                                    class="w-6 h-6 rounded-lg bg-cyan-500/20 border border-cyan-400 text-cyan-300 flex items-center justify-center text-xs shadow-sm">
+                                    <i class="fa-solid fa-list-check"></i>
+                                </span>
+                                <h3 class="text-sm font-bold text-slate-100">ขั้นตอนการสืบคดี (ทำทีละบทบาท &
+                                    ตรวจสดทันที)</h3>
+                            </div>
+                            <span id="case-status-badge"
+                                class="text-[11px] px-2.5 py-0.5 rounded-full bg-slate-800/90 text-amber-300 font-mono border border-slate-700 shadow-sm">
+                                กำลังสืบคดี: 0/30 คะแนน
+                            </span>
+                        </div>
+
+                        <!-- Stepper 3 Tabs -->
+                        <div class="grid grid-cols-3 gap-2 text-xs font-sarabun">
+
+                            <!-- Role 1 Stepper Tab -->
+                            <button onclick="switchActiveRole('legal')" id="step-tab-legal"
+                                class="p-2.5 rounded-xl bg-amber-500/20 border-2 border-amber-400 text-amber-200 font-bold flex flex-col items-center gap-0.5 transition shadow-md">
+                                <div class="flex items-center gap-1 text-[11px]">
+                                    <span>👨‍⚖️ 1. กฎหมาย</span>
+                                    <span id="badge-legal-score"
+                                        class="text-[10px] px-1.5 rounded bg-amber-500/30 font-mono">0/10</span>
+                                </div>
+                                <span id="status-legal-text" class="text-[10px] text-amber-300 font-normal">กำลังทำ
+                                    ✍️</span>
+                            </button>
+
+                            <!-- Role 2 Stepper Tab -->
+                            <button onclick="switchActiveRole('remedy')" id="step-tab-remedy"
+                                class="p-2.5 rounded-xl bg-slate-900/60 border border-slate-700 text-slate-400 flex flex-col items-center gap-0.5 hover:text-slate-200 transition">
+                                <div class="flex items-center gap-1 text-[11px]">
+                                    <span>🚑 2. แก้ไข</span>
+                                    <span id="badge-remedy-score"
+                                        class="text-[10px] px-1.5 rounded bg-slate-800 font-mono">0/10</span>
+                                </div>
+                                <span id="status-remedy-text"
+                                    class="text-[10px] text-slate-400 font-normal">รอตรวจ</span>
+                            </button>
+
+                            <!-- Role 3 Stepper Tab -->
+                            <button onclick="switchActiveRole('security')" id="step-tab-security"
+                                class="p-2.5 rounded-xl bg-slate-900/60 border border-slate-700 text-slate-400 flex flex-col items-center gap-0.5 hover:text-slate-200 transition">
+                                <div class="flex items-center gap-1 text-[11px]">
+                                    <span>🛡️ 3. ป้องกัน</span>
+                                    <span id="badge-security-score"
+                                        class="text-[10px] px-1.5 rounded bg-slate-800 font-mono">0/10</span>
+                                </div>
+                                <span id="status-security-text"
+                                    class="text-[10px] text-slate-400 font-normal">รอตรวจ</span>
+                            </button>
+
+                        </div>
+                    </div>
+
+                    <!-- ACTIVE ROLE INPUT CARD (Sits comfortably directly below Stepper) -->
+                    <div id="active-role-card"
+                        class="p-4 rounded-xl bg-slate-900/95 border border-slate-700/80 flex flex-col gap-3.5 shadow-xl transition-all">
+
+                        <!-- Role Header Title & Guidelines -->
+                        <div class="flex items-center justify-between gap-2 border-b border-slate-800 pb-2.5">
+                            <div class="flex items-center gap-2.5">
+                                <span id="role-avatar"
+                                    class="w-9 h-9 rounded-xl bg-amber-500/20 border border-amber-400 text-amber-300 flex items-center justify-center text-lg shadow-sm">
+                                    👨‍⚖️
+                                </span>
+                                <div>
+                                    <h4 id="role-title" class="text-xs sm:text-sm font-bold text-amber-300">
+                                        1. บทบาทนักวิเคราะห์กฎหมาย (Legal Analyst)
+                                    </h4>
+                                    <p id="role-desc" class="text-[11px] text-slate-400">
+                                        ระบุฐานความผิดตาม พ.ร.บ.คอมพิวเตอร์ / PDPA และวิเคราะห์อัตราโทษจำคุก/ปรับ
+                                    </p>
+                                </div>
+                            </div>
+                            <span id="role-max-badge"
+                                class="text-xs font-mono font-bold text-amber-400 bg-amber-500/20 px-2.5 py-1 rounded-lg border border-amber-500/30 shrink-0">
+                                เต็ม 10 คะแนน
+                            </span>
+                        </div>
+
+                        <!-- Active Textarea -->
+                        <div class="relative flex flex-col gap-1.5">
+                            <textarea id="active-role-input" rows="5" oninput="handleActiveTextInput()"
+                                placeholder="พิมพ์วิเคราะห์คำตอบที่นี่..."
+                                class="w-full bg-slate-950/90 border border-slate-700 rounded-xl p-3.5 text-xs sm:text-sm text-slate-100 placeholder-slate-500 focus:outline-none focus:border-cyan-400 focus:ring-1 focus:ring-cyan-400 font-sarabun transition resize-none leading-relaxed"></textarea>
+
+                            <!-- Counter & Help Tip -->
+                            <div class="flex items-center justify-between text-[11px] px-1 text-slate-400">
+                                <span id="role-tip" class="flex items-center gap-1">
+                                    💡 <b>เกณฑ์:</b> ระบุฐานความผิด + อัตราโทษจำคุก/ปรับ + เหตุผล
+                                </span>
+                                <span id="active-char-count" class="font-mono">
+                                    0 / 20 ตัวอักษร
+                                </span>
+                            </div>
+                        </div>
+
+                        <!-- Action Button for this Single Role -->
+                        <div class="flex items-center justify-between gap-2 pt-1">
+                            <button type="button" id="btn-clear-active-role" onclick="clearActiveRoleDraft()"
+                                class="px-3.5 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-medium transition shadow-sm">
+                                <i class="fa-solid fa-rotate-left mr-1"></i> ล้างคำตอบ
+                            </button>
+
+                            <div id="role-locked-badge"
+                                class="hidden px-4 py-2 rounded-xl bg-emerald-500/15 border border-emerald-500/40 text-emerald-300 text-xs font-semibold flex items-center gap-1.5 shadow-sm">
+                                <i class="fa-solid fa-lock text-emerald-400"></i>
+                                <span>ประเมินผลเรียบร้อยแล้ว (ไม่สามารถส่งคำตอบซ้ำได้)</span>
+                            </div>
+
+                            <button type="button" id="btn-submit-active-role" onclick="submitActiveRoleToAI()" disabled
+                                class="px-5 py-2.5 rounded-xl bg-gradient-to-r from-cyan-600 via-pink-600 to-amber-500 hover:from-cyan-500 hover:via-pink-500 hover:to-amber-400 disabled:opacity-40 disabled:cursor-not-allowed text-white text-xs sm:text-sm font-bold shadow-lg shadow-cyan-500/20 flex items-center gap-2 transition transform active:scale-95">
+                                <i class="fa-solid fa-bolt text-yellow-300"></i>
+                                <span id="label-submit-btn">ส่งตรวจบทบาทนี้ (10 คะแนน)</span>
+                            </button>
+                        </div>
+
+                    </div>
+
+                    <!-- INSTANT AI EVALUATION FEEDBACK BOX (Appears immediately after submitting this role) -->
+                    <div id="role-feedback-box"
+                        class="hidden p-4 rounded-xl bg-slate-950/95 border border-emerald-500/50 flex flex-col gap-3 shadow-xl transition-all">
+
+                        <div class="flex items-center justify-between border-b border-slate-800 pb-2.5">
+                            <div class="flex items-center gap-2">
+                                <div
+                                    class="w-6 h-6 rounded-md bg-emerald-500/20 border border-emerald-400 text-emerald-300 flex items-center justify-center text-xs">
+                                    <i class="fa-solid fa-circle-check"></i>
+                                </div>
+                                <span class="text-xs font-bold text-slate-100">ผลการประเมินจาก Google Gemini AI</span>
+                                <span id="role-eval-mode"
+                                    class="text-[10px] px-2 py-0.5 rounded bg-cyan-500/20 text-cyan-300 font-mono border border-cyan-500/30">AI
+                                    Evaluator</span>
+                            </div>
+
+                            <!-- Single Role Score Badge -->
+                            <div
+                                class="flex items-center gap-1.5 px-3 py-1 rounded-lg bg-emerald-950/80 border border-emerald-500/40 text-emerald-300 font-mono font-bold text-xs">
+                                <span>คะแนนที่ได้:</span>
+                                <b id="role-eval-score" class="text-yellow-300 text-sm">0</b>
+                                <span class="text-slate-400">/ 10</span>
+                            </div>
+                        </div>
+
+                        <!-- Feedback Content Text -->
+                        <p id="role-eval-feedback"
+                            class="text-xs text-slate-200 leading-relaxed font-sarabun bg-slate-900/90 p-3.5 rounded-xl border border-slate-800 shadow-inner">
+                            ...
+                        </p>
+
+                        <!-- Next Step Button Navigation -->
+                        <div class="flex items-center justify-end pt-1">
+                            <button type="button" id="btn-next-role-step" onclick="proceedToNextRoleOrCase()"
+                                class="px-5 py-2.5 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white text-xs sm:text-sm font-bold shadow-lg shadow-emerald-500/25 flex items-center gap-2 transition transform active:scale-95">
+                                <span id="label-next-step-btn">➡️ ไปยังบทบาทที่ 2: แก้ไข</span>
+                                <i class="fa-solid fa-arrow-right"></i>
+                            </button>
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+        </div>
+
+    </main>
+
+    <!-- 3. TEAM REGISTRATION MODAL (Opens on new session) -->
+    <div id="modal-register-team"
+        class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/90 backdrop-blur-lg overflow-y-auto">
+        <div
+            class="glass-panel max-w-lg w-full p-6 sm:p-7 rounded-3xl border border-cyan-400/50 shadow-2xl flex flex-col gap-4 relative my-auto">
+
+            <div class="text-center flex flex-col items-center gap-1.5">
+                <div
+                    class="w-14 h-14 rounded-2xl bg-cyan-500/20 border border-cyan-400 text-cyan-300 flex items-center justify-center text-2xl shadow-lg shadow-cyan-500/30">
+                    <i class="fa-solid fa-shield-halved"></i>
+                </div>
+                <h2
+                    class="text-xl sm:text-2xl font-black text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-pink-400 to-amber-300">
+                    CYBER SHIELD DETECTIVE
+                </h2>
+                <p class="text-xs text-slate-300">ยินดีต้อนรับสู่งานสืบคดีไซเบอร์ ม.3!
+                    โปรดลงทะเบียนทีมสายสืบเพื่อเริ่มปฏิบัติการ</p>
+            </div>
+
+            <form onsubmit="handleRegisterTeam(event)" class="flex flex-col gap-3.5 font-sarabun text-xs">
+                <!-- Team Name -->
+                <div>
+                    <label class="block font-semibold text-cyan-300 mb-1">🏷️ ชื่อทีมสายสืบ / ชื่อกลุ่ม <span
+                            class="text-pink-400">*</span></label>
+                    <input type="text" id="reg-team-name" required placeholder="เช่น ทีมพิทักษ์ไซเบอร์ ม.3/1"
+                        class="w-full bg-slate-950 border border-slate-700 rounded-xl px-3.5 py-2 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-cyan-400">
+                </div>
+
+                <!-- Room & Member Count Dropdowns -->
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block font-semibold text-slate-300 mb-1">🏫 ห้องเรียน <span
+                                class="text-pink-400">*</span></label>
+                        <select id="reg-room"
+                            class="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-cyan-400">
+                            <option value="ม.3/1">ม.3/1</option>
+                            <option value="ม.3/2">ม.3/2</option>
+                            <option value="ม.3/3">ม.3/3</option>
+                            <option value="ม.3/4">ม.3/4</option>
+                            <option value="ม.3/5">ม.3/5</option>
+                            <option value="ม.3/6">ม.3/6</option>
+                            <option value="ม.3/7">ม.3/7</option>
+                            <option value="ม.3/8">ม.3/8</option>
+                            <option value="ม.3/9">ม.3/9</option>
+                            <option value="ม.3/10">ม.3/10</option>
+                            <option value="ม.3/11">ม.3/11</option>
+                            <option value="ม.3/12">ม.3/12</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block font-semibold text-slate-300 mb-1">👥 จำนวนสมาชิก <span
+                                class="text-pink-400">*</span></label>
+                        <select id="reg-members-count" onchange="renderMemberInputs(parseInt(this.value))"
+                            class="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-cyan-400">
+                            <option value="1">1 คน</option>
+                            <option value="2">2 คน</option>
+                            <option value="3" selected>3 คน (แนะนำ 3 บทบาท)</option>
+                            <option value="4">4 คน</option>
+                            <option value="5">5 คน</option>
+                            <option value="6">6 คน</option>
+                            <option value="7">7 คน</option>
+                            <option value="8">8 คน</option>
+                            <option value="9">9 คน</option>
+                            <option value="10">10 คน</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Dynamic Member Roster -->
+                <div class="flex flex-col gap-2">
+                    <label class="block font-semibold text-cyan-300">
+                        <i class="fa-solid fa-users-gear mr-1"></i> รายชื่อสมาชิก (ระบุเลขที่ คำนำหน้า ชื่อ-นามสกุล)
+                        <span class="text-pink-400">*</span>
+                    </label>
+                    <div id="members-inputs-container" class="flex flex-col gap-2 max-h-[220px] overflow-y-auto pr-1">
+                        <!-- Populated by JS -->
+                    </div>
+                </div>
+
+                <button type="submit"
+                    class="w-full mt-2 py-3 rounded-xl bg-gradient-to-r from-cyan-600 via-pink-600 to-amber-500 hover:from-cyan-500 hover:via-pink-500 hover:to-amber-400 text-white font-bold text-xs shadow-xl shadow-cyan-500/20 flex items-center justify-center gap-2 transition">
+                    <i class="fa-solid fa-play"></i>
+                    <span>เริ่มภารกิจสืบคดีไซเบอร์</span>
+                </button>
+            </form>
+
+        </div>
+    </div>
+
+    <!-- 4. ENLARGED COMIC LIGHTBOX (For full details view) -->
+    <div id="modal-comic-lightbox"
+        class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/95 backdrop-blur-lg"
+        onclick="closeComicLightbox()">
+        <div class="relative max-w-5xl w-full flex flex-col items-center gap-3" onclick="event.stopPropagation()">
+            <div class="w-full flex items-center justify-between text-slate-300 px-2">
+                <span id="lightbox-title" class="text-sm font-semibold text-cyan-300">หลักฐานภาพการ์ตูน 9 ช่อง</span>
+                <button onclick="closeComicLightbox()"
+                    class="px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-white text-xs border border-slate-700">
+                    <i class="fa-solid fa-xmark mr-1"></i> ปิด (ESC)
+                </button>
+            </div>
+            <div class="relative w-full flex items-center justify-center min-h-[300px]">
+                <div id="lightbox-spinner"
+                    class="absolute inset-0 flex flex-col items-center justify-center text-cyan-400 text-sm gap-2 bg-slate-900/80 rounded-xl">
+                    <i class="fa-solid fa-circle-notch fa-spin text-3xl"></i>
+                    <span>กำลังโหลดภาพขยาย...</span>
+                </div>
+                <img id="lightbox-comic-img" src="" alt="Enlarged Comic"
+                    class="w-auto h-auto max-h-[85vh] max-w-full rounded-xl border border-cyan-500/40 shadow-2xl object-contain bg-white opacity-0 transition-opacity duration-300"
+                    onload="this.classList.remove('opacity-0'); document.getElementById('lightbox-spinner')?.classList.add('hidden')"
+                    onerror="onLightboxImageError(this)">
+            </div>
+        </div>
+    </div>
+
+    <!-- 5. FINAL CERTIFICATE & GAME SUMMARY MODAL -->
+    <div id="modal-certificate"
+        class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/90 backdrop-blur-xl overflow-y-auto">
+        <div
+            class="glass-panel max-w-2xl w-full p-6 sm:p-8 rounded-3xl border-2 border-yellow-400/60 shadow-2xl flex flex-col items-center text-center gap-5 relative my-auto">
+
+            <div
+                class="w-16 h-16 rounded-2xl bg-yellow-500/20 border border-yellow-400 text-yellow-300 flex items-center justify-center text-3xl shadow-lg shadow-yellow-500/40 animate-bounce">
+                <i class="fa-solid fa-trophy"></i>
+            </div>
+
+            <div>
+                <h2
+                    class="text-2xl font-black text-transparent bg-clip-text bg-gradient-to-r from-yellow-300 via-amber-300 to-cyan-300 font-kanit">
+                    ภารกิจสืบคดีไซเบอร์สำเร็จสมบูรณ์!
+                </h2>
+                <p class="text-xs text-slate-300 mt-1 font-sarabun">ขอแสดงความยินดีกับทีมสายสืบเยาวชนในการไขคดีทั้ง 3
+                    คดีได้อย่างยอดเยี่ยม</p>
+            </div>
+
+            <!-- Score Summary Card -->
+            <div
+                class="w-full p-4 rounded-2xl bg-slate-950/80 border border-yellow-500/40 flex items-center justify-around font-mono">
+                <div>
+                    <div class="text-xs text-slate-400 font-sarabun">ทีมสายสืบ</div>
+                    <div class="text-sm font-bold text-cyan-300 font-kanit" id="cert-team-name">-</div>
+                </div>
+                <div>
+                    <div class="text-xs text-slate-400 font-sarabun">ห้องเรียน</div>
+                    <div class="text-sm font-bold text-purple-300 font-kanit" id="cert-room-name">-</div>
+                </div>
+                <div>
+                    <div class="text-xs text-slate-400 font-sarabun">คะแนนรวมทั้งหมด</div>
+                    <div class="text-xl font-black text-yellow-300 font-mono"><span id="cert-total-score">0</span> / 90
+                    </div>
+                </div>
+            </div>
+
+            <div class="flex flex-wrap items-center gap-3 w-full justify-center text-xs font-sarabun mt-1">
+                <button onclick="printCertificate()"
+                    class="px-6 py-2.5 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-bold transition flex items-center gap-2 shadow-lg shadow-emerald-500/25">
+                    <i class="fa-solid fa-print text-sm"></i> พิมพ์ / บันทึกใบเกียรติบัตร (PDF 1 แผ่น)
+                </button>
+                <button onclick="confirmResetGame()"
+                    class="px-4 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 transition flex items-center gap-1.5">
+                    <i class="fa-solid fa-rotate-right"></i> เล่นใหม่อีกรอบ
+                </button>
+                <a href="/"
+                    class="px-4 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 border border-slate-700 text-white font-medium transition flex items-center gap-1.5">
+                    <i class="fa-solid fa-house"></i> กลับสู่หน้าหลัก
+                </a>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- 6. PRINTABLE CERTIFICATE CONTAINER (Guaranteed 1-Page A4 Portrait) -->
+    <div id="printable-certificate" class="hidden font-sarabun text-slate-900 bg-white">
+        <div class="w-full h-full border-4 border-cyan-700 rounded-3xl p-6 relative flex flex-col justify-between items-center text-center bg-white"
+            style="box-shadow: inset 0 0 0 3px #0891b2, inset 0 0 0 6px #f8fafc;">
+
+            <!-- Top Corner Decors -->
+            <div class="absolute top-4 left-4 text-cyan-600 text-2xl">
+                <i class="fa-solid fa-award"></i>
+            </div>
+            <div class="absolute top-4 right-4 text-cyan-600 text-2xl">
+                <i class="fa-solid fa-award"></i>
+            </div>
+
+            <!-- Header Section -->
+            <div class="flex flex-col items-center gap-1 mt-1">
+                <div
+                    class="w-14 h-14 rounded-2xl bg-cyan-50 border-2 border-cyan-600 text-cyan-700 flex items-center justify-center text-2xl shadow-sm mb-1">
+                    <i class="fa-solid fa-shield-halved"></i>
+                </div>
+                <h2 class="text-xl font-black text-cyan-950 font-kanit tracking-wide">
+                    เกียรติบัตรรับรองยอดนักสืบไซเบอร์และผู้พิทักษ์ข้อมูลส่วนบุคคล
+                </h2>
+                <p class="text-[11px] text-slate-500 font-medium tracking-wider uppercase">
+                    Cyber Shield Detective & Digital Citizenship Academic Certification (Grade 9)
+                </p>
+                <div class="w-28 h-1 bg-gradient-to-r from-cyan-500 via-pink-500 to-amber-400 rounded-full my-1"></div>
+            </div>
+
+            <!-- Recipient Section -->
+            <div class="flex flex-col items-center gap-1.5 my-1 w-full">
+                <p class="text-xs text-slate-600 font-medium">เกียรติบัตรฉบับนี้ขอมอบให้แก่</p>
+
+                <!-- Team & Room Title -->
+                <div class="text-xl font-black text-cyan-950 font-kanit" id="print-cert-team">
+                    ทีมสายสืบเยาวชน
+                </div>
+                <div class="text-xs font-bold text-cyan-800 font-kanit px-3.5 py-0.5 rounded-full bg-cyan-50 border border-cyan-300 inline-block"
+                    id="print-cert-room">
+                    ระดับชั้นมัธยมศึกษาปีที่ 3 (ห้อง ม.3/1)
+                </div>
+
+                <!-- Members Roster Grid -->
+                <div
+                    class="mt-1 w-full max-w-lg p-2.5 rounded-2xl bg-slate-50 border border-slate-200 flex flex-col gap-1 text-xs text-slate-800">
+                    <div
+                        class="font-bold text-cyan-900 text-[11px] uppercase tracking-wider flex items-center justify-center gap-1">
+                        <i class="fa-solid fa-users"></i> สมาชิกทีมผู้ร่วมปฏิบัติการสืบคดี:
+                    </div>
+                    <div id="print-cert-members"
+                        class="grid grid-cols-2 gap-x-4 gap-y-0.5 text-xs text-slate-700 text-left px-3">
+                        <!-- Populated by JS -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Achievement Statement -->
+            <div class="max-w-lg mx-auto text-xs text-slate-600 leading-relaxed px-2">
+                ได้ผ่านการทดสอบปฏิบัติการสืบคดีความผิดตาม <b>พ.ร.บ. ว่าด้วยการกระทำความผิดเกี่ยวกับคอมพิวเตอร์</b> และ
+                <b>กฎหมายคุ้มครองข้อมูลส่วนบุคคล (PDPA)</b> ครบทั้ง 3 คดี
+                พร้อมผ่านการประเมินทักษะการคิดวิเคราะห์เชิงลึกด้วยคะแนนอัตนัยจาก <b>Google Gemini AI</b>
+            </div>
+
+            <!-- Score & Title Badges -->
+            <div class="grid grid-cols-2 gap-3 w-full max-w-md my-1">
+                <div
+                    class="p-2.5 rounded-2xl bg-amber-50 border-2 border-amber-400 text-center flex flex-col justify-center">
+                    <span class="text-[10px] text-amber-800 font-bold uppercase tracking-wider">คะแนนรวมสะสม</span>
+                    <span class="text-lg font-black text-amber-600 font-mono" id="print-cert-score">90 / 90</span>
+                </div>
+                <div
+                    class="p-2.5 rounded-2xl bg-cyan-50 border-2 border-cyan-500 text-center flex flex-col justify-center">
+                    <span class="text-[10px] text-cyan-800 font-bold uppercase tracking-wider">ระดับตำแหน่งนักสืบ</span>
+                    <span class="text-xs font-bold text-cyan-800 font-kanit" id="print-cert-rank">CYBER MASTER
+                        DETECTIVE</span>
+                </div>
+            </div>
+
+            <!-- Footer Verification & Signature -->
+            <div
+                class="w-full flex items-end justify-between text-left text-[11px] text-slate-500 pt-2 border-t border-slate-200 mt-1">
+                <div class="flex flex-col gap-0.5">
+                    <div><b>รหัสอ้างอิง:</b> <span id="print-cert-hash"
+                            class="font-mono text-slate-800 font-bold">CSD-2569-8F3A9B</span></div>
+                    <div><b>วันที่ออกเกียรติบัตร:</b> <span id="print-cert-date" class="text-slate-800 font-medium">10
+                            สิงหาคม 2569</span></div>
+                    <div class="text-[9px] text-slate-400">ระบบประเมินผลอัตโนมัติ Cyber Shield Detective v4.5 AI</div>
+                </div>
+
+                <div class="flex flex-col items-center text-center">
+                    <div class="w-36 border-b border-slate-400 mb-1"></div>
+                    <div class="font-bold text-slate-800 text-xs">( คุณครูผู้สอน / ผู้ประเมิน )</div>
+                    <div class="text-[10px] text-slate-500">กลุ่มสาระการเรียนรู้วิทยาศาสตร์และเทคโนโลยี</div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- ========================================================================= -->
+    <!-- 6. JAVASCRIPT GAME & SINGLE-ROLE REALTIME EVALUATION ENGINE               -->
+    <!-- ========================================================================= -->
+    <script>
+        const ALL_12_CASES = [
+            {
+                "id": 1,
+                "section": "มาตรา 5",
+                "image": "assets/chibi_comics/sec_5.png",
+                "title": "แอบส่องระบบไอดีเกมของเพื่อน",
+                "brief": "แชมป์แอบจำรหัสผ่านแท็บเล็ตของป๊อปตอนที่ป๊อปลุกไปเข้าห้องน้ำ แชมป์แอบเอาแท็บเล็ตมาปลดล็อกแล้วส่องดูคลังไอเทมสุดแรร์ในเกมออนไลน์",
+                "phases": [
+                    "ช่อง 1-3: แชมป์แอบดูป๊อปจิ้มรหัสผ่านล็อกอินแท็บเล็ต พอป๊อปลุกไปห้องน้ำ แชมป์แอบนำแท็บเล็ตมาลากนิ้วปลดล็อกเข้าระบบสำเร็จ",
+                    "ช่อง 4-6: แชมป์แอบเปิดส่องดูคลังอาวุธและไอเทมเกมของป๊อป ป๊อปกลับมาเจอคาหนังคาเขาจึงพาไปพบคุณครูเพื่อรายงานพฤติกรรม",
+                    "ช่อง 7-9: ตำรวจไซเบอร์ตักเตือนและชี้แจงความผิดทางกฎหมาย ทั้งสองปรับความเข้าใจกัน และป๊อปเปิดใช้ระบบล็อกอิน 2 ชั้น (2FA) ส่ง OTP ยืนยันตัวตน"
+                ],
+                "standard_law": "พ.ร.บ. คอมพิวเตอร์ มาตรา 5 (แอบเข้าถึงระบบคอมพิวเตอร์ผู้อื่นโดยมิชอบ)",
+                "standard_penalty": "จำคุกไม่เกิน 6 เดือน หรือปรับไม่เกิน 10,000 บาท หรือทั้งจำทั้งปรับ",
+                "standard_remedy": "สั่ง Log out ออกจากระบบทุกเครื่องทันที และรีบเปลี่ยนรหัสผ่านใหม่",
+                "standard_prevention": "เปิดใช้งานระบบยืนยันตัวตน 2 ชั้น (2FA / OTP) และล็อกหน้าจอทุกครั้ง",
+                "keywords_law": [
+                    "มาตรา 5",
+                    "5",
+                    "เข้าระบบ",
+                    "มิชอบ",
+                    "แอบเข้า",
+                    "เข้าถึงระบบ",
+                    "แอบส่อง",
+                    "แอบล็อกอิน",
+                    "เข้าเครื่อง",
+                    "ไม่ได้รับอนุญาต",
+                    "แอบใช้",
+                    "บุกรุกระบบ",
+                    "แอบจำรหัส",
+                    "ปลดล็อก",
+                    "เข้าถึงคอมพิวเตอร์",
+                    "แอบเปิด"
+                ],
+                "keywords_penalty": [
+                    "6 เดือน",
+                    "หกเดือน",
+                    "10,000",
+                    "หนึ่งหมื่น",
+                    "10000",
+                    "หมื่นบาท",
+                    "ทั้งจำทั้งปรับ",
+                    "จำคุก",
+                    "ปรับ",
+                    "ไม่เกิน 6"
+                ],
+                "keywords_remedy": [
+                    "logout",
+                    "log out",
+                    "ออกจากระบบ",
+                    "เปลี่ยนรหัส",
+                    "เปลี่ยนพาส",
+                    "แจ้งครู",
+                    "แจ้งผู้ปกครอง",
+                    "รายงาน",
+                    "แจ้งตำรวจ",
+                    "ล็อกเอาต์",
+                    "ล็อกออก",
+                    "ตัดการเข้าถึง",
+                    "เปลี่ยน password",
+                    "reset password",
+                    "แจ้งเจ้าของ",
+                    "บอกเจ้าของ",
+                    "มีสติ",
+                    "ให้ผู้ปกครอง",
+                    "แอดมิน"
+                ],
+                "keywords_security": [
+                    "2fa",
+                    "two-factor",
+                    "otp",
+                    "ล็อกอิน 2 ชั้น",
+                    "สองชั้น",
+                    "2 ชั้น",
+                    "ล็อกหน้าจอ",
+                    "ยืนยันตัวตน",
+                    "พกติดตัว",
+                    "ตั้งรหัส",
+                    "ล็อกเครื่อง",
+                    "pin",
+                    "รหัสผ่านที่ซับซ้อน",
+                    "ไม่บอกรหัส",
+                    "ไม่แชร์รหัส",
+                    "ไม่วางเครื่องทิ้งไว้",
+                    "ปิดหน้าจอ",
+                    "รหัสที่ซับซ้อน",
+                    "พาสเวิร์ดปลอดภัย"
+                ]
+            },
+            {
+                "id": 2,
+                "section": "มาตรา 6",
+                "image": "assets/chibi_comics/sec_6.png",
+                "title": "แจกรหัสผ่านระบบในกลุ่ม Discord",
+                "brief": "ทอยแอบถ่ายรูปกระดาษโน้ตรหัสผ่านเซิร์ฟเวอร์ข้อสอบที่โต๊ะครู แล้วส่งให้บีดู บีอยากได้ยอดไลก์จึงนำรูปภาพรหัสผ่านไปโพสต์แจกในกลุ่ม Discord",
+                "phases": [
+                    "ช่อง 1-3: ทอยพบกระดาษโน้ตรหัสผ่านแปะหลังจอคอมครูห้องสมุด จึงแอบถ่ายรูปส่งต่อให้บีดูในแชทลับ",
+                    "ช่อง 4-6: บีนำภาพรหัสผ่านไปโพสต์แจกในกลุ่ม Discord สาธารณะ ส่งผลให้ระบบสอบมีไอพีแปลกปลอมล็อกอินเข้ามารัวๆ จนระบบเตือนภัย",
+                    "ช่อง 7-9: ครูและตำรวจตามสืบประวัติแชทจนพบตัวผู้ปล่อยรหัส ดำเนินการตามขั้นตอนกฎหมาย และคุณครูนำสอนการตั้งรหัสผ่านที่ซับซ้อน ปลอดภัยกว่า"
+                ],
+                "standard_law": "พ.ร.บ. คอมพิวเตอร์ มาตรา 6 (เปิดเผยมาตรการป้องกันการเข้าถึงระบบโดยมิชอบ)",
+                "standard_penalty": "จำคุกไม่เกิน 1 ปี หรือปรับไม่เกิน 20,000 บาท หรือทั้งจำทั้งปรับ",
+                "standard_remedy": "รีบเปลี่ยนรหัสผ่านระบบทันที และลบข้อความที่โพสต์แจกใน Discord",
+                "standard_prevention": "ตั้งรหัสผ่านซับซ้อน (ตัวพิมพ์ใหญ่+เล็ก+เลข+สัญลักษณ์) และไม่จดรหัสผ่านทิ้งไว้",
+                "keywords_law": [
+                    "มาตรา 6",
+                    "6",
+                    "เปิดเผย",
+                    "มาตรการป้องกัน",
+                    "แจกรหัส",
+                    "เผยแพร่รหัส",
+                    "ปล่อยรหัส",
+                    "โพสต์รหัส",
+                    "ส่งรหัส",
+                    "แชร์รหัส",
+                    "แจกพาส",
+                    "เปิดเผยรหัสผ่าน",
+                    "เปิดเผยมาตรการ",
+                    "แอบถ่ายรหัส"
+                ],
+                "keywords_penalty": [
+                    "1 ปี",
+                    "หนึ่งปี",
+                    "20,000",
+                    "สองหมื่น",
+                    "20000",
+                    "หมื่น",
+                    "ทั้งจำทั้งปรับ",
+                    "จำคุก",
+                    "ปรับ",
+                    "ไม่เกิน 1 ปี"
+                ],
+                "keywords_remedy": [
+                    "เปลี่ยนรหัส",
+                    "ลบข้อความ",
+                    "แจ้งแอดมิน",
+                    "discord",
+                    "ตัดเซสชัน",
+                    "บล็อก",
+                    "ลบโพสต์",
+                    "ลบรูป",
+                    "แจ้งครู",
+                    "แจ้งตำรวจ",
+                    "แจ้งเจ้าของระบบ",
+                    "แจ้งไอที",
+                    "ลบทันที",
+                    "ลบออก",
+                    "ทำลายหลักฐาน",
+                    "บอกครู",
+                    "ผู้ปกครอง"
+                ],
+                "keywords_security": [
+                    "รหัสผ่านซับซ้อน",
+                    "ตัวพิมพ์ใหญ่",
+                    "ตัวเลข",
+                    "สัญลักษณ์",
+                    "ห้ามจด",
+                    "password manager",
+                    "ความลับ",
+                    "ไม่แปะกระดาษ",
+                    "ไม่แปะรหัส",
+                    "ไม่ถ่ายรูปรหัส",
+                    "ตั้งรหัสยาก",
+                    "เก็บบันทึกรหัส",
+                    "ทิ้งกระดาษ",
+                    "ไม่ให้ผู้อื่นเห็น"
+                ]
+            },
+            {
+                "id": 3,
+                "section": "มาตรา 7",
+                "image": "assets/chibi_comics/sec_7.png",
+                "title": "แอบคุ้ยไฟล์ไดอารี่แชทลับส่วนตัว",
+                "brief": "นักเรียนแอบเปิดโฟลเดอร์ส่วนตัวของเพื่อนที่ล็อกรหัสผ่านไว้ แล้วแอบดูดไฟล์ไดอารี่และรูปถ่ายลับเอาไปเผยแพร่นินทาในกลุ่มเพื่อน",
+                "phases": [
+                    "ช่อง 1-3: สบโอกาสแอบเข้าเครื่องคอมที่เพื่อนตั้งล็อกโฟลเดอร์ไว้ แอบถอดรหัสผ่านเพื่อเข้าถึงไฟล์ข้อมูลส่วนตัว",
+                    "ช่อง 4-6: แอบดาวน์โหลดไฟล์ไดอารี่และแชทส่วนตัวส่งต่อไปนินทาในกลุ่มเพื่อน ทำให้เจ้าของข้อมูลได้รับความอับอายและเสียหาย",
+                    "ช่อง 7-9: ฝ่ายไอทีตรวจพบประวัติการเข้าถึงไฟล์ ชี้แจงบทลงโทษทางกฎหมายต่อการละเมิดข้อมูลส่วนตัว และแนะนำการเข้ารหัสไฟล์ (Encryption) และการล็อกด้วย Face ID"
+                ],
+                "standard_law": "พ.ร.บ. คอมพิวเตอร์ มาตรา 7 (เข้าถึงข้อมูลคอมพิวเตอร์ของผู้อื่นโดยมิชอบ)",
+                "standard_penalty": "จำคุกไม่เกิน 2 ปี หรือปรับไม่เกิน 40,000 บาท หรือทั้งจำทั้งปรับ",
+                "standard_remedy": "ลบไฟล์ที่รั่วไหล และเปลี่ยนรหัสผ่านพื้นที่จัดเก็บคลาวด์ทันที",
+                "standard_prevention": "ตั้งรหัสล็อกโฟลเดอร์ด้วยสแกนใบหน้า/ลายนิ้วมือ (Face ID) และเข้ารหัสไฟล์ (Encryption)",
+                "keywords_law": [
+                    "มาตรา 7",
+                    "7",
+                    "เข้าถึงข้อมูล",
+                    "ข้อมูลคอมพิวเตอร์",
+                    "ไดอารี่",
+                    "คุ้ยไฟล์",
+                    "ดูดไฟล์",
+                    "แอบดู",
+                    "แอบเปิด",
+                    "ข้อมูลส่วนตัว",
+                    "แอบดาวน์โหลด",
+                    "แอบคัดลอก",
+                    "เปิดไฟล์คนอื่น",
+                    "เข้าถึงไฟล์"
+                ],
+                "keywords_penalty": [
+                    "2 ปี",
+                    "สองปี",
+                    "40,000",
+                    "สี่หมื่น",
+                    "40000",
+                    "หมื่น",
+                    "ทั้งจำทั้งปรับ",
+                    "จำคุก",
+                    "ปรับ",
+                    "ไม่เกิน 2 ปี"
+                ],
+                "keywords_remedy": [
+                    "ลบไฟล์",
+                    "เปลี่ยนรหัส",
+                    "แจ้งระงับ",
+                    "แจ้งครู",
+                    "แจ้งแอดมิน",
+                    "ลบโพสต์",
+                    "ลบแชท",
+                    "ลบรูป",
+                    "แจ้งตำรวจ",
+                    "แจ้งผู้ปกครอง",
+                    "ลบข้อมูล",
+                    "ลบออก",
+                    "ตัดการเชื่อมต่อ",
+                    "บอกครู",
+                    "แจ้งความ",
+                    "บังคับให้ลบไฟล์"
+                ],
+                "keywords_security": [
+                    "สแกนใบหน้า",
+                    "ลายนิ้วมือ",
+                    "face id",
+                    "biometrics",
+                    "เข้ารหัส",
+                    "encryption",
+                    "ล็อกโฟลเดอร์",
+                    "ตั้งค่าส่วนตัว",
+                    "กรองความเป็นส่วนตัว",
+                    "ล็อกหน้าจอ",
+                    "ตั้งรหัสผ่านที่รัดกุม",
+                    "ล็อกไดอารี่",
+                    "ปิดหน้าจอ",
+                    "ตั้งรหัส2ชั้น",
+                    "รหัสผ่านที่ซับซ้อน"
+                ]
+            },
+            {
+                "id": 4,
+                "section": "มาตรา 8",
+                "image": "assets/chibi_comics/sec_8.png",
+                "title": "ดักจับข้อมูลธุรกรรมเติมเกมกลางทาง",
+                "brief": "มีผู้ไม่หวังดีปล่อยสัญญาณ Wi-Fi ฟรีปลอมในโรงอาหาร เพื่อดักจับข้อมูลบัตรเติมเงินและรหัสผ่านธุรกรรมของเพื่อนที่กำลังเติมเกมออนไลน์",
+                "phases": [
+                    "ช่อง 1-3: แฮกเกอร์เปิด Free Wi-Fi ปลอมดักเหยื่อที่หลงเข้ามาเชื่อมต่อเพื่อทำรายการเติมเงินเกมออนไลน์",
+                    "ช่อง 4-6: ดักจับข้อมูลหมายเลขบัตรและรหัสผ่านระหว่างทาง เงินในบัญชีเหยื่อถูกดูดออกไปทันที",
+                    "ช่อง 7-9: เจ้าหน้าที่ตำรวจไซเบอร์แกะรอยสัญญาณจับกุมผู้ปล่อยสัญญาณดักข้อมูล ดำเนินคดีตามกฎหมาย และแนะนำให้ใช้งานเครือข่ายที่มีการเข้ารหัส SSL/HTTPS / VPN"
+                ],
+                "standard_law": "พ.ร.บ. คอมพิวเตอร์ มาตรา 8 (ดักรับข้อมูลคอมพิวเตอร์ของผู้อื่นที่อยู่ระหว่างการส่งโดยมิชอบ)",
+                "standard_penalty": "จำคุกไม่เกิน 3 ปี หรือปรับไม่เกิน 60,000 บาท หรือทั้งจำทั้งปรับ",
+                "standard_remedy": "ตัดการเชื่อมต่อ Wi-Fi ทันที และรีบแจ้งอายัดบัตรกับธนาคารและค่ายเกม",
+                "standard_prevention": "ใช้เครือข่ายที่มีการเข้ารหัส SSL / HTTPS / VPN และหลีกเลี่ยงการทำธุรกรรมบน Free Wi-Fi สาธารณะ",
+                "keywords_law": [
+                    "มาตรา 8",
+                    "8",
+                    "ดักรับ",
+                    "ดักจับ",
+                    "ระหว่างการส่ง",
+                    "ข้อมูลคอมพิวเตอร์",
+                    "ดักข้อมูล",
+                    "wifi ปลอม",
+                    "ดักจับข้อมูล"
+                ],
+                "keywords_penalty": [
+                    "3 ปี",
+                    "สามปี",
+                    "60,000",
+                    "หกหมื่น",
+                    "60000",
+                    "หมื่น",
+                    "ทั้งจำทั้งปรับ",
+                    "จำคุก",
+                    "ปรับ",
+                    "ไม่เกิน 3 ปี"
+                ],
+                "keywords_remedy": [
+                    "ตัด wifi",
+                    "หยุดทำธุรกรรม",
+                    "อายัดบัตร",
+                    "แจ้งธนาคาร",
+                    "แจ้งค่ายเกม",
+                    "เปลี่ยนพาส",
+                    "เปลี่ยนรหัส",
+                    "ตัดการเชื่อมต่อ",
+                    "แจ้งตำรวจ",
+                    "แจ้งผู้ปกครอง",
+                    "หยุดเชื่อมต่อ"
+                ],
+                "keywords_security": [
+                    "ssl",
+                    "https",
+                    "vpn",
+                    "เข้ารหัสข้อมูล",
+                    "encryption",
+                    "หลีกเลี่ยง wifi ฟรี",
+                    "public wifi",
+                    "ไม่ใช้ wifi สาธารณะ",
+                    "ไม่เชื่อมต่อมั่ว",
+                    "หลีกเลี่ยง wi-fi"
+                ]
+            },
+            {
+                "id": 5,
+                "section": "มาตรา 9",
+                "image": "assets/chibi_comics/sec_9.png",
+                "title": "มือบอนแอบลบไฟล์โครงงานวิทย์เพื่อน",
+                "brief": "นักเรียนอิจฉากลุ่มเพื่อนที่ทำสไลด์โครงงานวิทย์สวยงาม จึงแอบเข้าไปใน Cloud Shared Drive แล้วกดลบไฟล์งานและแก้ไขเนื้อหาจนเสียหายทั้งหมด",
+                "phases": [
+                    "ช่อง 1-3: อาศัยจังหวะที่ได้รับสิทธิ์แชร์ไฟล์ แอบเปิดเข้าไปในโฟลเดอร์โครงงานวิทยาศาสตร์ของเพื่อนกลุ่มอื่น",
+                    "ช่อง 4-6: มือบอนกดสั่งลบไฟล์สไลด์และแก้ไขข้อมูลจนเสียหาย เพื่อนๆ ในกลุ่มร้องไห้ตกใจเพราะใกล้ถึงเวลาส่งงาน",
+                    "ช่อง 7-9: ครูไอทีตรวจสอบประวัติแก้ไข (Version History) และกู้คืนไฟล์ได้สำเร็จ ผู้กระทำผิดโดนดำเนินการทางวินัยและกฎหมาย พร้อมสอนการตั้งสิทธิ์ Read-Only"
+                ],
+                "standard_law": "พ.ร.บ. คอมพิวเตอร์ มาตรา 9 (ทำให้เสียหาย ทำลาย แก้ไข เปลี่ยนแปลงข้อมูลคอมพิวเตอร์ผู้อื่นโดยมิชอบ)",
+                "standard_penalty": "จำคุกไม่เกิน 5 ปี หรือปรับไม่เกิน 100,000 บาท หรือทั้งจำทั้งปรับ",
+                "standard_remedy": "ใช้ปุ่มประวัติเวอร์ชัน (Version History) กู้คืนไฟล์ทันที และตรวจสอบ Audit Log",
+                "standard_prevention": "ตั้งค่าสิทธิ์ไฟล์เป็น 'อ่านได้อย่างเดียว (Read-Only)' และจำกัดการแชร์เฉพาะอีเมลที่จำเป็น",
+                "keywords_law": [
+                    "มาตรา 9",
+                    "9",
+                    "ทำลาย",
+                    "แก้ไข",
+                    "ลบไฟล์",
+                    "เปลี่ยนแปลงข้อมูล",
+                    "เสียหาย",
+                    "ดึงงาน"
+                ],
+                "keywords_penalty": [
+                    "5 ปี",
+                    "ห้าปี",
+                    "100,000",
+                    "หนึ่งแสน",
+                    "100000",
+                    "แสนบาท",
+                    "ทั้งจำทั้งปรับ",
+                    "จำคุก",
+                    "ปรับ",
+                    "ไม่เกิน 5 ปี"
+                ],
+                "keywords_remedy": [
+                    "version history",
+                    "ประวัติเวอร์ชัน",
+                    "กู้คืน",
+                    "restore",
+                    "ถังขยะ",
+                    "recycle bin",
+                    "activity log",
+                    "กู้ไฟล์",
+                    "แจ้งครู",
+                    "แจ้งตำรวจ",
+                    "จำกัดสิทธิ์",
+                    "กู้ข้อมูล",
+                    "แจ้งความ",
+                    "บอกครู"
+                ],
+                "keywords_security": [
+                    "read-only",
+                    "อ่านอย่างเดียว",
+                    "จำกัดสิทธิ์",
+                    "permission",
+                    "แชร์เฉพาะอีเมล",
+                    "backup",
+                    "สำรองข้อมูล",
+                    "กำหนดสิทธิ์",
+                    "ดูได้อย่างเดียว",
+                    "เฉพาะฉันแก้ไขได้",
+                    "ไม่ให้แก้ไข",
+                    "กำหนสิทธิ์การเข้าถึง"
+                ]
+            },
+            {
+                "id": 6,
+                "section": "มาตรา 10",
+                "image": "assets/chibi_comics/sec_10.png",
+                "title": "ยิง DDoS พังเซิร์ฟเวอร์เว็บสอบโรงเรียน",
+                "brief": "นักเรียนไม่อยากสอบเก็บคะแนน จึงใช้โปรแกรมยิงทราฟฟิกขยะ (DDoS) ถล่มเว็บไซต์ระบบสอบออนไลน์ของโรงเรียนจนเซิร์ฟเวอร์ล่ม ใช้งานไม่ได้",
+                "phases": [
+                    "ช่อง 1-3: นักเรียนสั่งรันบอทโปรแกรมส่งคำขอปลอมจำนวนมหาศาลไปยังเซิร์ฟเวอร์เว็บสอบของโรงเรียน",
+                    "ช่อง 4-6: เซิร์ฟเวอร์ทำงานหนักจนร้อนจัดและระบบล่ม เว็บขึ้น Error นักเรียนทั้งโรงเรียนไม่สามารถสอบได้",
+                    "ช่อง 7-9: แอดมินบล็อกไอพีผู้โจมตีและสืบพบตัวผู้ปล่อยบอท ดำเนินการตามกฎหมาย และติดตั้งระบบป้องกัน Firewall / DDoS Protection"
+                ],
+                "standard_law": "พ.ร.บ. คอมพิวเตอร์ มาตรา 10 (รบกวน ขัดขวาง ทำให้ระบบคอมพิวเตอร์ผู้อื่นทำงานไม่ได้ตามปกติ)",
+                "standard_penalty": "จำคุกไม่เกิน 5 ปี หรือปรับไม่เกิน 100,000 บาท หรือทั้งจำทั้งปรับ",
+                "standard_remedy": "บล็อก IP Address ขยะ สลับเส้นทางเซิร์ฟเวอร์สำรอง และแจ้งฝ่ายไอที",
+                "standard_prevention": "ติดตั้งไฟร์วอลล์ (Firewall) และใช้ระบบป้องกัน DDoS Protection (เช่น Cloudflare / Rate Limiting)",
+                "keywords_law": [
+                    "มาตรา 10",
+                    "10",
+                    "ขัดขวาง",
+                    "รบกวน",
+                    "ระงับการทำงาน",
+                    "พังระบบ",
+                    "ddos",
+                    "ระบบล่ม",
+                    "ยิงเว็บ",
+                    "ยิงเซิร์ฟ"
+                ],
+                "keywords_penalty": [
+                    "5 ปี",
+                    "ห้าปี",
+                    "100,000",
+                    "หนึ่งแสน",
+                    "100000",
+                    "แสนบาท",
+                    "ทั้งจำทั้งปรับ",
+                    "จำคุก",
+                    "ปรับ",
+                    "ไม่เกิน 5 ปี"
+                ],
+                "keywords_remedy": [
+                    "บล็อก ip",
+                    "block ip",
+                    "สลับเซิร์ฟเวอร์",
+                    "แจ้งไอที",
+                    "แจ้งครู",
+                    "รีสตาร์ท",
+                    "แจ้งตำรวจ",
+                    "ตัดการเชื่อมต่อ",
+                    "ระบบป้องกัน ddos",
+                    "เช็คที่อยู่ต้นเหตุ",
+                    "แจ้งเจ้าหน้าที่ตำรวจ",
+                    "ให้เจ้าหน้าที่ดำเนินการ",
+                    "สืบหาข้อมูล"
+                ],
+                "keywords_security": [
+                    "firewall",
+                    "ไฟร์วอลล์",
+                    "ddos protection",
+                    "cloudflare",
+                    "waf",
+                    "rate limit",
+                    "load balancer",
+                    "ป้องกัน ddos",
+                    "ติดตั้งระบบป้องกัน",
+                    "ระบบป้องกันอัตโนมัติ",
+                    "ตรวจสอบข้อมูลให้ชัดเจน",
+                    "สืบหาข้อมูล"
+                ]
+            },
+            {
+                "id": 7,
+                "section": "มาตรา 11 วรรคหนึ่ง",
+                "image": "assets/chibi_comics/sec_11_1.png",
+                "title": "ส่งอีเมลสแปมขายของปลอมตัวตน",
+                "brief": "ผู้ค้ายิงอีเมลขยะขายสินค้าและโฆษณาชวนเชื่อไปยังกล่องข้อความของนักเรียนนับพันคน โดยปลอมแปลงชื่อผู้ส่งและปกปิดแหล่งที่มาที่แท้จริง",
+                "phases": [
+                    "ช่อง 1-3: พ่อค้าออนไลน์ส่งอีเมลโฆษณาหว่านไปยังกล่องจดหมายเด็กนักเรียน โดยปิดบังชื่อจริงและไอพี",
+                    "ช่อง 4-6: กล่องจดหมายนักเรียนเต็มไปด้วยสแปม รบกวนเวลาเรียนและเสี่ยงติดมัลแวร์",
+                    "ช่อง 7-9: ฝ่ายไอทีตั้งค่าระบบกรองสแปม บล็อกโดเมนปลอม และแนะนำการตั้งค่า Anti-Spam Filter"
+                ],
+                "standard_law": "พ.ร.บ. คอมพิวเตอร์ มาตรา 11 วรรคหนึ่ง (ส่งข้อมูลคอมพิวเตอร์หรืออีเมลโดยปกปิดหรือปลอมแปลงแหล่งที่มา)",
+                "standard_penalty": "ปรับไม่เกิน 100,000 บาท",
+                "standard_remedy": "ทำเครื่องหมายเป็นสแปม (Mark as Spam) และรายงานผู้ให้บริการอีเมล",
+                "standard_prevention": "ติดตั้งระบบกรองอีเมลขยะ (Anti-Spam Filter) และตรวจสอบ SPF/DKIM Record",
+                "keywords_law": [
+                    "มาตรา 11",
+                    "11",
+                    "วรรคหนึ่ง",
+                    "สแปม",
+                    "ปกปิดแหล่งที่มา",
+                    "ปลอมแปลง",
+                    "อีเมลขยะ"
+                ],
+                "keywords_penalty": [
+                    "100,000",
+                    "หนึ่งแสน",
+                    "100000",
+                    "ปรับไม่เกิน 1 แสน",
+                    "ปรับ"
+                ],
+                "keywords_remedy": [
+                    "spam",
+                    "junk",
+                    "เมลขยะ",
+                    "รายงาน",
+                    "report",
+                    "แบน",
+                    "บล็อกผู้ส่ง",
+                    "แจ้งแอดมิน",
+                    "ปัดทิ้ง",
+                    "ไม่ต้องกดเข้าลิ้งค์",
+                    "บล็อก",
+                    "บล็อค"
+                ],
+                "keywords_security": [
+                    "anti-spam",
+                    "กรองเมลขยะ",
+                    "filter",
+                    "spf",
+                    "dkim",
+                    "dmarc",
+                    "บล็อกผู้ส่งปลอม",
+                    "อัปเดตระบบ",
+                    "คัดกรองอีเมล",
+                    "ปัดหน้าจอทิ้ง",
+                    "อัปเดตระบบให้เป็นปัจจุบัน"
+                ]
+            },
+            {
+                "id": 8,
+                "section": "มาตรา 11 วรรคสอง",
+                "image": "assets/chibi_comics/sec_11_2.png",
+                "title": "บอทสแปมรัวๆ ปิดปุ่มยกเลิกรับข่าวสาร",
+                "brief": "ระบบบอทยิงข้อความโฆษณารัวๆ เข้ามือถือนักเรียนตลอดทั้งวัน โดยจงใจไม่ใส่ปุ่ม Unsubscribe หรือช่องทางยกเลิกรับข่าวสาร",
+                "phases": [
+                    "ช่อง 1-3: ข้อความแจ้งเตือนโฆษณาเด้งรัวๆ ทุกชั่วโมง นักเรียนกดหาปุ่มยกเลิกแต่ไม่พบ",
+                    "ช่อง 4-6: สร้างความเดือดร้อนรำคาญ แบตเตอรี่มือถือหมดไวและรบกวนการใช้ชีวิตประจำวัน",
+                    "ช่อง 7-9: ร้องเรียนไปยัง กสทช. และผู้ให้บริการเครือข่ายบล็อกผู้ส่ง พร้อมแนะนำการใช้ Email Alias"
+                ],
+                "standard_law": "พ.ร.บ. คอมพิวเตอร์ มาตรา 11 วรรคสอง (ส่งข้อมูลหรือจดหมายอิเล็กทรอนิกส์รบกวน โดยไม่เปิดโอกาสให้บอกเลิกได้โดยง่าย)",
+                "standard_penalty": "ปรับไม่เกิน 200,000 บาท",
+                "standard_remedy": "แคปหลักฐานข้อความ ร้องเรียนผู้ให้บริการเครือข่าย และบล็อกเบอร์/ผู้ส่ง",
+                "standard_prevention": "ไม่กรอกเบอร์โทรหรืออีเมลในเว็บที่ไม่น่าเชื่อถือ และใช้ระบบ Email Alias",
+                "keywords_law": [
+                    "มาตรา 11",
+                    "11",
+                    "วรรคสอง",
+                    "ไม่เปิดโอกาส",
+                    "ยกเลิก",
+                    "unsubscribe",
+                    "รบกวน",
+                    "เดือดร้อนรำคาญ"
+                ],
+                "keywords_penalty": [
+                    "200,000",
+                    "สองแสน",
+                    "200000",
+                    "ปรับไม่เกิน 2 แสน",
+                    "ปรับ"
+                ],
+                "keywords_remedy": [
+                    "แคปรูป",
+                    "แคปเจอร์หลักฐาน",
+                    "ร้องเรียน",
+                    "แจ้งแพลตฟอร์ม",
+                    "บล็อก",
+                    "report",
+                    "กสทช",
+                    "แจ้งตำรวจ",
+                    "แจ้งหน่วยงาน",
+                    "เเจ้งหน่วยงานที่เกี่ยวข้อง",
+                    "ปิดเเจ้งเตือน",
+                    "บล็อคลิงค์"
+                ],
+                "keywords_security": [
+                    "ไม่แปะเบอร์",
+                    "ไม่แปะเมล",
+                    "บอร์ดสาธารณะ",
+                    "email alias",
+                    "ความเป็นส่วนตัว",
+                    "privacy",
+                    "ปิดแจ้งเตือน",
+                    "anti-spam",
+                    "ปิดกั้นข้อความ",
+                    "ปิดเเจ้งเตือน",
+                    "บล็อคลิงค์",
+                    "anti spam"
+                ]
+            },
+            {
+                "id": 9,
+                "section": "มาตรา 14(1)",
+                "image": "assets/chibi_comics/sec_14_1.png",
+                "title": "สร้างเว็บฟิชชิ่งหลอกสกินเกมฟรี",
+                "brief": "คนร้ายสร้างหน้าเว็บล็อกอินปลอมที่หน้าตาเหมือนเว็บเกมดัง อ้างแจกสกินปืนและเพชรฟรี เพื่อหลอกเอาไอดีและรหัสผ่านของเหยื่อ",
+                "phases": [
+                    "ช่อง 1-3: คนร้ายแชร์ลิงก์เว็บปลอมในกลุ่มเกม อ้างว่าแจกเพชรฟรี ให้กดล็อกอินรับสิทธิ์",
+                    "ช่อง 4-6: เหยื่อหลงเชื่อกรอกไอดีและรหัสผ่าน ไอดีเกมถูกขโมยและไอเทมโดนโอนออกหมด",
+                    "ช่อง 7-9: แจ้งทีมงานเกมกู้คืนไอดี ตำรวจแกะรอยดำเนินคดี และสอนการสังเกต URL เว็บทางการ"
+                ],
+                "standard_law": "พ.ร.บ. คอมพิวเตอร์ มาตรา 14(1) (นำเข้าสู่ระบบคอมพิวเตอร์ซึ่งข้อมูลปลอมหรือข้อมูลเท็จ หลอกลวงประชาชน)",
+                "standard_penalty": "จำคุกไม่เกิน 5 ปี หรือปรับไม่เกิน 100,000 บาท หรือทั้งจำทั้งปรับ",
+                "standard_remedy": "รีบแจ้งทีมงานค่ายเกมเพื่อระงับและกู้คืนบัญชี และเตือนเพื่อนไม่ให้หลงเชื่อ",
+                "standard_prevention": "ตรวจสอบ URL และชื่อโดเมนให้ถูกต้องทุกครั้ง และไม่หลงเชื่อลิงก์แจกของฟรี",
+                "keywords_law": [
+                    "มาตรา 14(1)",
+                    "14 (1)",
+                    "14(1)",
+                    "14",
+                    "ข้อมูลเท็จ",
+                    "หลอกลวง",
+                    "ฟิชชิ่ง",
+                    "phishing",
+                    "เว็บปลอม",
+                    "สร้างเว็บปลอม",
+                    "ลิขสิทธิ์"
+                ],
+                "keywords_penalty": [
+                    "5 ปี",
+                    "ห้าปี",
+                    "100,000",
+                    "หนึ่งแสน",
+                    "100000",
+                    "แสนบาท",
+                    "ทั้งจำทั้งปรับ",
+                    "จำคุก",
+                    "ปรับ",
+                    "ไม่เกิน 5 ปี"
+                ],
+                "keywords_remedy": [
+                    "แจ้งค่ายเกม",
+                    "ระงับบัญชี",
+                    "กู้คืน",
+                    "เปลี่ยนรหัส",
+                    "เตือนเพื่อน",
+                    "แจ้งตำรวจ",
+                    "แจ้งแอดมิน",
+                    "ระงับความเสียหาย",
+                    "แจ้งผู้ดูแลเกม",
+                    "ค้นหาแหล่งข้อมูล"
+                ],
+                "keywords_security": [
+                    "ตรวจ url",
+                    "domain",
+                    "โดเมน",
+                    "ลิงก์ปลอม",
+                    "ไม่คลิกลิงก์",
+                    "เว็บทางการ",
+                    "official",
+                    "เช็กก่อนแชร์",
+                    "ผูกบัญชีกับแอป",
+                    "ตรวจสอบเวปให้ดี",
+                    "ไม่กดเข้าเว็บไวส์มั่วๆ",
+                    "ไม่กดลิงก์",
+                    "ห้ามใช้เเค่รหัสผ่าน"
+                ]
+            },
+            {
+                "id": 10,
+                "section": "มาตรา 14(2)",
+                "image": "assets/chibi_comics/sec_14_2.png",
+                "title": "โพสต์ข่าวลวงภัยพิบัติจนคนแตกตื่นวิ่งวุ่น",
+                "brief": "นักเรียนคึกคะนองกุเรื่องข่าวปลอมโพสต์ลง TikTok ว่า 'พรุ่งนี้น้ำท่วมเมือง 3 เมตร เขื่อนแตกแล้ว!' จนชาวบ้านแตกตื่นแย่งกันซื้อของกักตุนวุ่นวาย",
+                "phases": [
+                    "ช่อง 1-3: นักเรียนแต่งข้อความข่าวปลอมเรื่องภัยพิบัติเขื่อนแตกแล้วโพสต์ลงโซเชียลมีเดียเพื่อหายอดวิว",
+                    "ช่อง 4-6: ข่าวถูกแชร์ต่ออย่างรวดเร็ว ชาวบ้านแตกตื่นแห่ไปกักตุนสินค้าจนเกิดความโกลาหลทั่วเมือง",
+                    "ช่อง 7-9: เจ้าหน้าที่ตรวจสอบข้อเท็จจริง จับกุมผู้โพสต์ดำเนินคดี และประชาสัมพันธ์ให้เช็กก่อนแชร์"
+                ],
+                "standard_law": "พ.ร.บ. คอมพิวเตอร์ มาตรา 14(2) (นำเข้าสู่ระบบคอมพิวเตอร์ซึ่งข้อมูลเท็จ ก่อให้เกิดความตระหนกตกใจแก่ประชาชน)",
+                "standard_penalty": "จำคุกไม่เกิน 5 ปี หรือปรับไม่เกิน 100,000 บาท หรือทั้งจำทั้งปรับ",
+                "standard_remedy": "ลบโพสต์ข่าวปลอมทันที และโพสต์ชี้แจงความจริงพร้อมอ้างอิงแหล่งข่าวทางการ",
+                "standard_prevention": "ตรวจสอบข้อมูลกับศูนย์ต่อต้านข่าวปลอม (Anti-Fake News Center) หรือหน่วยงานรัฐก่อนแชร์",
+                "keywords_law": [
+                    "มาตรา 14(2)",
+                    "14 (2)",
+                    "14(2)",
+                    "14",
+                    "ตื่นตระหนก",
+                    "ข่าวปลอม",
+                    "fake news",
+                    "ข้อมูลเท็จ",
+                    "ตระหนกตกใจ"
+                ],
+                "keywords_penalty": [
+                    "5 ปี",
+                    "ห้าปี",
+                    "100,000",
+                    "หนึ่งแสน",
+                    "100000",
+                    "แสนบาท",
+                    "ทั้งจำทั้งปรับ",
+                    "จำคุก",
+                    "ปรับ",
+                    "ไม่เกิน 5 ปี"
+                ],
+                "keywords_remedy": [
+                    "ลบโพสต์",
+                    "ลบข่าวปลอม",
+                    "แถลงแก้ข่าว",
+                    "โพสต์แก้",
+                    "ชี้แจง",
+                    "ขอโทษ",
+                    "แจ้งตำรวจ",
+                    "แจ้งครู",
+                    "ตรวจสอบแหล่งข่าว",
+                    "เช็กแหล่งข่าว",
+                    "ตรวจสอบข้อเท้จจริง",
+                    "ไม่เผยแพร่ข่าวเฟคนิว",
+                    "ลบโพส"
+                ],
+                "keywords_security": [
+                    "ศูนย์ต่อต้านข่าวปลอม",
+                    "anti-fake news",
+                    "เช็กก่อนแชร์",
+                    "แหล่งข่าวทางการ",
+                    "verified",
+                    "ตรวจสอบข้อมูล",
+                    "เสพข่าวอย่างมีสติ",
+                    "เช็คก่อนแชร์",
+                    "ตรวจสอบข้อมุลจากแหล่งข่าว",
+                    "ไม่กดแชร์"
+                ]
+            },
+            {
+                "id": 11,
+                "section": "มาตรา 14(4)",
+                "image": "assets/chibi_comics/sec_14_4.png",
+                "title": "โพสต์ภาพ/คลิปโป๊ลงคอมพิวเตอร์สาธารณะ",
+                "brief": "วัยรุ่นนำภาพและคลิปลามกอนาจารไปโพสต์ลงในกลุ่มเฟซบุ๊กสาธารณะและส่งต่อในดิสคอร์ดโรงเรียนที่มีคนทั่วไปเข้าถึงได้",
+                "phases": [
+                    "ช่อง 1-3: ผู้ใช้แชร์ภาพและคลิปลามกอนาจารลงในพื้นที่สาธารณะของโรงเรียน",
+                    "ช่อง 4-6: สมาชิกในกลุ่มพบเห็นและได้รับผลกระทบทางจิตใจ มีการส่งต่อจนแพร่กระจาย",
+                    "ช่อง 7-9: แอดมินลบเนื้อหา บล็อกบัญชีผู้โพสต์ และตำรวจไซเบอร์เข้าตรวจสอบดำเนินคดีตามกฎหมาย"
+                ],
+                "standard_law": "พ.ร.บ. คอมพิวเตอร์ มาตรา 14(4) (นำเข้าสู่ระบบคอมพิวเตอร์ซึ่งข้อมูลคอมพิวเตอร์ใดๆ ที่มีลักษณะอันลามก)",
+                "standard_penalty": "จำคุกไม่เกิน 5 ปี หรือปรับไม่เกิน 100,000 บาท หรือทั้งจำทั้งปรับ",
+                "standard_remedy": "แอดมินลบภาพและคลิปออกจากระบบทันที บล็อกผู้ส่ง และรายงานแพลตฟอร์ม",
+                "standard_prevention": "เปิดใช้งานระบบ SafeSearch และตัวกรองเนื้อหาลามกอัตโนมัติ (Content Filtering)",
+                "keywords_law": [
+                    "มาตรา 14(4)",
+                    "14 (4)",
+                    "14(4)",
+                    "14",
+                    "ลามก",
+                    "อนาจาร",
+                    "คลิปโป๊",
+                    "18+",
+                    "ภาพลามก"
+                ],
+                "keywords_penalty": [
+                    "5 ปี",
+                    "ห้าปี",
+                    "100,000",
+                    "หนึ่งแสน",
+                    "100000",
+                    "แสนบาท",
+                    "ทั้งจำทั้งปรับ",
+                    "จำคุก",
+                    "ปรับ",
+                    "ไม่เกิน 5 ปี"
+                ],
+                "keywords_remedy": [
+                    "ลบคลิป",
+                    "ลบวิดีโอ",
+                    "ลบภาพ",
+                    "แอดมินลบ",
+                    "บล็อก",
+                    "report",
+                    "รายงาน",
+                    "แจ้งครู",
+                    "แจ้งตำรวจ",
+                    "ยอมรับความผิด",
+                    "แจ้งความกับตำรวจ",
+                    "ลบโพส"
+                ],
+                "keywords_security": [
+                    "safesearch",
+                    "safe search",
+                    "content filter",
+                    "ตัวกรอง",
+                    "กรองเนื้อหา",
+                    "moderation",
+                    "ตั้งค่ากลุ่มส่วนตัว",
+                    "ไม่ส่งต่อคลิป",
+                    "มีวิจารณญาณ",
+                    "ตั้งค่าไม่ให้ส่ง",
+                    "จำกัดคนดู"
+                ]
+            },
+            {
+                "id": 12,
+                "section": "มาตรา 16",
+                "image": "assets/chibi_comics/sec_16.png",
+                "title": "ตัดต่อหน้าเพื่อนใส่เอเลี่ยนประจานในโซเชียล",
+                "brief": "นักเรียนแกล้งเพื่อนโดยนำรูปหน้าเพื่อนไปตัดต่อใส่ร่างเอเลี่ยนน่าเกลียดน่ากลัว แล้วโพสต์ประจานลงใน Instagram พร้อมแคปชั่นล้อเลียนทำให้อับอาย",
+                "phases": [
+                    "ช่อง 1-3: แอบเซฟรูปหน้าเพื่อนแล้วใช้แอปตัดต่อใส่ร่างเอเลี่ยนน่าเกลียด",
+                    "ช่อง 4-6: โพสต์ลง Instagram สาธารณะ มีคนเข้ามากดขำและแชร์ต่อ เพื่อนที่โดนแกล้งร้องไห้เสียใจและอับอาย",
+                    "ช่อง 7-9: ครูและผู้ปกครองเข้าตักเตือน แจ้งลบโพสต์ และให้ผู้กระทำผิดขอโทษ พร้อมให้ความรู้เรื่อง Cyberbullying"
+                ],
+                "standard_law": "พ.ร.บ. คอมพิวเตอร์ มาตรา 16 (นำเข้าสู่ระบบคอมพิวเตอร์ซึ่งภาพตัดต่อ ดัดแปลง ทำให้ผู้อื่นเสียชื่อเสียง ถูกดูหมิ่น อับอาย)",
+                "standard_penalty": "จำคุกไม่เกิน 3 ปี หรือปรับไม่เกิน 200,000 บาท หรือทั้งจำทั้งปรับ",
+                "standard_remedy": "แคปหลักฐานภาพและลิงก์ แจ้งแพลตฟอร์มลบภาพ และแจ้งคุณครู/ผู้ปกครอง",
+                "standard_prevention": "ตั้งค่าบัญชีเป็นส่วนตัว (Private Account) และไม่ยินยอมให้ผู้อื่นนำรูปไปใช้",
+                "keywords_law": [
+                    "มาตรา 16",
+                    "16",
+                    "ตัดต่อ",
+                    "ดัดแปลง",
+                    "เสียชื่อเสียง",
+                    "ดูหมิ่น",
+                    "อับอาย",
+                    "cyberbullying",
+                    "ประจาน"
+                ],
+                "keywords_penalty": [
+                    "3 ปี",
+                    "สามปี",
+                    "200,000",
+                    "สองแสน",
+                    "200000",
+                    "แสนบาท",
+                    "ปรับ",
+                    "จำคุก",
+                    "ไม่เกิน 3 ปี"
+                ],
+                "keywords_remedy": [
+                    "แคปรูป",
+                    "แคปเจอร์หลักฐาน",
+                    "แจ้งลบ",
+                    "report",
+                    "cyberbullying",
+                    "แจ้งครู",
+                    "แจ้งผู้ปกครอง",
+                    "แจ้งตำรวจ",
+                    "ลบโพสต์",
+                    "แจ้งพ่อแม่",
+                    "กดรายงานโพสต์"
+                ],
+                "keywords_security": [
+                    "private account",
+                    "ตั้งค่าส่วนตัว",
+                    "จำกัดแท็ก",
+                    "ไม่แชร์รูปสาธารณะ",
+                    "จริยธรรม",
+                    "ปิดกั้น",
+                    "ล็อกโปรไฟล์",
+                    "จำกัดผู้เข้าชม",
+                    "ปิดการดาวน์โหลด",
+                    "จำกัดผู้เข้าชม",
+                    "ปิดฟังก์ชันการดาวน์โหลดรูปภาพ",
+                    "ปิดกั้นเนื้อหา"
+                ]
+            }
+        ];
+
+        // --- Role Metadata Definition ---
+        const ROLE_CONFIG = {
+            legal: {
+                name: '1. บทบาทนักวิเคราะห์กฎหมาย (Legal Analyst)',
+                short: '1. กฎหมาย',
+                avatar: '👨‍⚖️',
+                color: 'amber',
+                desc: 'วิเคราะห์การกระทำในคดีว่าเข้าข่ายความผิดตามกฎหมายใด พร้อมระบุบทลงโทษ',
+                placeholder: 'พิมพ์วิเคราะห์ เช่น: การกระทำในคดีนี้เข้าข่ายความผิดตาม... มีบทลงโทษ... เนื่องจาก...',
+                tip: '💡 เกณฑ์: ระบุฐานความผิดกฎหมาย + บทลงโทษ + เหตุผลประกอบ',
+                nextLabel: '➡️ ไปยังบทบาทที่ 2: แก้ไข'
+            },
+            remedy: {
+                name: '2. บทบาทเจ้าหน้าที่แก้ไข (Incident Responder)',
+                short: '2. แก้ไข',
+                avatar: '🚑',
+                color: 'pink',
+                desc: 'วิธีการรับมือเฉพาะหน้าทันทีเมื่อเกิดเหตุการณ์ขึ้น เพื่อหยุดยั้งความเสียหายและช่วยเหลือผู้ประสบเหตุ',
+                placeholder: 'พิมพ์แนวทางรับมือ เช่น: ดำเนินการระงับเหตุเฉพาะหน้าโดย... และแจ้งประสานงานไปยัง... เพื่อ...',
+                tip: '💡 เกณฑ์: ขั้นตอนระงับความเสียหายทันที + การแจ้งผู้มีส่วนเกี่ยวข้อง',
+                nextLabel: '➡️ ไปยังบทบาทที่ 3: วิศวกรความปลอดภัย'
+            },
+            security: {
+                name: '3. บทบาทวิศวกรความปลอดภัย (Security Engineer)',
+                short: '3. ป้องกัน',
+                avatar: '🛡️',
+                color: 'cyan',
+                desc: 'วิธีการป้องกันตนเองจากเหตุการณ์แบบนี้ไม่ให้เกิดขึ้น เช่น แนวทางปฏิบัติ หรือ การใช้งานเครื่องมือต่างๆ',
+                placeholder: 'พิมพ์แนวทางป้องกัน เช่น: ปฏิบัติตามแนวทาง... หรือติดตั้ง/ตั้งค่าเครื่องมือ... เพื่อป้องกันไม่ให้เกิดเหตุซ้ำ',
+                tip: '💡 เกณฑ์: แนวทางปฏิบัติหรือการใช้เครื่องมือป้องกันตรงตามคดี + ปิดโอกาสเกิดเหตุซ้ำระยะยาว',
+                nextLabel: '➡️ สู่คดีถัดไป'
+            }
+        };
+
+        // --- Game State Definition ---
+        const SAVE_KEY = 'CYBER_SHIELD_3CASES_SESSION';
+        let GAME_STATE = {
+            teamName: '',
+            room: 'ม.3/1',
+            membersCount: 3,
+            members: [],
+            sessionCases: [],
+            currentCaseIndex: 0,
+            currentRole: 'legal', // 'legal' | 'remedy' | 'security'
+            caseScores: [], // array of { caseId, answers: { legal, remedy, security }, scores: { legal: {score, feedback}, remedy: {...}, security: {...} }, totalScore }
+            totalScore: 0,
+            soundEnabled: true
+        };
+
+        // --- Web Audio Synthesizer ---
+        let audioCtx = null;
+        function getAudioContext() {
+            if (!audioCtx) {
+                const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+                if (AudioContextClass) audioCtx = new AudioContextClass();
+            }
+            if (audioCtx && audioCtx.state === 'suspended') {
+                audioCtx.resume();
+            }
+            return audioCtx;
+        }
+
+        function playSound(type) {
+            if (!GAME_STATE.soundEnabled) return;
+            try {
+                const ctx = getAudioContext();
+                if (!ctx) return;
+                const now = ctx.currentTime;
+
+                if (type === 'click') {
+                    const osc = ctx.createOscillator();
+                    const gain = ctx.createGain();
+                    osc.type = 'triangle';
+                    osc.frequency.setValueAtTime(440, now);
+                    osc.frequency.exponentialRampToValueAtTime(880, now + 0.05);
+                    gain.gain.setValueAtTime(0.15, now);
+                    gain.gain.linearRampToValueAtTime(0, now + 0.05);
+                    osc.connect(gain);
+                    gain.connect(ctx.destination);
+                    osc.start(now);
+                    osc.stop(now + 0.05);
+                } else if (type === 'success') {
+                    [523.25, 659.25, 783.99, 1046.50].forEach((freq, i) => {
+                        const osc = ctx.createOscillator();
+                        const gain = ctx.createGain();
+                        osc.type = 'sine';
+                        osc.frequency.setValueAtTime(freq, now + (i * 0.08));
+                        gain.gain.setValueAtTime(0.15, now + (i * 0.08));
+                        gain.gain.linearRampToValueAtTime(0, now + (i * 0.08) + 0.2);
+                        osc.connect(gain);
+                        gain.connect(ctx.destination);
+                        osc.start(now + (i * 0.08));
+                        osc.stop(now + (i * 0.08) + 0.2);
+                    });
+                }
+            } catch (e) { }
+        }
+
+        function toggleAudio() {
+            GAME_STATE.soundEnabled = !GAME_STATE.soundEnabled;
+            const icon = document.getElementById('sound-icon');
+            if (GAME_STATE.soundEnabled) {
+                icon.className = 'fa-solid fa-volume-high text-cyan-400';
+                playSound('click');
+            } else {
+                icon.className = 'fa-solid fa-volume-xmark text-slate-500';
+            }
+        }
+
+        function showToast(msg, iconClass = 'fa-solid fa-circle-info text-cyan-400') {
+            const container = document.getElementById('toast-container');
+            const toast = document.createElement('div');
+            toast.className = 'pointer-events-auto flex items-center gap-2.5 px-4 py-2.5 rounded-xl bg-slate-900/95 border border-cyan-500/40 text-slate-100 text-xs shadow-2xl animate-fade-in font-sarabun';
+            toast.innerHTML = `<i class="${iconClass}"></i> <span>${msg}</span>`;
+            container.appendChild(toast);
+            setTimeout(() => {
+                toast.classList.add('opacity-0', 'transition-opacity', 'duration-300');
+                setTimeout(() => toast.remove(), 300);
+            }, 3000);
+        }
+
+        // --- Anti-Cheat Shield ---
+        window.addEventListener('keydown', (e) => {
+            if (e.key === 'F12' || (e.ctrlKey && e.shiftKey && ['I', 'J', 'C'].includes(e.key.toUpperCase())) || (e.ctrlKey && ['U', 'S'].includes(e.key.toUpperCase()))) {
+                e.preventDefault();
+                showToast('โหมดรักษาความปลอดภัยข้อสอบ: ไม่อนุญาตให้เปิดเครื่องมือตรวจสอบโค้ด', 'fa-solid fa-shield-halved text-pink-400');
+                return false;
+            }
+        });
+        window.addEventListener('contextmenu', (e) => {
+            e.preventDefault();
+            showToast('โหมดรักษาความปลอดภัยข้อสอบ: ไม่อนุญาตให้คลิกขวา', 'fa-solid fa-shield-halved text-cyan-400');
+            return false;
+        });
+
+        // --- Boot & State Initialization ---
+        window.addEventListener('DOMContentLoaded', () => {
+            initGameSession();
+        });
+
+        function initGameSession() {
+            const saved = localStorage.getItem(SAVE_KEY);
+            if (saved) {
+                try {
+                    const parsed = JSON.parse(saved);
+                    if (parsed && parsed.teamName && Array.isArray(parsed.sessionCases) && parsed.sessionCases.length > 0) {
+                        // Re-sync sessionCases with latest ALL_12_CASES master data to fix any stale image paths from old localStorage
+                        parsed.sessionCases = parsed.sessionCases.map(sc => {
+                            const master = ALL_12_CASES.find(c => c.id === sc.id || c.section === sc.section || c.title === sc.title);
+                            if (master) {
+                                return {
+                                    ...sc,
+                                    image: master.image,
+                                    title: master.title,
+                                    brief: master.brief,
+                                    phases: master.phases,
+                                    standard_law: master.standard_law,
+                                    standard_penalty: master.standard_penalty,
+                                    standard_remedy: master.standard_remedy,
+                                    standard_prevention: master.standard_prevention,
+                                    keywords_law: master.keywords_law,
+                                    keywords_penalty: master.keywords_penalty,
+                                    keywords_remedy: master.keywords_remedy,
+                                    keywords_security: master.keywords_security
+                                };
+                            }
+                            return sc;
+                        });
+                        GAME_STATE = parsed;
+                        saveSession();
+                        document.getElementById('modal-register-team').classList.add('hidden');
+                        updateHeaderInfo();
+                        loadCurrentCase();
+                        return;
+                    }
+                } catch (e) { }
+            }
+
+            // If no valid session, open registration modal
+            document.getElementById('modal-register-team').classList.remove('hidden');
+            renderMemberInputs(3);
+        }
+
+        function saveSession() {
+            try {
+                localStorage.setItem(SAVE_KEY, JSON.stringify(GAME_STATE));
+            } catch (e) { }
+        }
+
+        function confirmResetGame() {
+            if (confirm('คุณต้องการเริ่มสืบคดีรอบใหม่หรือไม่?\n\n✓ คะแนนคดีเดิมที่ส่งตรวจแล้วจะยังคงถูกบันทึกไว้ในระบบครูผู้สอนอย่างปลอดภัย (ไม่ถูกลบ)')) {
+                localStorage.removeItem(SAVE_KEY);
+                window.location.reload();
+            }
+        }
+
+        function renderMemberInputs(count) {
+            const container = document.getElementById('members-inputs-container');
+            let html = '';
+            for (let i = 1; i <= count; i++) {
+                let noOptions = '';
+                for (let n = 1; n <= 50; n++) {
+                    noOptions += `<option value="${n}" ${n === i ? 'selected' : ''}>เลขที่ ${n}</option>`;
+                }
+
+                html += `
+                <div class="p-2 rounded-xl bg-slate-900/90 border border-slate-800 flex items-center gap-2 member-row">
+                    <div class="w-24 shrink-0">
+                        <select class="member-no w-full bg-slate-950 border border-slate-700 rounded-lg px-2 py-1.5 text-xs text-cyan-300 font-mono">
+                            ${noOptions}
+                        </select>
+                    </div>
+                    <div class="w-20 shrink-0">
+                        <select class="member-prefix w-full bg-slate-950 border border-slate-700 rounded-lg px-2 py-1.5 text-xs text-white">
+                            <option value="ด.ช.">ด.ช.</option>
+                            <option value="ด.ญ.">ด.ญ.</option>
+                            <option value="นาย">นาย</option>
+                            <option value="น.ส.">น.ส.</option>
+                        </select>
+                    </div>
+                    <div class="flex-1">
+                        <input type="text" class="member-name w-full bg-slate-950 border border-slate-700 rounded-lg px-2.5 py-1.5 text-xs text-white placeholder-slate-500" placeholder="ชื่อ - นามสกุล" ${i === 1 ? 'required' : ''}>
+                    </div>
+                </div>`;
+            }
+            container.innerHTML = html;
+        }
+
+        function handleRegisterTeam(e) {
+            e.preventDefault();
+            playSound('click');
+
+            const teamName = document.getElementById('reg-team-name').value.trim();
+            const room = document.getElementById('reg-room').value.trim();
+            const count = parseInt(document.getElementById('reg-members-count').value, 10) || 1;
+
+            if (!teamName) {
+                showToast('กรุณาระบุชื่อทีมสายสืบ', 'fa-solid fa-triangle-exclamation text-yellow-400');
+                return;
+            }
+
+            const rows = document.querySelectorAll('.member-row');
+            const members = [];
+            rows.forEach((row, idx) => {
+                const no = row.querySelector('.member-no')?.value || (idx + 1);
+                const prefix = row.querySelector('.member-prefix')?.value || 'ด.ช.';
+                const name = row.querySelector('.member-name')?.value.trim() || '';
+                if (name) {
+                    members.push({ no: parseInt(no, 10), prefix, name });
+                }
+            });
+
+            if (members.length === 0) {
+                members.push({ no: 1, prefix: 'ด.ช.', name: 'นักสืบตัวแทน' });
+            }
+
+            // Shuffle 6 cases from 12 cases
+            const shuffled = [...ALL_12_CASES].sort(() => 0.5 - Math.random());
+            const sessionCases = shuffled.slice(0, 3);
+
+            GAME_STATE.teamName = teamName;
+            GAME_STATE.room = room;
+            GAME_STATE.membersCount = count;
+            GAME_STATE.members = members;
+            GAME_STATE.sessionCases = sessionCases;
+            GAME_STATE.currentCaseIndex = 0;
+            GAME_STATE.currentRole = 'legal';
+            GAME_STATE.caseScores = sessionCases.map(c => ({
+                caseId: c.id,
+                answers: { legal: '', remedy: '', security: '' },
+                scores: { legal: null, remedy: null, security: null },
+                totalScore: 0
+            }));
+            GAME_STATE.totalScore = 0;
+
+            saveSession();
+            document.getElementById('modal-register-team').classList.add('hidden');
+            updateHeaderInfo();
+            loadCurrentCase();
+            showToast('ลงทะเบียนทีมสำเร็จ! เริ่มสืบคดีที่ 1', 'fa-solid fa-circle-check text-emerald-400');
+        }
+
+        function updateHeaderInfo() {
+            document.getElementById('label-team-name').textContent = GAME_STATE.teamName || 'นักสืบ ม.3';
+            document.getElementById('label-room-name').textContent = GAME_STATE.room || 'ม.3/1';
+            document.getElementById('label-current-case').textContent = GAME_STATE.currentCaseIndex + 1;
+
+            // Recalculate cumulative total score
+            let total = 0;
+            GAME_STATE.caseScores.forEach(cs => {
+                if (cs && cs.scores) {
+                    if (cs.scores.legal?.score) total += cs.scores.legal.score;
+                    if (cs.scores.remedy?.score) total += cs.scores.remedy.score;
+                    if (cs.scores.security?.score) total += cs.scores.security.score;
+                }
+            });
+            GAME_STATE.totalScore = total;
+            document.getElementById('label-total-score').textContent = total;
+        }
+
+        // --- Image Loading Handlers ---
+        function onComicImageLoad(img) {
+            img.classList.remove('opacity-0');
+            const spinner = document.getElementById('comic-img-spinner');
+            if (spinner) spinner.classList.add('hidden');
+        }
+
+        function onComicImageError(img) {
+            console.warn('Comic image load failed:', img.src);
+            const caseItem = GAME_STATE.sessionCases[GAME_STATE.currentCaseIndex];
+
+            // Fallback Level 1: Re-sync from master ALL_12_CASES array
+            if (!img.dataset.fallbackMasterTried && caseItem) {
+                img.dataset.fallbackMasterTried = 'true';
+                const master = ALL_12_CASES.find(c => c.id === caseItem.id || c.section === caseItem.section || c.title === caseItem.title);
+                if (master && master.image) {
+                    caseItem.image = master.image;
+                    img.src = master.image;
+                    return;
+                }
+            }
+
+            // Fallback Level 2: Toggle leading slash for relative/absolute host pathing
+            if (!img.dataset.fallbackSlashTried) {
+                img.dataset.fallbackSlashTried = 'true';
+                if (img.src.includes('assets/evidence/')) {
+                    const cleanPath = img.src.substring(img.src.indexOf('assets/evidence/'));
+                    img.src = cleanPath;
+                    return;
+                }
+            }
+
+            const spinner = document.getElementById('comic-img-spinner');
+            if (spinner) {
+                spinner.innerHTML = '<i class="fa-solid fa-triangle-exclamation text-amber-400 text-2xl"></i><span class="text-amber-300 font-semibold">โหลดภาพไม่สำเร็จ (ตรวจสอบไฟล์ภาพ)</span>';
+                spinner.classList.remove('hidden');
+            }
+        }
+
+        function onLightboxImageError(img) {
+            const caseItem = GAME_STATE.sessionCases[GAME_STATE.currentCaseIndex];
+            if (!img.dataset.fallbackMasterTried && caseItem) {
+                img.dataset.fallbackMasterTried = 'true';
+                const master = ALL_12_CASES.find(c => c.id === caseItem.id || c.section === caseItem.section || c.title === caseItem.title);
+                if (master && master.image) {
+                    img.src = master.image;
+                    return;
+                }
+            }
+            const spinner = document.getElementById('lightbox-spinner');
+            if (spinner) {
+                spinner.innerHTML = '<i class="fa-solid fa-triangle-exclamation text-amber-400 text-3xl"></i><span class="text-amber-300 font-semibold">โหลดภาพขยายไม่สำเร็จ</span>';
+                spinner.classList.remove('hidden');
+            }
+        }
+
+        // --- Load Current Case ---
+        function loadCurrentCase() {
+            const caseItem = GAME_STATE.sessionCases[GAME_STATE.currentCaseIndex];
+            if (!caseItem) return;
+
+            // Ensure caseItem image is strictly synced with master ALL_12_CASES
+            const master = ALL_12_CASES.find(c => c.id === caseItem.id || c.section === caseItem.section || c.title === caseItem.title);
+            if (master && master.image) {
+                caseItem.image = master.image;
+            }
+
+            document.getElementById('dossier-case-num').textContent = String(GAME_STATE.currentCaseIndex + 1).padStart(2, '0');
+            document.getElementById('dossier-title').textContent = `คดี #${GAME_STATE.currentCaseIndex + 1}: ${caseItem.title}`;
+            document.getElementById('dossier-brief').textContent = caseItem.brief;
+
+            const comicImg = document.getElementById('dossier-comic-img');
+            const spinner = document.getElementById('comic-img-spinner');
+            if (spinner) {
+                spinner.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin text-2xl"></i><span>กำลังโหลดภาพหลักฐาน...</span>';
+                spinner.classList.remove('hidden');
+            }
+            comicImg.classList.add('opacity-0');
+            delete comicImg.dataset.fallbackMasterTried;
+            delete comicImg.dataset.fallbackSlashTried;
+            comicImg.src = caseItem.image;
+            comicImg.alt = caseItem.title;
+
+            selectStoryPhase(1);
+
+            // Default to legal role or first unscored role
+            const currentScores = GAME_STATE.caseScores[GAME_STATE.currentCaseIndex]?.scores || {};
+            if (!currentScores.legal) {
+                switchActiveRole('legal');
+            } else if (!currentScores.remedy) {
+                switchActiveRole('remedy');
+            } else if (!currentScores.security) {
+                switchActiveRole('security');
+            } else {
+                switchActiveRole('legal');
+            }
+
+            updateStepperUI();
+        }
+
+        function selectStoryPhase(phaseNum) {
+            const caseItem = GAME_STATE.sessionCases[GAME_STATE.currentCaseIndex];
+            if (!caseItem) return;
+
+            [1, 2, 3].forEach(p => {
+                const btn = document.getElementById(`phase-tab-${p}`);
+                if (p === phaseNum) {
+                    btn.className = 'px-2 py-1.5 rounded-lg bg-slate-800/90 border border-cyan-500/40 text-cyan-300 font-semibold transition';
+                } else {
+                    btn.className = 'px-2 py-1.5 rounded-lg bg-slate-900/60 border border-slate-700 text-slate-400 hover:text-white transition';
+                }
+            });
+
+            document.getElementById('story-phase-desc').textContent = caseItem.phases[phaseNum - 1] || '...';
+        }
+
+        // --- Switch Active Role ---
+        function switchActiveRole(roleKey) {
+            GAME_STATE.currentRole = roleKey;
+            const cfg = ROLE_CONFIG[roleKey];
+            if (!cfg) return;
+
+            // Update Active Role Card Info
+            document.getElementById('role-avatar').textContent = cfg.avatar;
+            document.getElementById('role-title').textContent = cfg.name;
+            document.getElementById('role-desc').textContent = cfg.desc;
+            document.getElementById('role-tip').textContent = cfg.tip;
+
+            const textarea = document.getElementById('active-role-input');
+            textarea.placeholder = cfg.placeholder;
+
+            // Load saved answer if any
+            const caseScoreObj = GAME_STATE.caseScores[GAME_STATE.currentCaseIndex];
+            const existingAnswer = caseScoreObj?.answers?.[roleKey] || '';
+            textarea.value = existingAnswer;
+
+            // Check if already scored
+            const scoredObj = caseScoreObj?.scores?.[roleKey];
+            const feedbackBox = document.getElementById('role-feedback-box');
+            const submitBtn = document.getElementById('btn-submit-active-role');
+            const clearBtn = document.getElementById('btn-clear-active-role');
+            const lockedBadge = document.getElementById('role-locked-badge');
+
+            if (scoredObj && typeof scoredObj.score === 'number') {
+                // Permanently lock textarea
+                textarea.readOnly = true;
+                textarea.classList.add('bg-slate-900/60', 'text-slate-300', 'cursor-not-allowed', 'border-emerald-500/40');
+                textarea.classList.remove('bg-slate-950/90', 'text-slate-100', 'border-slate-700');
+
+                // Hide submit and clear buttons, show locked badge
+                if (clearBtn) clearBtn.classList.add('hidden');
+                if (submitBtn) submitBtn.classList.add('hidden');
+                if (lockedBadge) lockedBadge.classList.remove('hidden');
+
+                // Show feedback box
+                feedbackBox.classList.remove('hidden');
+                document.getElementById('role-eval-score').textContent = scoredObj.score;
+                document.getElementById('role-eval-feedback').textContent = scoredObj.feedback || 'วิเคราะห์ได้ดีมาก';
+
+                // Update Next Step Button
+                updateNextStepButton(roleKey);
+            } else {
+                // Unlock textarea for answering
+                textarea.readOnly = false;
+                textarea.classList.remove('bg-slate-900/60', 'text-slate-300', 'cursor-not-allowed', 'border-emerald-500/40');
+                textarea.classList.add('bg-slate-950/90', 'text-slate-100', 'border-slate-700');
+
+                // Show submit and clear buttons, hide locked badge
+                if (clearBtn) clearBtn.classList.remove('hidden');
+                if (submitBtn) {
+                    submitBtn.classList.remove('hidden');
+                    submitBtn.disabled = true;
+                    submitBtn.innerHTML = '<i class="fa-solid fa-bolt text-yellow-300"></i> <span id="label-submit-btn">ส่งตรวจบทบาทนี้ (10 คะแนน)</span>';
+                }
+                if (lockedBadge) lockedBadge.classList.add('hidden');
+
+                feedbackBox.classList.add('hidden');
+            }
+
+            handleActiveTextInput();
+            updateStepperUI();
+        }
+
+        function handleActiveTextInput() {
+            const caseScoreObj = GAME_STATE.caseScores[GAME_STATE.currentCaseIndex];
+            const isAlreadyScored = caseScoreObj?.scores?.[GAME_STATE.currentRole] && typeof caseScoreObj.scores[GAME_STATE.currentRole].score === 'number';
+
+            const textarea = document.getElementById('active-role-input');
+            const text = textarea.value.trim();
+            const countLabel = document.getElementById('active-char-count');
+            const submitBtn = document.getElementById('btn-submit-active-role');
+
+            countLabel.textContent = `${text.length} / 20 ตัวอักษร`;
+
+            if (isAlreadyScored) {
+                countLabel.className = 'font-mono text-emerald-400 font-bold';
+                if (submitBtn) submitBtn.disabled = true;
+                return;
+            }
+
+            if (text.length >= 20) {
+                countLabel.className = 'font-mono text-emerald-400 font-bold';
+                if (submitBtn) submitBtn.disabled = false;
+            } else {
+                countLabel.className = 'font-mono text-slate-400';
+                if (submitBtn) submitBtn.disabled = true;
+            }
+
+            // Save draft to state only if not yet scored
+            if (caseScoreObj && !isAlreadyScored) {
+                caseScoreObj.answers[GAME_STATE.currentRole] = text;
+                saveSession();
+            }
+        }
+
+        function clearActiveRoleDraft() {
+            const caseScoreObj = GAME_STATE.caseScores[GAME_STATE.currentCaseIndex];
+            const isAlreadyScored = caseScoreObj?.scores?.[GAME_STATE.currentRole] && typeof caseScoreObj.scores[GAME_STATE.currentRole].score === 'number';
+            if (isAlreadyScored) return; // Prevent clearing if already scored
+
+            document.getElementById('active-role-input').value = '';
+            handleActiveTextInput();
+        }
+
+        function updateStepperUI() {
+            const currentCaseObj = GAME_STATE.caseScores[GAME_STATE.currentCaseIndex];
+            if (!currentCaseObj) return;
+
+            let caseTotal = 0;
+
+            ['legal', 'remedy', 'security'].forEach(r => {
+                const tab = document.getElementById(`step-tab-${r}`);
+                const badgeScore = document.getElementById(`badge-${r}-score`);
+                const statusText = document.getElementById(`status-${r}-text`);
+                const scoredObj = currentCaseObj.scores?.[r];
+
+                if (scoredObj && typeof scoredObj.score === 'number') {
+                    caseTotal += scoredObj.score;
+                    badgeScore.textContent = `${scoredObj.score}/10`;
+                    badgeScore.className = 'text-[10px] px-1.5 rounded bg-emerald-500/30 text-emerald-300 font-mono font-bold';
+                    statusText.textContent = 'ตรวจแล้ว 🔒';
+                    statusText.className = 'text-[10px] text-emerald-400 font-medium';
+                } else {
+                    badgeScore.textContent = '0/10';
+                    badgeScore.className = 'text-[10px] px-1.5 rounded bg-slate-800 text-slate-400 font-mono';
+                    statusText.textContent = r === GAME_STATE.currentRole ? 'กำลังทำ ✍️' : 'รอตรวจ';
+                    statusText.className = r === GAME_STATE.currentRole ? 'text-[10px] text-cyan-300 font-bold' : 'text-[10px] text-slate-400 font-normal';
+                }
+
+                if (r === GAME_STATE.currentRole) {
+                    tab.className = 'p-2 rounded-xl bg-cyan-500/20 border-2 border-cyan-400 text-cyan-200 font-bold flex flex-col items-center gap-0.5 transition shadow-md shadow-cyan-500/20';
+                } else {
+                    tab.className = 'p-2 rounded-xl bg-slate-900/60 border border-slate-700 text-slate-400 flex flex-col items-center gap-0.5 hover:text-slate-200 transition';
+                }
+            });
+
+            document.getElementById('case-status-badge').textContent = `คะแนนคดีนี้: ${caseTotal} / 30`;
+            currentCaseObj.totalScore = caseTotal;
+            updateHeaderInfo();
+        }
+
+        // --- Single-Role Submission to AI ---
+        async function submitActiveRoleToAI() {
+            const roleKey = GAME_STATE.currentRole;
+            const currentCaseObj = GAME_STATE.caseScores[GAME_STATE.currentCaseIndex];
+
+            // Strict anti-resubmit guard
+            if (currentCaseObj?.scores?.[roleKey] && typeof currentCaseObj.scores[roleKey].score === 'number') {
+                showToast('บทบาทนี้ได้รับการประเมินผลเรียบร้อยแล้ว ไม่สามารถส่งคำตอบซ้ำได้', 'fa-solid fa-lock text-yellow-400');
+                return;
+            }
+
+            const answer = document.getElementById('active-role-input').value.trim();
+            const caseItem = GAME_STATE.sessionCases[GAME_STATE.currentCaseIndex];
+
+            if (answer.length < 20) {
+                showToast('กรุณาพิมพ์วิเคราะห์อย่างน้อย 20 ตัวอักษร', 'fa-solid fa-triangle-exclamation text-yellow-400');
+                return;
+            }
+
+            const submitBtn = document.getElementById('btn-submit-active-role');
+            const clearBtn = document.getElementById('btn-clear-active-role');
+            const lockedBadge = document.getElementById('role-locked-badge');
+            const textarea = document.getElementById('active-role-input');
+
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin mr-1"></i> AI กำลังตรวจวิเคราะห์...';
+
+            playSound('click');
+            showToast('กำลังส่งคำตอบให้ Google Gemini AI ตรวจสอบ...', 'fa-solid fa-wand-magic-sparkles text-cyan-400');
+
+            const membersInfoPayload = JSON.stringify({
+                room: GAME_STATE.room,
+                members: GAME_STATE.members || []
+            });
+
+            try {
+                let evalResult = null;
+
+                if (window.location.protocol.startsWith('http')) {
+                    const res = await fetch('/api/evaluate-role', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            mode: '3',
+                            table: 'game_scores_3',
+                            playerId: GAME_STATE.teamName,
+                            teamName: `${GAME_STATE.teamName} (${GAME_STATE.room})`,
+                            membersInfo: membersInfoPayload,
+                            caseId: caseItem.id,
+                            caseTitle: caseItem.title,
+                            role: roleKey,
+                            answer: answer
+                        })
+                    });
+
+                    if (res.ok) {
+                        const data = await res.json();
+                        if (data && data.success) {
+                            evalResult = data;
+                        }
+                    }
+                }
+
+                if (!evalResult) {
+                    // Fallback heuristic scoring
+                    evalResult = localSingleRoleEvaluation(caseItem, roleKey, answer);
+                }
+
+                // Record Score to State
+                currentCaseObj.scores[roleKey] = {
+                    score: evalResult.score,
+                    feedback: evalResult.feedback
+                };
+
+                saveSession();
+                playSound('success');
+
+                // Permanently lock input and UI for this role
+                textarea.readOnly = true;
+                textarea.classList.add('bg-slate-900/60', 'text-slate-300', 'cursor-not-allowed', 'border-emerald-500/40');
+                textarea.classList.remove('bg-slate-950/90', 'text-slate-100', 'border-slate-700');
+
+                if (clearBtn) clearBtn.classList.add('hidden');
+                if (submitBtn) submitBtn.classList.add('hidden');
+                if (lockedBadge) lockedBadge.classList.remove('hidden');
+
+                // Display Feedback Box
+                const feedbackBox = document.getElementById('role-feedback-box');
+                feedbackBox.classList.remove('hidden');
+                document.getElementById('role-eval-score').textContent = evalResult.score;
+                document.getElementById('role-eval-feedback').textContent = evalResult.feedback;
+
+                updateNextStepButton(roleKey);
+                updateStepperUI();
+
+                // Check if all 3 roles are now scored -> sync case score to server & Supabase
+                checkAndSyncCompletedCase();
+
+            } catch (e) {
+                console.error('Submission error:', e);
+                const localFallback = localSingleRoleEvaluation(caseItem, roleKey, answer);
+                currentCaseObj.scores[roleKey] = {
+                    score: localFallback.score,
+                    feedback: localFallback.feedback
+                };
+                saveSession();
+                playSound('success');
+
+                textarea.readOnly = true;
+                textarea.classList.add('bg-slate-900/60', 'text-slate-300', 'cursor-not-allowed', 'border-emerald-500/40');
+                textarea.classList.remove('bg-slate-950/90', 'text-slate-100', 'border-slate-700');
+
+                if (clearBtn) clearBtn.classList.add('hidden');
+                if (submitBtn) submitBtn.classList.add('hidden');
+                if (lockedBadge) lockedBadge.classList.remove('hidden');
+
+                const feedbackBox = document.getElementById('role-feedback-box');
+                feedbackBox.classList.remove('hidden');
+                document.getElementById('role-eval-score').textContent = localFallback.score;
+                document.getElementById('role-eval-feedback').textContent = localFallback.feedback;
+
+                updateNextStepButton(roleKey);
+                updateStepperUI();
+                checkAndSyncCompletedCase();
+            }
+        }
+
+        function updateNextStepButton(roleKey) {
+            const btnLabel = document.getElementById('label-next-step-btn');
+            const currentCaseObj = GAME_STATE.caseScores[GAME_STATE.currentCaseIndex];
+            const isAllRolesDone = currentCaseObj.scores.legal && currentCaseObj.scores.remedy && currentCaseObj.scores.security;
+            const isLastCase = GAME_STATE.currentCaseIndex >= GAME_STATE.sessionCases.length - 1;
+
+            if (roleKey === 'legal') {
+                btnLabel.textContent = '➡️ ไปยังบทบาทที่ 2: แก้ไข';
+            } else if (roleKey === 'remedy') {
+                btnLabel.textContent = '➡️ ไปยังบทบาทที่ 3: วิศวกรความปลอดภัย';
+            } else if (roleKey === 'security' || isAllRolesDone) {
+                if (isLastCase) {
+                    btnLabel.textContent = '🏆 สรุปผลคดีทั้งหมดและรับเกียรติบัตร';
+                } else {
+                    btnLabel.textContent = `➡️ สู่คดีถัดไป (คดีที่ ${GAME_STATE.currentCaseIndex + 2} / 3)`;
+                }
+            }
+        }
+
+        function proceedToNextRoleOrCase() {
+            playSound('click');
+            const currentRole = GAME_STATE.currentRole;
+            const currentCaseObj = GAME_STATE.caseScores[GAME_STATE.currentCaseIndex];
+            const isAllRolesDone = currentCaseObj.scores.legal && currentCaseObj.scores.remedy && currentCaseObj.scores.security;
+            const isLastCase = GAME_STATE.currentCaseIndex >= GAME_STATE.sessionCases.length - 1;
+
+            if (currentRole === 'legal') {
+                switchActiveRole('remedy');
+            } else if (currentRole === 'remedy') {
+                switchActiveRole('security');
+            } else if (currentRole === 'security' || isAllRolesDone) {
+                if (isLastCase) {
+                    openCertificateModal();
+                } else {
+                    GAME_STATE.currentCaseIndex++;
+                    GAME_STATE.currentRole = 'legal';
+                    saveSession();
+                    loadCurrentCase();
+                    showToast(`เริ่มสืบคดีที่ ${GAME_STATE.currentCaseIndex + 1} / 3`, 'fa-solid fa-folder-open text-cyan-400');
+                }
+            }
+        }
+
+        async function checkAndSyncCompletedCase() {
+            const currentCaseObj = GAME_STATE.caseScores[GAME_STATE.currentCaseIndex];
+            const caseItem = GAME_STATE.sessionCases[GAME_STATE.currentCaseIndex];
+            if (!currentCaseObj || !currentCaseObj.scores.legal || !currentCaseObj.scores.remedy || !currentCaseObj.scores.security) return;
+
+            const legal = currentCaseObj.scores.legal.score || 0;
+            const remedy = currentCaseObj.scores.remedy.score || 0;
+            const security = currentCaseObj.scores.security.score || 0;
+            const total = legal + remedy + security;
+
+            const membersInfoPayload = JSON.stringify({
+                room: GAME_STATE.room,
+                members: GAME_STATE.members || []
+            });
+
+            // Sync to server API
+            let syncedViaApi = false;
+            if (window.location.protocol.startsWith('http')) {
+                try {
+                    const res = await fetch('/api/save-case-score-3', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            playerId: GAME_STATE.teamName,
+                            teamName: `${GAME_STATE.teamName} (${GAME_STATE.room})`,
+                            membersInfo: membersInfoPayload,
+                            caseId: caseItem.id,
+                            caseTitle: caseItem.title,
+                            studentAnswers: currentCaseObj.answers,
+                            caseScores: {
+                                legalScore: legal,
+                                legalFeedback: currentCaseObj.scores.legal.feedback,
+                                remedyScore: remedy,
+                                remedyFeedback: currentCaseObj.scores.remedy.feedback,
+                                securityScore: security,
+                                securityFeedback: currentCaseObj.scores.security.feedback
+                            }
+                        })
+                    });
+                    if (res.ok) {
+                        syncedViaApi = true;
+                    }
+                } catch (e) { }
+            }
+
+            // Backup Direct Supabase Sync (Only if backend server API is unavailable/failed)
+            if (!syncedViaApi && window.supabase) {
+                try {
+                    const sbUrl = 'https://xbwlzqtvmjwucoqkyvhj.supabase.co';
+                    const sbKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inhid2x6cXR2bWp3dWNvcWt5dmhqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQ0NjE3NDEsImV4cCI6MjEwMDAzNzc0MX0.nbIkBfvTZBxBSxxYik3o3gAqlXI8ITGMvof3wvJxA7c';
+                    const sb = window.supabase.createClient(sbUrl, sbKey);
+                    await sb.from('game_scores_3').insert([{
+                        player_id: GAME_STATE.teamName || 'anonymous',
+                        team_name: `${GAME_STATE.teamName} (${GAME_STATE.room})`,
+                        case_id: caseItem.id,
+                        case_title: caseItem.title,
+                        legal_score: legal,
+                        remedy_score: remedy,
+                        security_score: security,
+                        total_score: total,
+                        members_info: membersInfoPayload,
+                        student_answers: currentCaseObj.answers || {},
+                        ai_feedback: {
+                            legal: { score: legal, feedback: currentCaseObj.scores.legal?.feedback || '' },
+                            remedy: { score: remedy, feedback: currentCaseObj.scores.remedy?.feedback || '' },
+                            security: { score: security, feedback: currentCaseObj.scores.security?.feedback || '' },
+                            total_score: total
+                        },
+                        created_at: new Date().toISOString()
+                    }]);
+                } catch (e) {
+                    console.warn('Direct Supabase backup insert warning:', e);
+                }
+            }
+
+            // Save to local scores cache and broadcast
+            try {
+                const cacheRaw = localStorage.getItem('CYBER_DETECTIVE_3CASES_SCORES_CACHE');
+                const cacheList = cacheRaw ? JSON.parse(cacheRaw) : [];
+                cacheList.unshift({
+                    team_name: `${GAME_STATE.teamName} (${GAME_STATE.room})`,
+                    case_id: caseItem.id,
+                    case_title: caseItem.title,
+                    legal_score: legal,
+                    remedy_score: remedy,
+                    security_score: security,
+                    total_score: total,
+                    members_info: membersInfoPayload,
+                    student_answers: currentCaseObj.answers || {},
+                    ai_feedback: {
+                        legal: { score: legal, feedback: currentCaseObj.scores.legal?.feedback || '' },
+                        remedy: { score: remedy, feedback: currentCaseObj.scores.remedy?.feedback || '' },
+                        security: { score: security, feedback: currentCaseObj.scores.security?.feedback || '' },
+                        total_score: total
+                    },
+                    created_at: new Date().toISOString()
+                });
+                if (cacheList.length > 200) cacheList.pop();
+                localStorage.setItem('CYBER_DETECTIVE_3CASES_SCORES_CACHE', JSON.stringify(cacheList));
+
+                const bc = new BroadcastChannel('cyber_detective_3_live');
+                bc.postMessage({ type: 'NEW_SCORE' });
+            } catch (e) { }
+        }
+
+        // --- Robust Local Single Role Evaluation Fallback ---
+        function localSingleRoleEvaluation(caseItem, roleKey, answer) {
+            const clean = answer.trim().toLowerCase();
+
+            // Gibberish check
+            const evasive = /^(ไม่รู้|ไม่ทราบ|ไม่บอก|มั่ว|ขี้เกียจ|ไม่มี|ไม่แน่ใจ|ไม่รู้อะไรเลย|ช่างมัน|ไม่ตอบ|5555|asdf|ฟกห)/i;
+            if (clean.length < 5 || evasive.test(clean)) {
+                return {
+                    role: roleKey,
+                    score: 0,
+                    feedback: roleKey === 'legal'
+                        ? 'ยังไม่สามารถให้คะแนนได้ ลองย้อนกลับไปดูเหตุการณ์ในการ์ตูน 9 ช่อง แล้วระบุฐานความผิดหรือบทลงโทษทางกฎหมายดูนะครับ'
+                        : roleKey === 'remedy'
+                            ? 'ยังไม่สามารถให้คะแนนได้ ลองระบุวิธีรับมือตัดวงจรความเสียหายทันที และบอกผู้ใหญ่หรือแอดมินให้ช่วยระงับเหตุนะครับ'
+                            : 'ยังไม่สามารถให้คะแนนได้ ลองเสนอแนะวิธีป้องกันตัวเองจากภัยไซเบอร์ง่ายๆ ในชีวิตประจำวันดูนะครับ'
+                };
+            }
+
+            // Check wrong section or wrong case topic across ALL 12 cases
+            const sectionCaseMap = {
+                'มาตรา 5': 1, 'มาตรา 6': 2, 'มาตรา 7': 3, 'มาตรา 8': 4,
+                'มาตรา 9': 5, 'มาตรา 10': 6, 'มาตรา 11': 7, 'มาตรา 14(1)': 9,
+                'มาตรา 14(2)': 10, 'มาตรา 14(4)': 11, 'มาตรา 16': 12
+            };
+
+            const currentCaseId = Number(caseItem.id);
+
+            // 1. Law section mismatch
+            for (const [sec, cId] of Object.entries(sectionCaseMap)) {
+                if (clean.includes(sec.toLowerCase()) && cId !== currentCaseId) {
+                    if (sec === 'มาตรา 11' && (currentCaseId === 7 || currentCaseId === 8)) continue;
+                    return {
+                        role: roleKey,
+                        score: 0,
+                        feedback: `คำตอบไม่ตรงกับคดี! ข้อความที่คุณระบุ (${sec}) เป็นเรื่องคดีอื่น ไม่ตรงกับพฤติการณ์ในคดีนี้ (${caseItem.title})`
+                    };
+                }
+            }
+
+            // 2. Topic domain mismatch across all 12 cases
+            if (currentCaseId !== 12 && ['ตัดต่อภาพ', 'ดัดแปลงภาพ', 'ภาพตัดต่อ', 'บูลลี่', 'cyberbullying', 'แท็กภาพ', 'ทำให้อับอาย'].some(k => clean.includes(k))) {
+                return { role: roleKey, score: 0, feedback: `คำตอบไม่ตรงกับคดี! ข้อความนี้เป็นเรื่องการตัดต่อรูปและบูลลี่ ไม่ตรงกับคดีนี้ (${caseItem.title})` };
+            }
+            if (currentCaseId !== 11 && ['คลิปโป๊', 'ภาพลามก', 'อนาจาร', 'สื่อลามก', 'safesearch'].some(k => clean.includes(k))) {
+                return { role: roleKey, score: 0, feedback: `คำตอบไม่ตรงกับคดี! ข้อความนี้เป็นเรื่องภาพลามกอนาจาร ไม่ตรงกับคดีนี้ (${caseItem.title})` };
+            }
+            if (currentCaseId !== 6 && ['ยิงระบบ', 'ยิงเซิร์ฟเวอร์', 'เซิร์ฟเวอร์ล่ม', 'ddos', 'cloudflare'].some(k => clean.includes(k))) {
+                return { role: roleKey, score: 0, feedback: `คำตอบไม่ตรงกับคดี! ข้อความนี้เป็นเรื่องการยิง DDoS ถล่มเซิร์ฟเวอร์ ไม่ตรงกับคดีนี้ (${caseItem.title})` };
+            }
+            if (currentCaseId !== 9 && ['phishing', 'ฟิชชิ่ง', 'เว็บปลอม', 'สกินฟรี', 'แจกเพชร'].some(k => clean.includes(k))) {
+                return { role: roleKey, score: 0, feedback: `คำตอบไม่ตรงกับคดี! ข้อความนี้เป็นเรื่องเว็บฟิชชิ่งหลอกสกินเกม ไม่ตรงกับคดีนี้ (${caseItem.title})` };
+            }
+            if (currentCaseId !== 10 && ['ข่าวปลอม', 'fake news', 'ตื่นตระหนก', 'ข่าวลวง', 'ศูนย์ต่อต้านข่าวปลอม'].some(k => clean.includes(k))) {
+                return { role: roleKey, score: 0, feedback: `คำตอบไม่ตรงกับคดี! ข้อความนี้เป็นเรื่องการโพสต์ข่าวปลอมตื่นตระหนก ไม่ตรงกับคดีนี้ (${caseItem.title})` };
+            }
+            if (currentCaseId !== 4 && ['wifi สาธารณะ', 'free wifi', 'อายัดบัตร', 'ดักฟังสัญญาณ'].some(k => clean.includes(k))) {
+                return { role: roleKey, score: 0, feedback: `คำตอบไม่ตรงกับคดี! ข้อความนี้เป็นเรื่องการดักจับข้อมูลบน Wi-Fi ไม่ตรงกับคดีนี้ (${caseItem.title})` };
+            }
+            if (currentCaseId !== 5 && ['version history', 'ประวัติเวอร์ชัน', 'กู้ไฟล์โครงงาน'].some(k => clean.includes(k))) {
+                return { role: roleKey, score: 0, feedback: `คำตอบไม่ตรงกับคดี! ข้อความนี้เป็นเรื่องการแอบลบไฟล์โครงงาน ไม่ตรงกับคดีนี้ (${caseItem.title})` };
+            }
+
+            let score = 0;
+            let feedback = '';
+
+            if (roleKey === 'legal') {
+                const hasLawSection = (clean.includes('มาตรา') || clean.includes('พ.ร.บ') || clean.includes('pdpa') || clean.includes('กฎหมาย') || clean.includes('ฐานความผิด'));
+                const hasPenalty = (clean.includes('ปรับ') || clean.includes('คุก') || clean.includes('จำคุก') || clean.includes('บาท') || clean.includes('ปี') || clean.includes('เดือน') || clean.includes('หมื่น') || clean.includes('แสน'));
+
+                if (!hasLawSection && !hasPenalty) {
+                    return {
+                        role: roleKey,
+                        score: 0,
+                        feedback: 'ยังไม่สามารถให้คะแนนได้ ข้อความนี้เป็นวิธีระงับเหตุหรือการตั้งค่าความปลอดภัย ไม่ใช่การวิเคราะห์ฐานความผิดกฎหมายและอัตราโทษประจำคดี'
+                    };
+                }
+
+                const hasCaseLawMatch = (caseItem.keywords_law || []).some(k => clean.includes(k.toLowerCase())) ||
+                    (caseItem.section && clean.includes(caseItem.section.toLowerCase())) ||
+                    (caseItem.standard_law && clean.includes(caseItem.standard_law.toLowerCase()));
+                if (hasCaseLawMatch && hasPenalty) {
+                    score = 10;
+                    feedback = 'วิเคราะห์ฐานความผิดทางกฎหมายและอัตราโทษประจำคดีนี้ได้อย่างถูกต้อง แม่นยำ และครบถ้วนสมบูรณ์แบบ!';
+                } else if (hasCaseLawMatch) {
+                    score = 8;
+                    feedback = 'วิเคราะห์ฐานความผิดกฎหมายตรงตามคดีได้ดีมาก! หากระบุรายละเอียดอัตราโทษ (จำคุก/ปรับ) เพิ่มอีกนิด จะได้ 10 คะแนนเต็ม';
+                } else {
+                    score = 5;
+                    feedback = 'วิเคราะห์ทิศทางความผิดตรงคดีแล้ว แนะนำให้ระบุเลขมาตรากฎหมายและอัตราโทษเฉพาะคดีนี้เพิ่มเติมเพื่อให้ได้คะแนนสูงขึ้น';
+                }
+
+            } else if (roleKey === 'remedy') {
+                const hasAction = ['ลบ', 'บล็อก', 'แจ้ง', 'กู้', 'หยุด', 'อายัด', 'สลับ', 'ตัด', 'ปิด', 'แคป', 'รายงาน', 'บอกครู', 'บอกพ่อแม่', 'ปรึกษา', 'ฟ้อง', 'ประสานงาน', 'แก้ข่าว'].some(k => clean.includes(k));
+                const hasNotify = ['แจ้งครู', 'แจ้งผู้ปกครอง', 'แจ้งแอดมิน', 'รายงาน', 'แจ้งตำรวจ', 'แจ้งไอที', 'แจ้งแพลตฟอร์ม', 'แจ้งผู้เกี่ยวข้อง', 'บอกพ่อแม่', 'บอกครู'].some(k => clean.includes(k));
+                const mentionsLawOnly = (clean.includes('มาตรา') || clean.includes('พ.ร.บ')) && !hasAction;
+
+                if (mentionsLawOnly || !hasAction) {
+                    return {
+                        role: roleKey,
+                        score: 0,
+                        feedback: 'ยังไม่สามารถให้คะแนนได้ ข้อความนี้เป็นการระบุมาตรากฎหมาย ไม่ใช่ขั้นตอนการระงับเหตุเฉพาะหน้าเพื่อหยุดยั้งความเสียหาย'
+                    };
+                }
+
+                const hasCaseRemedyMatch = (caseItem.keywords_remedy || []).some(k => clean.includes(k.toLowerCase()));
+                if (hasCaseRemedyMatch && hasNotify) {
+                    score = 10;
+                    feedback = 'ลำดับขั้นตอนการบรรเทาความเสียหายเฉพาะหน้าและระบุผู้เกี่ยวข้องของคดีนี้ได้อย่างรวดเร็ว มีสติ และสมบูรณ์แบบ!';
+                } else if (hasCaseRemedyMatch) {
+                    score = 8;
+                    feedback = 'ระบุขั้นตอนหยุดเหตุเฉพาะหน้าตรงคดีได้ดีมาก! หากระบุการแจ้งแอดมิน ครู หรือผู้ปกครองเพิ่มเติม จะได้ 10 คะแนนเต็ม';
+                } else {
+                    score = 5;
+                    feedback = 'มีแนวคิดการหยุดเหตุเฉพาะหน้าตรงคดีแล้ว ควรระบุวิธีระงับเหตุเฉพาะทางและผู้รับแจ้งเพิ่มเติมเพื่อเพิ่มคะแนน';
+                }
+
+            } else { // Security Engineer
+                const isDDoS = currentCaseId === 6;
+                const isCyberbullyingAnswer = clean.includes('ตัดต่อ') || clean.includes('บูลลี่') || clean.includes('cyberbullying') || clean.includes('แท็กภาพ') || (clean.includes('รีพอร์ต') && clean.includes('ภาพ'));
+                const hasSecToolName = ['2fa', 'otp', 'safesearch', 'cloudflare', 'firewall', 'ไฟร์วอลล์', 'vpn', 'ssl', 'https', 'face id', 'touch id', 'private account', 'anti-spam', 'rate limit', 'version history'].some(k => clean.includes(k));
+                const hasSecTool = ['ไม่กด', 'ไม่คลิก', 'ลิงก์', 'ลิงค์', 'โฆษณา', 'สมัคร', 'รหัส', '2fa', 'ป้องกัน', 'ตั้งค่า', 'ล็อก', 'สิทธิ์', 'กรอง', 'ความเป็นส่วนตัว', 'ระวัง', 'หลีกเลี่ยง', 'ไม่แชร์', 'ไม่กรอก', 'แฮกเกอร์', 'ระบบ', 'ความปลอดภัย', 'ไฟร์วอลล์', 'firewall', 'ddos', 'cloudflare', 'safesearch', 'private', 'ส่วนตัว'].some(k => clean.includes(k));
+
+                if (isDDoS && isCyberbullyingAnswer) {
+                    return {
+                        role: roleKey,
+                        score: 0,
+                        feedback: 'คำตอบไม่ตรงกับคดี! ข้อความนี้เป็นการแจ้งลบรูปบูลลี่ ไม่ตรงกับระบบป้องกันเซิร์ฟเวอร์สอบล่มจากการยิง DDoS'
+                    };
+                }
+
+                if (!hasSecTool) {
+                    return {
+                        role: roleKey,
+                        score: 0,
+                        feedback: 'ยังไม่สามารถให้คะแนนได้ ข้อความนี้ไม่ใช่มาตรการหรือแนวทางป้องกันความเสี่ยงระยะยาว'
+                    };
+                }
+
+                const hasCaseSecMatch = (caseItem.keywords_security || []).some(k => clean.includes(k.toLowerCase()));
+                if (hasCaseSecMatch) {
+                    score = 10;
+                    feedback = 'ข้อเสนอแนะแนวทางปฏิบัติหรือเครื่องมือป้องกันความปลอดภัยตรงกับคดีนี้ได้อย่างสมบูรณ์แบบ!';
+                } else {
+                    score = 6;
+                    feedback = 'ตอบแนวทางป้องกันตรงคดีแล้ว แนะนำให้ระบุวิธีหรือเครื่องมือป้องกันประจำคดีนี้เพิ่มเติมเพื่อให้ได้คะแนนสูงขึ้น';
+                }
+            }
+
+            return { role: roleKey, score, feedback, mode: 'local_heuristic' };
+        }
+
+        // --- Lightbox Zoom ---
+        function openComicLightbox() {
+            const caseItem = GAME_STATE.sessionCases[GAME_STATE.currentCaseIndex];
+            if (!caseItem) return;
+            const lbImg = document.getElementById('lightbox-comic-img');
+            const lbSpinner = document.getElementById('lightbox-spinner');
+            if (lbSpinner) {
+                lbSpinner.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin text-3xl"></i><span>กำลังโหลดภาพขยาย...</span>';
+                lbSpinner.classList.remove('hidden');
+            }
+            lbImg.classList.add('opacity-0');
+            lbImg.src = caseItem.image;
+            document.getElementById('lightbox-title').textContent = `คดี #${GAME_STATE.currentCaseIndex + 1}: ${caseItem.title}`;
+            document.getElementById('modal-comic-lightbox').classList.remove('hidden');
+        }
+
+        function closeComicLightbox() {
+            document.getElementById('modal-comic-lightbox').classList.add('hidden');
+        }
+
+        // --- Certificate Modal & Single-Page Print ---
+        function openCertificateModal() {
+            document.getElementById('cert-team-name').textContent = GAME_STATE.teamName || 'นักสืบ ม.3';
+            document.getElementById('cert-room-name').textContent = GAME_STATE.room || 'ม.3/1';
+            document.getElementById('cert-total-score').textContent = GAME_STATE.totalScore;
+            document.getElementById('modal-certificate').classList.remove('hidden');
+
+            try {
+                if (window.confetti) {
+                    window.confetti({ particleCount: 120, spread: 80, origin: { y: 0.6 } });
+                }
+            } catch (e) { }
+        }
+
+        function printCertificate() {
+            // 1. Populate Team & Room
+            document.getElementById('print-cert-team').textContent = GAME_STATE.teamName || 'ทีมสายสืบเยาวชน';
+            document.getElementById('print-cert-room').textContent = `ระดับชั้นมัธยมศึกษาปีที่ 3 (ห้อง ${GAME_STATE.room || 'ม.3/1'})`;
+            document.getElementById('print-cert-score').textContent = `${GAME_STATE.totalScore || 0} / 90`;
+
+            // 2. Compute Title / Rank
+            const score = GAME_STATE.totalScore || 0;
+            let rank = 'CYBER DETECTIVE NOVICE';
+            if (score >= 160) rank = '⭐ CYBER MASTER DETECTIVE (ยอดเยี่ยม)';
+            else if (score >= 130) rank = '⭐ SENIOR CYBER DETECTIVE (ดีเด่น)';
+            else if (score >= 90) rank = '⭐ CYBER INVESTIGATOR (ดี)';
+            document.getElementById('print-cert-rank').textContent = rank;
+
+            // 3. Render Student Roster
+            const membersContainer = document.getElementById('print-cert-members');
+            if (GAME_STATE.members && GAME_STATE.members.length > 0) {
+                let html = '';
+                GAME_STATE.members.forEach(m => {
+                    html += `<div>• <b>เลขที่ ${m.no}</b> ${m.prefix || ''}${m.name || ''}</div>`;
+                });
+                membersContainer.innerHTML = html;
+            } else {
+                membersContainer.innerHTML = '<div>• นักสืบตัวแทนประจำกลุ่ม</div>';
+            }
+
+            // 4. Verification Hash & Formatted Thai Date
+            const randomHash = Math.random().toString(36).substring(2, 8).toUpperCase();
+            document.getElementById('print-cert-hash').textContent = `CSD-2569-${randomHash}`;
+
+            const thaiMonths = ["มกราคม", "กุมภาพันธ์", "มีนาคม", "เมษายน", "พฤษภาคม", "มิถุนายน", "กรกฎาคม", "สิงหาคม", "กันยายน", "ตุลาคม", "พฤศจิกายน", "ธันวาคม"];
+            const now = new Date();
+            const thaiDate = `${now.getDate()} ${thaiMonths[now.getMonth()]} ${now.getFullYear() + 543}`;
+            document.getElementById('print-cert-date').textContent = thaiDate;
+
+            // 5. Trigger Native Print Dialog
+            playSound('click');
+            setTimeout(() => {
+                window.print();
+            }, 300);
+        }
+    </script>
+</body>
+
+</html>

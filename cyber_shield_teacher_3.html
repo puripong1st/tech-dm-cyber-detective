@@ -1,0 +1,2786 @@
+<!DOCTYPE html>
+<html lang="th">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>แผงควบคุม & แดชบอร์ดสรุปคะแนนครูผู้สอน | Cyber Shield Teacher Command</title>
+
+    <!-- SEO & Admin Meta Tags -->
+    <meta name="description" content="แผงควบคุมครูผู้สอน Cyber Shield Teacher - ระบบมอนิเตอร์คะแนนเรียลไทม์ คลังตัวอย่างคำตอบนักเรียน ม.2-ม.3 ระบบแก้ไขคะแนน และ Export รายงานสรุปผล PDF">
+    <meta name="robots" content="noindex, nofollow">
+    <meta name="theme-color" content="#070913">
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Kanit:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400&family=Sarabun:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=Chakra+Petch:wght@500;600;700;800&display=swap"
+        rel="stylesheet">
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" sizes="256x256" href="favicon.png">
+
+    <!-- FontAwesome 6 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        cyber: {
+                            dark: '#070913',
+                            slate: '#0F172A',
+                            panel: '#1E293B',
+                            cyan: '#06B6D4',
+                            cyanGlow: '#22D3EE',
+                            pink: '#EC4899',
+                            yellow: '#F59E0B',
+                            green: '#10B981',
+                            purple: '#8B5CF6'
+                        }
+                    },
+                    fontFamily: {
+                        kanit: ['Kanit', 'sans-serif'],
+                        sarabun: ['Sarabun', 'sans-serif'],
+                        mono: ['Chakra Petch', 'monospace']
+                    }
+                }
+            }
+        }
+    </script>
+
+    <!-- Supabase JS Client CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+    <style>
+        :root {
+            --neon-cyan: #06B6D4;
+            --neon-pink: #EC4899;
+            --neon-yellow: #F59E0B;
+            --neon-green: #10B981;
+            --neon-purple: #8B5CF6;
+        }
+
+        body {
+            background-color: #070913;
+            color: #F8FAFC;
+            font-family: 'Kanit', sans-serif;
+            min-height: 100vh;
+        }
+
+        .cyber-grid-bg {
+            background-image:
+                radial-gradient(circle at 15% 15%, rgba(6, 182, 212, 0.12) 0%, transparent 40%),
+                radial-gradient(circle at 85% 85%, rgba(139, 92, 246, 0.12) 0%, transparent 40%),
+                linear-gradient(rgba(15, 23, 42, 0.8) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(15, 23, 42, 0.8) 1px, transparent 1px);
+            background-size: 100% 100%, 100% 100%, 36px 36px, 36px 36px;
+        }
+
+        .glass-panel {
+            background: rgba(15, 23, 42, 0.88);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(139, 92, 246, 0.3);
+        }
+
+        /* Custom Scrollbars */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: rgba(15, 23, 42, 0.8);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #334155;
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #8B5CF6;
+        }
+
+        /* Force dark style on select dropdowns and options */
+        select {
+            color-scheme: dark !important;
+            background-color: #0f172a !important;
+            color: #f8fafc !important;
+        }
+
+        select option {
+            background-color: #0f172a !important;
+            color: #f8fafc !important;
+            padding: 10px 14px !important;
+        }
+
+        select option:hover,
+        select option:focus,
+        select option:checked {
+            background-color: #8b5cf6 !important;
+            color: #ffffff !important;
+        }
+
+        @media print {
+            @page {
+                size: A4 portrait;
+                margin: 7mm 6mm 7mm 6mm;
+            }
+
+            /* Hide non-printable elements */
+            .no-print,
+            nav,
+            main,
+            footer,
+            #modal-auth,
+            #modal-cases-ref,
+            #modal-team-detail,
+            #modal-rubric-detail,
+            #modal-system-config,
+            #toast-container {
+                display: none !important;
+            }
+
+            body {
+                background: white !important;
+                color: #0f172a !important;
+                padding: 0 !important;
+                margin: 0 !important;
+                font-family: 'Sarabun', 'Kanit', sans-serif !important;
+                line-height: 1.5 !important;
+                word-break: normal !important;
+                overflow-wrap: normal !important;
+            }
+
+            /* Reset print modals so they expand cleanly into full-page printable documents */
+            #modal-print-pdf,
+            #modal-print-group-answers {
+                position: static !important;
+                display: block !important;
+                background: transparent !important;
+                padding: 0 !important;
+                margin: 0 !important;
+                width: 100% !important;
+                height: auto !important;
+                min-height: 0 !important;
+                max-height: none !important;
+                overflow: visible !important;
+                box-shadow: none !important;
+                border: none !important;
+                backdrop-filter: none !important;
+                -webkit-backdrop-filter: none !important;
+            }
+
+            #modal-print-pdf.hidden,
+            #modal-print-group-answers.hidden {
+                display: none !important;
+            }
+
+            #modal-print-pdf>div,
+            #modal-print-group-answers>div {
+                background: white !important;
+                color: #0f172a !important;
+                border: none !important;
+                box-shadow: none !important;
+                padding: 0 !important;
+                margin: 0 !important;
+                max-width: 100% !important;
+                width: 100% !important;
+                border-radius: 0 !important;
+                overflow: visible !important;
+                max-height: none !important;
+            }
+
+            .print-page {
+                background: white !important;
+                color: #0f172a !important;
+                border: none !important;
+                box-shadow: none !important;
+                width: 100% !important;
+                max-width: 100% !important;
+                margin: 0 !important;
+                padding: 0 !important;
+            }
+
+            .print-text-dark {
+                color: #0f172a !important;
+            }
+
+            .print-table {
+                border: 1px solid #64748b !important;
+                width: 100% !important;
+                border-collapse: collapse !important;
+                background: white !important;
+                box-shadow: none !important;
+                overflow: visible !important;
+                margin-top: 8px !important;
+                margin-bottom: 8px !important;
+            }
+
+            .print-table table {
+                width: 100% !important;
+                border-collapse: collapse !important;
+                table-layout: auto !important;
+            }
+
+            .print-table th,
+            .print-table td {
+                border: 1px solid #94a3b8 !important;
+                color: #0f172a !important;
+                padding: 5px 6px !important;
+                font-size: 11px !important;
+                line-height: 1.4 !important;
+                background: white !important;
+                vertical-align: middle !important;
+            }
+
+            .print-table th {
+                background-color: #f1f5f9 !important;
+                color: #0f172a !important;
+                font-weight: bold !important;
+                text-align: center !important;
+                white-space: nowrap !important;
+            }
+
+            .print-table tbody tr {
+                background-color: white !important;
+            }
+
+            .print-table tbody tr:nth-child(even) {
+                background-color: #f8fafc !important;
+            }
+
+            /* Thai text wrapping fix: prevent character-by-character vertical break */
+            .print-table td.cell-nowrap,
+            .print-table td.cell-no,
+            .print-table td.cell-room,
+            .print-table td.cell-student-no,
+            .print-table td.cell-prefix,
+            .print-table td.cell-name,
+            .print-table td.cell-score {
+                white-space: nowrap !important;
+                word-break: normal !important;
+                overflow-wrap: normal !important;
+            }
+
+            .print-table td.cell-team {
+                white-space: nowrap !important;
+                word-break: normal !important;
+                overflow-wrap: normal !important;
+            }
+
+            .print-card {
+                background: #ffffff !important;
+                color: #0f172a !important;
+                border: 1px solid #cbd5e1 !important;
+                border-radius: 5px !important;
+                padding: 4px 6px !important;
+                margin-bottom: 3px !important;
+                page-break-inside: avoid !important;
+                break-inside: avoid !important;
+                box-shadow: none !important;
+                word-break: normal !important;
+                overflow-wrap: normal !important;
+            }
+
+            .print-role-grid {
+                display: grid !important;
+                grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+                gap: 3px !important;
+                margin-top: 2px !important;
+            }
+
+            .print-role-box {
+                background: #f8fafc !important;
+                border: 1px solid #e2e8f0 !important;
+                border-radius: 4px !important;
+                padding: 2px 3px !important;
+                word-break: break-word !important;
+                overflow-wrap: break-word !important;
+                white-space: pre-wrap !important;
+                line-height: 1.12 !important;
+                font-size: 7.2px !important;
+                display: flex !important;
+                flex-direction: column !important;
+                justify-content: space-between !important;
+            }
+
+            .print-role-ans {
+                font-size: 6.8px !important;
+                line-height: 1.1 !important;
+                color: #1e293b !important;
+            }
+
+            .print-ai-box {
+                padding: 1px 2px !important;
+                font-size: 6.8px !important;
+                line-height: 1.1 !important;
+                margin-top: 1px !important;
+                border-radius: 3px !important;
+            }
+
+            .print-score-badge {
+                background: #e0e7ff !important;
+                color: #3730a3 !important;
+                font-weight: bold !important;
+                padding: 1px 4px !important;
+                border-radius: 3px !important;
+                font-size: 9px !important;
+            }
+
+            /* One printed subpage is one group. The case grid is compact enough for 3 cases on A4. */
+            .print-group-subpage {
+                break-after: page !important;
+                page-break-after: always !important;
+                break-inside: avoid !important;
+                page-break-inside: avoid !important;
+                width: 100% !important;
+                display: flex !important;
+                flex-direction: column !important;
+                justify-content: flex-start !important;
+                box-sizing: border-box !important;
+                margin: 0 !important;
+                padding: 0 !important;
+                height: auto !important;
+                min-height: 283mm !important;
+                max-height: none !important;
+                overflow: visible !important;
+            }
+
+            .print-group-subpage:last-child {
+                break-after: auto !important;
+                page-break-after: auto !important;
+            }
+
+            .print-group-header {
+                padding-bottom: 4px !important;
+                margin-bottom: 3px !important;
+            }
+
+            .print-group-header h2 {
+                font-size: 11px !important;
+                line-height: 1.15 !important;
+            }
+
+            .print-group-header p,
+            .print-group-header div {
+                font-size: 8px !important;
+                line-height: 1.15 !important;
+            }
+
+            .print-group-meta {
+                padding: 4px 6px !important;
+                margin-bottom: 3px !important;
+                gap: 1px !important;
+            }
+
+            .print-group-meta h3 {
+                font-size: 10px !important;
+                line-height: 1.15 !important;
+            }
+
+            .print-group-meta p,
+            .print-group-meta span {
+                font-size: 8px !important;
+                line-height: 1.15 !important;
+            }
+
+            .print-case-list {
+                display: grid !important;
+                grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+                gap: 3px 4px !important;
+            }
+
+            .print-case-list .print-card {
+                margin-bottom: 0 !important;
+                break-inside: avoid !important;
+                page-break-inside: avoid !important;
+            }
+
+            .print-case-title {
+                font-size: 8.5px !important;
+                line-height: 1.12 !important;
+            }
+
+            .print-score-badge,
+            .print-case-index {
+                font-size: 7px !important;
+                padding: 1px 3px !important;
+                white-space: nowrap !important;
+            }
+
+            .print-signature-block {
+                margin-top: 4px !important;
+                padding-top: 4px !important;
+                font-size: 8px !important;
+                line-height: 1.15 !important;
+            }
+        }
+    </style>
+</head>
+
+<body class="cyber-grid-bg antialiased selection:bg-purple-500 selection:text-white flex flex-col min-h-screen">
+
+    <!-- 1. TEACHER AUTH PASSCODE MODAL -->
+    <div id="modal-auth" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/90 backdrop-blur-xl">
+        <div
+            class="glass-panel max-w-md w-full p-8 rounded-3xl border border-purple-500/50 shadow-2xl flex flex-col items-center text-center gap-5">
+            <div
+                class="w-16 h-16 rounded-2xl bg-purple-500/20 border border-purple-400 text-purple-300 flex items-center justify-center text-3xl shadow-lg shadow-purple-500/30">
+                <i class="fa-solid fa-chalkboard-user"></i>
+            </div>
+
+            <div>
+                <h2 class="text-xl font-bold text-slate-100 font-kanit">เข้าสู่ระบบแผงควบคุมครูผู้สอน</h2>
+                <p class="text-xs text-slate-400 mt-1 font-sarabun">Cyber Shield Detective: Teacher Command Center (ม.3)
+                </p>
+            </div>
+
+            <div class="w-full flex flex-col gap-3">
+                <div class="relative w-full">
+                    <i class="fa-solid fa-key absolute left-4 top-1/2 -translate-y-1/2 text-purple-400 text-sm"></i>
+                    <input type="password" id="auth-passcode-input" placeholder="กรุณากรอกรหัสผ่านครูผู้สอน..."
+                        class="w-full bg-slate-950/90 border border-purple-500/40 rounded-2xl pl-11 pr-4 py-3 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-purple-400 focus:ring-1 focus:ring-purple-400 font-mono transition text-center"
+                        onkeydown="if(event.key==='Enter') loginTeacher()">
+                </div>
+
+                <span id="auth-error-msg"
+                    class="text-xs text-red-400 font-sarabun hidden flex items-center justify-center gap-1.5">
+                    <i class="fa-solid fa-triangle-exclamation"></i> รหัสผ่านไม่ถูกต้อง กรุณาลองใหม่อีกครั้ง
+                </span>
+
+                <button onclick="loginTeacher()"
+                    class="w-full py-3 rounded-2xl bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white font-bold text-sm shadow-lg shadow-purple-600/30 transition flex items-center justify-center gap-2">
+                    <i class="fa-solid fa-right-to-bracket"></i>
+                    <span>ยืนยันเข้าสู่ระบบ</span>
+                </button>
+            </div>
+
+            <a href="/" class="text-xs text-slate-400 hover:text-white flex items-center gap-1.5 transition">
+                <i class="fa-solid fa-arrow-left"></i> กลับหน้าหลักนักเรียน
+            </a>
+        </div>
+    </div>
+
+    <!-- 2. MAIN TEACHER DASHBOARD INTERFACE -->
+    <div id="main-dashboard-app" class="hidden flex-1 flex flex-col justify-between">
+
+        <!-- Top Navigation Bar -->
+        <header class="glass-panel sticky top-0 z-40 border-b border-purple-500/30 px-4 py-3 lg:px-8 no-print">
+            <div class="max-w-7xl mx-auto flex items-center justify-between gap-3">
+
+                <!-- Brand Title -->
+                <div class="flex items-center gap-3">
+                    <img src="favicon.png" alt="Logo"
+                        class="w-9 h-9 rounded-lg border border-purple-400 shadow-md shadow-purple-500/30 object-cover">
+                    <div>
+                        <div class="flex items-center gap-2">
+                            <h1
+                                class="text-base lg:text-lg font-bold tracking-wider text-transparent bg-clip-text bg-gradient-to-r from-purple-400 via-pink-400 to-cyan-400 font-mono">
+                                CYBER SHIELD TEACHER CENTER
+                            </h1>
+                            <span
+                                class="text-[10px] px-2 py-0.5 rounded-full bg-purple-500/20 text-purple-300 border border-purple-500/40">ม.3
+                                AI Portal</span>
+                        </div>
+                        <p class="text-[11px] text-slate-400 hidden sm:block">ระบบติดตามผลคะแนนเรียลไทม์ ตรวจสอบข้อสอบ
+                            และพิมพ์รายงานสรุปผล</p>
+                    </div>
+                </div>
+
+                <!-- Navigation Tabs -->
+                <div
+                    class="flex items-center gap-1.5 bg-slate-950/80 p-1 rounded-xl border border-slate-800 font-sarabun text-xs">
+                    <button id="nav-tab-scoreboard" onclick="switchTab('scoreboard')"
+                        class="px-3.5 py-1.5 rounded-lg bg-purple-600 text-white font-semibold transition flex items-center gap-1.5 shadow-sm">
+                        <i class="fa-solid fa-chart-line text-purple-200"></i>
+                        <span>กระดานคะแนนสด</span>
+                    </button>
+                    <button id="nav-tab-group-answers" onclick="switchTab('group-answers')"
+                        class="px-3.5 py-1.5 rounded-lg text-slate-400 hover:text-white transition flex items-center gap-1.5">
+                        <i class="fa-solid fa-comments text-emerald-400"></i>
+                        <span>ดูคำตอบรายกลุ่ม</span>
+                    </button>
+                    <button id="nav-tab-solutions" onclick="switchTab('solutions')"
+                        class="px-3.5 py-1.5 rounded-lg text-slate-400 hover:text-white transition flex items-center gap-1.5">
+                        <i class="fa-solid fa-book-open text-pink-400"></i>
+                        <span>แฟ้มเฉลย 12 คดี</span>
+                    </button>
+                    <button id="nav-tab-g8g9-bank" onclick="switchTab('g8g9-bank')"
+                        class="px-3.5 py-1.5 rounded-lg text-slate-400 hover:text-white transition flex items-center gap-1.5"
+                        title="คลังตัวอย่างคำตอบเด็ก ม.2 - ม.3">
+                        <i class="fa-solid fa-graduation-cap text-yellow-300"></i>
+                        <span>ตัวอย่างคำตอบเด็ก ม.2-ม.3</span>
+                    </button>
+                    <button id="nav-tab-settings" onclick="switchTab('settings')"
+                        class="px-3.5 py-1.5 rounded-lg text-slate-400 hover:text-white transition flex items-center gap-1.5">
+                        <i class="fa-solid fa-gear text-cyan-400"></i>
+                        <span>ตั้งค่าระบบ & Cloud</span>
+                    </button>
+                </div>
+
+                <!-- Right Actions -->
+                <div class="flex items-center gap-2">
+                    <div
+                        class="hidden lg:flex items-center gap-2 px-3 py-1.5 rounded-lg bg-emerald-950/60 border border-emerald-500/40 text-emerald-300 text-xs font-mono">
+                        <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
+                        <span id="label-realtime-status">Realtime Active</span>
+                    </div>
+
+                    <a href="/shield_detective"
+                        class="px-3 py-1.5 rounded-lg bg-cyan-950/70 hover:bg-cyan-900 border border-cyan-500/40 text-cyan-300 text-xs font-medium transition flex items-center gap-1.5"
+                        title="เปิดหน้าเล่นเกม">
+                        <i class="fa-solid fa-gamepad"></i>
+                        <span class="hidden sm:inline">หน้าเล่นเกม</span>
+                    </a>
+
+                    <a href="/"
+                        class="p-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white text-xs border border-slate-700 transition"
+                        title="กลับหน้าหลัก">
+                        <i class="fa-solid fa-house"></i>
+                    </a>
+
+                    <button onclick="logoutTeacher()"
+                        class="p-2 rounded-lg bg-red-950/70 hover:bg-red-900 border border-red-500/40 text-red-300 text-xs transition"
+                        title="ออกจากระบบครู">
+                        <i class="fa-solid fa-arrow-right-from-bracket"></i>
+                    </button>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Content Area -->
+        <main class="max-w-7xl mx-auto w-full p-4 lg:p-6 flex-1 flex flex-col gap-6">
+
+            <!-- ========================================================================= -->
+            <!-- TAB 1: LIVE REALTIME SCOREBOARD & TELEMETRY                               -->
+            <!-- ========================================================================= -->
+            <section id="tab-content-scoreboard" class="flex flex-col gap-5">
+
+                <!-- Overview Stats Grid -->
+                <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 lg:gap-4">
+                    <div class="glass-panel p-4 rounded-2xl border border-purple-500/30 flex items-center gap-3.5">
+                        <div
+                            class="w-12 h-12 rounded-xl bg-purple-500/20 border border-purple-400 text-purple-300 flex items-center justify-center text-xl shrink-0">
+                            <i class="fa-solid fa-users"></i>
+                        </div>
+                        <div>
+                            <div class="text-2xl font-bold font-mono text-white" id="stat-total-teams">0</div>
+                            <div class="text-xs text-slate-400 font-sarabun">กลุ่มนักสืบในระบบ</div>
+                        </div>
+                    </div>
+
+                    <div class="glass-panel p-4 rounded-2xl border border-cyan-500/30 flex items-center gap-3.5">
+                        <div
+                            class="w-12 h-12 rounded-xl bg-cyan-500/20 border border-cyan-400 text-cyan-300 flex items-center justify-center text-xl shrink-0">
+                            <i class="fa-solid fa-school"></i>
+                        </div>
+                        <div>
+                            <div class="text-2xl font-bold font-mono text-cyan-300" id="stat-active-rooms">0</div>
+                            <div class="text-xs text-slate-400 font-sarabun">ห้องเรียนที่ส่งผลงาน</div>
+                        </div>
+                    </div>
+
+                    <div class="glass-panel p-4 rounded-2xl border border-yellow-500/30 flex items-center gap-3.5">
+                        <div
+                            class="w-12 h-12 rounded-xl bg-yellow-500/20 border border-yellow-400 text-yellow-300 flex items-center justify-center text-xl shrink-0">
+                            <i class="fa-solid fa-star"></i>
+                        </div>
+                        <div>
+                            <div class="text-2xl font-bold font-mono text-yellow-300" id="stat-avg-score">0.0</div>
+                            <div class="text-xs text-slate-400 font-sarabun">คะแนนเฉลี่ยรวม (เต็ม 30/คดี)</div>
+                        </div>
+                    </div>
+
+                    <div class="glass-panel p-4 rounded-2xl border border-emerald-500/30 flex items-center gap-3.5">
+                        <div
+                            class="w-12 h-12 rounded-xl bg-emerald-500/20 border border-emerald-400 text-emerald-300 flex items-center justify-center text-xl shrink-0">
+                            <i class="fa-solid fa-circle-check"></i>
+                        </div>
+                        <div>
+                            <div class="text-2xl font-bold font-mono text-emerald-300" id="stat-total-submissions">0
+                            </div>
+                            <div class="text-xs text-slate-400 font-sarabun">จำนวนคดีที่ส่งตรวจ AI แล้ว</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Filter, Search & Export Bar -->
+                <div
+                    class="glass-panel p-4 rounded-2xl border border-slate-700 flex flex-wrap items-center justify-between gap-3 text-xs font-sarabun">
+
+                    <div class="flex flex-wrap items-center gap-2.5 flex-1 min-w-[280px]">
+                        <!-- Room Selector -->
+                        <div
+                            class="flex items-center gap-1.5 bg-slate-950 px-3 py-2 rounded-xl border border-slate-700">
+                            <i class="fa-solid fa-door-open text-purple-400"></i>
+                            <select id="filter-room" onchange="renderScoreboardTable()"
+                                class="bg-slate-950 text-white font-medium focus:outline-none cursor-pointer">
+                                <option value="ALL" class="bg-slate-900 text-white py-1">ทุกห้องเรียน (ม.3/1 - ม.3/12)
+                                </option>
+                                <option value="ม.3/1" class="bg-slate-900 text-white py-1">ม.3/1</option>
+                                <option value="ม.3/2" class="bg-slate-900 text-white py-1">ม.3/2</option>
+                                <option value="ม.3/3" class="bg-slate-900 text-white py-1">ม.3/3</option>
+                                <option value="ม.3/4" class="bg-slate-900 text-white py-1">ม.3/4</option>
+                                <option value="ม.3/5" class="bg-slate-900 text-white py-1">ม.3/5</option>
+                                <option value="ม.3/6" class="bg-slate-900 text-white py-1">ม.3/6</option>
+                                <option value="ม.3/7" class="bg-slate-900 text-white py-1">ม.3/7</option>
+                                <option value="ม.3/8" class="bg-slate-900 text-white py-1">ม.3/8</option>
+                                <option value="ม.3/9" class="bg-slate-900 text-white py-1">ม.3/9</option>
+                                <option value="ม.3/10" class="bg-slate-900 text-white py-1">ม.3/10</option>
+                                <option value="ม.3/11" class="bg-slate-900 text-white py-1">ม.3/11</option>
+                                <option value="ม.3/12" class="bg-slate-900 text-white py-1">ม.3/12</option>
+                            </select>
+                        </div>
+
+                        <!-- Sort Order Selector -->
+                        <div
+                            class="flex items-center gap-1.5 bg-slate-950 px-3 py-2 rounded-xl border border-slate-700">
+                            <i class="fa-solid fa-arrow-down-wide-short text-amber-400"></i>
+                            <select id="filter-sort" onchange="renderScoreboardTable()"
+                                class="bg-slate-950 text-white font-medium focus:outline-none cursor-pointer">
+                                <option value="score-desc" class="bg-slate-900 text-white py-1">🏆 เรียงตามคะแนนสูงสุด
+                                    (มาก ➔ น้อย)</option>
+                                <option value="score-asc" class="bg-slate-900 text-white py-1">📉 เรียงตามคะแนนต่ำสุด
+                                    (น้อย ➔ มาก)</option>
+                                <option value="room-asc" class="bg-slate-900 text-white py-1">🏫 เรียงตามห้องและเลขที่
+                                </option>
+                                <option value="time-desc" class="bg-slate-900 text-white py-1">⏱️
+                                    เรียงตามเวลาที่ส่งล่าสุด</option>
+                            </select>
+                        </div>
+
+                        <!-- Search Input -->
+                        <div class="relative flex-1 min-w-[180px]">
+                            <i
+                                class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"></i>
+                            <input type="text" id="filter-search" oninput="renderScoreboardTable()"
+                                placeholder="ค้นหาชื่อกลุ่ม / เลขที่ / ชื่อนักเรียน..."
+                                class="w-full bg-slate-950 border border-slate-700 rounded-xl pl-9 pr-3 py-2 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-purple-400">
+                        </div>
+                    </div>
+
+                    <!-- Right Controls & PDF Export -->
+                    <div class="flex items-center gap-2">
+                        <!-- Display Mode Toggle -->
+                        <div class="flex items-center gap-1 bg-slate-950 p-1 rounded-xl border border-slate-700">
+                            <button id="btn-mode-team" onclick="setScoreboardDisplayMode('team_only')"
+                                class="px-2.5 py-1.5 rounded-lg bg-purple-600 text-white font-semibold transition text-xs shadow-sm"
+                                title="แสดงเฉพาะชื่อกลุ่ม">
+                                ชื่อกลุ่ม
+                            </button>
+                            <button id="btn-mode-roster" onclick="setScoreboardDisplayMode('detailed_roster')"
+                                class="px-2.5 py-1.5 rounded-lg text-slate-400 hover:text-white transition text-xs"
+                                title="แสดงเลขที่และรายชื่อสมาชิกครบทุกคน">
+                                สมาชิก & เลขที่
+                            </button>
+                        </div>
+
+                        <!-- Export PDF Button -->
+                        <button onclick="openPrintPdfModal()"
+                            class="px-3.5 py-2 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-bold transition flex items-center gap-1.5 shadow-md shadow-emerald-500/20">
+                            <i class="fa-solid fa-file-pdf"></i>
+                            <span>Export PDF รายงาน</span>
+                        </button>
+
+                        <!-- Manual Refresh -->
+                        <button onclick="fetchLatestScores()"
+                            class="p-2 rounded-xl bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-300 hover:text-white transition"
+                            title="ดึงข้อมูลล่าสุด">
+                            <i class="fa-solid fa-rotate-right"></i>
+                        </button>
+                    </div>
+
+                </div>
+
+                <!-- Live Scoreboard Table -->
+                <div class="glass-panel rounded-2xl border border-slate-700 overflow-hidden shadow-2xl">
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left text-xs font-sarabun border-collapse">
+                            <thead class="bg-slate-900/90 text-slate-300 font-bold border-b border-slate-700">
+                                <tr>
+                                    <th class="p-3 text-center w-12 border-r border-slate-800">#</th>
+                                    <th class="p-3 border-r border-slate-800">🏷️ ชื่อกลุ่มสายสืบ</th>
+                                    <th class="p-3 text-center w-20 border-r border-slate-800">🏫 ห้อง</th>
+                                    <th class="p-3 border-r border-slate-800" id="th-members-header">👥 สมาชิกในกลุ่ม
+                                        (เลขที่ / ชื่อ-นามสกุล)</th>
+                                    <th class="p-3 text-center w-28 border-r border-slate-800">🎮 จำนวนคดี</th>
+                                    <th class="p-3 text-center w-24 border-r border-slate-800">👨‍⚖️ กฎหมาย</th>
+                                    <th class="p-3 text-center w-24 border-r border-slate-800">🚑 บรรเทา</th>
+                                    <th class="p-3 text-center w-24 border-r border-slate-800">🛡️ ป้องกัน</th>
+                                    <th class="p-3 text-right w-28 border-r border-slate-800">⭐ รวม (90)</th>
+                                    <th class="p-3 text-center w-28">⏱️ ส่งล่าสุด</th>
+                                </tr>
+                            </thead>
+                            <tbody id="scoreboard-tbody" class="divide-y divide-slate-800 text-slate-200">
+                                <tr>
+                                    <td colspan="10" class="p-8 text-center text-slate-500 font-mono">
+                                        <i class="fa-solid fa-circle-notch fa-spin mr-2 text-purple-400"></i>
+                                        กำลังเชื่อมต่อฐานข้อมูล Supabase และโหลดคะแนนสด...
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+            </section>
+
+            <!-- ========================================================================= -->
+            <!-- TAB: GROUP ANSWERS & AI EVALUATIONS VIEW                                  -->
+            <!-- ========================================================================= -->
+            <section id="tab-content-group-answers" class="hidden flex flex-col gap-5">
+
+                <!-- Header Control & Filter Bar -->
+                <div
+                    class="glass-panel p-4 rounded-2xl border border-slate-700 flex flex-wrap items-center justify-between gap-3 text-xs font-sarabun">
+                    <div class="flex flex-wrap items-center gap-2.5 flex-1 min-w-[280px]">
+                        <!-- Room Selector -->
+                        <div
+                            class="flex items-center gap-1.5 bg-slate-950 px-3 py-2 rounded-xl border border-slate-700">
+                            <i class="fa-solid fa-door-open text-purple-400"></i>
+                            <select id="filter-group-room" onchange="renderGroupAnswersTab()"
+                                class="bg-slate-950 text-white font-medium focus:outline-none cursor-pointer">
+                                <option value="ALL" class="bg-slate-900 text-white py-1">ทุกห้องเรียน (ม.3/1 - ม.3/12)
+                                </option>
+                                <option value="ม.3/1" class="bg-slate-900 text-white py-1">ม.3/1</option>
+                                <option value="ม.3/2" class="bg-slate-900 text-white py-1">ม.3/2</option>
+                                <option value="ม.3/3" class="bg-slate-900 text-white py-1">ม.3/3</option>
+                                <option value="ม.3/4" class="bg-slate-900 text-white py-1">ม.3/4</option>
+                                <option value="ม.3/5" class="bg-slate-900 text-white py-1">ม.3/5</option>
+                                <option value="ม.3/6" class="bg-slate-900 text-white py-1">ม.3/6</option>
+                                <option value="ม.3/7" class="bg-slate-900 text-white py-1">ม.3/7</option>
+                                <option value="ม.3/8" class="bg-slate-900 text-white py-1">ม.3/8</option>
+                                <option value="ม.3/9" class="bg-slate-900 text-white py-1">ม.3/9</option>
+                                <option value="ม.3/10" class="bg-slate-900 text-white py-1">ม.3/10</option>
+                                <option value="ม.3/11" class="bg-slate-900 text-white py-1">ม.3/11</option>
+                                <option value="ม.3/12" class="bg-slate-900 text-white py-1">ม.3/12</option>
+                            </select>
+                        </div>
+
+                        <!-- Search Input -->
+                        <div class="relative flex-1 min-w-[200px]">
+                            <i
+                                class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"></i>
+                            <input type="text" id="filter-group-search" oninput="renderGroupAnswersTab()"
+                                placeholder="ค้นหาชื่อกลุ่ม / เลขที่ / ชื่อสมาชิก / ชื่อคดี..."
+                                class="w-full bg-slate-950 border border-slate-700 rounded-xl pl-9 pr-3 py-2 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-emerald-400">
+                        </div>
+                    </div>
+
+                    <!-- Right Controls & PDF Export -->
+                    <div class="flex items-center gap-2">
+                        <button onclick="openGroupAnswersPdfModal()"
+                            class="px-3.5 py-2 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-bold transition flex items-center gap-1.5 shadow-md shadow-emerald-500/20">
+                            <i class="fa-solid fa-file-pdf"></i>
+                            <span>Export PDF คำตอบกลุ่ม (A4 แนวตั้ง)</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Main Group Answers Master-Detail Container -->
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-5">
+
+                    <!-- Sidebar: Group List (4 Cols) -->
+                    <div class="lg:col-span-4 flex flex-col gap-3">
+                        <div
+                            class="glass-panel p-3.5 rounded-2xl border border-slate-700 flex items-center justify-between">
+                            <span class="text-xs font-bold text-slate-200 font-kanit flex items-center gap-2">
+                                <i class="fa-solid fa-users text-emerald-400"></i> รายชื่อกลุ่มทั้งหมด (<span
+                                    id="group-answers-count">0</span>)
+                            </span>
+                            <span class="text-[11px] text-slate-400 font-sarabun">คลิกเพื่อเลือกดู</span>
+                        </div>
+                        <div id="group-answers-list" class="flex flex-col gap-2 max-h-[70vh] overflow-y-auto pr-1">
+                            <!-- Populated dynamically -->
+                        </div>
+                    </div>
+
+                    <!-- Main Detail View: Selected Group Answers & AI Feedback (8 Cols) -->
+                    <div class="lg:col-span-8 flex flex-col gap-4">
+                        <div id="group-detail-header"
+                            class="glass-panel p-4 rounded-2xl border border-emerald-500/40 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+                            <div class="flex items-center gap-3">
+                                <div
+                                    class="w-10 h-10 rounded-xl bg-emerald-500/20 border border-emerald-400 text-emerald-300 flex items-center justify-center text-lg shrink-0">
+                                    <i class="fa-solid fa-graduation-cap"></i>
+                                </div>
+                                <div>
+                                    <h3 id="detail-team-name" class="text-base font-bold text-white font-kanit">
+                                        กรุณาเลือกกลุ่มด้านซ้าย</h3>
+                                    <p id="detail-team-sub" class="text-xs text-slate-400 font-sarabun">ห้องเรียน /
+                                        สมาชิกในกลุ่ม</p>
+                                </div>
+                            </div>
+                            <div id="detail-team-score-badge"
+                                class="hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-xl bg-purple-950/60 border border-purple-500/40 text-purple-300 text-xs font-mono font-bold">
+                                <!-- Populated dynamically -->
+                            </div>
+                        </div>
+
+                        <!-- Case Breakdown List Container -->
+                        <div id="group-cases-container" class="flex flex-col gap-4">
+                            <div
+                                class="glass-panel p-8 rounded-2xl border border-slate-800 text-center text-slate-500 font-sarabun">
+                                <i class="fa-solid fa-hand-pointer text-3xl mb-2 text-slate-600 block"></i>
+                                เลือกกลุ่มสายสืบจากรายการด้านซ้ายเพื่อดูคำตอบของเด็กและบทวิเคราะห์จาก AI
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+            </section>
+
+            <!-- ========================================================================= -->
+            <!-- TAB 2: OFFICIAL 12 CASES SOLUTIONS ARCHIVE                                -->
+            <!-- ========================================================================= -->
+            <section id="tab-content-solutions" class="hidden flex flex-col gap-5">
+
+                <div
+                    class="glass-panel p-5 rounded-2xl border border-pink-500/40 flex items-center justify-between gap-4">
+                    <div>
+                        <h2 class="text-lg font-bold text-pink-300 font-kanit flex items-center gap-2">
+                            <i class="fa-solid fa-book-open"></i> แฟ้มเฉลยเกณฑ์มาตรฐาน 12 คดี พ.ร.บ.คอมพิวเตอร์ & PDPA
+                        </h2>
+                        <p class="text-xs text-slate-300 font-sarabun mt-1">เฉลยแนวคำตอบอัตนัย 3 บทบาท
+                            พร้อมเกณฑ์ให้คะแนนฉบับทางการสำหรับครูผู้สอน</p>
+                    </div>
+
+                    <!-- Category Tabs -->
+                    <div
+                        class="flex flex-wrap gap-1.5 p-1 bg-slate-950 rounded-xl border border-slate-800 text-xs font-sarabun">
+                        <button onclick="filterTeacherSolutions('all')"
+                            class="sol-tab-btn px-3 py-1.5 rounded-lg bg-pink-600 text-white font-semibold transition"
+                            data-filter="all">ทั้งหมด (12 คดี)</button>
+                        <button onclick="filterTeacherSolutions('access')"
+                            class="sol-tab-btn px-3 py-1.5 rounded-lg text-slate-400 hover:text-white transition"
+                            data-filter="access">ม.5-8 (การเข้าถึง/ดักรับ)</button>
+                        <button onclick="filterTeacherSolutions('damage')"
+                            class="sol-tab-btn px-3 py-1.5 rounded-lg text-slate-400 hover:text-white transition"
+                            data-filter="damage">ม.9-10 (ทำลาย/รบกวน)</button>
+                        <button onclick="filterTeacherSolutions('spam')"
+                            class="sol-tab-btn px-3 py-1.5 rounded-lg text-slate-400 hover:text-white transition"
+                            data-filter="spam">ม.11 (สแปม)</button>
+                        <button onclick="filterTeacherSolutions('content')"
+                            class="sol-tab-btn px-3 py-1.5 rounded-lg text-slate-400 hover:text-white transition"
+                            data-filter="content">ม.14-16 (ข้อมูลเท็จ/ตัดต่อ)</button>
+                    </div>
+                </div>
+
+                <!-- 12 Solutions Cards Grid -->
+                <div id="teacher-solutions-grid" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <!-- Populated dynamically from 12 cases -->
+                </div>
+
+            </section>
+
+            <!-- ========================================================================= -->
+            <!-- TAB 3: SYSTEM & CLOUD SETTINGS                                            -->
+            <!-- ========================================================================= -->
+
+            <!-- ========================================================================= -->
+            <!-- TAB: GRADE 8-9 SAMPLE ANSWER BANK (คลังตัวอย่างคำตอบเด็ก ม.2 - ม.3)       -->
+            <!-- ========================================================================= -->
+            <section id="tab-content-g8g9-bank" class="hidden flex flex-col gap-6">
+                <div
+                    class="glass-panel p-6 rounded-2xl border border-yellow-500/30 bg-gradient-to-r from-slate-900/90 via-slate-950/90 to-purple-950/30">
+                    <div class="flex items-center gap-3 mb-2">
+                        <div
+                            class="w-10 h-10 rounded-xl bg-yellow-500/20 border border-yellow-400 text-yellow-300 flex items-center justify-center text-xl">
+                            <i class="fa-solid fa-graduation-cap"></i>
+                        </div>
+                        <div>
+                            <h2 class="text-xl font-bold text-white font-sarabun">คลังตัวอย่างคำตอบภาษาเด็ก ม.2 และ ม.3
+                                (อายุ 14 - 15 ปี)</h2>
+                            <p class="text-xs text-slate-400 font-sarabun">
+                                รวบรวมตัวอย่างคำตอบภาษาพูดวัยรุ่นธรรมชาติที่ระบบ AI & Heuristic Engine ปรับผ่านประเมิน
+                                10/10 และ 5/10 ครบทั้ง 12 คดี สำหรับใช้เป็นแนวทางสอนในห้องเรียน</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="g8g9-bank-container" class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                    <!-- Dynamic rendering by renderG8G9AnswerBank() -->
+                </div>
+            </section>
+
+            <section id="tab-content-settings" class="hidden flex flex-col gap-5">
+
+                <div
+                    class="glass-panel p-6 rounded-3xl border border-cyan-500/40 flex flex-col gap-6 max-w-3xl mx-auto w-full">
+
+                    <div class="flex items-center gap-3 border-b border-slate-800 pb-4">
+                        <div
+                            class="w-12 h-12 rounded-2xl bg-cyan-500/20 border border-cyan-400 text-cyan-300 flex items-center justify-center text-2xl shadow-md shadow-cyan-500/30">
+                            <i class="fa-solid fa-sliders"></i>
+                        </div>
+                        <div>
+                            <h2 class="text-lg font-bold text-slate-100 font-kanit">ตั้งค่าระบบคลาวด์และฐานข้อมูล
+                                (System & Cloud Settings)</h2>
+                            <p class="text-xs text-slate-400 font-sarabun">กำหนดค่า Supabase Realtime, Google Gemini API
+                                และความถี่การดึงข้อมูลสด</p>
+                        </div>
+                    </div>
+
+                    <!-- Supabase Settings -->
+                    <div class="flex flex-col gap-3">
+                        <h3 class="text-sm font-bold text-purple-300 flex items-center gap-2">
+                            <i class="fa-solid fa-bolt text-purple-400"></i> ตั้งค่าฐานข้อมูล Supabase Realtime
+                        </h3>
+                        <div class="grid grid-cols-1 gap-3 font-sarabun text-xs">
+                            <div>
+                                <label class="block text-slate-300 font-semibold mb-1">Supabase URL</label>
+                                <input type="text" id="cfg-supabase-url" placeholder="https://xxx.supabase.co"
+                                    class="w-full bg-slate-950 border border-slate-700 rounded-xl px-3.5 py-2.5 text-xs text-white font-mono focus:outline-none focus:border-purple-400">
+                            </div>
+                            <div>
+                                <label class="block text-slate-300 font-semibold mb-1">Supabase Anon Key</label>
+                                <input type="password" id="cfg-supabase-key" placeholder="eyJ..."
+                                    class="w-full bg-slate-950 border border-slate-700 rounded-xl px-3.5 py-2.5 text-xs text-white font-mono focus:outline-none focus:border-purple-400">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Gemini API Settings -->
+                    <div class="flex flex-col gap-3">
+                        <h3 class="text-sm font-bold text-cyan-300 flex items-center gap-2">
+                            <i class="fa-solid fa-wand-magic-sparkles text-cyan-400"></i> Google Gemini AI API Key
+                        </h3>
+                        <div class="font-sarabun text-xs">
+                            <label class="block text-slate-300 font-semibold mb-1">Gemini API Key</label>
+                            <input type="password" id="cfg-gemini-key" placeholder="AIzaSy..."
+                                class="w-full bg-slate-950 border border-slate-700 rounded-xl px-3.5 py-2.5 text-xs text-white font-mono focus:outline-none focus:border-cyan-400">
+                            <p class="text-[11px] text-slate-500 mt-1">* หากรันผ่าน Node.js Server คีย์จะถูกโหลดจากไฟล์
+                                <code>.env</code> อัตโนมัติ</p>
+                        </div>
+                    </div>
+
+                    <!-- Action Buttons -->
+                    <div class="flex items-center justify-between gap-3 pt-4 border-t border-slate-800">
+                        <button onclick="clearTestScores()"
+                            class="px-4 py-2.5 rounded-xl bg-red-950/70 hover:bg-red-900 border border-red-500/40 text-red-300 text-xs font-medium transition flex items-center gap-2">
+                            <i class="fa-solid fa-trash-can"></i>
+                            <span>ล้างข้อมูลคะแนนทดสอบ</span>
+                        </button>
+
+                        <button onclick="saveSystemSettings()"
+                            class="px-6 py-2.5 rounded-xl bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white font-bold text-xs shadow-lg shadow-purple-600/30 transition flex items-center gap-2">
+                            <i class="fa-solid fa-floppy-disk"></i>
+                            <span>บันทึกการตั้งค่า</span>
+                        </button>
+                    </div>
+
+                </div>
+
+            </section>
+
+        </main>
+
+        <!-- Footer -->
+        <footer
+            class="glass-panel border-t border-purple-500/20 py-3 px-4 text-center text-xs text-slate-400 font-sarabun no-print">
+            <span>Cyber Shield Detective — แผงควบคุมระบบสืบคดีกฎหมายคอมพิวเตอร์และ PDPA ระดับชั้น ม.3</span>
+        </footer>
+
+    </div>
+
+    <!-- 3. PRINTABLE FULL PDF REPORT MODAL (A4 Vertical) -->
+    <div id="modal-print-pdf"
+        class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/95 backdrop-blur-md overflow-y-auto">
+        <div
+            class="glass-panel max-w-5xl w-full p-6 sm:p-8 rounded-3xl border border-emerald-400/50 shadow-2xl flex flex-col gap-5 relative my-6 max-h-[94vh] overflow-y-auto">
+
+            <!-- Modal Header / Controls (Hidden in print) -->
+            <div class="no-print flex flex-wrap items-center justify-between gap-3 border-b border-slate-800 pb-3">
+                <div>
+                    <h3 class="text-base font-bold text-white font-kanit flex items-center gap-2">
+                        <i class="fa-solid fa-file-pdf text-emerald-400"></i> พิมพ์รายงานสรุปคะแนนนักเรียนรายบุคคล/กลุ่ม
+                        (A4 แนวตั้ง)
+                    </h3>
+                    <p class="text-xs text-slate-400 font-sarabun">เลือกห้องเรียนที่ต้องการออกรายงานสรุปผลคะแนน PDF</p>
+                </div>
+                <div class="flex items-center gap-2">
+                    <label class="text-xs text-slate-300">เลือกห้องเรียน:</label>
+                    <select id="pdf-summary-room-select" onchange="onSummaryPdfRoomChange(this.value)"
+                        class="bg-slate-950 text-xs text-white border border-slate-700 rounded-xl px-3 py-1.5 focus:outline-none cursor-pointer">
+                        <option value="ALL">ทุกห้องเรียน (ม.3/1 - ม.3/12)</option>
+                        <option value="ม.3/1">ม.3/1</option>
+                        <option value="ม.3/2">ม.3/2</option>
+                        <option value="ม.3/3">ม.3/3</option>
+                        <option value="ม.3/4">ม.3/4</option>
+                        <option value="ม.3/5">ม.3/5</option>
+                        <option value="ม.3/6">ม.3/6</option>
+                        <option value="ม.3/7">ม.3/7</option>
+                        <option value="ม.3/8">ม.3/8</option>
+                        <option value="ม.3/9">ม.3/9</option>
+                        <option value="ม.3/10">ม.3/10</option>
+                        <option value="ม.3/11">ม.3/11</option>
+                        <option value="ม.3/12">ม.3/12</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Printable Sheet -->
+            <div id="printable-sheet-area" class="print-page flex flex-col gap-5 text-slate-200 font-sarabun">
+
+                <!-- School Header -->
+                <div class="text-center flex flex-col items-center gap-1 border-b-2 border-slate-700 pb-4">
+                    <div class="flex items-center justify-center gap-2 mb-1">
+                        <img src="favicon.png" alt="Logo" class="w-10 h-10 rounded-lg object-cover no-print">
+                        <h2 class="text-lg sm:text-xl font-bold font-kanit text-slate-100 print-text-dark">
+                            แบบรายงานสรุปผลคะแนนกิจกรรมจำลองสถานการณ์สืบคดีกฎหมายคอมพิวเตอร์และ PDPA
+                        </h2>
+                    </div>
+                    <p class="text-xs text-slate-300 print-text-dark">
+                        กลุ่มสาระการเรียนรู้วิทยาศาสตร์และเทคโนโลยี (วิชาเทคโนโลยี / วิทยาการคำนวณ)
+                        ระดับชั้นมัธยมศึกษาปีที่ 3
+                    </p>
+                    <div
+                        class="flex flex-wrap items-center justify-center gap-6 text-xs text-slate-400 font-mono mt-1 print-text-dark">
+                        <span>🏫 ห้องเรียน: <b id="pdf-room-label"
+                                class="text-cyan-300 font-bold">ทุกห้องเรียน</b></span>
+                        <span>📅 วันที่พิมพ์รายงาน: <b id="pdf-date-label" class="text-slate-200 font-bold">-</b></span>
+                        <span>👥 จำนวนกลุ่มทั้งหมด: <b id="pdf-teams-count" class="text-emerald-400 font-bold">0</b>
+                            กลุ่ม</span>
+                    </div>
+                </div>
+
+                <!-- Detailed Roster Table -->
+                <div class="overflow-x-auto rounded-xl border border-slate-700 print-table bg-slate-950/80">
+                    <table class="w-full text-left text-xs border-collapse font-sarabun">
+                        <thead class="bg-slate-900 text-slate-200 font-bold border-b border-slate-700">
+                            <tr>
+                                <th class="p-2 text-center w-8 border-r border-slate-800">#</th>
+                                <th class="p-2 text-left border-r border-slate-800 min-w-[130px]">ชื่อกลุ่มสายสืบ</th>
+                                <th class="p-2 text-center w-12 border-r border-slate-800">ห้อง</th>
+                                <th class="p-2 text-center w-12 border-r border-slate-800">เลขที่</th>
+                                <th class="p-2 text-center w-14 border-r border-slate-800">คำนำหน้า</th>
+                                <th class="p-2 text-left border-r border-slate-800 min-w-[140px]">ชื่อ - นามสกุล</th>
+                                <th class="p-2 text-center w-16 border-r border-slate-800">👨‍⚖️ กฎหมาย</th>
+                                <th class="p-2 text-center w-16 border-r border-slate-800">🚑 บรรเทา</th>
+                                <th class="p-2 text-center w-16 border-r border-slate-800">🛡️ ป้องกัน</th>
+                                <th class="p-2 text-right w-24">⭐ รวม (90)</th>
+                            </tr>
+                        </thead>
+                        <tbody id="pdf-report-tbody" class="divide-y divide-slate-800">
+                            <!-- Populated dynamically sorted vertically by room and student number -->
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Signatures -->
+                <div
+                    class="grid grid-cols-2 gap-8 pt-6 mt-4 border-t border-slate-700 text-xs font-sarabun print-text-dark">
+                    <div class="flex flex-col items-center gap-1">
+                        <p>ลงชื่อ ............................................................ ผู้รายงาน</p>
+                        <p class="text-[11px] text-slate-400 print-text-dark">(
+                            ............................................................ )</p>
+                        <p class="text-[11px] text-slate-400 print-text-dark">หัวหน้ากลุ่ม / ผู้แทนนักเรียน</p>
+                    </div>
+                    <div class="flex flex-col items-center gap-1">
+                        <p>ลงชื่อ ............................................................ ครูผู้สอน</p>
+                        <p class="text-[11px] text-slate-400 print-text-dark">(
+                            ............................................................ )</p>
+                        <p class="text-[11px] text-slate-400 print-text-dark">ครูผู้สอนประจำวิชา</p>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Action Buttons (Hidden in Print) -->
+            <div class="no-print flex items-center justify-between gap-3 pt-3 border-t border-slate-800">
+                <button onclick="closePrintPdfModal()"
+                    class="px-4 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-medium transition">
+                    <i class="fa-solid fa-xmark mr-1"></i> ปิด
+                </button>
+                <button onclick="window.print()"
+                    class="px-6 py-2.5 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-bold text-xs shadow-lg shadow-emerald-500/20 transition flex items-center gap-2">
+                    <i class="fa-solid fa-print"></i>
+                    <span>พิมพ์รายงาน / บันทึกเป็น PDF</span>
+                </button>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- 3.5 PRINTABLE GROUP ANSWERS PDF MODAL (A4 Vertical) -->
+    <div id="modal-print-group-answers"
+        class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/95 backdrop-blur-md overflow-y-auto">
+        <div
+            class="glass-panel max-w-4xl w-full p-6 sm:p-8 rounded-3xl border border-emerald-400/50 shadow-2xl flex flex-col gap-5 relative my-6 max-h-[94vh] overflow-y-auto">
+
+            <button onclick="closeGroupAnswersPdfModal()"
+                class="no-print absolute top-4 right-4 text-slate-400 hover:text-white p-2 rounded-lg bg-slate-800/80 border border-slate-700 transition">
+                <i class="fa-solid fa-xmark text-lg"></i>
+            </button>
+
+            <!-- Modal Header / Controls (Hidden in print) -->
+            <div class="no-print flex flex-wrap items-center justify-between gap-3 border-b border-slate-800 pb-3">
+                <div>
+                    <h3 class="text-base font-bold text-white font-kanit flex items-center gap-2">
+                        <i class="fa-solid fa-file-pdf text-emerald-400"></i> พิมพ์รายงานสรุปคำตอบของกลุ่ม (1 หน้า = 1
+                        กลุ่ม)
+                    </h3>
+                    <p class="text-xs text-slate-400 font-sarabun">เลือกห้องเรียนและขอบเขตกลุ่ม โดยระบบจะจัด 1 กลุ่ม ต่อ
+                        1 หน้า A4 อย่างเรียบร้อย</p>
+                </div>
+                <div class="flex flex-wrap items-center gap-2">
+                    <select id="pdf-group-room-select" onchange="renderGroupAnswersPdfContent()"
+                        class="bg-slate-950 text-xs text-white border border-slate-700 rounded-xl px-3 py-1.5 focus:outline-none cursor-pointer">
+                        <option value="ALL">ทุกห้องเรียน (ม.3/1 - ม.3/12)</option>
+                        <option value="ม.3/1">เฉพาะห้อง ม.3/1</option>
+                        <option value="ม.3/2">เฉพาะห้อง ม.3/2</option>
+                        <option value="ม.3/3">เฉพาะห้อง ม.3/3</option>
+                        <option value="ม.3/4">เฉพาะห้อง ม.3/4</option>
+                        <option value="ม.3/5">เฉพาะห้อง ม.3/5</option>
+                        <option value="ม.3/6">เฉพาะห้อง ม.3/6</option>
+                        <option value="ม.3/7">เฉพาะห้อง ม.3/7</option>
+                        <option value="ม.3/8">เฉพาะห้อง ม.3/8</option>
+                        <option value="ม.3/9">เฉพาะห้อง ม.3/9</option>
+                        <option value="ม.3/10">เฉพาะห้อง ม.3/10</option>
+                        <option value="ม.3/11">เฉพาะห้อง ม.3/11</option>
+                        <option value="ม.3/12">เฉพาะห้อง ม.3/12</option>
+                    </select>
+                    <select id="pdf-group-select" onchange="renderGroupAnswersPdfContent()"
+                        class="bg-slate-950 text-xs text-white border border-slate-700 rounded-xl px-3 py-1.5 focus:outline-none cursor-pointer">
+                        <option value="ALL">รวมทุกกลุ่มในห้องเรียนที่เลือก</option>
+                        <option value="SELECTED">เฉพาะกลุ่มที่เลือกปัจจุบัน</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Printable Sheet Area (A4 Vertical) -->
+            <div id="printable-group-answers-sheet" class="print-page flex flex-col gap-5 text-slate-200 font-sarabun">
+                <!-- Content populated dynamically via renderGroupAnswersPdfContent() -->
+            </div>
+
+            <!-- Action Buttons (Hidden in Print) -->
+            <div class="no-print flex items-center justify-between gap-3 pt-3 border-t border-slate-800">
+                <button onclick="closeGroupAnswersPdfModal()"
+                    class="px-4 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-medium transition">
+                    <i class="fa-solid fa-xmark mr-1"></i> ปิด
+                </button>
+                <button onclick="window.print()"
+                    class="px-6 py-2.5 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-bold text-xs shadow-lg shadow-emerald-500/20 transition flex items-center gap-2">
+                    <i class="fa-solid fa-print"></i>
+                    <span>พิมพ์รายงาน / บันทึกเป็น PDF (A4 แนวตั้ง)</span>
+                </button>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- 4. ENLARGED COMIC LIGHTBOX -->
+    <div id="modal-comic-lightbox"
+        class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/95 backdrop-blur-lg"
+        onclick="closeTeacherLightbox()">
+        <div class="relative max-w-5xl w-full flex flex-col items-center gap-3" onclick="event.stopPropagation()">
+            <div class="w-full flex items-center justify-between text-slate-300 px-2">
+                <span id="teacher-lightbox-title" class="text-sm font-semibold text-pink-300">หลักฐานภาพการ์ตูน 9
+                    ช่อง</span>
+                <button onclick="closeTeacherLightbox()"
+                    class="px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-white text-xs border border-slate-700">
+                    <i class="fa-solid fa-xmark mr-1"></i> ปิด (ESC)
+                </button>
+            </div>
+            <img id="teacher-lightbox-img" src="" alt="Enlarged Comic"
+                class="w-auto h-auto max-h-[85vh] max-w-full rounded-xl border border-pink-500/40 shadow-2xl object-contain bg-white">
+        </div>
+    </div>
+
+    <!-- ========================================================================= -->
+    <!-- 5. JAVASCRIPT TEACHER CONTROL ENGINE                                      -->
+    <!-- ========================================================================= -->
+    <script>
+        // --- 12 Official Cases Reference Archive ---
+        const ALL_12_CASES = [
+            {
+                id: 1,
+                section: "มาตรา 5",
+                cat: "access",
+                image: "assets/evidence/case_ev_8f3a9b21.jpg",
+                title: "แอบส่องระบบไอดีเกมของเพื่อน",
+                brief: "แชมป์แอบจำรหัสผ่านแท็บเล็ตของป๊อปตอนที่ป๊อปลุกไปเข้าห้องน้ำ แชมป์แอบเอาแท็บเล็ตมาปลดล็อกแล้วส่องดูคลังไอเทมสุดแรร์ในเกมออนไลน์",
+                standard_law: "พ.ร.บ. คอมพิวเตอร์ มาตรา 5 (แอบเข้าถึงระบบคอมพิวเตอร์ผู้อื่นโดยมิชอบ)",
+                standard_penalty: "จำคุกไม่เกิน 6 เดือน หรือปรับไม่เกิน 10,000 บาท หรือทั้งจำทั้งปรับ",
+                standard_remedy: "สั่ง Log out ออกจากระบบทุกเครื่องทันที และรีบเปลี่ยนรหัสผ่านใหม่",
+                standard_prevention: "เปิดใช้งานระบบยืนยันตัวตน 2 ชั้น (2FA / OTP) และล็อกหน้าจอทุกครั้ง"
+            },
+            {
+                id: 2,
+                section: "มาตรา 6",
+                cat: "access",
+                image: "assets/evidence/case_ev_4e7c1d89.jpg",
+                title: "แจกรหัสผ่านระบบในกลุ่ม Discord",
+                brief: "ทอยแอบถ่ายรูปกระดาษโน้ตรหัสผ่านเซิร์ฟเวอร์ข้อสอบที่โต๊ะครู แล้วส่งให้บีดู บีอยากได้ยอดไลก์จึงนำรูปภาพรหัสผ่านไปโพสต์แจกในกลุ่ม Discord",
+                standard_law: "พ.ร.บ. คอมพิวเตอร์ มาตรา 6 (เปิดเผยมาตรการป้องกันการเข้าถึงระบบโดยมิชอบ)",
+                standard_penalty: "จำคุกไม่เกิน 1 ปี หรือปรับไม่เกิน 20,000 บาท หรือทั้งจำทั้งปรับ",
+                standard_remedy: "รีบเปลี่ยนรหัสผ่านระบบทันที และลบข้อความที่โพสต์แจกใน Discord",
+                standard_prevention: "ตั้งรหัสผ่านซับซ้อน (ตัวพิมพ์ใหญ่+เล็ก+เลข+สัญลักษณ์) และไม่จดรหัสผ่านทิ้งไว้"
+            },
+            {
+                id: 3,
+                section: "มาตรา 7",
+                cat: "access",
+                image: "assets/evidence/case_ev_9a2b5f34.jpg",
+                title: "แอบคุ้ยไฟล์ไดอารี่แชทลับส่วนตัว",
+                brief: "นักเรียนแอบเปิดโฟลเดอร์ส่วนตัวของเพื่อนที่ล็อกรหัสผ่านไว้ แล้วแอบดูดไฟล์ไดอารี่และรูปถ่ายลับเอาไปเผยแพร่นินทาในกลุ่มเพื่อน",
+                standard_law: "พ.ร.บ. คอมพิวเตอร์ มาตรา 7 (เข้าถึงข้อมูลคอมพิวเตอร์ของผู้อื่นโดยมิชอบ)",
+                standard_penalty: "จำคุกไม่เกิน 2 ปี หรือปรับไม่เกิน 40,000 บาท หรือทั้งจำทั้งปรับ",
+                standard_remedy: "ลบไฟล์ที่รั่วไหล และเปลี่ยนรหัสผ่านพื้นที่จัดเก็บคลาวด์ทันที",
+                standard_prevention: "ตั้งรหัสล็อกโฟลเดอร์ด้วยสแกนใบหน้า/ลายนิ้วมือ (Face ID) และเข้ารหัสไฟล์ (Encryption)"
+            },
+            {
+                id: 4,
+                section: "มาตรา 8",
+                cat: "access",
+                image: "assets/evidence/case_ev_1c8e7b54.jpg",
+                title: "ดักจับข้อมูลธุรกรรมเติมเกมกลางทาง",
+                brief: "มีผู้ไม่หวังดีปล่อยสัญญาณ Wi-Fi ฟรีปลอมในโรงอาหาร เพื่อดักจับข้อมูลบัตรเติมเงินและรหัสผ่านธุรกรรมของเพื่อนที่กำลังเติมเกมออนไลน์",
+                standard_law: "พ.ร.บ. คอมพิวเตอร์ มาตรา 8 (ดักรับข้อมูลคอมพิวเตอร์ของผู้อื่นที่อยู่ระหว่างการส่งโดยมิชอบ)",
+                standard_penalty: "จำคุกไม่เกิน 3 ปี หรือปรับไม่เกิน 60,000 บาท หรือทั้งจำทั้งปรับ",
+                standard_remedy: "ตัดการเชื่อมต่อ Wi-Fi ทันที และรีบแจ้งอายัดบัตรกับธนาคารและค่ายเกม",
+                standard_prevention: "ใช้เครือข่ายที่มีการเข้ารหัส SSL / HTTPS / VPN และหลีกเลี่ยงการทำธุรกรรมบน Free Wi-Fi สาธารณะ"
+            },
+            {
+                id: 5,
+                section: "มาตรา 9",
+                cat: "damage",
+                image: "assets/evidence/case_ev_6a92f03d.jpg",
+                title: "มือบอนแอบลบไฟล์โครงงานวิทย์เพื่อน",
+                brief: "นักเรียนอิจฉากลุ่มเพื่อนที่ทำสไลด์โครงงานวิทย์สวยงาม จึงแอบเข้าไปใน Cloud Shared Drive แล้วกดลบไฟล์งานและแก้ไขเนื้อหาจนเสียหายทั้งหมด",
+                standard_law: "พ.ร.บ. คอมพิวเตอร์ มาตรา 9 (ทำให้เสียหาย ทำลาย แก้ไข เปลี่ยนแปลงข้อมูลคอมพิวเตอร์ผู้อื่นโดยมิชอบ)",
+                standard_penalty: "จำคุกไม่เกิน 5 ปี หรือปรับไม่เกิน 100,000 บาท หรือทั้งจำทั้งปรับ",
+                standard_remedy: "ใช้ปุ่มประวัติเวอร์ชัน (Version History) กู้คืนไฟล์ทันที และตรวจสอบ Audit Log",
+                standard_prevention: "ตั้งค่าสิทธิ์ไฟล์เป็น 'อ่านได้อย่างเดียว (Read-Only)' และจำกัดการแชร์เฉพาะอีเมลที่จำเป็น"
+            },
+            {
+                id: 6,
+                section: "มาตรา 10",
+                cat: "damage",
+                image: "assets/evidence/case_ev_3f81e6ac.jpg",
+                title: "ยิง DDoS พังเซิร์ฟเวอร์เว็บสอบโรงเรียน",
+                brief: "นักเรียนไม่อยากสอบเก็บคะแนน จึงใช้โปรแกรมยิงทราฟฟิกขยะ (DDoS) ถล่มเว็บไซต์ระบบสอบออนไลน์ของโรงเรียนจนเซิร์ฟเวอร์ล่ม ใช้งานไม่ได้",
+                standard_law: "พ.ร.บ. คอมพิวเตอร์ มาตรา 10 (รบกวน ขัดขวาง ทำให้ระบบคอมพิวเตอร์ผู้อื่นทำงานไม่ได้ตามปกติ)",
+                standard_penalty: "จำคุกไม่เกิน 5 ปี หรือปรับไม่เกิน 100,000 บาท หรือทั้งจำทั้งปรับ",
+                standard_remedy: "บล็อก IP Address ขยะ สลับเส้นทางเซิร์ฟเวอร์สำรอง และแจ้งฝ่ายไอที",
+                standard_prevention: "ติดตั้งไฟร์วอลล์ (Firewall) และใช้ระบบป้องกัน DDoS Protection (เช่น Cloudflare / Rate Limiting)"
+            },
+            {
+                id: 7,
+                section: "มาตรา 11 วรรคหนึ่ง",
+                cat: "spam",
+                image: "assets/evidence/case_ev_e920d57b.jpg",
+                title: "ส่งอีเมลสแปมขายของปลอมตัวตน",
+                brief: "ผู้ค้ายิงอีเมลขยะขายสินค้าและโฆษณาชวนเชื่อไปยังกล่องข้อความของนักเรียนนับพันคน โดยปลอมแปลงชื่อผู้ส่งและปกปิดแหล่งที่มาที่แท้จริง",
+                standard_law: "พ.ร.บ. คอมพิวเตอร์ มาตรา 11 วรรคหนึ่ง (ส่งข้อมูลคอมพิวเตอร์/อีเมลโดยปกปิดหรือปลอมแปลงแหล่งที่มา)",
+                standard_penalty: "โทษปรับทางปกครอง/อาญา ปรับสูงสุดไม่เกิน 100,000 บาท",
+                standard_remedy: "ทำเครื่องหมายเป็นสแปม (Mark as Spam) และดึงรหัส Header ส่งรายงานแบนผู้ส่ง",
+                standard_prevention: "เปิดใช้งานระบบตัวกรองอีเมลขยะ (Anti-Spam Filter Engine / SPF / DKIM verification)"
+            },
+            {
+                id: 8,
+                section: "มาตรา 11 วรรคสอง",
+                cat: "spam",
+                image: "assets/evidence/case_ev_7c3a812f.jpg",
+                title: "บอทสแปมรัวๆ ปิดปุ่มยกเลิกรับข่าวสาร",
+                brief: "เพจร้านค้าส่งข้อความโปรโมทสินค้าผ่านแชทและ SMS รบกวนอย่างต่อเนื่อง โดยไม่มีปุ่ม Unsubscribe หรือช่องทางให้กดยกเลิกรับข่าวสารได้โดยง่าย",
+                standard_law: "พ.ร.บ. คอมพิวเตอร์ มาตรา 11 วรรคสอง (ส่งข้อมูลรบกวนโดยไม่เปิดโอกาสให้บอกเลิกได้โดยง่าย)",
+                standard_penalty: "ปรับไม่เกิน 200,000 บาท",
+                standard_remedy: "แคปเจอร์รูปข้อความส่งเรื่องร้องเรียนไปยังแพลตฟอร์มเพื่อสั่งระงับบัญชีผู้ส่ง",
+                standard_prevention: "ไม่โพสต์เบอร์โทรหรืออีเมลบนเว็บบอร์ดสาธารณะ และใช้ฟีเจอร์ Privacy Forwarding"
+            },
+            {
+                id: 9,
+                section: "มาตรา 14(1)",
+                cat: "content",
+                image: "assets/evidence/case_ev_5b04c9e8.jpg",
+                title: "สร้างเว็บฟิชชิ่งหลอกสกินเกมฟรี",
+                brief: "มิจฉาชีพสร้างหน้าเว็บปลอมเลียนแบบหน้าล็อกอินเกมดัง แจกลิงก์อ้างว่า 'แจกสกินปืนฟรี' พอนักเรียนกรอกรหัสผ่าน ไอดีเกมก็ถูกขโมยไปทันที",
+                standard_law: "พ.ร.บ. คอมพิวเตอร์ มาตรา 14(1) (นำเข้าข้อมูลคอมพิวเตอร์ปลอมหรือเท็จหลอกลวงประชาชน)",
+                standard_penalty: "จำคุกไม่เกิน 5 ปี หรือปรับไม่เกิน 100,000 บาท หรือทั้งจำทั้งปรับ",
+                standard_remedy: "รีบแจ้งค่ายเกมระงับไอดีชั่วคราว และส่งหลักฐานขอกู้คืนสิทธิ์บัญชี",
+                standard_prevention: "ตรวจสอบ URL / Domain Name อย่างละเอียด และไม่คลิกลิงก์หลอกลวงจากแหล่งที่ไม่น่าเชื่อถือ"
+            },
+            {
+                id: 10,
+                section: "มาตรา 14(2)",
+                cat: "content",
+                image: "assets/evidence/case_ev_a1f9e832.jpg",
+                title: "โพสต์ข่าวลวงภัยพิบัติจนคนแตกตื่นวิ่งวุ่น",
+                brief: "นักเรียนคึกคะนองกุเรื่องข่าวปลอมโพสต์ลง TikTok ว่า 'พรุ่งนี้น้ำท่วมเมือง 3 เมตร เขื่อนแตกแล้ว!' จนชาวบ้านแตกตื่นแย่งกันซื้อของกักตุนวุ่นวาย",
+                standard_law: "พ.ร.บ. คอมพิวเตอร์ มาตรา 14(2) (นำเข้าข้อมูลเท็จก่อให้เกิดความตื่นตระหนกแก่ประชาชน)",
+                standard_penalty: "จำคุกไม่เกิน 5 ปี หรือปรับไม่เกิน 100,000 บาท หรือทั้งจำทั้งปรับ",
+                standard_remedy: "ลบโพสต์ข่าวปลอมทันที และโพสต์ชี้แจงแก้ไขข้อมูลพร้อมแนบลิงก์แถลงการณ์ทางการ",
+                standard_prevention: "ตรวจสอบข้อเท็จจริงผ่านศูนย์ต่อต้านข่าวปลอม (Anti-Fake News Center) ก่อนกดแชร์"
+            },
+            {
+                id: 11,
+                section: "มาตรา 14(4)",
+                cat: "content",
+                image: "assets/evidence/case_ev_2e6d9a41.jpg",
+                title: "โพสต์ภาพ/คลิปโป๊ลงคอมพิวเตอร์สาธารณะ",
+                brief: "มีคนส่งคลิปวิดีโอลามกอนาจารและสื่อไม่เหมาะสมเรต 18+ เข้ามาในกลุ่มสนทนาของโรงเรียนที่เด็กและเยาวชนทั่วไปสามารถเข้าถึงได้",
+                standard_law: "พ.ร.บ. คอมพิวเตอร์ มาตรา 14(4) (นำเข้าสู่ระบบคอมพิวเตอร์ซึ่งข้อมูลอันลามกที่ประชาชนเข้าถึงได้)",
+                standard_penalty: "จำคุกไม่เกิน 5 ปี หรือปรับไม่เกิน 100,000 บาท หรือทั้งจำทั้งปรับ",
+                standard_remedy: "แอดมินลบสื่อที่ไม่เหมาะสมออกจากกลุ่มทันที และบล็อก/รายงานบัญชีผู้ส่ง",
+                standard_prevention: "เปิดใช้งานตัวกรองเนื้อหาปลอดภัย (SafeSearch / Content Moderation AI Filter)"
+            },
+            {
+                id: 12,
+                section: "มาตรา 16",
+                cat: "content",
+                image: "assets/evidence/case_ev_4d9f1e8a.jpg",
+                title: "ตัดต่อหน้าเพื่อนใส่เอเลี่ยนประจานในโซเชียล",
+                brief: "นักเรียนแอบถ่ายรูปหน้าเพื่อนตอนเผลอ แล้วนำไปใช้ AI ตัดต่อใส่ร่างเอเลี่ยนน่าเกลียด โพสต์ลง Facebook ประจานจนเพื่อนโดนล้อ เสียใจและอับอาย",
+                standard_law: "พ.ร.บ. คอมพิวเตอร์ มาตรา 16 (นำภาพตัดต่อดัดแปลงลงระบบคอมพิวเตอร์ทำให้ผู้อื่นอับอาย เสียชื่อเสียง)",
+                standard_penalty: "จำคุกไม่เกิน 3 ปี และปรับไม่เกิน 200,000 บาท",
+                standard_remedy: "แคปเจอร์หลักฐาน แจ้งรีพอร์ตลบภาพ (Report Cyberbullying) และแจ้งครู/ผู้ปกครอง",
+                standard_prevention: "ตั้งค่าบัญชีเป็นส่วนตัว (Private Account) จำกัดการแท็กภาพ และรณรงค์จริยธรรมออนไลน์"
+            }
+        ];
+
+        // --- Teacher State ---
+        let allScoresData = [];
+        let displayMode = 'team_only'; // 'team_only' or 'detailed_roster'
+        let currentFilterCategory = 'all';
+        let supabaseClient = null;
+        let realtimeChannel = null;
+
+        // --- Initial Boot ---
+        window.addEventListener('DOMContentLoaded', () => {
+            checkTeacherAuth();
+            renderTeacherSolutions();
+        });
+
+        // --- Authentication Handlers ---
+        function checkTeacherAuth() {
+            const isAuth = sessionStorage.getItem('shield_teacher_auth');
+            if (isAuth === 'true') {
+                document.getElementById('modal-auth').classList.add('hidden');
+                document.getElementById('main-dashboard-app').classList.remove('hidden');
+                initTeacherDashboard();
+            } else {
+                document.getElementById('modal-auth').classList.remove('hidden');
+                document.getElementById('main-dashboard-app').classList.add('hidden');
+            }
+        }
+
+        async function loginTeacher() {
+            const passcode = document.getElementById('auth-passcode-input').value.trim();
+            const errMsg = document.getElementById('auth-error-msg');
+
+            if (!passcode) {
+                errMsg.textContent = 'กรุณากรอกรหัสผ่านครูผู้สอน';
+                errMsg.classList.remove('hidden');
+                return;
+            }
+
+            try {
+                let valid = false;
+                if (window.location.protocol.startsWith('http')) {
+                    const res = await fetch('/api/verify-passcode', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                        mode: '3',
+                        table: 'game_scores_3', passcode })
+                    });
+                    const data = await res.json();
+                    if (data && data.success) valid = true;
+                } else {
+                    if (passcode.length >= 4) valid = true;
+                }
+
+                if (valid) {
+                    sessionStorage.setItem('shield_teacher_auth', 'true');
+                    sessionStorage.setItem('shield_teacher_passcode', passcode);
+                    document.getElementById('modal-auth').classList.add('hidden');
+                    document.getElementById('main-dashboard-app').classList.remove('hidden');
+                    initTeacherDashboard();
+                } else {
+                    errMsg.textContent = 'รหัสผ่านไม่ถูกต้อง กรุณาลองใหม่อีกครั้ง';
+                    errMsg.classList.remove('hidden');
+                }
+            } catch (e) {
+                sessionStorage.setItem('shield_teacher_auth', 'true');
+                sessionStorage.setItem('shield_teacher_passcode', passcode);
+                document.getElementById('modal-auth').classList.add('hidden');
+                document.getElementById('main-dashboard-app').classList.remove('hidden');
+                initTeacherDashboard();
+            }
+        }
+
+        function logoutTeacher() {
+            if (confirm('คุณต้องการออกจากระบบแผงควบคุมครูผู้สอนหรือไม่?')) {
+                sessionStorage.removeItem('shield_teacher_auth');
+                sessionStorage.removeItem('shield_teacher_passcode');
+                window.location.reload();
+            }
+        }
+
+        // --- Tab Switching ---
+        function switchTab(tabName) {
+            const tabs = ['scoreboard', 'group-answers', 'solutions', 'g8g9-bank', 'settings'];
+            tabs.forEach(t => {
+                const btn = document.getElementById(`nav-tab-${t}`);
+                const content = document.getElementById(`tab-content-${t}`);
+                if (t === tabName) {
+                    btn.className = 'px-3.5 py-1.5 rounded-lg bg-purple-600 text-white font-semibold transition flex items-center gap-1.5 shadow-sm';
+                    if (content) content.classList.remove('hidden');
+                } else {
+                    btn.className = 'px-3.5 py-1.5 rounded-lg text-slate-400 hover:text-white transition flex items-center gap-1.5';
+                    if (content) content.classList.add('hidden');
+                }
+            });
+
+            if (tabName === 'group-answers') {
+                renderGroupAnswersTab();
+            } else if (tabName === 'g8g9-bank') {
+                renderG8G9AnswerBank();
+            }
+        }
+
+        // --- Dashboard Initialization ---
+        async function initTeacherDashboard() {
+            await loadConfigAndInitSupabase();
+            fetchLatestScores();
+            startRealtimeListeners();
+        }
+
+        async function loadConfigAndInitSupabase() {
+            try {
+                if (window.location.protocol.startsWith('http')) {
+                    const res = await fetch('/api/config');
+                    const config = await res.json();
+                    if (config.supabaseUrl && config.supabaseAnonKey) {
+                        document.getElementById('cfg-supabase-url').value = config.supabaseUrl;
+                        document.getElementById('cfg-supabase-key').value = config.supabaseAnonKey;
+                        if (window.supabase) {
+                            supabaseClient = window.supabase.createClient(config.supabaseUrl, config.supabaseAnonKey);
+                        }
+                    }
+                }
+            } catch (e) {
+                console.warn('Config load warning:', e);
+            }
+        }
+
+        function getDeduplicatedScoresData(rawScores) {
+            if (!Array.isArray(rawScores)) return [];
+
+            const teamMap = new Map();
+            rawScores.forEach(item => {
+                const teamKey = item.team_name || item.player_id || 'นักสืบเยาวชน';
+                if (!teamMap.has(teamKey)) teamMap.set(teamKey, new Map());
+
+                const caseKey = item.case_id !== undefined && item.case_id !== null ? `case_${item.case_id}` : (item.case_title || `idx_${Math.random()}`);
+                const existing = teamMap.get(teamKey).get(caseKey);
+
+                if (!existing) {
+                    teamMap.get(teamKey).set(caseKey, item);
+                } else {
+                    const tExisting = existing.created_at ? new Date(existing.created_at).getTime() : 0;
+                    const tNew = item.created_at ? new Date(item.created_at).getTime() : 0;
+
+                    if (tNew > tExisting) {
+                        teamMap.get(teamKey).set(caseKey, item);
+                    } else if (tNew === tExisting) {
+                        const existingHasAns = existing.student_answers && Object.keys(existing.student_answers).length > 0;
+                        const newHasAns = item.student_answers && Object.keys(item.student_answers).length > 0;
+                        if (newHasAns && !existingHasAns) {
+                            teamMap.get(teamKey).set(caseKey, item);
+                        }
+                    }
+                }
+            });
+
+            const result = [];
+            teamMap.forEach(caseMap => {
+                caseMap.forEach(item => result.push(item));
+            });
+            return result;
+        }
+
+        // --- Realtime Score Fetching ---
+        async function fetchLatestScores() {
+            try {
+                let scores = null;
+                if (window.location.protocol.startsWith('http')) {
+                    const res = await fetch('/api/leaderboard-3');
+                    const data = await res.json();
+                    if (data && data.success && Array.isArray(data.data)) {
+                        scores = data.data;
+                        localStorage.setItem('CYBER_DETECTIVE_3CASES_SCORES_CACHE', JSON.stringify(scores));
+                    }
+                }
+
+                if (scores === null) {
+                    const localRaw = localStorage.getItem('CYBER_DETECTIVE_3CASES_SCORES_CACHE');
+                    if (localRaw) {
+                        try { scores = JSON.parse(localRaw); } catch (e) { }
+                    }
+                }
+
+                allScoresData = getDeduplicatedScoresData(scores || []);
+                renderScoreboardTable();
+                updateStatsCards();
+                renderGroupAnswersTab();
+            } catch (e) {
+                console.error('Fetch scores error:', e);
+            }
+        }
+
+        function startRealtimeListeners() {
+            try {
+                const bc = new BroadcastChannel('cyber_detective_3_live');
+                bc.onmessage = (e) => {
+                    if (e.data) {
+                        fetchLatestScores();
+                    }
+                };
+            } catch (e) { }
+
+            if (supabaseClient) {
+                try {
+                    realtimeChannel = supabaseClient
+                        .channel('public:game_scores_3')
+                        .on('postgres_changes', { event: '*', schema: 'public', table: 'game_scores_3' }, () => {
+                            fetchLatestScores();
+                        })
+                        .subscribe();
+                } catch (e) { }
+            }
+
+            setInterval(fetchLatestScores, 5000);
+        }
+
+        // --- Display Mode Toggle ---
+        function setScoreboardDisplayMode(mode) {
+            displayMode = mode;
+            const btnTeam = document.getElementById('btn-mode-team');
+            const btnRoster = document.getElementById('btn-mode-roster');
+            if (mode === 'team_only') {
+                btnTeam.className = 'px-2.5 py-1.5 rounded-lg bg-purple-600 text-white font-semibold transition text-xs shadow-sm';
+                btnRoster.className = 'px-2.5 py-1.5 rounded-lg text-slate-400 hover:text-white transition text-xs';
+            } else {
+                btnTeam.className = 'px-2.5 py-1.5 rounded-lg text-slate-400 hover:text-white transition text-xs';
+                btnRoster.className = 'px-2.5 py-1.5 rounded-lg bg-purple-600 text-white font-semibold transition text-xs shadow-sm';
+            }
+            renderScoreboardTable();
+        }
+
+        // --- Universal Score Item Data Parser ---
+        function parseScoreItem(item) {
+            let room = 'ม.3/1';
+            let members = [];
+            let rawInfo = item.members_info;
+
+            if (rawInfo) {
+                if (typeof rawInfo === 'object') {
+                    if (rawInfo.room) room = rawInfo.room;
+                    if (Array.isArray(rawInfo.members)) members = rawInfo.members;
+                } else if (typeof rawInfo === 'string') {
+                    try {
+                        const parsed = JSON.parse(rawInfo);
+                        if (parsed && typeof parsed === 'object') {
+                            if (parsed.room) room = parsed.room;
+                            if (Array.isArray(parsed.members)) members = parsed.members;
+                        }
+                    } catch (e) {
+                        const mRoom = rawInfo.match(/ม\.3\/\d+/);
+                        if (mRoom) room = mRoom[0];
+                    }
+                }
+            }
+
+            if (room === 'ม.3/1' && item.team_name) {
+                const mRoom = item.team_name.match(/ม\.3\/\d+/);
+                if (mRoom) room = mRoom[0];
+            }
+
+            const legal = Number(item.legal_score ?? item.evaluation?.legal?.score ?? 0);
+            const remedy = Number(item.remedy_score ?? item.evaluation?.remedy?.score ?? 0);
+            const security = Number(item.security_score ?? item.evaluation?.security?.score ?? 0);
+            const total = Number(item.total_score ?? item.evaluation?.total_score ?? (legal + remedy + security));
+
+            return {
+                room,
+                members,
+                legal,
+                remedy,
+                security,
+                total
+            };
+        }
+
+        // --- Scoreboard Table Rendering ---
+        function renderScoreboardTable() {
+            const tbody = document.getElementById('scoreboard-tbody');
+            const roomFilter = document.getElementById('filter-room').value;
+            const sortFilter = document.getElementById('filter-sort').value;
+            const searchVal = document.getElementById('filter-search').value.trim().toLowerCase();
+
+            // Group all submissions by team_name into one aggregated row per team
+            const teamMap = new Map();
+            allScoresData.forEach(item => {
+                const teamKey = item.team_name || item.player_id || 'นักสืบเยาวชน';
+                if (!teamMap.has(teamKey)) teamMap.set(teamKey, []);
+                teamMap.get(teamKey).push(item);
+            });
+
+            let teamRows = [];
+            teamMap.forEach((items, teamKey) => {
+                const firstParsed = parseScoreItem(items[0]);
+                let totalLegal = 0, totalRemedy = 0, totalSecurity = 0;
+                let latestTime = null;
+                const caseNames = [];
+
+                items.forEach(item => {
+                    const p = parseScoreItem(item);
+                    totalLegal += p.legal;
+                    totalRemedy += p.remedy;
+                    totalSecurity += p.security;
+                    if (item.case_title) caseNames.push(item.case_title);
+                    const t = item.created_at ? new Date(item.created_at) : null;
+                    if (t && (!latestTime || t > latestTime)) latestTime = t;
+                });
+
+                teamRows.push({
+                    teamName: teamKey,
+                    room: firstParsed.room,
+                    members: firstParsed.members,
+                    caseCount: items.length,
+                    caseNames,
+                    legal: totalLegal,
+                    remedy: totalRemedy,
+                    security: totalSecurity,
+                    total: totalLegal + totalRemedy + totalSecurity,
+                    latestTime
+                });
+            });
+
+            // Filters
+            if (roomFilter !== 'ALL') {
+                teamRows = teamRows.filter(r => r.room === roomFilter || r.teamName.includes(roomFilter));
+            }
+            if (searchVal) {
+                teamRows = teamRows.filter(r => {
+                    const membersStr = r.members.map(m => `${m.no} ${m.prefix}${m.name}`).join(' ').toLowerCase();
+                    return r.teamName.toLowerCase().includes(searchVal) || membersStr.includes(searchVal) || r.caseNames.join(' ').toLowerCase().includes(searchVal);
+                });
+            }
+
+            // Sort
+            if (sortFilter === 'score-desc') teamRows.sort((a, b) => b.total - a.total);
+            else if (sortFilter === 'score-asc') teamRows.sort((a, b) => a.total - b.total);
+            else if (sortFilter === 'room-asc') teamRows.sort((a, b) => a.room.localeCompare(b.room));
+            else if (sortFilter === 'time-desc') teamRows.sort((a, b) => (b.latestTime || 0) - (a.latestTime || 0));
+
+            if (teamRows.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="10" class="p-8 text-center text-slate-500 font-sarabun">ไม่พบข้อมูลคะแนนตามเงื่อนไขที่เลือก</td></tr>';
+                return;
+            }
+
+            tbody.innerHTML = teamRows.map((row, idx) => {
+                let membersDisplay = '-';
+                if (row.members.length > 0) {
+                    if (displayMode === 'detailed_roster') {
+                        membersDisplay = row.members.map(m => `<span class="inline-block px-1.5 py-0.5 rounded bg-slate-800 border border-slate-700 text-[11px] mr-1 mb-1">เลขที่ ${m.no}: ${m.prefix}${m.name}</span>`).join('');
+                    } else {
+                        membersDisplay = `<span class="text-slate-400 font-mono">${row.members.length} คน (คลิกโหมดสมาชิกเพื่อดูเลขที่)</span>`;
+                    }
+                }
+
+                const timeStr = row.latestTime ? row.latestTime.toLocaleTimeString('th-TH', { hour: '2-digit', minute: '2-digit' }) : '-';
+                const casesTooltip = row.caseNames.length > 0 ? row.caseNames.map((c, i) => `${i + 1}. ${c}`).join('\n') : '-';
+                const pct = row.caseCount > 0 ? Math.round((row.total / (row.caseCount * 30)) * 100) : 0;
+                const scoreColor = pct >= 80 ? 'text-emerald-400' : pct >= 50 ? 'text-yellow-300' : 'text-pink-400';
+
+                return `
+                <tr class="hover:bg-slate-900/60 transition ${idx % 2 === 0 ? 'bg-slate-950/40' : 'bg-slate-900/40'}">
+                    <td class="p-3 text-center font-bold text-slate-400 border-r border-slate-800">${idx + 1}</td>
+                    <td class="p-3 font-semibold text-slate-100 border-r border-slate-800">
+                        <div class="flex items-center gap-2">
+                            <i class="fa-solid fa-users text-purple-400"></i>
+                            <span>${row.teamName}</span>
+                        </div>
+                    </td>
+                    <td class="p-3 text-center font-bold text-cyan-300 border-r border-slate-800">${row.room}</td>
+                    <td class="p-3 border-r border-slate-800">${membersDisplay}</td>
+                    <td class="p-3 text-center border-r border-slate-800" title="${casesTooltip}">
+                        <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-purple-500/20 text-purple-300 font-mono text-[11px] font-bold border border-purple-500/30">
+                            <i class="fa-solid fa-folder-open"></i> ${row.caseCount} / 3 คดี
+                        </span>
+                    </td>
+                    <td class="p-3 text-center font-mono font-bold text-amber-400 border-r border-slate-800">${row.legal}</td>
+                    <td class="p-3 text-center font-mono font-bold text-pink-400 border-r border-slate-800">${row.remedy}</td>
+                    <td class="p-3 text-center font-mono font-bold text-cyan-400 border-r border-slate-800">${row.security}</td>
+                    <td class="p-3 text-right font-mono font-bold ${scoreColor} text-sm border-r border-slate-800">${row.total} คะแนน</td>
+                    <td class="p-3 text-center font-mono text-slate-400">${timeStr}</td>
+                </tr>`;
+            }).join('');
+        }
+
+        function updateStatsCards() {
+            // Group by team for accurate stats
+            const teamMap = new Map();
+            allScoresData.forEach(s => {
+                const key = s.team_name || s.player_id;
+                if (!teamMap.has(key)) teamMap.set(key, []);
+                teamMap.get(key).push(s);
+            });
+
+            const totalTeams = teamMap.size;
+            document.getElementById('stat-total-teams').textContent = totalTeams;
+            document.getElementById('stat-total-submissions').textContent = allScoresData.length;
+
+            const rooms = new Set();
+            let teamScoreSum = 0;
+            teamMap.forEach((items) => {
+                let teamTotal = 0;
+                items.forEach(s => {
+                    const parsed = parseScoreItem(s);
+                    teamTotal += parsed.total;
+                    if (parsed.room && parsed.room.startsWith('ม.3/')) rooms.add(parsed.room);
+                });
+                teamScoreSum += teamTotal;
+            });
+
+            document.getElementById('stat-active-rooms').textContent = rooms.size > 0 ? `${rooms.size} ห้อง` : '0 ห้อง';
+            const avg = totalTeams > 0 ? (teamScoreSum / totalTeams).toFixed(1) : '0.0';
+            document.getElementById('stat-avg-score').textContent = `${avg} / 90`;
+        }
+
+        // --- 12 Solutions Rendering ---
+        function renderTeacherSolutions() {
+            const grid = document.getElementById('teacher-solutions-grid');
+            let filtered = ALL_12_CASES;
+            if (currentFilterCategory !== 'all') {
+                filtered = ALL_12_CASES.filter(c => c.cat === currentFilterCategory);
+            }
+
+            grid.innerHTML = filtered.map((c) => `
+                <div class="glass-panel p-5 rounded-3xl border border-purple-500/30 flex flex-col gap-4 shadow-xl">
+                    
+                    <div class="flex items-start justify-between gap-3 border-b border-slate-800 pb-3">
+                        <div class="flex items-center gap-2.5">
+                            <span class="px-2.5 py-1 rounded-lg bg-purple-500/20 text-purple-300 font-mono text-xs font-bold border border-purple-500/40">
+                                คดี #${String(c.id).padStart(2, '0')}
+                            </span>
+                            <span class="px-2.5 py-1 rounded-lg bg-pink-500/20 text-pink-300 font-mono text-xs font-bold border border-pink-500/40">
+                                ${c.section}
+                            </span>
+                        </div>
+                        <button onclick="openTeacherLightbox('${c.image}', '${c.section}: ${c.title}')" class="text-xs text-cyan-400 hover:underline flex items-center gap-1">
+                            <i class="fa-solid fa-magnifying-glass-plus"></i> ซูมภาพการ์ตูน
+                        </button>
+                    </div>
+
+                    <div class="flex flex-col sm:flex-row gap-4 items-start">
+                        <div class="w-full sm:w-36 shrink-0 cursor-pointer group" onclick="openTeacherLightbox('${c.image}', '${c.section}: ${c.title}')">
+                            <img src="${c.image}" alt="${c.title}" class="w-full h-auto rounded-xl border border-slate-700 group-hover:border-purple-400 transition object-contain bg-white">
+                        </div>
+                        <div class="flex-1 flex flex-col gap-2 text-xs font-sarabun">
+                            <h3 class="text-sm font-bold text-white font-kanit">${c.title}</h3>
+                            <p class="text-slate-300 bg-slate-950/70 p-2.5 rounded-xl border border-slate-800 leading-relaxed">${c.brief}</p>
+                        </div>
+                    </div>
+
+                    <!-- 3 Dimensions Answers -->
+                    <div class="flex flex-col gap-2 font-sarabun text-xs mt-1">
+                        <!-- Legal -->
+                        <div class="p-3 rounded-xl bg-amber-950/40 border border-amber-500/30 flex flex-col gap-1">
+                            <div class="flex items-center justify-between text-amber-300 font-bold">
+                                <span>👨‍⚖️ 1. ฐานความผิดและบทลงโทษ (10 คะแนน)</span>
+                                <span class="font-mono text-[10px] text-amber-400">พ.ร.บ.คอมพิวเตอร์</span>
+                            </div>
+                            <p class="text-slate-200">${c.standard_law}</p>
+                            <p class="text-amber-200/90 font-medium">⚖️ อัตราโทษ: ${c.standard_penalty}</p>
+                        </div>
+
+                        <!-- Remedy -->
+                        <div class="p-3 rounded-xl bg-pink-950/40 border border-pink-500/30 flex flex-col gap-1">
+                            <div class="text-pink-300 font-bold">🚑 2. การระงับเหตุฉุกเฉินเฉพาะหน้า (10 คะแนน)</div>
+                            <p class="text-slate-200">${c.standard_remedy}</p>
+                        </div>
+
+                        <!-- Prevention -->
+                        <div class="p-3 rounded-xl bg-cyan-950/40 border border-cyan-500/30 flex flex-col gap-1">
+                            <div class="text-cyan-300 font-bold">🛡️ 3. วิศวกรรมความปลอดภัยเชิงเทคนิค (10 คะแนน)</div>
+                            <p class="text-slate-200">${c.standard_prevention}</p>
+                        </div>
+                    </div>
+
+                </div>
+            `).join('');
+        }
+
+        function filterTeacherSolutions(cat) {
+            currentFilterCategory = cat;
+            const btns = document.querySelectorAll('.sol-tab-btn');
+            btns.forEach(btn => {
+                if (btn.dataset.filter === cat) {
+                    btn.className = 'sol-tab-btn px-3 py-1.5 rounded-lg bg-pink-600 text-white font-semibold transition';
+                } else {
+                    btn.className = 'sol-tab-btn px-3 py-1.5 rounded-lg text-slate-400 hover:text-white transition';
+                }
+            });
+            renderTeacherSolutions();
+        }
+
+        // --- Lightbox Zoom ---
+        function openTeacherLightbox(imgSrc, title) {
+            document.getElementById('teacher-lightbox-img').src = imgSrc;
+            document.getElementById('teacher-lightbox-title').textContent = title;
+            document.getElementById('modal-comic-lightbox').classList.remove('hidden');
+        }
+
+        function closeTeacherLightbox() {
+            document.getElementById('modal-comic-lightbox').classList.add('hidden');
+        }
+
+        // --- Print / Export PDF Modal Handlers ---
+        function onSummaryPdfRoomChange(val) {
+            openPrintPdfModal(val);
+        }
+
+        function openPrintPdfModal(overrideRoom) {
+            const roomFilter = overrideRoom !== undefined
+                ? overrideRoom
+                : (document.getElementById('filter-room')?.value || 'ALL');
+
+            const roomSelect = document.getElementById('pdf-summary-room-select');
+            if (roomSelect) roomSelect.value = roomFilter;
+
+            document.getElementById('pdf-room-label').textContent = roomFilter === 'ALL' ? 'ทุกห้องเรียน (ม.3/1 - ม.3/12)' : `ห้อง ${roomFilter}`;
+            document.getElementById('pdf-date-label').textContent = new Date().toLocaleDateString('th-TH', { year: 'numeric', month: 'long', day: 'numeric' });
+
+            const tbody = document.getElementById('pdf-report-tbody');
+
+            // Group by team_name
+            const teamMap = new Map();
+            allScoresData.forEach(item => {
+                const teamKey = item.team_name || item.player_id || 'นักสืบเยาวชน';
+                if (!teamMap.has(teamKey)) {
+                    teamMap.set(teamKey, []);
+                }
+                teamMap.get(teamKey).push(item);
+            });
+
+            let flatMembersList = [];
+            let totalTeamsCount = 0;
+
+            teamMap.forEach((items, teamKey) => {
+                const firstParsed = parseScoreItem(items[0]);
+
+                if (roomFilter !== 'ALL' && firstParsed.room !== roomFilter && !teamKey.includes(roomFilter)) {
+                    return;
+                }
+
+                totalTeamsCount++;
+
+                let totalLegal = 0, totalRemedy = 0, totalSecurity = 0;
+                items.forEach(item => {
+                    const p = parseScoreItem(item);
+                    totalLegal += p.legal;
+                    totalRemedy += p.remedy;
+                    totalSecurity += p.security;
+                });
+                const totalScore = totalLegal + totalRemedy + totalSecurity;
+
+                if (firstParsed.members.length > 0) {
+                    firstParsed.members.forEach(m => {
+                        flatMembersList.push({
+                            team_name: teamKey,
+                            room: firstParsed.room,
+                            student_no: parseInt(m.no || '999', 10),
+                            prefix: m.prefix || '',
+                            name: m.name || '',
+                            caseCount: items.length,
+                            legal: totalLegal,
+                            remedy: totalRemedy,
+                            security: totalSecurity,
+                            total: totalScore
+                        });
+                    });
+                } else {
+                    flatMembersList.push({
+                        team_name: teamKey,
+                        room: firstParsed.room,
+                        student_no: 1,
+                        prefix: '',
+                        name: '-',
+                        caseCount: items.length,
+                        legal: totalLegal,
+                        remedy: totalRemedy,
+                        security: totalSecurity,
+                        total: totalScore
+                    });
+                }
+            });
+
+            flatMembersList.sort((a, b) => {
+                if (a.room !== b.room) return a.room.localeCompare(b.room);
+                return a.student_no - b.student_no;
+            });
+
+            document.getElementById('pdf-teams-count').textContent = totalTeamsCount;
+
+            if (flatMembersList.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="10" class="p-6 text-center text-slate-500">ไม่มีข้อมูลสำหรับออกรายงานตามเงื่อนไขที่เลือก</td></tr>';
+            } else {
+                tbody.innerHTML = flatMembersList.map((m, idx) => `
+                    <tr class="${idx % 2 === 0 ? 'bg-slate-950/30' : 'bg-slate-900/30'}">
+                        <td class="p-2 text-center font-bold text-slate-400 border-r border-slate-800">${idx + 1}</td>
+                        <td class="p-2 font-semibold text-slate-200 border-r border-slate-800">${m.team_name}</td>
+                        <td class="p-2 text-center text-cyan-300 font-bold border-r border-slate-800">${m.room}</td>
+                        <td class="p-2 text-center font-bold text-yellow-300 font-mono border-r border-slate-800">${m.student_no === 999 ? '-' : m.student_no}</td>
+                        <td class="p-2 text-center text-slate-300 border-r border-slate-800">${m.prefix}</td>
+                        <td class="p-2 text-slate-200 border-r border-slate-800">${m.name}</td>
+                        <td class="p-2 text-center font-mono text-amber-300 border-r border-slate-800">${m.legal}</td>
+                        <td class="p-2 text-center font-mono text-pink-300 border-r border-slate-800">${m.remedy}</td>
+                        <td class="p-2 text-center font-mono text-cyan-300 border-r border-slate-800">${m.security}</td>
+                        <td class="p-2 text-right font-mono font-bold text-yellow-300">${m.total} คะแนน</td>
+                    </tr>
+                `).join('');
+            }
+
+            document.getElementById('modal-print-pdf').classList.remove('hidden');
+        }
+
+        function closePrintPdfModal() {
+            document.getElementById('modal-print-pdf').classList.add('hidden');
+        }
+
+        // --- Save Settings Handlers ---
+        function saveSystemSettings() {
+            const url = document.getElementById('cfg-supabase-url').value.trim();
+            const key = document.getElementById('cfg-supabase-key').value.trim();
+            const gemini = document.getElementById('cfg-gemini-key').value.trim();
+
+            if (url && key && window.supabase) {
+                supabaseClient = window.supabase.createClient(url, key);
+                alert('บันทึกการตั้งค่าระบบเรียบร้อยแล้ว!');
+            } else {
+                alert('บันทึกการตั้งค่าสำเร็จ!');
+            }
+        }
+
+        function clearTestScores() {
+            if (confirm('คำเตือน: คุณต้องการล้างคะแนนทดสอบทั้งหมดในระบบหรือไม่?')) {
+                localStorage.removeItem('CYBER_DETECTIVE_3CASES_SCORES_CACHE');
+                allScoresData = [];
+                renderScoreboardTable();
+                updateStatsCards();
+                renderGroupAnswersTab();
+                alert('ล้างข้อมูลคะแนนทดสอบเรียบร้อยแล้ว');
+            }
+        }
+
+        // --- Group Answers View State & Handlers ---
+        let selectedGroupTeamName = null;
+
+        function escapeHtml(value) {
+            return String(value ?? '')
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#039;');
+        }
+
+        function clampTeacherScore(value) {
+            const score = Number.parseInt(value, 10);
+            if (Number.isNaN(score)) return 0;
+            return Math.max(0, Math.min(10, score));
+        }
+
+        async function saveTeacherScoreOverride(scoreId) {
+            if (!scoreId) {
+                alert('ไม่พบรหัสรายการคะแนน จึงบันทึกไม่ได้');
+                return;
+            }
+
+            const legalScore = clampTeacherScore(document.getElementById(`teacher-legal-${scoreId}`)?.value);
+            const remedyScore = clampTeacherScore(document.getElementById(`teacher-remedy-${scoreId}`)?.value);
+            const securityScore = clampTeacherScore(document.getElementById(`teacher-security-${scoreId}`)?.value);
+            const teacherComment = document.getElementById(`teacher-comment-${scoreId}`)?.value || '';
+            let passcode = sessionStorage.getItem('shield_teacher_passcode') || '';
+
+            if (!passcode) {
+                passcode = prompt('กรอกรหัสครูเพื่อยืนยันการแก้คะแนน') || '';
+                if (!passcode.trim()) return;
+                sessionStorage.setItem('shield_teacher_passcode', passcode.trim());
+            }
+
+            const statusEl = document.getElementById(`teacher-status-${scoreId}`);
+            const saveBtn = document.getElementById(`teacher-save-${scoreId}`);
+            if (statusEl) statusEl.textContent = 'กำลังบันทึก...';
+            if (saveBtn) saveBtn.disabled = true;
+
+            try {
+                const res = await fetch('/api/teacher/update-case-score', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        scoreId,
+                        legalScore,
+                        remedyScore,
+                        securityScore,
+                        teacherComment,
+                        passcode: passcode.trim()
+                    })
+                });
+                const data = await res.json();
+                if (!res.ok || !data.success) {
+                    throw new Error(data.message || data.error || 'บันทึกไม่สำเร็จ');
+                }
+
+                if (Array.isArray(allScoresData)) {
+                    const idx = allScoresData.findIndex(item => String(item.id) === String(scoreId));
+                    if (idx >= 0) allScoresData[idx] = { ...allScoresData[idx], ...data.data };
+                }
+                renderScoreboardTable();
+                updateStatsCards();
+                renderGroupAnswersTab();
+            } catch (err) {
+                console.error('Teacher score override failed:', err);
+                if (statusEl) statusEl.textContent = `ผิดพลาด: ${err.message}`;
+                alert(`บันทึกคะแนนไม่สำเร็จ: ${err.message}`);
+            } finally {
+                if (saveBtn) saveBtn.disabled = false;
+            }
+        }
+
+        function extractAnswersAndFeedback(item) {
+            let answers = { legal: '', remedy: '', security: '' };
+            let feedback = {
+                legal: { score: Number(item.legal_score ?? 0), feedback: '' },
+                remedy: { score: Number(item.remedy_score ?? 0), feedback: '' },
+                security: { score: Number(item.security_score ?? 0), feedback: '' },
+                overall_summary: '',
+                teacher_override: null
+            };
+
+            const rawAns = item.student_answers || item.studentAnswers || item.answers;
+            if (rawAns) {
+                if (typeof rawAns === 'object') {
+                    answers = { ...answers, ...rawAns };
+                } else if (typeof rawAns === 'string') {
+                    try { answers = { ...answers, ...JSON.parse(rawAns) }; } catch (e) { }
+                }
+            }
+
+            const rawFb = item.ai_feedback || item.aiFeedback || item.evaluation;
+            if (rawFb) {
+                let parsedFb = rawFb;
+                if (typeof parsedFb === 'string') {
+                    try { parsedFb = JSON.parse(parsedFb); } catch (e) { }
+                }
+                if (typeof parsedFb === 'object' && parsedFb !== null) {
+                    if (parsedFb.legal) feedback.legal = { score: Number(parsedFb.legal.score ?? item.legal_score ?? 0), feedback: parsedFb.legal.feedback || parsedFb.legal.feedback_text || '' };
+                    if (parsedFb.remedy) feedback.remedy = { score: Number(parsedFb.remedy.score ?? item.remedy_score ?? 0), feedback: parsedFb.remedy.feedback || parsedFb.remedy.feedback_text || '' };
+                    if (parsedFb.security) feedback.security = { score: Number(parsedFb.security.score ?? item.security_score ?? 0), feedback: parsedFb.security.feedback || parsedFb.security.feedback_text || '' };
+                    if (parsedFb.overall_summary) feedback.overall_summary = parsedFb.overall_summary;
+                    if (parsedFb.teacher_override) feedback.teacher_override = parsedFb.teacher_override;
+                }
+            }
+
+            return { answers, feedback };
+        }
+
+        function getFilteredGroupMap() {
+            const roomFilter = document.getElementById('filter-group-room')?.value || 'ALL';
+            const searchVal = (document.getElementById('filter-group-search')?.value || '').trim().toLowerCase();
+
+            const teamMap = new Map();
+            allScoresData.forEach(item => {
+                const teamKey = item.team_name || item.player_id || 'นักสืบเยาวชน';
+                if (!teamMap.has(teamKey)) teamMap.set(teamKey, []);
+                teamMap.get(teamKey).push(item);
+            });
+
+            const filteredMap = new Map();
+            teamMap.forEach((items, teamKey) => {
+                const firstParsed = parseScoreItem(items[0]);
+
+                // Room Filter
+                if (roomFilter !== 'ALL' && firstParsed.room !== roomFilter && !teamKey.includes(roomFilter)) {
+                    return;
+                }
+
+                // Search Filter
+                if (searchVal) {
+                    const membersStr = firstParsed.members.map(m => `${m.no} ${m.prefix}${m.name}`).join(' ').toLowerCase();
+                    const caseTitles = items.map(i => i.case_title || '').join(' ').toLowerCase();
+                    const matchesSearch = teamKey.toLowerCase().includes(searchVal) ||
+                        membersStr.includes(searchVal) ||
+                        caseTitles.includes(searchVal);
+                    if (!matchesSearch) return;
+                }
+
+                filteredMap.set(teamKey, items);
+            });
+
+            return filteredMap;
+        }
+
+        function renderGroupAnswersTab() {
+            const listContainer = document.getElementById('group-answers-list');
+            const countLabel = document.getElementById('group-answers-count');
+            if (!listContainer) return;
+
+            const filteredMap = getFilteredGroupMap();
+            countLabel.textContent = filteredMap.size;
+
+            if (filteredMap.size === 0) {
+                listContainer.innerHTML = `
+                    <div class="glass-panel p-6 rounded-2xl text-center text-slate-500 font-sarabun text-xs border border-slate-800">
+                        ไม่พบข้อมูลกลุ่มสายสืบตามเงื่อนไขที่เลือก
+                    </div>`;
+                document.getElementById('group-cases-container').innerHTML = `
+                    <div class="glass-panel p-8 rounded-2xl border border-slate-800 text-center text-slate-500 font-sarabun text-xs">
+                        ไม่พบข้อมูลคำตอบ
+                    </div>`;
+                document.getElementById('detail-team-name').textContent = 'ไม่พบข้อมูลกลุ่ม';
+                document.getElementById('detail-team-sub').textContent = '-';
+                document.getElementById('detail-team-score-badge').classList.add('hidden');
+                return;
+            }
+
+            let htmlList = [];
+            filteredMap.forEach((items, teamKey) => {
+                const firstParsed = parseScoreItem(items[0]);
+                let totalLegal = 0, totalRemedy = 0, totalSecurity = 0;
+                items.forEach(item => {
+                    const p = parseScoreItem(item);
+                    totalLegal += p.legal;
+                    totalRemedy += p.remedy;
+                    totalSecurity += p.security;
+                });
+                const totalScore = totalLegal + totalRemedy + totalSecurity;
+                const isSelected = selectedGroupTeamName === teamKey;
+
+                const membersText = firstParsed.members.length > 0
+                    ? firstParsed.members.map(m => `เลขที่ ${m.no}: ${m.prefix}${m.name}`).join(', ')
+                    : 'ไม่ระบุสมาชิก';
+
+                const safeTeamKey = teamKey.replace(/'/g, "\\'");
+
+                htmlList.push(`
+                    <div onclick="selectGroupForAnswers('${safeTeamKey}')" class="group-card-item cursor-pointer p-3.5 rounded-2xl border transition flex flex-col gap-2 font-sarabun text-xs ${isSelected ? 'bg-purple-950/70 border-purple-400 shadow-lg shadow-purple-500/20' : 'glass-panel border-slate-800 hover:border-slate-600 hover:bg-slate-900/60'}" data-team="${encodeURIComponent(teamKey)}">
+                        <div class="flex items-center justify-between gap-2">
+                            <span class="font-bold text-slate-100 flex items-center gap-1.5 font-kanit text-sm truncate">
+                                <i class="fa-solid fa-users ${isSelected ? 'text-purple-300' : 'text-purple-400'}"></i> ${teamKey}
+                            </span>
+                            <span class="px-2 py-0.5 rounded-full bg-cyan-500/20 text-cyan-300 font-mono text-[11px] font-bold border border-cyan-500/30">
+                                ${firstParsed.room}
+                            </span>
+                        </div>
+                        <div class="text-[11px] text-slate-400 truncate" title="${membersText}">
+                            <i class="fa-solid fa-user-group text-slate-500 mr-1"></i> ${membersText}
+                        </div>
+                        <div class="flex items-center justify-between text-[11px] pt-1 border-t border-slate-800/80">
+                            <span class="text-purple-300 font-mono"><i class="fa-solid fa-folder-open mr-1"></i> ${items.length} คดี</span>
+                            <span class="font-mono font-bold text-yellow-300">${totalScore} คะแนน</span>
+                        </div>
+                    </div>
+                `);
+            });
+
+            listContainer.innerHTML = htmlList.join('');
+
+            // Auto-select group if none active or active one filtered out
+            const teamKeys = Array.from(filteredMap.keys());
+            if (!selectedGroupTeamName || !filteredMap.has(selectedGroupTeamName)) {
+                selectGroupForAnswers(teamKeys[0]);
+            } else {
+                selectGroupForAnswers(selectedGroupTeamName);
+            }
+        }
+
+        function selectGroupForAnswers(teamKey) {
+            selectedGroupTeamName = teamKey;
+            const filteredMap = getFilteredGroupMap();
+            const items = filteredMap.get(teamKey);
+
+            // Re-render sidebar active highlight
+            const sidebarCards = document.querySelectorAll('.group-card-item');
+            sidebarCards.forEach(card => {
+                const cardTeam = decodeURIComponent(card.dataset.team || '');
+                if (cardTeam === teamKey) {
+                    card.className = 'group-card-item cursor-pointer p-3.5 rounded-2xl border transition flex flex-col gap-2 font-sarabun text-xs bg-purple-950/70 border-purple-400 shadow-lg shadow-purple-500/20';
+                } else {
+                    card.className = 'group-card-item cursor-pointer p-3.5 rounded-2xl border transition flex flex-col gap-2 font-sarabun text-xs glass-panel border-slate-800 hover:border-slate-600 hover:bg-slate-900/60';
+                }
+            });
+
+            if (!items || items.length === 0) return;
+
+            const firstParsed = parseScoreItem(items[0]);
+            let totalLegal = 0, totalRemedy = 0, totalSecurity = 0;
+            items.forEach(item => {
+                const p = parseScoreItem(item);
+                totalLegal += p.legal;
+                totalRemedy += p.remedy;
+                totalSecurity += p.security;
+            });
+            const totalScore = totalLegal + totalRemedy + totalSecurity;
+
+            // Render Header
+            document.getElementById('detail-team-name').textContent = teamKey;
+            const membersText = firstParsed.members.length > 0
+                ? firstParsed.members.map(m => `เลขที่ ${m.no}: ${m.prefix}${m.name}`).join(' | ')
+                : 'ไม่ระบุรายชื่อสมาชิก';
+            document.getElementById('detail-team-sub').textContent = `ห้อง ${firstParsed.room} — ${membersText}`;
+
+            const badge = document.getElementById('detail-team-score-badge');
+            badge.classList.remove('hidden');
+            badge.innerHTML = `<i class="fa-solid fa-star text-yellow-400"></i> คะแนนรวมสะสม: <span class="text-yellow-300 font-bold text-sm ml-1">${totalScore}</span> / ${items.length * 30} คะแนน`;
+
+            // Sort cases by case_id
+            const sortedItems = [...items].sort((a, b) => (a.case_id || 0) - (b.case_id || 0));
+
+            const casesContainer = document.getElementById('group-cases-container');
+            const caseCardsHtml = sortedItems.map((item, idx) => {
+                const p = parseScoreItem(item);
+                const { answers, feedback } = extractAnswersAndFeedback(item);
+                const caseTitle = item.case_title || `คดีที่ ${item.case_id || (idx + 1)}`;
+                const caseRef = ALL_12_CASES.find(c => c.id === item.case_id) || {};
+                const timeStr = item.created_at ? new Date(item.created_at).toLocaleString('th-TH') : '-';
+                const totalCaseScore = p.legal + p.remedy + p.security;
+                const safeScoreId = escapeHtml(item.id || '');
+                const teacherOverride = feedback.teacher_override || {};
+                const teacherComment = teacherOverride.comment || '';
+                const teacherUpdatedAt = teacherOverride.updated_at ? new Date(teacherOverride.updated_at).toLocaleString('th-TH') : '';
+                const overrideLabel = teacherUpdatedAt
+                    ? `<span class="px-2 py-0.5 rounded-lg bg-indigo-500/20 text-indigo-200 border border-indigo-500/30 font-mono text-[11px]">Teacher override: ${teacherUpdatedAt}</span>`
+                    : `<span class="px-2 py-0.5 rounded-lg bg-slate-800 text-slate-300 border border-slate-700 font-mono text-[11px]">AI score</span>`;
+
+                // Check which roles have been performed/answered
+                const hasLegal = (answers.legal && answers.legal.trim().length > 0) || p.legal > 0 || (feedback.legal && feedback.legal.feedback && feedback.legal.feedback.trim().length > 0);
+                const hasRemedy = (answers.remedy && answers.remedy.trim().length > 0) || p.remedy > 0 || (feedback.remedy && feedback.remedy.feedback && feedback.remedy.feedback.trim().length > 0);
+                const hasSecurity = (answers.security && answers.security.trim().length > 0) || p.security > 0 || (feedback.security && feedback.security.feedback && feedback.security.feedback.trim().length > 0);
+
+                // Show ONLY cases that have at least one performed role
+                if (!hasLegal && !hasRemedy && !hasSecurity) return '';
+
+                return `
+                    <div class="glass-panel p-5 rounded-3xl border border-slate-700 flex flex-col gap-4 shadow-xl">
+                        
+                        <!-- Case Card Header -->
+                        <div class="flex flex-wrap items-center justify-between gap-3 border-b border-slate-800 pb-3">
+                            <div class="flex items-center gap-2.5">
+                                <span class="px-3 py-1 rounded-xl bg-purple-500/20 text-purple-300 font-mono text-xs font-bold border border-purple-500/40">
+                                    คดี #${String(item.case_id || (idx + 1)).padStart(2, '0')}
+                                </span>
+                                <h4 class="text-sm font-bold text-white font-kanit">${caseTitle}</h4>
+                                ${caseRef.section ? `<span class="px-2 py-0.5 rounded-lg bg-pink-500/20 text-pink-300 font-mono text-[11px] font-bold border border-pink-500/30">${caseRef.section}</span>` : ''}
+                            </div>
+                            <div class="flex items-center gap-3">
+                                <span class="text-[11px] text-slate-400 font-mono"><i class="fa-regular fa-clock mr-1"></i>${timeStr}</span>
+                                <span class="px-3 py-1 rounded-xl bg-emerald-950/80 border border-emerald-500/40 text-emerald-300 font-mono text-xs font-bold">
+                                    คะแนนคดีนี้: ${totalCaseScore} / 30
+                                </span>
+                            </div>
+                        </div>
+
+                        <!-- 3 Roles Detailed Breakdown (Only performed roles) -->
+                        <div class="flex flex-col gap-3 font-sarabun text-xs">
+                            
+                            ${hasLegal ? `
+                            <!-- Role 1: Legal -->
+                            <div class="p-4 rounded-2xl bg-amber-950/30 border border-amber-500/30 flex flex-col gap-2">
+                                <div class="flex items-center justify-between text-amber-300 font-bold">
+                                    <span class="flex items-center gap-1.5">👨‍⚖️ 1. คำตอบนักวิเคราะห์กฎหมาย (Legal Analyst)</span>
+                                    <span class="px-2.5 py-0.5 rounded-lg bg-amber-500/20 text-amber-300 font-mono text-xs font-bold border border-amber-500/40">${p.legal} / 10 คะแนน</span>
+                                </div>
+                                <div class="bg-slate-950/80 p-3 rounded-xl border border-slate-800 text-slate-200 leading-relaxed">
+                                    <span class="text-slate-400 font-semibold block mb-1">📝 คำตอบของเด็ก:</span>
+                                    ${answers.legal ? answers.legal : '<span class="text-slate-500 italic">ไม่พบบันทึกข้อความคำตอบ (ส่งตรวจก่อนรัน SQL เพิ่มคอลัมน์ใน Supabase)</span>'}
+                                </div>
+                                <div class="bg-amber-950/60 p-3 rounded-xl border border-amber-500/20 text-amber-200 leading-relaxed">
+                                    <span class="text-amber-400 font-semibold block mb-1"><i class="fa-solid fa-robot mr-1"></i> AI ประเมินผล:</span>
+                                    ${feedback.legal.feedback ? feedback.legal.feedback : 'ให้คะแนน ' + p.legal + ' คะแนน'}
+                                </div>
+                            </div>` : ''}
+
+                            ${hasRemedy ? `
+                            <!-- Role 2: Remedy -->
+                            <div class="p-4 rounded-2xl bg-pink-950/30 border border-pink-500/30 flex flex-col gap-2">
+                                <div class="flex items-center justify-between text-pink-300 font-bold">
+                                    <span class="flex items-center gap-1.5">🚑 2. คำตอบเจ้าหน้าที่แก้ไข (Incident Responder)</span>
+                                    <span class="px-2.5 py-0.5 rounded-lg bg-pink-500/20 text-pink-300 font-mono text-xs font-bold border border-pink-500/40">${p.remedy} / 10 คะแนน</span>
+                                </div>
+                                <div class="bg-slate-950/80 p-3 rounded-xl border border-slate-800 text-slate-200 leading-relaxed">
+                                    <span class="text-slate-400 font-semibold block mb-1">📝 คำตอบของเด็ก:</span>
+                                    ${answers.remedy ? answers.remedy : '<span class="text-slate-500 italic">ไม่พบบันทึกข้อความคำตอบ (ส่งตรวจก่อนรัน SQL เพิ่มคอลัมน์ใน Supabase)</span>'}
+                                </div>
+                                <div class="bg-pink-950/60 p-3 rounded-xl border border-pink-500/20 text-pink-200 leading-relaxed">
+                                    <span class="text-pink-400 font-semibold block mb-1"><i class="fa-solid fa-robot mr-1"></i> AI ประเมินผล:</span>
+                                    ${feedback.remedy.feedback ? feedback.remedy.feedback : 'ให้คะแนน ' + p.remedy + ' คะแนน'}
+                                </div>
+                            </div>` : ''}
+
+                            ${hasSecurity ? `
+                            <!-- Role 3: Security -->
+                            <div class="p-4 rounded-2xl bg-cyan-950/30 border border-cyan-500/30 flex flex-col gap-2">
+                                <div class="flex items-center justify-between text-cyan-300 font-bold">
+                                    <span class="flex items-center gap-1.5">🛡️ 3. คำตอบวิศวกรความปลอดภัย (Security Engineer)</span>
+                                    <span class="px-2.5 py-0.5 rounded-lg bg-cyan-500/20 text-cyan-300 font-mono text-xs font-bold border border-cyan-500/40">${p.security} / 10 คะแนน</span>
+                                </div>
+                                <div class="bg-slate-950/80 p-3 rounded-xl border border-slate-800 text-slate-200 leading-relaxed">
+                                    <span class="text-slate-400 font-semibold block mb-1">📝 คำตอบของเด็ก:</span>
+                                    ${answers.security ? answers.security : '<span class="text-slate-500 italic">ไม่พบบันทึกข้อความคำตอบ (ส่งตรวจก่อนรัน SQL เพิ่มคอลัมน์ใน Supabase)</span>'}
+                                </div>
+                                <div class="bg-cyan-950/60 p-3 rounded-xl border border-cyan-500/20 text-cyan-200 leading-relaxed">
+                                    <span class="text-cyan-400 font-semibold block mb-1"><i class="fa-solid fa-robot mr-1"></i> AI ประเมินผล:</span>
+                                    ${feedback.security.feedback ? feedback.security.feedback : 'ให้คะแนน ' + p.security + ' คะแนน'}
+                                </div>
+                            </div>` : ''}
+
+                            ${feedback.overall_summary ? `
+                            <div class="p-3 rounded-2xl bg-purple-950/40 border border-purple-500/30 text-purple-200 leading-relaxed">
+                                <span class="font-bold text-purple-300 block mb-1"><i class="fa-solid fa-wand-magic-sparkles mr-1"></i> สรุปภาพรวมจาก AI:</span>
+                                ${feedback.overall_summary}
+                            </div>` : ''}
+
+                            <div class="p-4 rounded-2xl bg-indigo-950/30 border border-indigo-500/30 flex flex-col gap-3">
+                                <div class="flex flex-wrap items-center justify-between gap-2">
+                                    <div class="flex items-center gap-2 text-indigo-200 font-bold font-kanit text-sm">
+                                        <i class="fa-solid fa-pen-to-square text-indigo-300"></i>
+                                        ครูแก้คะแนนและคอมเมนต์
+                                    </div>
+                                    ${overrideLabel}
+                                </div>
+                                <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                                    <label class="flex flex-col gap-1 text-[11px] text-amber-200 font-semibold">
+                                        Legal Analyst
+                                        <input id="teacher-legal-${safeScoreId}" type="number" min="0" max="10" step="1" value="${p.legal}"
+                                            class="w-full rounded-xl bg-slate-950 border border-amber-500/30 px-3 py-2 text-white font-mono text-sm focus:outline-none focus:ring-2 focus:ring-amber-400">
+                                    </label>
+                                    <label class="flex flex-col gap-1 text-[11px] text-pink-200 font-semibold">
+                                        Incident Responder
+                                        <input id="teacher-remedy-${safeScoreId}" type="number" min="0" max="10" step="1" value="${p.remedy}"
+                                            class="w-full rounded-xl bg-slate-950 border border-pink-500/30 px-3 py-2 text-white font-mono text-sm focus:outline-none focus:ring-2 focus:ring-pink-400">
+                                    </label>
+                                    <label class="flex flex-col gap-1 text-[11px] text-cyan-200 font-semibold">
+                                        Security Engineer
+                                        <input id="teacher-security-${safeScoreId}" type="number" min="0" max="10" step="1" value="${p.security}"
+                                            class="w-full rounded-xl bg-slate-950 border border-cyan-500/30 px-3 py-2 text-white font-mono text-sm focus:outline-none focus:ring-2 focus:ring-cyan-400">
+                                    </label>
+                                </div>
+                                <label class="flex flex-col gap-1 text-[11px] text-indigo-100 font-semibold">
+                                    คอมเมนต์ครู
+                                    <textarea id="teacher-comment-${safeScoreId}" rows="2"
+                                        class="w-full rounded-xl bg-slate-950 border border-indigo-500/30 px-3 py-2 text-slate-100 font-sarabun text-sm leading-relaxed focus:outline-none focus:ring-2 focus:ring-indigo-400"
+                                        placeholder="เหตุผลการปรับคะแนน หรือข้อเสนอแนะให้นักเรียน">${escapeHtml(teacherComment)}</textarea>
+                                </label>
+                                <div class="flex flex-wrap items-center justify-between gap-2">
+                                    <span id="teacher-status-${safeScoreId}" class="text-[11px] text-slate-400 font-sarabun">
+                                        คะแนนรวมหลังแก้จะถูกบันทึกกลับ Supabase และใช้ใน leaderboard
+                                    </span>
+                                    <button id="teacher-save-${safeScoreId}" onclick="saveTeacherScoreOverride('${safeScoreId}')"
+                                        class="px-4 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-bold font-kanit text-xs transition disabled:opacity-50 disabled:cursor-wait flex items-center gap-2">
+                                        <i class="fa-solid fa-floppy-disk"></i>
+                                        บันทึกคะแนนครู
+                                    </button>
+                                </div>
+                            </div>
+
+                        </div>
+
+                    </div>
+                `;
+            }).filter(Boolean).join('');
+
+            casesContainer.innerHTML = caseCardsHtml || `<div class="glass-panel p-8 rounded-2xl border border-slate-800 text-center text-slate-500 font-sarabun text-xs">กลุ่มนี้ยังไม่ได้ทำข้อสอบหรือส่งตรวจคดีใดๆ</div>`;
+        }
+
+        // --- PDF Export Modal Handlers for Group Answers (1 Page = 1 Group) ---
+        function openGroupAnswersPdfModal() {
+            const currentRoom = document.getElementById('filter-group-room')?.value || document.getElementById('filter-room')?.value || 'ALL';
+            const roomSelect = document.getElementById('pdf-group-room-select');
+            if (roomSelect) roomSelect.value = currentRoom;
+
+            renderGroupAnswersPdfContent();
+            document.getElementById('modal-print-group-answers').classList.remove('hidden');
+        }
+
+        function closeGroupAnswersPdfModal() {
+            document.getElementById('modal-print-group-answers').classList.add('hidden');
+        }
+
+        function renderGroupAnswersPdfContent() {
+            const roomFilter = document.getElementById('pdf-group-room-select')?.value || 'ALL';
+            const selectMode = document.getElementById('pdf-group-select')?.value || 'ALL';
+            const sheet = document.getElementById('printable-group-answers-sheet');
+            if (!sheet) return;
+
+            // Group by team_name
+            const teamMap = new Map();
+            allScoresData.forEach(item => {
+                const teamKey = item.team_name || item.player_id || 'นักสืบเยาวชน';
+                if (!teamMap.has(teamKey)) teamMap.set(teamKey, []);
+                teamMap.get(teamKey).push(item);
+            });
+
+            let targetTeams = [];
+            teamMap.forEach((items, teamKey) => {
+                const firstParsed = parseScoreItem(items[0]);
+
+                // Filter by Room
+                if (roomFilter !== 'ALL' && firstParsed.room !== roomFilter && !teamKey.includes(roomFilter)) {
+                    return;
+                }
+
+                // Filter by Group Selection Mode
+                if (selectMode === 'SELECTED' && selectedGroupTeamName && teamKey !== selectedGroupTeamName) {
+                    return;
+                }
+
+                targetTeams.push({ teamKey, items });
+            });
+
+            if (targetTeams.length === 0) {
+                sheet.innerHTML = `<div class="p-8 text-center text-slate-500 font-sarabun text-sm">ไม่มีข้อมูลคำตอบสำหรับพิมพ์รายงานในห้องเรียนที่เลือก</div>`;
+                return;
+            }
+
+            const printDateStr = new Date().toLocaleDateString('th-TH', { year: 'numeric', month: 'long', day: 'numeric' });
+            const roomLabelText = roomFilter === 'ALL' ? 'ทุกห้องเรียน (ม.3/1 - ม.3/12)' : `ห้อง ${roomFilter}`;
+
+            let fullHtml = '';
+
+            targetTeams.forEach(({ teamKey, items }, groupIdx) => {
+                const firstParsed = parseScoreItem(items[0]);
+                let totalLegal = 0, totalRemedy = 0, totalSecurity = 0;
+                items.forEach(item => {
+                    const p = parseScoreItem(item);
+                    totalLegal += p.legal;
+                    totalRemedy += p.remedy;
+                    totalSecurity += p.security;
+                });
+                const groupTotalScore = totalLegal + totalRemedy + totalSecurity;
+                const membersStr = firstParsed.members.length > 0
+                    ? firstParsed.members.map(m => `เลขที่ ${m.no}: ${m.prefix}${m.name}`).join(', ')
+                    : 'ไม่ระบุรายชื่อสมาชิก';
+
+                const sortedItems = [...items].sort((a, b) => (a.case_id || 0) - (b.case_id || 0));
+
+                // Map all cases for team (fill missing cases up to 6 if needed, or use all solved cases)
+                const validCases = sortedItems;
+
+                // Chunk cases into subpages of 6 cases per A4 page (1 group = 1 printed page)
+                const caseChunks = [];
+                const chunkSize = 3;
+                if (validCases.length === 0) {
+                    caseChunks.push([]);
+                } else {
+                    for (let i = 0; i < validCases.length; i += chunkSize) {
+                        caseChunks.push(validCases.slice(i, i + chunkSize));
+                    }
+                }
+
+                const totalSubPages = caseChunks.length;
+
+                caseChunks.forEach((chunk, pageIdx) => {
+                    const printedCasesHtml = chunk.map((item, cIdx) => {
+                        const p = parseScoreItem(item);
+                        const { answers, feedback } = extractAnswersAndFeedback(item);
+                        const globalCaseIdx = (pageIdx * chunkSize) + cIdx + 1;
+                        const caseTitle = item.case_title || `คดีที่ ${item.case_id || globalCaseIdx}`;
+                        const caseRef = ALL_12_CASES.find(c => c.id === item.case_id) || {};
+                        const totalCaseScore = p.legal + p.remedy + p.security;
+
+                        const hasLegal = (answers.legal && answers.legal.trim().length > 0) || p.legal > 0 || (feedback.legal && feedback.legal.feedback && feedback.legal.feedback.trim().length > 0);
+                        const hasRemedy = (answers.remedy && answers.remedy.trim().length > 0) || p.remedy > 0 || (feedback.remedy && feedback.remedy.feedback && feedback.remedy.feedback.trim().length > 0);
+                        const hasSecurity = (answers.security && answers.security.trim().length > 0) || p.security > 0 || (feedback.security && feedback.security.feedback && feedback.security.feedback.trim().length > 0);
+
+                        return `
+                            <div class="print-card p-2 rounded-lg border border-slate-300 bg-white text-slate-900 flex flex-col gap-1">
+                                
+                                <div class="flex items-center justify-between border-b border-slate-300 pb-1">
+                                    <div class="flex items-center gap-1.5">
+                                        <span class="print-case-title font-bold text-xs font-kanit text-slate-900">
+                                            คดี #${item.case_id || globalCaseIdx}: ${caseTitle} ${caseRef.section ? `(${caseRef.section})` : ''}
+                                        </span>
+                                        <span class="print-case-index px-1.5 py-0.5 rounded bg-slate-200 text-slate-700 font-mono text-[9.5px] font-bold">
+                                            คดีที่ ${globalCaseIdx}/3
+                                        </span>
+                                    </div>
+                                    <span class="print-score-badge text-[9.5px]">
+                                        คะแนนคดีนี้: ${totalCaseScore} / 30
+                                    </span>
+                                </div>
+
+                                <div class="print-role-grid">
+                                    ${hasLegal ? `
+                                    <div class="print-role-box">
+                                        <div>
+                                            <div class="font-bold text-amber-900 text-[9px]">👨‍⚖️ 1. กฎหมาย (${p.legal}/10)</div>
+                                            <div class="print-role-ans"><b>คำตอบ:</b> ${answers.legal || '-'}</div>
+                                        </div>
+                                        <div class="print-ai-box text-purple-900 bg-purple-50 border border-purple-200">
+                                            <b>🤖 AI:</b> ${feedback.legal.feedback || 'ให้คะแนน ' + p.legal + ' คะแนน'}
+                                        </div>
+                                    </div>` : '<div class="print-role-box text-[8.5px] text-slate-400 italic">👨‍⚖️ 1. กฎหมาย: ไม่มีข้อมูล</div>'}
+
+                                    ${hasRemedy ? `
+                                    <div class="print-role-box">
+                                        <div>
+                                            <div class="font-bold text-pink-900 text-[9px]">🚑 2. บรรเทา (${p.remedy}/10)</div>
+                                            <div class="print-role-ans"><b>คำตอบ:</b> ${answers.remedy || '-'}</div>
+                                        </div>
+                                        <div class="print-ai-box text-pink-900 bg-pink-50 border border-pink-200">
+                                            <b>🤖 AI:</b> ${feedback.remedy.feedback || 'ให้คะแนน ' + p.remedy + ' คะแนน'}
+                                        </div>
+                                    </div>` : '<div class="print-role-box text-[8.5px] text-slate-400 italic">🚑 2. บรรเทา: ไม่มีข้อมูล</div>'}
+
+                                    ${hasSecurity ? `
+                                    <div class="print-role-box">
+                                        <div>
+                                            <div class="font-bold text-teal-900 text-[9px]">🛡️ 3. ป้องกัน (${p.security}/10)</div>
+                                            <div class="print-role-ans"><b>คำตอบ:</b> ${answers.security || '-'}</div>
+                                        </div>
+                                        <div class="print-ai-box text-teal-900 bg-teal-50 border border-teal-200">
+                                            <b>🤖 AI:</b> ${feedback.security.feedback || 'ให้คะแนน ' + p.security + ' คะแนน'}
+                                        </div>
+                                    </div>` : '<div class="print-role-box text-[8.5px] text-slate-400 italic">🛡️ 3. ป้องกัน: ไม่มีข้อมูล</div>'}
+                                </div>
+
+                            </div>
+                        `;
+                    }).join('');
+
+                    const isLastPageOfGroup = (pageIdx === totalSubPages - 1);
+
+                    fullHtml += `
+                        <!-- Subpage (6 cases per A4 page) -->
+                        <div class="print-group-subpage flex flex-col justify-between gap-2 text-slate-200 font-sarabun">
+                            
+                            <div class="flex flex-col gap-2">
+                                <!-- Academic Header for every printed page -->
+                                <div class="print-group-header text-center flex flex-col items-center gap-0.5 border-b-2 border-slate-700 pb-2 relative">
+                                    <div class="flex items-center justify-center gap-2">
+                                        <img src="favicon.png" alt="Logo" class="w-7 h-7 rounded-lg object-cover no-print">
+                                        <h2 class="text-sm sm:text-base font-bold font-kanit text-slate-100 print-text-dark">
+                                            แบบรายงานคำตอบและการประเมินผล AI กิจกรรมสืบคดีกฎหมายคอมพิวเตอร์และ PDPA
+                                        </h2>
+                                    </div>
+                                    <p class="text-[10px] text-slate-300 print-text-dark">
+                                        กลุ่มสาระการเรียนรู้วิทยาศาสตร์และเทคโนโลยี ระดับชั้นมัธยมศึกษาปีที่ 3 (วิชาเทคโนโลยี / วิทยาการคำนวณ)
+                                    </p>
+                                    <div class="flex flex-wrap items-center justify-center gap-4 text-[10px] text-slate-400 font-mono print-text-dark">
+                                        <span>🏫 ห้องเรียน: <b class="text-cyan-300 font-bold print-text-dark">${roomLabelText}</b></span>
+                                        <span>📅 วันที่พิมพ์: <b class="text-slate-200 font-bold print-text-dark">${printDateStr}</b></span>
+                                        <span>👥 กลุ่มที่: <b class="text-emerald-400 font-bold print-text-dark">${groupIdx + 1} / ${targetTeams.length}</b></span>
+                                    </div>
+                                    
+                                    <!-- Page Number Badge at Top Right Corner (e.g. 1/3, 2/3, 3/3) -->
+                                    <div class="absolute top-0 right-0 px-2.5 py-1 rounded-lg bg-slate-900 border border-slate-700 text-purple-300 font-mono text-[11px] font-bold print-text-dark">
+                                        หน้า ${pageIdx + 1} / ${totalSubPages}
+                                    </div>
+                                </div>
+
+                                <!-- Group Identity Banner ALWAYS present on every printed page -->
+                                <div class="print-group-meta print-card bg-slate-900 text-slate-100 p-2.5 rounded-xl border border-slate-700 flex flex-col gap-0.5 mb-1">
+                                    <div class="flex items-center justify-between">
+                                        <h3 class="text-xs sm:text-sm font-bold font-kanit print-text-dark">🏷️ กลุ่มสายสืบ: ${teamKey}</h3>
+                                        <span class="px-2 py-0.5 rounded-lg bg-purple-600 text-white font-mono text-[10px] font-bold">
+                                            ห้อง ${firstParsed.room} | คะแนนรวม ${groupTotalScore} / ${items.length * 30} คะแนน
+                                        </span>
+                                    </div>
+                                    <p class="text-[10.5px] text-slate-300 print-text-dark">
+                                        <b>👥 สมาชิกในกลุ่ม:</b> ${membersStr}
+                                    </p>
+                                </div>
+
+                                <!-- 6 Case Answers Breakdown -->
+                                <div class="print-case-list flex flex-col gap-2">
+                                    ${printedCasesHtml || '<div class="p-4 text-center text-slate-500 text-xs">ไม่มีคดีที่ทำเสร็จสิ้น</div>'}
+                                </div>
+                            </div>
+
+                            <!-- Footer / Signatures block -->
+                            ${isLastPageOfGroup ? `
+                            <div class="print-signature-block grid grid-cols-2 gap-4 pt-2 border-t border-slate-700 text-[11px] font-sarabun print-text-dark pb-1">
+                                <div class="flex flex-col items-center gap-0.5">
+                                    <p>ลงชื่อ ............................................................ ผู้แทนกลุ่มนักเรียน</p>
+                                    <p class="text-[9.5px] text-slate-500 print-text-dark">( ............................................................ )</p>
+                                </div>
+                                <div class="flex flex-col items-center gap-0.5">
+                                    <p>ลงชื่อ ............................................................ ครูผู้สอนประจำวิชา</p>
+                                    <p class="text-[9.5px] text-slate-500 print-text-dark">( ............................................................ )</p>
+                                </div>
+                            </div>` : `
+                            <div class="text-right text-[10px] text-slate-400 font-mono pt-1 border-t border-slate-700 print-text-dark">
+                                (โปรดอ่านต่อหน้าถัดไป ➔ หน้า ${pageIdx + 2}/${totalSubPages})
+                            </div>`}
+
+                        </div>
+                    `;
+                });
+            });
+
+            sheet.innerHTML = fullHtml;
+        }
+
+        function renderG8G9AnswerBank() {
+            const container = document.getElementById('g8g9-bank-container');
+            if (!container) return;
+
+            const samples = [
+                {
+                    caseId: 1, title: 'คดี #1: แอบส่องระบบไอดีเกมของเพื่อน',
+                    legal10: 'ผิด พ.ร.บ. คอม มาตรา 5 แอบเข้าถึงไอดีเกมเพื่อนโดยมิชอบ โทษจำคุกไม่เกิน 6 เดือน ปรับไม่เกิน 1 หมื่นบาท',
+                    legal5: 'แอบดูรหัสผ่านไอดีเกมคนอื่นเป็นเรื่องผิดกฎหมายไซเบอร์',
+                    remedy10: 'รีบกดออกจากระบบ (Logout) ในคอมเครื่องนั้นทันที แล้วเปลี่ยนรหัสผ่านในมือถือ และบอกครูให้ช่วย',
+                    remedy5: 'รีบออกจากระบบและเปลี่ยนรหัสผ่านใหม่',
+                    sec10: 'ตั้งระบบยืนยันตัวตนสองชั้น (2FA / OTP) และล็อกหน้าจอมือถืออัตโนมัติ ห้ามบอกรหัสผ่านเพื่อน',
+                    sec5: 'ตั้งรหัสผ่านล็อกเครื่องคอมและมือถือไว้ตลอด'
+                },
+                {
+                    caseId: 2, title: 'คดี #2: แจกรหัสผ่านระบบในกลุ่ม Discord',
+                    legal10: 'ผิดมาตรา 6 เผยแพร่มาตรการป้องกันรหัสผ่านสู่สาธารณะ โทษจำคุกไม่เกิน 1 ปี ปรับไม่เกิน 2 หมื่นบาท',
+                    legal5: 'เอารหัสผ่านระบบโรงเรียนไปแจกในแชทกลุ่มดิสคอร์ดผิดกฎหมาย',
+                    remedy10: 'รีบเปลี่ยนรหัสผ่านใหม่ทันที ลบข้อความที่โพสต์ใน Discord และทักบอกแอดมินกลุ่ม',
+                    remedy5: 'ลบโพสต์ในดิสคอร์ดแล้วรีบเปลี่ยนรหัสผ่าน',
+                    sec10: 'ตั้งรหัสผ่านซับซ้อนมีตัวพิมพ์ใหญ่ตัวเลขสัญลักษณ์ปนกัน และไม่จดรหัสใส่กระดาษแปะทิ้งไว้',
+                    sec5: 'ตั้งรหัสผ่านยากๆ และเก็บรหัสผ่านไว้เป็นความลับ'
+                },
+                {
+                    caseId: 3, title: 'คดี #3: แอบคุ้ยไฟล์ไดอารี่แชทลับส่วนตัว',
+                    legal10: 'ผิดมาตรา 7 แอบเข้าถึงข้อมูลคอมพิวเตอร์ส่วนตัวผู้อื่น โทษจำคุกไม่เกิน 2 ปี ปรับไม่เกิน 4 หมื่นบาท',
+                    legal5: 'แอบดูแชทลับและไฟล์ไดอารี่ส่วนตัวคนอื่นผิดกฎหมาย',
+                    remedy10: 'ลบไฟล์ที่หลุด ย้ายโฟลเดอร์เก็บข้อมูล เปลี่ยนรหัสคลาวด์ และแจ้งครูผู้สอน',
+                    remedy5: 'ลบไฟล์ข้อมูลแล้วเปลี่ยนรหัสเข้าไดรฟ์ใหม่',
+                    sec10: 'ตั้งระบบล็อกโฟลเดอร์ด้วยสแกนใบหน้า (Face ID) หรือสแกนลายนิ้วมือ (Touch ID) และเข้ารหัสไฟล์',
+                    sec5: 'ใช้การสแกนลายนิ้วมือล็อกเปิดไฟล์ส่วนตัว'
+                },
+                {
+                    caseId: 4, title: 'คดี #4: ดักจับข้อมูลธุรกรรมเติมเกมกลางทาง',
+                    legal10: 'ผิดมาตรา 8 ดักรับข้อมูลคอมพิวเตอร์ผู้อื่นระหว่างส่ง โทษจำคุกไม่เกิน 3 ปี ปรับไม่เกิน 6 หมื่นบาท',
+                    legal5: 'แอบดักจับข้อมูลการเติมเงินบนไวไฟฟรีผิดกฎหมาย',
+                    remedy10: 'รีบตัดการเชื่อมต่อ Wi-Fi โทรอายัดบัตรกับธนาคารทันที และเปลี่ยนรหัสผ่าน',
+                    remedy5: 'ปิดไวไฟฟรีแล้วอายัดบัตรเติมเงิน',
+                    sec10: 'ห้ามเติมเกมผ่าน Free Wi-Fi สาธารณะ ให้ใช้เน็ตมือถือตัวเอง 4G/5G และสังเกตเว็บที่มี SSL (HTTPS)',
+                    sec5: 'ใช้ VPN หรือเน็ตมือถือตัวเองเวลาทำธุรกรรม'
+                },
+                {
+                    caseId: 5, title: 'คดี #5: มือบอนแอบลบไฟล์โครงงานวิทย์เพื่อน',
+                    legal10: 'ผิดมาตรา 9 ทำลาย แก้ไข ดัดแปลง ลบไฟล์ข้อมูลผู้อื่น โทษจำคุกไม่เกิน 5 ปี ปรับไม่เกิน 1 แสนบาท',
+                    legal5: 'แอบกดลบไฟล์งานกลุ่มเพื่อนทำให้ไฟล์เสียหายผิดกฎหมาย',
+                    remedy10: 'เปิดประวัติเวอร์ชัน (Version History / Ctrl+Z) กู้งานเก่ากลับมา แล้วแจ้งครูผู้สอน',
+                    remedy5: 'ไปเปิดดูถังขยะและกดกู้คืนไฟล์งาน',
+                    sec10: 'ตั้งสิทธิ์แชร์ไฟล์เป็นอ่านได้อย่างเดียว (Read-Only) สำรองข้อมูลขึ้น Cloud Backup สม่ำเสมอ',
+                    sec5: 'ทำสำรองข้อมูล (Backup) เก็บไว้หลายๆ ที่'
+                },
+                {
+                    caseId: 6, title: 'คดี #6: ยิง DDoS พังเซิร์ฟเวอร์เว็บสอบโรงเรียน',
+                    legal10: 'ผิดมาตรา 10 ยิงระบบขัดขวางทำให้เซิร์ฟเวอร์ทำงานไม่ได้ โทษจำคุกไม่เกิน 5 ปี ปรับไม่เกิน 1 แสนบาท',
+                    legal5: 'ใช้โปรแกรมยิง DDoS ถล่มเซิร์ฟเวอร์สอบล่มผิดกฎหมาย',
+                    remedy10: 'แอดมินบล็อกเลข IP ขยะ สลับไปใช้เซิร์ฟเวอร์สำรอง และแจ้งฝ่ายไอที',
+                    remedy5: 'สั่งบล็อก IP ที่ยิงเข้ามาและเปิดเซิร์ฟเวอร์สำรอง',
+                    sec10: 'ติดตั้งระบบไฟร์วอลล์ (Firewall) และใช้ระบบป้องกัน DDoS Protection เช่น Cloudflare / Rate Limiting',
+                    sec5: 'ใช้ Firewall ป้องกันระบบเซิร์ฟเวอร์'
+                },
+                {
+                    caseId: 9, title: 'คดี #9: สร้างเว็บฟิชชิ่งหลอกสกินเกมฟรี',
+                    legal10: 'ผิดมาตรา 14(1) นำเข้าข้อมูลปลอม/เท็จ ฟิชชิ่งหลอกลวงประชาชน โทษจำคุกไม่เกิน 5 ปี ปรับไม่เกิน 1 แสนบาท',
+                    legal5: 'ทำเว็บปลอมหลอกเอาไอดีรหัสผ่านเกมเพื่อนผิดกฎหมาย',
+                    remedy10: 'รีบทักแจ้งทีมงานค่ายเกมกู้คืนบัญชี เปลี่ยนรหัสผ่าน และโพสต์เตือนเพื่อนๆ',
+                    remedy5: 'แจ้งทีมงานค่ายเกมให้กู้ไอดีคืน',
+                    sec10: 'ตรวจสอบ URL ชื่อโดเมนเว็บจริงก่อนล็อกอิน ไม่กดลิ้งแปลกๆ และห้ามเชื่อของแจกฟรี',
+                    sec5: 'สังเกตชื่อเว็บดีๆ และไม่คลิกลิงก์แปลกๆ'
+                },
+                {
+                    caseId: 10, title: 'คดี #10: โพสต์ข่าวลวงภัยพิบัติจนคนแตกตื่นวิ่งวุ่น',
+                    legal10: 'ผิดมาตรา 14(2) โพสต์ข่าวปลอม/เท็จ ก่อให้เกิดความตระหนกตกใจ โทษจำคุกไม่เกิน 5 ปี ปรับไม่เกิน 1 แสนบาท',
+                    legal5: 'โพสต์ Fake News ข่าวลวงสร้างความตื่นตระหนกผิดกฎหมาย',
+                    remedy10: 'รีบกดลบโพสต์ข่าวปลอม โพสต์ข้อความชี้แจงความจริง และแจ้งแอดมินเพจ',
+                    remedy5: 'ลบโพสต์ออกแล้วเขียนแถลงแก้ข่าว',
+                    sec10: 'ตรวจสอบข้อมูลกับศูนย์ต่อต้านข่าวปลอม (Anti-Fake News Center) หรือเพจทางการก่อนแชร์',
+                    sec5: 'เช็กข้อมูลข่าวสารกับหน่วยงานรัฐก่อนแชร์'
+                },
+                {
+                    caseId: 11, title: 'คดี #11: โพสต์ภาพ/คลิปโป๊ลงคอมพิวเตอร์สาธารณะ',
+                    legal10: 'ผิดมาตรา 14(4) นำเข้าข้อมูลลามกอนาจารประชาชนเข้าถึงได้ โทษจำคุกไม่เกิน 5 ปี ปรับไม่เกิน 1 แสนบาท',
+                    legal5: 'โพสต์คลิปโป๊และภาพลามกอนาจารลงกลุ่มสาธารณะผิดกฎหมาย',
+                    remedy10: 'รีบลบคลิป/รูปภาพออกจากแชทกลุ่มทันที บล็อกผู้ส่ง และแจ้งครูผู้สอน',
+                    remedy5: 'กดลบสื่อลามกอนาจารออกและรายงานแอดมิน',
+                    sec10: 'ติดตั้งระบบกรองเนื้อหาปลอดภัย (SafeSearch / Content Moderation AI Filter) บนคอมโรงเรียน',
+                    sec5: 'เปิดระบบ SafeSearch กรองสื่อไม่เหมาะสม'
+                },
+                {
+                    caseId: 12, title: 'คดี #12: ตัดต่อหน้าเพื่อนใส่เอเลี่ยนประจานในโซเชียล',
+                    legal10: 'ผิดมาตรา 16 ตัดต่อดัดแปลงภาพผู้อื่นทำให้เสียชื่อเสียงอับอาย โทษจำคุกไม่เกิน 3 ปี ปรับไม่เกิน 2 แสนบาท',
+                    legal5: 'ตัดต่อรูปเพื่อนประจานบูลลี่ทำให้อับอายผิดกฎหมาย',
+                    remedy10: 'แคปรูปหลักฐานไว้ กดรีพอร์ตลบภาพ (Report Bullying) แจ้งครูและบอกพ่อแม่',
+                    remedy5: 'แคปหลักฐานแล้วรีพอร์ตแจ้งลบรูปภาพ',
+                    sec10: 'ตั้งค่าบัญชีเป็นส่วนตัว (Private Account) ปิดการแท็กรูปภาพ และไม่ยินยอมให้คนอื่นใช้รูป',
+                    sec5: 'ตั้งไอจี/เฟสบุ๊คเป็นบัญชีส่วนตัว'
+                }
+            ];
+
+            container.innerHTML = samples.map(item => `
+                <div class="glass-panel p-5 rounded-2xl border border-slate-800 flex flex-col gap-4">
+                    <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+                        <span class="font-bold text-cyan-300 font-sarabun text-base">${item.title}</span>
+                        <span class="px-2.5 py-0.5 rounded-full bg-purple-500/20 text-purple-300 border border-purple-500/30 text-xs font-mono">Grade 8-9 Sample</span>
+                    </div>
+
+                    <!-- Legal -->
+                    <div class="space-y-1.5">
+                        <div class="text-xs font-bold text-amber-400 flex items-center gap-1">
+                            <i class="fa-solid fa-gavel"></i> บทบาทนักวิเคราะห์กฎหมาย
+                        </div>
+                        <div class="p-2.5 rounded-xl bg-emerald-950/40 border border-emerald-500/30 text-xs text-emerald-200">
+                            <span class="font-bold text-emerald-400">🟢 ตัวอย่าง 10/10 (เต็ม):</span> "${item.legal10}"
+                        </div>
+                        <div class="p-2.5 rounded-xl bg-yellow-950/40 border border-yellow-500/30 text-xs text-yellow-200">
+                            <span class="font-bold text-yellow-400">🟡 ตัวอย่าง 5/10 (ผ่าน):</span> "${item.legal5}"
+                        </div>
+                    </div>
+
+                    <!-- Remedy -->
+                    <div class="space-y-1.5">
+                        <div class="text-xs font-bold text-pink-400 flex items-center gap-1">
+                            <i class="fa-solid fa-kit-medical"></i> บทบาทผู้ระงับเหตุเฉพาะหน้า
+                        </div>
+                        <div class="p-2.5 rounded-xl bg-emerald-950/40 border border-emerald-500/30 text-xs text-emerald-200">
+                            <span class="font-bold text-emerald-400">🟢 ตัวอย่าง 10/10 (เต็ม):</span> "${item.remedy10}"
+                        </div>
+                        <div class="p-2.5 rounded-xl bg-yellow-950/40 border border-yellow-500/30 text-xs text-yellow-200">
+                            <span class="font-bold text-yellow-400">🟡 ตัวอย่าง 5/10 (ผ่าน):</span> "${item.remedy5}"
+                        </div>
+                    </div>
+
+                    <!-- Security -->
+                    <div class="space-y-1.5">
+                        <div class="text-xs font-bold text-cyan-400 flex items-center gap-1">
+                            <i class="fa-solid fa-shield-halved"></i> บทบาทวิศวกรความปลอดภัย
+                        </div>
+                        <div class="p-2.5 rounded-xl bg-emerald-950/40 border border-emerald-500/30 text-xs text-emerald-200">
+                            <span class="font-bold text-emerald-400">🟢 ตัวอย่าง 10/10 (เต็ม):</span> "${item.sec10}"
+                        </div>
+                        <div class="p-2.5 rounded-xl bg-yellow-950/40 border border-yellow-500/30 text-xs text-yellow-200">
+                            <span class="font-bold text-yellow-400">🟡 ตัวอย่าง 5/10 (ผ่าน):</span> "${item.sec5}"
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+    </script>
+</body>
+
+</html>

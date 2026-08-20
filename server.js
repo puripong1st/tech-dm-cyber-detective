@@ -1356,8 +1356,11 @@ Reply STRICTLY in JSON format:
 });
 
 // Endpoint to Save Complete Case Score to Supabase & Realtime Telemetry
-app.post('/api/save-case-score', (req, res) => {
-    const { playerId, teamName, membersInfo, caseId, caseTitle, caseScores, studentAnswers } = req.body || {};
+app.post(['/api/save-case-score', '/api/save-case-score-3'], (req, res) => {
+    const { playerId, teamName, membersInfo, caseId, caseTitle, caseScores, studentAnswers, mode, table } = req.body || {};
+    const is3Cases = req.path === '/api/save-case-score-3' || mode === '3' || table === 'game_scores_3';
+    const targetTable = is3Cases ? 'game_scores_3' : 'game_scores';
+
     if (caseScores) {
         const legalScore = Number(caseScores.legal?.score || caseScores.legalScore || 0);
         const remedyScore = Number(caseScores.remedy?.score || caseScores.remedyScore || 0);
@@ -1377,14 +1380,18 @@ app.post('/api/save-case-score', (req, res) => {
                 security: { score: securityScore, feedback: caseScores.security?.feedback || caseScores.securityFeedback || '' },
                 total_score: totalScore
             }
-        });
+        }, targetTable);
     }
     res.json({ success: true });
 });
 
 // Teacher-only endpoint: manually override one case score and add teacher comment.
-app.post('/api/teacher/update-case-score', async (req, res) => {
-    const { scoreId, legalScore, remedyScore, securityScore, teacherComment, passcode } = req.body || {};
+app.post(['/api/teacher/update-case-score', '/api/teacher/update-case-score-3'], async (req, res) => {
+    const { scoreId, legalScore, remedyScore, securityScore, teacherComment, passcode, mode, table } = req.body || {};
+    const is3Cases = req.path === '/api/teacher/update-case-score-3' || mode === '3' || table === 'game_scores_3';
+    const targetTable = is3Cases ? 'game_scores_3' : 'game_scores';
+    const targetCache = is3Cases ? SERVER_SCORES_CACHE_3 : SERVER_SCORES_CACHE;
+
     const validPasscodes = ['admin123', 'teacher123'];
     if (process.env.TEACHER_PASSCODE) validPasscodes.push(process.env.TEACHER_PASSCODE);
 
@@ -1420,7 +1427,7 @@ app.post('/api/teacher/update-case-score', async (req, res) => {
         const supabaseAdmin = createClient(DEFAULT_SUPABASE_URL, serviceKey);
 
         const { data: currentRows, error: readError } = await supabaseAdmin
-            .from('game_scores')
+            .from(targetTable)
             .select('*')
             .eq('id', scoreId)
             .limit(1);
@@ -1470,15 +1477,15 @@ app.post('/api/teacher/update-case-score', async (req, res) => {
         };
 
         const { data, error } = await supabaseAdmin
-            .from('game_scores')
+            .from(targetTable)
             .update(updatePayload)
             .eq('id', scoreId)
             .select();
         if (error) throw error;
 
-        const cacheIndex = SERVER_SCORES_CACHE.findIndex(item => String(item.id) === String(scoreId));
+        const cacheIndex = targetCache.findIndex(item => String(item.id) === String(scoreId));
         if (cacheIndex >= 0) {
-            SERVER_SCORES_CACHE[cacheIndex] = { ...SERVER_SCORES_CACHE[cacheIndex], ...updatePayload };
+            targetCache[cacheIndex] = { ...targetCache[cacheIndex], ...updatePayload };
         }
 
         res.json({ success: true, data: data?.[0] || { id: scoreId, ...updatePayload } });
@@ -1490,13 +1497,14 @@ app.post('/api/teacher/update-case-score', async (req, res) => {
 
 // In-memory score cache buffer for fast realtime fallback
 const SERVER_SCORES_CACHE = [];
+const SERVER_SCORES_CACHE_3 = [];
 
 // Default Supabase Fallback Credentials
 const DEFAULT_SUPABASE_URL = process.env.SUPABASE_URL || 'https://xbwlzqtvmjwucoqkyvhj.supabase.co';
 const DEFAULT_SUPABASE_ANON_KEY = process.env.SUPABASE_ANON_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inhid2x6cXR2bWp3dWNvcWt5dmhqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQ0NjE3NDEsImV4cCI6MjEwMDAzNzc0MX0.nbIkBfvTZBxBSxxYik3o3gAqlXI8ITGMvof3wvJxA7c';
 
 // Helper function to save game score to Supabase & Memory Cache
-async function saveToSupabase(record) {
+async function saveToSupabase(record, tableName = 'game_scores') {
     const row = {
         player_id: record.playerId || 'anonymous',
         team_name: record.teamName || 'นักสืบเยาวชน',
@@ -1515,21 +1523,23 @@ async function saveToSupabase(record) {
         row.members_info = record.membersInfo;
     }
 
+    const targetCache = tableName === 'game_scores_3' ? SERVER_SCORES_CACHE_3 : SERVER_SCORES_CACHE;
+
     // Save to memory cache for quick local response
-    SERVER_SCORES_CACHE.unshift({ ...row, id: 'rec_' + Date.now() });
-    if (SERVER_SCORES_CACHE.length > 500) SERVER_SCORES_CACHE.pop();
+    targetCache.unshift({ ...row, id: 'rec_' + Date.now() });
+    if (targetCache.length > 500) targetCache.pop();
 
     try {
         const { createClient } = require('@supabase/supabase-js');
         const supabase = createClient(DEFAULT_SUPABASE_URL, DEFAULT_SUPABASE_ANON_KEY);
-        const { data, error } = await supabase.from('game_scores').insert([row]).select();
+        const { data, error } = await supabase.from(tableName).insert([row]).select();
         if (error) {
-            console.error('❌ Supabase Log Score Error:', error.message);
+            console.error(`❌ Supabase [${tableName}] Log Score Error:`, error.message);
         } else {
-            console.log('✅ Supabase Log Score Success! Inserted ID:', data[0]?.id);
+            console.log(`✅ Supabase [${tableName}] Log Score Success! Inserted ID:`, data[0]?.id);
         }
     } catch (e) {
-        console.error('Failed to log score to Supabase:', e.message);
+        console.error(`Failed to log score to Supabase [${tableName}]:`, e.message);
     }
 }
 
@@ -1559,8 +1569,12 @@ function deduplicateScores(rawScores) {
     return result;
 }
 
-// Secure API Endpoint: Leaderboard & Teacher Realtime Telemetry Data
-app.get('/api/leaderboard', async (req, res) => {
+// Secure API Endpoint: Leaderboard & Teacher Realtime Telemetry Data (Supports 6-case and 3-case tables)
+app.get(['/api/leaderboard', '/api/leaderboard-3'], async (req, res) => {
+    const is3Cases = req.path === '/api/leaderboard-3' || req.query.mode === '3' || req.query.table === 'game_scores_3';
+    const targetTable = is3Cases ? 'game_scores_3' : 'game_scores';
+    const targetCache = is3Cases ? SERVER_SCORES_CACHE_3 : SERVER_SCORES_CACHE;
+
     let results = null;
     let queryError = false;
 
@@ -1568,7 +1582,7 @@ app.get('/api/leaderboard', async (req, res) => {
         const { createClient } = require('@supabase/supabase-js');
         const supabase = createClient(DEFAULT_SUPABASE_URL, DEFAULT_SUPABASE_ANON_KEY);
         const { data, error } = await supabase
-            .from('game_scores')
+            .from(targetTable)
             .select('*')
             .order('created_at', { ascending: false })
             .limit(500);
@@ -1576,18 +1590,18 @@ app.get('/api/leaderboard', async (req, res) => {
             results = data;
             // If Supabase is empty, clear memory cache buffer as well
             if (data.length === 0) {
-                SERVER_SCORES_CACHE.length = 0;
+                targetCache.length = 0;
             }
         } else if (error) {
             queryError = true;
         }
     } catch (e) {
         queryError = true;
-        console.warn('Supabase query error, fallback to cache:', e.message);
+        console.warn(`Supabase [${targetTable}] query error, fallback to cache:`, e.message);
     }
 
     if (results === null && queryError) {
-        results = [...SERVER_SCORES_CACHE];
+        results = [...targetCache];
     } else if (results === null) {
         results = [];
     }
@@ -1603,6 +1617,7 @@ app.get('/api/health', (req, res) => {
 });
 
 // Page Routes (Clean URLs)
+// 1. Original 6-Case Game
 app.get('/shield_detective', (req, res) => {
     res.sendFile(path.join(__dirname, 'cyber_shield_detective.html'));
 });
@@ -1611,6 +1626,17 @@ app.get('/cyber_shield_detective', (req, res) => {
 });
 app.get('/game', (req, res) => {
     res.sendFile(path.join(__dirname, 'cyber_shield_detective.html'));
+});
+
+// 2. NEW 3-Case Version Game
+app.get('/shield_detective_3', (req, res) => {
+    res.sendFile(path.join(__dirname, 'cyber_shield_detective_3.html'));
+});
+app.get('/cyber_shield_detective_3', (req, res) => {
+    res.sendFile(path.join(__dirname, 'cyber_shield_detective_3.html'));
+});
+app.get('/game_3', (req, res) => {
+    res.sendFile(path.join(__dirname, 'cyber_shield_detective_3.html'));
 });
 
 app.get('/detective_v4', (req, res) => {
@@ -1635,6 +1661,7 @@ app.get('/survivor', (req, res) => {
     res.sendFile(path.join(__dirname, 'cyber_survivor_game.html'));
 });
 
+// 3. Original Teacher Dashboard (6 Cases)
 app.get('/shield_teacher', (req, res) => {
     res.sendFile(path.join(__dirname, 'cyber_shield_teacher.html'));
 });
@@ -1643,6 +1670,17 @@ app.get('/cyber_shield_teacher', (req, res) => {
 });
 app.get('/teacher_v4', (req, res) => {
     res.sendFile(path.join(__dirname, 'cyber_shield_teacher.html'));
+});
+
+// 4. NEW 3-Case Teacher Dashboard
+app.get('/shield_teacher_3', (req, res) => {
+    res.sendFile(path.join(__dirname, 'cyber_shield_teacher_3.html'));
+});
+app.get('/cyber_shield_teacher_3', (req, res) => {
+    res.sendFile(path.join(__dirname, 'cyber_shield_teacher_3.html'));
+});
+app.get('/teacher_3', (req, res) => {
+    res.sendFile(path.join(__dirname, 'cyber_shield_teacher_3.html'));
 });
 
 app.get('/teacher', (req, res) => {
