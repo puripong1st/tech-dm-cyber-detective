@@ -66,6 +66,7 @@ function normalizeStudentSlang(text) {
 
 const express = require('express');
 const path = require('path');
+const fs = require('fs');
 const cors = require('cors');
 require('dotenv').config();
 
@@ -1698,18 +1699,15 @@ app.get('/pdpa_presentation', (req, res) => {
     res.sendFile(path.join(__dirname, 'pdpa_presentation.html'));
 });
 
-app.get('/pdpa_assignment', (req, res) => {
+app.get(['/pdpa_fast_pass', '/fast_pass', '/fastpass'], (req, res) => {
+    res.sendFile(path.join(__dirname, 'pdpa_fast_pass.html'));
+});
+
+app.get(['/pdpa_assignment', '/pdpa_assignment_board', '/assignment_board'], (req, res) => {
     res.sendFile(path.join(__dirname, 'pdpa_assignment_board.html'));
 });
 
-app.get('/pdpa_assignment_board', (req, res) => {
-    res.sendFile(path.join(__dirname, 'pdpa_assignment_board.html'));
-});
-
-app.get('/cases', (req, res) => {
-    res.sendFile(path.join(__dirname, 'cases_reference.html'));
-});
-app.get('/cases_reference', (req, res) => {
+app.get(['/cases', '/cases_reference'], (req, res) => {
     res.sendFile(path.join(__dirname, 'cases_reference.html'));
 });
 
@@ -1725,6 +1723,14 @@ app.get('*', (req, res) => {
             if (err) res.status(404).send('File not found');
         });
     }
+
+    // Check if clean URL corresponds to an HTML file in root (e.g. /pdpa_fast_pass -> pdpa_fast_pass.html)
+    const cleanName = req.path.replace(/^\//, '').replace(/\/$/, '');
+    const htmlFile = path.join(__dirname, cleanName + '.html');
+    if (cleanName && fs.existsSync(htmlFile)) {
+        return res.sendFile(htmlFile);
+    }
+
     res.sendFile(path.join(__dirname, 'index.html'));
 });
 
