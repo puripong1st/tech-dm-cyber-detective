@@ -53,15 +53,17 @@
       }
     }
     </script>
-    <link rel="icon" type="image/png" href="assets/pdpa_icon.png">
+    <!-- Favicon & App Icon (WebP with PNG fallback) -->
+    <link rel="icon" type="image/webp" href="assets/pdpa_icon.webp">
+    <link rel="alternate icon" type="image/png" href="assets/pdpa_icon.png">
+    <link rel="apple-touch-icon" href="assets/pdpa_icon.png">
 
-
-    <!-- Google Fonts: Kanit (Thai Modern Sans-Serif) & Inter (Numbers & Clean Tech) -->
+    <!-- Optimized Google Fonts (Non-blocking) -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link
-        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Kanit:wght@300;400;500;600;700;800&family=Sarabun:wght@300;400;500;600;700&display=swap"
-        rel="stylesheet">
+    <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Inter:wght@500;700&family=Kanit:wght@400;600;700&family=Sarabun:wght@400;600&display=swap">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@500;700&family=Kanit:wght@400;600;700&family=Sarabun:wght@400;600&display=swap" media="print" onload="this.media='all'">
+    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@500;700&family=Kanit:wght@400;600;700&family=Sarabun:wght@400;600&display=swap"></noscript>
 
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>

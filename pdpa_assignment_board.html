@@ -48,15 +48,22 @@
       }
     }
     </script>
-    <link rel="icon" type="image/png" href="assets/pdpa_icon.png">
+    <!-- Favicon & App Icon (WebP with PNG fallback) -->
+    <link rel="icon" type="image/webp" href="assets/pdpa_icon.webp">
+    <link rel="alternate icon" type="image/png" href="assets/pdpa_icon.png">
+    <link rel="apple-touch-icon" href="assets/pdpa_icon.png">
 
-    <!-- Google Fonts (7 Thai Fonts + UI Fonts) -->
+    <!-- Optimized Google Fonts (Non-blocking) -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Bai+Jamjuree:wght@400;600;700&family=Chakra+Petch:wght@500;700&family=Charmonman:wght@400;700&family=Itim&family=Kanit:wght@300;400;500;600;700;800;900&family=Mali:wght@400;500;600;700&family=Mitr:wght@400;500;600&family=Prompt:wght@300;400;500;600;700&family=Sarabun:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Bai+Jamjuree:wght@400;600&family=Chakra+Petch:wght@500;700&family=Charmonman:wght@400;700&family=Itim&family=Kanit:wght@400;600;700&family=Mali:wght@400;600&family=Mitr:wght@400;600&family=Prompt:wght@400;600;700&family=Sarabun:wght@400;600&display=swap">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bai+Jamjuree:wght@400;600&family=Chakra+Petch:wght@500;700&family=Charmonman:wght@400;700&family=Itim&family=Kanit:wght@400;600;700&family=Mali:wght@400;600&family=Mitr:wght@400;600&family=Prompt:wght@400;600;700&family=Sarabun:wght@400;600&display=swap" media="print" onload="this.media='all'">
+    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bai+Jamjuree:wght@400;600&family=Chakra+Petch:wght@500;700&family=Charmonman:wght@400;700&family=Itim&family=Kanit:wght@400;600;700&family=Mali:wght@400;600&family=Mitr:wght@400;600&family=Prompt:wght@400;600;700&family=Sarabun:wght@400;600&display=swap"></noscript>
 
-    <!-- FontAwesome Icons -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Optimized FontAwesome Icons (Non-blocking) -->
+    <link rel="preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" media="print" onload="this.media='all'">
+    <noscript><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"></noscript>
 
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
