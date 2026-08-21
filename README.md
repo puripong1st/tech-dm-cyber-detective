@@ -2,7 +2,7 @@
   <img src="favicon.png" alt="Cyber Shield Detective Logo" width="120" />
   <br/>
   <h1>🛡️ Cyber Shield Detective Platform</h1>
-  <h3>เกม พ.ร.บ.คอมพิวเตอร์ 2560 & PDPA (ม.2 - ม.3) | สื่อการสอนและสืบคดีไซเบอร์ Active Learning</h3>
+  <h3>เกม พ.ร.บ.คอมพิวเตอร์ 2560 & PDPA (ม.3) | สื่อการสอนและสืบคดีไซเบอร์ Active Learning</h3>
   <p><b>แพลตฟอร์มสื่อและเกมการเรียนรู้กฎหมายดิจิทัล ตรวจคำตอบอัตนัยด้วย Gemini AI • สไลด์บทเรียน 12 มาตรา • กระดานสร้างใบงาน PDPA Canvas • แดชบอร์ดครูเรียลไทม์ผ่าน Supabase</b></p>
 
 [![Live Website](https://img.shields.io/badge/Live_Website-tech--dm--cyber--detective.vercel.app-38bdf8?style=for-the-badge&logo=vercel)](https://tech-dm-cyber-detective.vercel.app/)
@@ -22,7 +22,7 @@
 
 ## 📌 สรุปภาพรวมโครงการ (Project Overview)
 
-**Cyber Shield Detective Platform** คือ แพลตฟอร์มสื่อและเกมการเรียนรู้อินเทอร์แอคทีฟสำหรับการจัดการเรียนรู้เชิงรุก (Active Learning) ในกลุ่มสาระการเรียนรู้วิทยาศาสตร์และเทคโนโลยี (**วิทยาการคำนวณ มัธยมศึกษาปีที่ 2 และ 3**) เพื่อเสริมสร้างความฉลาดทางดิจิทัล (DQ) และความรู้ความเข้าใจเกี่ยวกับ:
+**Cyber Shield Detective Platform** คือ แพลตฟอร์มสื่อและเกมการเรียนรู้อินเทอร์แอคทีฟสำหรับการจัดการเรียนรู้เชิงรุก (Active Learning) ในกลุ่มสาระการเรียนรู้วิทยาศาสตร์และเทคโนโลยี (**วิทยาการคำนวณ มัธยมศึกษาปีที่ 3**) เพื่อเสริมสร้างความฉลาดทางดิจิทัล (DQ) และความรู้ความเข้าใจเกี่ยวกับ:
 1. **พระราชบัญญัติว่าด้วยการกระทำความผิดเกี่ยวกับคอมพิวเตอร์ พ.ศ. 2560 (พ.ร.บ. คอมพิวเตอร์ 12 มาตราสำคัญ)**
 2. **พระราชบัญญัติคุ้มครองข้อมูลส่วนบุคคล พ.ศ. 2562 (PDPA - ข้อมูลทั่วไป vs ข้อมูลอ่อนไหว & สิทธิ 8 ประการ)**
 
@@ -49,8 +49,8 @@
 | แอปพลิเคชัน / สื่อการสอน | ลิงก์เข้าใช้งานสด (Live URL) | กลุ่มเป้าหมาย | หน้าที่และจุดเด่นสำคัญ |
 |---|---|:---:|---|
 | 🏠 **Main Portal Hub** | [`/`](https://tech-dm-cyber-detective.vercel.app/) | ทุกคน | ศูนย์รวมสื่อ เกม และลิงก์เข้าถึงทุกระบบ ดีไซน์ Cyber Dark Theme โหลดเร็ว Sub-second |
-| 🎮 **Cyber Shield Detective (6 คดี)** | [`/cyber_shield_detective.html`](https://tech-dm-cyber-detective.vercel.app/cyber_shield_detective.html) | นักเรียน ม.2-ม.3 | เกมสืบคดีการ์ตูน 9 ช่อง วิเคราะห์อัตนัย 3 บทบาท ประเมินผลสดด้วย Gemini AI (180 คะแนน) |
-| ⚡ **Cyber Shield Detective (Fast-Track 3 คดี)** | [`/cyber_shield_detective_3.html`](https://tech-dm-cyber-detective.vercel.app/cyber_shield_detective_3.html) | นักเรียน ม.2-ม.3 | เกมสืบคดีเวอร์ชันรวบรัด 3 คดี เหมาะสำหรับคาบเรียน 50 นาที พร้อมส่งคะแนนสด (90 คะแนน) |
+| 🎮 **Cyber Shield Detective (6 คดี)** | [`/cyber_shield_detective.html`](https://tech-dm-cyber-detective.vercel.app/cyber_shield_detective.html) | นักเรียน ม.3 | เกมสืบคดีการ์ตูน 9 ช่อง วิเคราะห์อัตนัย 3 บทบาท ประเมินผลสดด้วย Gemini AI (180 คะแนน) |
+| ⚡ **Cyber Shield Detective (Fast-Track 3 คดี)** | [`/cyber_shield_detective_3.html`](https://tech-dm-cyber-detective.vercel.app/cyber_shield_detective_3.html) | นักเรียน ม.3 | เกมสืบคดีเวอร์ชันรวบรัด 3 คดี เหมาะสำหรับคาบเรียน 50 นาที พร้อมส่งคะแนนสด (90 คะแนน) |
 | 📖 **Quest: สไลด์บทเรียน 12 มาตรา** | [`/presentation.html`](https://tech-dm-cyber-detective.vercel.app/presentation.html) | ครู / นักเรียน | สไลด์สรุป พ.ร.บ.คอมพิวเตอร์ 2560 ครบ 12 มาตรา พร้อมควิซโต้ตอบและเพลงประกอบแนว RPG |
 | 🛡️ **PDPA 101: สไลด์คู่มือ ม.3** | [`/pdpa_presentation.html`](https://tech-dm-cyber-detective.vercel.app/pdpa_presentation.html) | ครู / นักเรียน | สไลด์นำเสนอเชิงโต้ตอบ สรุปข้อมูลทั่วไป vs อ่อนไหว สิทธิ 8 ประการ และแบบทดสอบรับเกียรติบัตร |
 | 🎨 **PDPA Assignment Board** | [`/pdpa_assignment_board.html`](https://tech-dm-cyber-detective.vercel.app/pdpa_assignment_board.html) | นักเรียน ม.3 | กระดานสร้างใบงานออนไลน์สไตล์ Canva สำหรับสรุปวิเคราะห์คดี PDPA พร้อมส่งออกภาพ PNG HD |
@@ -120,7 +120,7 @@
 
 ## 📊 4. เกณฑ์การประเมินรูบริก 4 ระดับ (Master Rubric Matrix)
 
-เกณฑ์การประเมินสอดคล้องตามตัวชี้วัด **ว 4.2 วิทยาการคำนวณ ม.2 และ ม.3**:
+เกณฑ์การประเมินสอดคล้องตามตัวชี้วัด **ว 4.2 วิทยาการคำนวณ ม.3**:
 
 | ระดับความสามารถ | คะแนนมาตรฐาน | เกณฑ์การพิจารณา |
 |:---:|:---:|---|
@@ -134,7 +134,7 @@
 ## ❓ 5. คำถามที่พบบ่อย (Frequently Asked Questions - FAQ)
 
 <details>
-<summary><b>1. พ.ร.บ.คอมพิวเตอร์ 2560 และ PDPA แตกต่างกันอย่างไรสำหรับนักเรียน ม.2 - ม.3?</b></summary>
+<summary><b>1. พ.ร.บ.คอมพิวเตอร์ 2560 และ PDPA แตกต่างกันอย่างไรสำหรับนักเรียน ม.3?</b></summary>
 <br/>
 <b>พ.ร.บ.คอมพิวเตอร์ 2560</b> เป็นกฎหมายอาญาที่เน้นลงโทษพฤติกรรมความผิดที่กระทำต่อระบบคอมพิวเตอร์และข้อมูล เช่น การแฮก แอบขโมยรหัสผ่าน ปล่อยไวรัส โพสต์ข่าวปลอม หรือตัดต่อภาพให้อับอาย<br/>
 ส่วน <b>PDPA 2562</b> เป็นกฎหมายที่เน้นคุ้มครองสิทธิความเป็นส่วนตัวของเจ้าของข้อมูลส่วนบุคคล เช่น การไม่นำรูปถ่าย เบอร์โทร หรือข้อมูลสุขภาพเพื่อนไปเผยแพร่โดยไม่ได้รับความยินยอม

@@ -1,7 +1,7 @@
 {
   "name": "cyber-law-game-app",
   "version": "1.0.0",
-  "description": "Cyber Shield Detective Platform - เกมการเรียนรู้กฎหมายคอมพิวเตอร์และ PDPA พร้อมระบบประเมินผลอัตนัยด้วย AI สำหรับนักเรียน ม.2 และ ม.3 (Grade 8-9)",
+  "description": "Cyber Shield Detective Platform - เกมการเรียนรู้กฎหมายคอมพิวเตอร์และ PDPA พร้อมระบบประเมินผลอัตนัยด้วย AI สำหรับนักเรียน ม.3 (Grade 9)",
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
