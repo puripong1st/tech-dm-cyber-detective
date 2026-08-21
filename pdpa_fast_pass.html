@@ -34,18 +34,40 @@
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",
-      "@type": "VideoGame",
-      "name": "PDPA Fast-Pass: สปีดรันพิทักษ์ข้อมูล (เกมแยกแยะข้อมูลส่วนบุคคล ม.3)",
-      "description": "เกมการเรียนรู้เชิงปฏิสัมพันธ์แนว Speedrun จับเวลา 60 วินาที เพื่อฝึกฝนทักษะการแยกแยะข้อมูลส่วนบุคคลทั่วไปและข้อมูลอ่อนไหวตามกฎหมาย PDPA",
-      "genre": ["Educational Game", "Speedrun", "Quiz Game"],
-      "gamePlatform": "Web Browser",
-      "inLanguage": "th",
-      "educationalLevel": "Grade 9 (มัธยมศึกษาปีที่ 3)",
-      "isAccessibleForFree": true,
-      "author": {
-        "@type": "Organization",
-        "name": "Cyber Shield Detective Team"
-      }
+      "@graph": [
+        {
+          "@type": "VideoGame",
+          "name": "PDPA Fast-Pass: สปีดรันพิทักษ์ข้อมูล (เกมแยกแยะข้อมูลส่วนบุคคล ม.3)",
+          "description": "เกมการเรียนรู้เชิงปฏิสัมพันธ์แนว Speedrun จับเวลา 60 วินาที เพื่อฝึกฝนทักษะการแยกแยะข้อมูลส่วนบุคคลทั่วไปและข้อมูลอ่อนไหวตามกฎหมาย PDPA",
+          "url": "https://tech-dm-cyber-detective.vercel.app/pdpa_fast_pass.html",
+          "genre": ["Educational Game", "Speedrun", "Quiz Game"],
+          "gamePlatform": "Web Browser",
+          "inLanguage": "th",
+          "educationalLevel": "Grade 9 (มัธยมศึกษาปีที่ 3)",
+          "isAccessibleForFree": true,
+          "author": {
+            "@type": "Organization",
+            "name": "Cyber Shield Detective Team"
+          }
+        },
+        {
+          "@type": "BreadcrumbList",
+          "itemListElement": [
+            {
+              "@type": "ListItem",
+              "position": 1,
+              "name": "หน้าแรก",
+              "item": "https://tech-dm-cyber-detective.vercel.app/"
+            },
+            {
+              "@type": "ListItem",
+              "position": 2,
+              "name": "PDPA Fast-Pass สปีดรัน",
+              "item": "https://tech-dm-cyber-detective.vercel.app/pdpa_fast_pass.html"
+            }
+          ]
+        }
+      ]
     }
     </script>
     <!-- Favicon & App Icon (WebP with PNG fallback) -->

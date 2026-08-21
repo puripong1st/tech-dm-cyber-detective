@@ -34,18 +34,40 @@
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",
-      "@type": "WebApplication",
-      "name": "กระดานสร้างใบงานสืบคดี PDPA ม.3 (Interactive Assignment Canvas)",
-      "applicationCategory": "EducationalApplication",
-      "operatingSystem": "All",
-      "description": "เครื่องมือสร้างใบงานออนไลน์และกระดานวิเคราะห์คดี PDPA เชิงสร้างสรรค์สำหรับนักเรียน ม.3 พร้อมระบบ Export PNG ความละเอียดสูง",
-      "inLanguage": "th",
-      "educationalLevel": "Grade 9 (มัธยมศึกษาปีที่ 3)",
-      "isAccessibleForFree": true,
-      "author": {
-        "@type": "Organization",
-        "name": "Cyber Shield Detective Team"
-      }
+      "@graph": [
+        {
+          "@type": "WebApplication",
+          "name": "กระดานสร้างใบงานสืบคดี PDPA ม.3 (Interactive Assignment Canvas)",
+          "applicationCategory": "EducationalApplication",
+          "operatingSystem": "All",
+          "url": "https://tech-dm-cyber-detective.vercel.app/pdpa_assignment_board.html",
+          "description": "เครื่องมือสร้างใบงานออนไลน์และกระดานวิเคราะห์คดี PDPA เชิงสร้างสรรค์สำหรับนักเรียน ม.3 พร้อมระบบ Export PNG ความละเอียดสูง",
+          "inLanguage": "th",
+          "educationalLevel": "Grade 9 (มัธยมศึกษาปีที่ 3)",
+          "isAccessibleForFree": true,
+          "author": {
+            "@type": "Organization",
+            "name": "Cyber Shield Detective Team"
+          }
+        },
+        {
+          "@type": "BreadcrumbList",
+          "itemListElement": [
+            {
+              "@type": "ListItem",
+              "position": 1,
+              "name": "หน้าแรก",
+              "item": "https://tech-dm-cyber-detective.vercel.app/"
+            },
+            {
+              "@type": "ListItem",
+              "position": 2,
+              "name": "กระดานใบงาน PDPA Canvas",
+              "item": "https://tech-dm-cyber-detective.vercel.app/pdpa_assignment_board.html"
+            }
+          ]
+        }
+      ]
     }
     </script>
     <!-- Favicon & App Icon (WebP with PNG fallback) -->
