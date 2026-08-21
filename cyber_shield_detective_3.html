@@ -40,18 +40,40 @@
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",
-      "@type": "VideoGame",
-      "name": "Cyber Shield Detective (ปฏิบัติการสายสืบพิทักษ์ไซเบอร์)",
-      "description": "เกมสืบคดีจำลองสถานการณ์ความผิดตาม พ.ร.บ.คอมพิวเตอร์ 2560 และ PDPA 3 บทบาท ประเมินผลอัตนัยด้วย AI สำหรับนักเรียน ม.2-ม.3",
-      "genre": ["Educational Game", "Detective", "Cyber Law Simulation"],
-      "gamePlatform": "Web Browser",
-      "inLanguage": "th",
-      "audience": {
-        "@type": "EducationalAudience",
-        "educationalRole": "student",
-        "audienceType": "Secondary School Students (Grade 8-9)"
-      },
-      "educationalUse": "Classroom Activity, Summative Assessment, Formative Assessment"
+      "@graph": [
+        {
+          "@type": "VideoGame",
+          "name": "Cyber Shield Detective: Fast-Track (3 คดี)",
+          "description": "เกมสืบคดีจำลองสถานการณ์ความผิดตาม พ.ร.บ.คอมพิวเตอร์ 2560 และ PDPA เวอร์ชันรวบรัด 3 คดี ประเมินผลอัตนัยด้วย AI สำหรับนักเรียน ม.2-ม.3",
+          "url": "https://tech-dm-cyber-detective.vercel.app/cyber_shield_detective_3.html",
+          "genre": ["Educational Game", "Detective", "Cyber Law Simulation"],
+          "gamePlatform": "Web Browser",
+          "inLanguage": "th",
+          "audience": {
+            "@type": "EducationalAudience",
+            "educationalRole": "student",
+            "audienceType": "Secondary School Students (Grade 8-9)"
+          },
+          "educationalUse": "Classroom Activity, Summative Assessment, Formative Assessment"
+        },
+        {
+          "@type": "BreadcrumbList",
+          "itemListElement": [
+            {
+              "@type": "ListItem",
+              "position": 1,
+              "name": "หน้าแรก",
+              "item": "https://tech-dm-cyber-detective.vercel.app/"
+            },
+            {
+              "@type": "ListItem",
+              "position": 2,
+              "name": "เกมสืบคดี Fast-Track (3 คดี)",
+              "item": "https://tech-dm-cyber-detective.vercel.app/cyber_shield_detective_3.html"
+            }
+          ]
+        }
+      ]
     }
     </script>
 
