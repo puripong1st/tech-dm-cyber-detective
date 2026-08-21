@@ -12,3 +12,5 @@ node_modules/
 *.log
 assets/chibi_comics_raw/
 scratch/
+.agents/
+skills-lock.json

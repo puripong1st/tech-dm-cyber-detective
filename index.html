@@ -1,13 +1,16 @@
 <!DOCTYPE html>
 <html lang="th">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ศูนย์รวมสื่อและระบบการเรียนรู้ พ.ร.บ.คอมพิวเตอร์ & PDPA | Cyber Shield Detective Hub</title>
+    <title>ศูนย์รวมสื่อ & เกมการเรียนรู้กฎหมายไซเบอร์ | Cyber Shield Detective Hub</title>
 
     <!-- SEO Meta Tags -->
-    <meta name="description" content="แพลตฟอร์มสื่อและเกมการเรียนรู้กฎหมายคอมพิวเตอร์ (พ.ร.บ. คอมพิวเตอร์ 2560) และ PDPA สำหรับนักเรียน ม.2 และ ม.3 พร้อมระบบประเมินผลอัตนัยด้วย AI (Google Gemini), สไลด์บทเรียนอินเทอร์แอคทีฟ 12 มาตรา และแดชบอร์ดครูเรียลไทม์">
-    <meta name="keywords" content="พ.ร.บ.คอมพิวเตอร์, กฎหมายคอมพิวเตอร์, พรบคอม, พ.ร.บ. คอมพิวเตอร์ 2560, PDPA, พ.ร.บ.คุ้มครองข้อมูลส่วนบุคคล, วิทยาการคำนวณ ม.2 ม.3, สื่อการสอนกฎหมายคอมพิวเตอร์, เกมกฎหมายคอมพิวเตอร์, Cyber Shield Detective, สืบคดีไซเบอร์, สไลด์ พรบคอม 12 มาตรา, ระบบตรวจคะแนน AI, ข้อสอบ พรบคอม">
+    <meta name="description"
+        content="แพลตฟอร์มสื่อและเกมการเรียนรู้กฎหมายคอมพิวเตอร์ (พ.ร.บ. คอมพิวเตอร์ 2560) และ PDPA สำหรับนักเรียน ม.2 และ ม.3 พร้อมระบบประเมินผลอัตนัยด้วย AI (Google Gemini), สไลด์บทเรียนอินเทอร์แอคทีฟ 12 มาตรา และแดชบอร์ดครูเรียลไทม์">
+    <meta name="keywords"
+        content="พ.ร.บ.คอมพิวเตอร์, กฎหมายคอมพิวเตอร์, พรบคอม, พ.ร.บ. คอมพิวเตอร์ 2560, PDPA, พ.ร.บ.คุ้มครองข้อมูลส่วนบุคคล, วิทยาการคำนวณ ม.2 ม.3, สื่อการสอนกฎหมายคอมพิวเตอร์, เกมกฎหมายคอมพิวเตอร์, Cyber Shield Detective, สืบคดีไซเบอร์, สไลด์ พรบคอม 12 มาตรา, ระบบตรวจคะแนน AI, ข้อสอบ พรบคอม">
     <meta name="author" content="Cyber Shield Detective Team">
     <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
     <meta name="theme-color" content="#070913">
@@ -16,8 +19,9 @@
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://tech-dm-cyber-detective.vercel.app/">
-    <meta property="og:title" content="ศูนย์รวมสื่อและระบบการเรียนรู้ พ.ร.บ.คอมพิวเตอร์ & PDPA | Cyber Shield Detective">
-    <meta property="og:description" content="แพลตฟอร์มเกมสืบคดีกฎหมายคอมพิวเตอร์และ PDPA ประเมินผลอัตนัยด้วย Gemini AI พร้อมสไลด์บทเรียน 12 มาตราและแดชบอร์ดสรุปคะแนนเรียลไทม์">
+    <meta property="og:title" content="ศูนย์รวมสื่อ & เกมการเรียนรู้กฎหมายไซเบอร์ | Cyber Shield Detective">
+    <meta property="og:description"
+        content="แพลตฟอร์มเกมสืบคดีกฎหมายคอมพิวเตอร์และ PDPA ประเมินผลอัตนัยด้วย Gemini AI พร้อมสไลด์บทเรียน 12 มาตราและแดชบอร์ดสรุปคะแนนเรียลไทม์">
     <meta property="og:image" content="https://tech-dm-cyber-detective.vercel.app/favicon.png">
     <meta property="og:site_name" content="Cyber Shield Detective Platform">
     <meta property="og:locale" content="th_TH">
@@ -25,291 +29,559 @@
     <!-- Twitter Card -->
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:url" content="https://tech-dm-cyber-detective.vercel.app/">
-    <meta name="twitter:title" content="ศูนย์รวมสื่อและระบบการเรียนรู้ พ.ร.บ.คอมพิวเตอร์ & PDPA | Cyber Shield Detective">
-    <meta name="twitter:description" content="แพลตฟอร์มเกมสืบคดีกฎหมายคอมพิวเตอร์และ PDPA ประเมินผลอัตนัยด้วย Gemini AI พร้อมสไลด์บทเรียน 12 มาตราและแดชบอร์ดสรุปคะแนนเรียลไทม์">
+    <meta name="twitter:title" content="ศูนย์รวมสื่อ & เกมการเรียนรู้กฎหมายไซเบอร์ | Cyber Shield Detective">
+    <meta name="twitter:description"
+        content="แพลตฟอร์มเกมสืบคดีกฎหมายคอมพิวเตอร์และ PDPA ประเมินผลอัตนัยด้วย Gemini AI พร้อมสไลด์บทเรียน 12 มาตราและแดชบอร์ดสรุปคะแนนเรียลไทม์">
     <meta name="twitter:image" content="https://tech-dm-cyber-detective.vercel.app/favicon.png">
-
-    <!-- Structured Data (JSON-LD) -->
-    <script type="application/ld+json">
-    {
-      "@context": "https://schema.org",
-      "@graph": [
-        {
-          "@type": "WebApplication",
-          "@id": "https://tech-dm-cyber-detective.vercel.app/#webapp",
-          "name": "Cyber Shield Detective Platform",
-          "alternateName": "ระบบสื่อการเรียนรู้ & สืบคดีกฎหมายคอมพิวเตอร์และ PDPA",
-          "url": "https://tech-dm-cyber-detective.vercel.app/",
-          "applicationCategory": "EducationalApplication",
-          "operatingSystem": "All modern web browsers",
-          "inLanguage": "th",
-          "description": "แพลตฟอร์มเกมการเรียนรู้และสื่อการสอน พ.ร.บ. คอมพิวเตอร์ พ.ศ. 2560 และ PDPA พร้อมระบบประเมินผลอัตนัย 3 บทบาทด้วย AI",
-          "offers": {
-            "@type": "Offer",
-            "price": "0",
-            "priceCurrency": "THB"
-          },
-          "audience": {
-            "@type": "EducationalAudience",
-            "educationalRole": "student",
-            "audienceType": "นักเรียนชั้นมัธยมศึกษาปีที่ 2 - 3 (อายุ 14-15 ปี)"
-          }
-        },
-        {
-          "@type": "LearningResource",
-          "@id": "https://tech-dm-cyber-detective.vercel.app/#resource",
-          "name": "ชุดสื่อการเรียนรู้ พ.ร.บ.คอมพิวเตอร์ 12 มาตรา และ PDPA",
-          "learningResourceType": "Interactive Game, Slide Presentation, Case Studies",
-          "educationalLevel": "Secondary Education (ม.2 - ม.3)",
-          "teaches": "พ.ร.บ.ว่าด้วยการกระทำความผิดเกี่ยวกับคอมพิวเตอร์ พ.ศ. 2560, PDPA พ.ร.บ.คุ้มครองข้อมูลส่วนบุคคล, ความปลอดภัยไซเบอร์ (Cybersecurity), ความเป็นพลเมืองดิจิทัล (Digital Citizenship)",
-          "inLanguage": "th"
-        }
-      ]
-    }
-    </script>
 
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700;800;900&family=Sarabun:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700;800;900&family=Sarabun:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
 
-    <!-- Favicon & App Icon (256x256) -->
+    <!-- Favicon & App Icon -->
     <link rel="icon" type="image/png" sizes="256x256" href="favicon.png">
     <link rel="apple-touch-icon" sizes="256x256" href="favicon.png">
 
     <!-- FontAwesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
-    <!-- Custom App CSS -->
+    <!-- Custom Modern Tech CSS -->
     <link rel="stylesheet" href="css/index.css">
 </head>
+
 <body>
+
+    <!-- Top Sticky Navbar -->
+    <header class="top-navbar">
+        <a href="index.html" class="nav-brand">
+            <img src="favicon.png" alt="Cyber Detective Logo" class="nav-logo">
+            <div>
+                <div class="nav-title">Cyber Shield Detective</div>
+            </div>
+            <span class="nav-badge">v4.5</span>
+        </a>
+
+        <nav class="nav-links">
+            <a href="#games" class="nav-link-btn"><i class="fa-solid fa-gamepad"></i> เกมสืบคดี</a>
+            <a href="#pdpa" class="nav-link-btn"><i class="fa-solid fa-shield-halved"></i> กิจกรรม PDPA</a>
+            <a href="#learning" class="nav-link-btn"><i class="fa-solid fa-book-open"></i> สื่อบทเรียน</a>
+            <a href="#teacher" class="nav-link-btn"><i class="fa-solid fa-chalkboard-user"></i> แดชบอร์ดครู</a>
+            <a href="https://github.com/puripong1st/tech-dm-cyber-detective" target="_blank" rel="noopener noreferrer"
+                class="nav-link-btn" style="color: var(--neon-cyan); border-color: rgba(56, 189, 248, 0.3);">
+                <i class="fa-brands fa-github"></i> GitHub
+            </a>
+        </nav>
+    </header>
 
     <div class="main-container">
 
         <!-- Hero Section -->
-        <header class="hero-section">
-            <img src="favicon.png" alt="Cyber Detective Logo" style="width: 84px; height: 84px; border-radius: 20px; border: 2.5px solid var(--neon-cyan); box-shadow: 0 0 25px rgba(56, 189, 248, 0.4); margin-bottom: 8px;">
-            <div class="badge-tag">
-                <i class="fa-solid fa-shield-halved"></i>
-                <span>CYBER LAW EDUCATIONAL PLATFORM</span>
+        <section class="hero-section">
+            <div class="hero-pill">
+                <i class="fa-solid fa-shield-cat"></i>
+                <span>CYBER LAW & PDPA LEARNING PLATFORM</span>
             </div>
-            <h1 class="hero-title">ระบบสื่อการเรียนรู้ & สืบคดีกฎหมายคอมพิวเตอร์</h1>
+            <h1 class="hero-title">ศูนย์รวมสื่อ & เกมการเรียนรู้กฎหมายไซเบอร์</h1>
             <p class="hero-desc">
-                เลือกเข้าสู่ระบบบทเรียน เกมสืบคดีจำลอง หรือแดชบอร์ดสรุปผลคะแนนเรียลไทม์สำหรับครูผู้สอน
+                แพลตฟอร์มการจัดการเรียนรู้ พ.ร.บ.คอมพิวเตอร์ 2560 และ PDPA สำหรับนักเรียน ม.2 - ม.3
+                ผสานการสืบคดีการ์ตูน 9 ช่อง ระบบประเมินผลอัตนัยด้วย Gemini AI สไลด์อินเทอร์แอคทีฟ และแดชบอร์ดครูเรียลไทม์
             </p>
-        </header>
 
-        <!-- Web Application Selection Grid -->
-        <main class="hub-grid">
+            <!-- Quick Stats Ribbon -->
+            <div class="stats-ribbon">
+                <div class="stat-item">
+                    <div class="stat-icon-wrap" style="background: rgba(56, 189, 248, 0.12); color: #38bdf8;">
+                        <i class="fa-solid fa-masks-theater"></i>
+                    </div>
+                    <div class="stat-content">
+                        <span class="stat-value">12 คดีการ์ตูน</span>
+                        <span class="stat-label">สถานการณ์ 9 ช่องจำลอง</span>
+                    </div>
+                </div>
 
-            <!-- Card 0: Cyber Shield Detective (6 คดี - เกมหลัก) -->
-            <a href="cyber_shield_detective.html" class="web-card card-detective" style="border-color: #06B6D4; background: linear-gradient(145deg, rgba(6, 182, 212, 0.15), rgba(15, 23, 42, 0.98)); box-shadow: 0 0 30px rgba(6, 182, 212, 0.3);">
-                <div class="card-header-box">
-                    <div class="card-icon" style="background: rgba(6, 182, 212, 0.2); color: #06B6D4; border: 1px solid rgba(6, 182, 212, 0.5);">
+                <div class="stat-item">
+                    <div class="stat-icon-wrap" style="background: rgba(16, 185, 129, 0.12); color: #10b981;">
+                        <i class="fa-solid fa-brain"></i>
+                    </div>
+                    <div class="stat-content">
+                        <span class="stat-value">Gemini AI Engine</span>
+                        <span class="stat-label">ตรวจอัตนัย 3 บทบาท</span>
+                    </div>
+                </div>
+
+                <div class="stat-item">
+                    <div class="stat-icon-wrap" style="background: rgba(245, 158, 11, 0.12); color: #f59e0b;">
+                        <i class="fa-solid fa-award"></i>
+                    </div>
+                    <div class="stat-content">
+                        <span class="stat-value">4-Tier Rubric</span>
+                        <span class="stat-label">เกณฑ์มาตรฐาน 0 / 5 / 8 / 10</span>
+                    </div>
+                </div>
+
+                <div class="stat-item">
+                    <div class="stat-icon-wrap" style="background: rgba(236, 72, 153, 0.12); color: #ec4899;">
+                        <i class="fa-solid fa-chart-line"></i>
+                    </div>
+                    <div class="stat-content">
+                        <span class="stat-value">Live Override</span>
+                        <span class="stat-label">แดชบอร์ดครูแก้คะแนนสด</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Category Navigation & Filter Bar (Sticky) -->
+        <nav class="filter-tabs-container" aria-label="หมวดหมู่ระบบ">
+            <div class="filter-tabs">
+                <button class="filter-tab active" data-target="all">
+                    <i class="fa-solid fa-layer-group"></i> ทั้งหมด (All Apps)
+                </button>
+                <button class="filter-tab" data-target="games">
+                    <i class="fa-solid fa-gamepad"></i> 1. เกมสืบคดี พ.ร.บ.คอมพ์
+                </button>
+                <button class="filter-tab" data-target="pdpa">
+                    <i class="fa-solid fa-shield-halved"></i> 2. ชุดกิจกรรม PDPA
+                </button>
+                <button class="filter-tab" data-target="learning">
+                    <i class="fa-solid fa-book-bookmark"></i> 3. สื่อบทเรียน & คลังคดี
+                </button>
+                <button class="filter-tab" data-target="teacher">
+                    <i class="fa-solid fa-chalkboard-user"></i> 4. ศูนย์ควบคุมครูผู้สอน
+                </button>
+            </div>
+        </nav>
+
+        <!-- CATEGORY 1: เกมสืบคดี พ.ร.บ.คอมพิวเตอร์ -->
+        <section id="games" class="category-section" data-category="games">
+            <div class="section-header">
+                <div class="section-title-wrap">
+                    <div class="section-icon-box icon-box-games">
+                        <i class="fa-solid fa-gamepad"></i>
+                    </div>
+                    <div>
+                        <h2 class="section-title">1. เกมสืบคดี พ.ร.บ.คอมพิวเตอร์ (Cyber Detective Games)</h2>
+                        <p class="section-desc">เกมจำลองสถานการณ์อาชญากรรมไซเบอร์ วิเคราะห์หลักฐานการ์ตูน 9 ช่อง และประเมินผลอัตนัยด้วย AI</p>
+                    </div>
+                </div>
+                <span class="section-count-badge">3 แอปพลิเคชัน</span>
+            </div>
+
+            <div class="cards-grid">
+
+                <!-- Card 1: Cyber Shield Detective (6 คดี - Flagship) -->
+                <a href="cyber_shield_detective.html" class="modern-card theme-cyan">
+                    <div class="card-header-flex">
+                        <div class="card-icon-container">
+                            <i class="fa-solid fa-shield-halved"></i>
+                        </div>
+                        <div class="card-tags-wrap">
+                            <span class="card-badge badge-featured">⭐ แนะนำชั่วโมงหลัก</span>
+                            <span class="card-badge">6 คดี (180 คะแนน)</span>
+                        </div>
+                    </div>
+                    <div class="card-body-content">
+                        <h3 class="card-main-title">Cyber Shield Detective (เวอร์ชันหลัก 6 คดี)</h3>
+                        <p class="card-main-desc">
+                            เกมสืบคดีอัตนัย 3 บทบาท (นักวิเคราะห์กฎหมาย, ผู้ระงับเหตุเฉพาะหน้า, วิศวกรความปลอดภัย) 
+                            พร้อมการ์ตูน 9 ช่อง ตรวจและประเมินผลด้วย <b>Google Gemini AI + Slang Normalizer</b> แบบเรียลไทม์
+                        </p>
+                    </div>
+                    <div class="card-action-footer">
+                        <span>เข้าสู่เกมหลัก (6 ข้อ)</span>
+                        <div class="card-launch-btn">
+                            <span>เริ่มสืบคดี</span>
+                            <i class="fa-solid fa-bolt"></i>
+                        </div>
+                    </div>
+                </a>
+
+                <!-- Card 2: Cyber Shield Detective Fast-Track (3 คดี) -->
+                <a href="cyber_shield_detective_3.html" class="modern-card theme-amber">
+                    <div class="card-header-flex">
+                        <div class="card-icon-container">
+                            <i class="fa-solid fa-bolt-lightning"></i>
+                        </div>
+                        <div class="card-tags-wrap">
+                            <span class="card-badge badge-new">⚡ คาบสั้น 50 นาที</span>
+                            <span class="card-badge">3 คดี (90 คะแนน)</span>
+                        </div>
+                    </div>
+                    <div class="card-body-content">
+                        <h3 class="card-main-title">Cyber Shield Detective: Fast-Track (3 คดี)</h3>
+                        <p class="card-main-desc">
+                            เกมสืบคดีฉบับกระชับ สุ่มทำเพียง <b>3 คดี</b> (คดีละ 30 คะแนน) เหมาะสำหรับคาบเรียนสั้น 50 นาที 
+                            ประเมินผลอัตนัยด้วย Gemini AI แยกตารางคะแนนเฉพาะไม่ปะปนกับเวอร์ชันหลัก
+                        </p>
+                    </div>
+                    <div class="card-action-footer">
+                        <span>เข้าสู่เกมกระชับ (3 ข้อ)</span>
+                        <div class="card-launch-btn">
+                            <span>เริ่มสืบคดี</span>
+                            <i class="fa-solid fa-play"></i>
+                        </div>
+                    </div>
+                </a>
+
+                <!-- Card 3: Cyber Detective v3 (Multiple Choice) -->
+                <a href="cyber_detective.html" class="modern-card theme-blue">
+                    <div class="card-header-flex">
+                        <div class="card-icon-container">
+                            <i class="fa-solid fa-user-ninja"></i>
+                        </div>
+                        <div class="card-tags-wrap">
+                            <span class="card-badge">🕹️ โหมดปรนัยดั้งเดิม</span>
+                            <span class="card-badge">30 คดี</span>
+                        </div>
+                    </div>
+                    <div class="card-body-content">
+                        <h3 class="card-main-title">Cyber Detective Game v3 (โหมดปรนัย)</h3>
+                        <p class="card-main-desc">
+                            เกมสืบคดีจำลองอาชญากรรมทางเทคโนโลยีรูปแบบเลือกตอบ (Multiple Choice) วิเคราะห์พยานหลักฐาน 
+                            ไต่สวนผู้ต้องสงสัย และชี้ระบุฐานความผิดตามมาตรา พ.ร.บ. คอมพิวเตอร์
+                        </p>
+                    </div>
+                    <div class="card-action-footer">
+                        <span>เข้าสู่เกมปรนัย v3</span>
+                        <div class="card-launch-btn">
+                            <span>เริ่มทำคดี</span>
+                            <i class="fa-solid fa-arrow-right"></i>
+                        </div>
+                    </div>
+                </a>
+
+            </div>
+        </section>
+
+        <!-- CATEGORY 2: ชุดสื่อและกิจกรรม PDPA -->
+        <section id="pdpa" class="category-section" data-category="pdpa">
+            <div class="section-header">
+                <div class="section-title-wrap">
+                    <div class="section-icon-box icon-box-pdpa">
                         <i class="fa-solid fa-shield-halved"></i>
                     </div>
-                    <span class="card-tag" style="background: rgba(236, 72, 153, 0.25); color: #F472B6; border-color: rgba(236, 72, 153, 0.6);">⭐ แนะนำ: 6 คดี (180 คะแนน)</span>
-                </div>
-                <div class="card-body">
-                    <h2 class="card-title">
-                        <span style="color: #38BDF8;">Cyber Shield Detective: ปฏิบัติการสายสืบพิทักษ์ไซเบอร์ (6 คดี)</span>
-                    </h2>
-                    <p class="card-desc">
-                        เกมสืบคดีอัตนัย 3 บทบาท (นักกฎหมาย, บรรเทาภัย, วิศวกรความปลอดภัย) พร้อมการ์ตูน 9 ช่อง วิเคราะห์และประเมินผลคะแนนด้วย <b>Google Gemini AI</b> แบบเรียลไทม์ (เต็ม 180 คะแนน)
-                    </p>
-                </div>
-                <div class="card-footer" style="border-top: 1px solid rgba(6, 182, 212, 0.3);">
-                    <span style="color: #38BDF8;">เข้าสู่เกมสืบคดี 6 คดี</span>
-                    <div class="card-footer-btn" style="background: linear-gradient(135deg, #06B6D4, #3B82F6); color: white;">
-                        <span>เริ่มสืบคดี (6 ข้อ)</span>
-                        <i class="fa-solid fa-bolt"></i>
+                    <div>
+                        <h2 class="section-title">2. ชุดสื่อและกิจกรรม PDPA (PDPA Learning Suite - ม.3)</h2>
+                        <p class="section-desc">สื่อการสอนเชิงโต้ตอบ กระดานสร้างใบงานสไตล์ Canva และเกม Speedrun พิทักษ์ข้อมูลส่วนบุคคล</p>
                     </div>
                 </div>
-            </a>
+                <span class="section-count-badge">3 แอปพลิเคชัน</span>
+            </div>
 
-            <!-- Card 0.5: NEW Cyber Shield Detective (3 คดี - กิจกรรมกระชับ) -->
-            <a href="cyber_shield_detective_3.html" class="web-card card-detective" style="border-color: #F59E0B; background: linear-gradient(145deg, rgba(245, 158, 11, 0.15), rgba(15, 23, 42, 0.98)); box-shadow: 0 0 30px rgba(245, 158, 11, 0.3);">
-                <div class="card-header-box">
-                    <div class="card-icon" style="background: rgba(245, 158, 11, 0.2); color: #F59E0B; border: 1px solid rgba(245, 158, 11, 0.5);">
-                        <i class="fa-solid fa-bolt-lightning"></i>
-                    </div>
-                    <span class="card-tag" style="background: rgba(245, 158, 11, 0.25); color: #FCD34D; border-color: rgba(245, 158, 11, 0.6);">⚡ ใหม่: 3 คดีกระชับ (90 คะแนน)</span>
-                </div>
-                <div class="card-body">
-                    <h2 class="card-title">
-                        <span style="color: #FBBF24;">Cyber Shield Detective: เวอร์ชัน 3 คดี (90 คะแนน)</span>
-                    </h2>
-                    <p class="card-desc">
-                        เกมสืบคดีไซเบอร์ฉบับกระชับ สุ่มทำเพียง <b>3 คดี</b> (คดีละ 30 คะแนน) ประเมินผลอัตนัยด้วย <b>Google Gemini AI</b> แยกเก็บคะแนนเฉพาะไม่ปนกับเวอร์ชันหลัก
-                    </p>
-                </div>
-                <div class="card-footer" style="border-top: 1px solid rgba(245, 158, 11, 0.3);">
-                    <span style="color: #FBBF24;">เข้าสู่เกมสืบคดี 3 คดี</span>
-                    <div class="card-footer-btn" style="background: linear-gradient(135deg, #F59E0B, #EA580C); color: white;">
-                        <span>เริ่มสืบคดี (3 ข้อ)</span>
-                        <i class="fa-solid fa-play"></i>
-                    </div>
-                </div>
-            </a>
+            <div class="cards-grid">
 
-            <!-- Card 1: Cyber Detective Game v3 -->
-            <a href="cyber_detective.html" class="web-card card-detective">
-                <div class="card-header-box">
-                    <div class="card-icon">
-                        <i class="fa-solid fa-user-ninja"></i>
+                <!-- Card 4: PDPA 101 Presentation -->
+                <a href="pdpa_presentation.html" class="modern-card theme-cyan">
+                    <div class="card-header-flex">
+                        <div class="card-icon-container">
+                            <img src="assets/pdpa_icon.png" alt="PDPA Icon">
+                        </div>
+                        <div class="card-tags-wrap">
+                            <span class="card-badge badge-featured">✨ สไลด์โต้ตอบ</span>
+                            <span class="card-badge">สิทธิ 8 ประการ</span>
+                        </div>
                     </div>
-                    <span class="card-tag">เวอร์ชัน v3 ปรนัย</span>
-                </div>
-                <div class="card-body">
-                    <h2 class="card-title">
-                        <span>Cyber Detective Game v3</span>
-                    </h2>
-                    <p class="card-desc">
-                        เกมสืบคดีจำลองอาชญากรรมทางเทคโนโลยี วิเคราะห์หลักฐาน ไต่สวนผู้สงสัย และวิเคราะห์ฐานความผิดตาม พ.ร.บ. คอมพิวเตอร์ (โหมดเลือกตอบ)
-                    </p>
-                </div>
-                <div class="card-footer">
-                    <span>เข้าสู่เกมสืบคดี v3</span>
-                    <div class="card-footer-btn">
-                        <span>เริ่มทำคดี</span>
-                        <i class="fa-solid fa-arrow-right-long"></i>
+                    <div class="card-body-content">
+                        <h3 class="card-main-title">PDPA 101: คู่มือพิทักษ์ข้อมูลส่วนตัว ม.3</h3>
+                        <p class="card-main-desc">
+                            สไลด์นำเสนอเชิงโต้ตอบ มินิมอลคลีนตา สรุปนิยามข้อมูลทั่วไป/อ่อนไหว 8 สิทธิเจ้าของข้อมูล 
+                            กฎความยินยอมผู้เยาว์ 4 กรณีศึกษาจริง และแบบทดสอบรับเกียรติบัตร
+                        </p>
                     </div>
-                </div>
-            </a>
+                    <div class="card-action-footer">
+                        <span>เข้าสู่สไลด์ PDPA 101</span>
+                        <div class="card-launch-btn">
+                            <span>เปิดสไลด์</span>
+                            <i class="fa-solid fa-arrow-right"></i>
+                        </div>
+                    </div>
+                </a>
 
-            <!-- Card 1.5: Teacher Dashboard v3 (สำหรับเกม v3 ปรนัย) -->
-            <a href="teacher_dashboard.html" class="web-card card-teacher" style="border-color: #10B981; background: linear-gradient(145deg, rgba(16, 185, 129, 0.12), rgba(15, 23, 42, 0.95));">
-                <div class="card-header-box">
-                    <div class="card-icon" style="background: rgba(16, 185, 129, 0.2); color: #34D399; border: 1px solid rgba(16, 185, 129, 0.5);">
-                        <i class="fa-solid fa-chart-column"></i>
+                <!-- Card 5: PDPA Assignment Board -->
+                <a href="pdpa_assignment_board.html" class="modern-card theme-emerald">
+                    <div class="card-header-flex">
+                        <div class="card-icon-container">
+                            <img src="assets/pdpa_icon.png" alt="PDPA Board Icon">
+                        </div>
+                        <div class="card-tags-wrap">
+                            <span class="card-badge badge-new">🎨 สไตล์ Canva</span>
+                            <span class="card-badge">Export ภาพ HD</span>
+                        </div>
                     </div>
-                    <span class="card-tag" style="background: rgba(16, 185, 129, 0.2); color: #34D399; border-color: rgba(16, 185, 129, 0.5);">ครูผู้สอน (v3)</span>
-                </div>
-                <div class="card-body">
-                    <h2 class="card-title">
-                        <span style="color: #34D399;">แดชบอร์ดครู v3 (เกมปรนัย)</span>
-                    </h2>
-                    <p class="card-desc">
-                        แผงสรุปคะแนนสำหรับเกม Cyber Detective v3 (ปรนัย): ดูคะแนนสดรายบุคคล ส่งออกรายงานเป็น PDF (A4) สำหรับพิมพ์รายงาน
-                    </p>
-                </div>
-                <div class="card-footer" style="border-top: 1px solid rgba(16, 185, 129, 0.3);">
-                    <span style="color: #34D399;">แดชบอร์ดเกม v3</span>
-                    <div class="card-footer-btn" style="background: linear-gradient(135deg, #10B981, #059669); color: white;">
-                        <span>เปิดระบบครู v3</span>
-                        <i class="fa-solid fa-arrow-right-long"></i>
+                    <div class="card-body-content">
+                        <h3 class="card-main-title">กระดานสร้างใบงานสืบคดี PDPA (Online Canvas)</h3>
+                        <p class="card-main-desc">
+                            เครื่องมือสร้างใบงานออนไลน์สไตล์ Canva สำหรับสรุปวิเคราะห์คดี PDPA ตกแต่งด้วยสติกเกอร์จิบิ 
+                            จัดวางอิสระ และดาวน์โหลดเป็นภาพ <b>PNG ความละเอียดสูง</b> พร้อมส่งครูทันที
+                        </p>
                     </div>
-                </div>
-            </a>
+                    <div class="card-action-footer">
+                        <span>สร้างใบงานออนไลน์</span>
+                        <div class="card-launch-btn">
+                            <span>เริ่มสร้างใบงาน</span>
+                            <i class="fa-solid fa-wand-magic-sparkles"></i>
+                        </div>
+                    </div>
+                </a>
 
-            <!-- Card 2: Dedicated Teacher Command Center & Realtime Scoreboard (6 คดี) -->
-            <a href="cyber_shield_teacher.html" class="web-card card-teacher" style="border-color: #8B5CF6; background: linear-gradient(145deg, rgba(139, 92, 246, 0.12), rgba(15, 23, 42, 0.95));">
-                <div class="card-header-box">
-                    <div class="card-icon" style="background: rgba(139, 92, 246, 0.2); color: #C084FC; border: 1px solid rgba(139, 92, 246, 0.5);">
-                        <i class="fa-solid fa-chalkboard-user"></i>
+                <!-- Card 6: PDPA Fast-Pass -->
+                <a href="pdpa_fast_pass.html" class="modern-card theme-cyan">
+                    <div class="card-header-flex">
+                        <div class="card-icon-container">
+                            <img src="assets/pdpa_icon.png" alt="PDPA Fast-Pass Icon">
+                        </div>
+                        <div class="card-tags-wrap">
+                            <span class="card-badge badge-new">⚡ Warm-up 60 วินาที</span>
+                            <span class="card-badge">คลัง 45 ข้อ</span>
+                        </div>
                     </div>
-                    <span class="card-tag" style="background: rgba(139, 92, 246, 0.2); color: #C084FC; border-color: rgba(139, 92, 246, 0.5);">ครูผู้สอน (6 คดี)</span>
-                </div>
-                <div class="card-body">
-                    <h2 class="card-title">
-                        <span style="color: #C084FC;">Teacher Command Center (6 คดี - 180 คะแนน)</span>
-                    </h2>
-                    <p class="card-desc">
-                        แผงควบคุมครูผู้สอนสำหรับเกมหลัก 6 คดี: ติดตามคะแนนสดรายกลุ่มผ่าน Supabase Realtime, แฟ้มเฉลย 12 คดี และพิมพ์รายงานเกรดเป็น PDF (A4)
-                    </p>
-                </div>
-                <div class="card-footer" style="border-top: 1px solid rgba(139, 92, 246, 0.3);">
-                    <span style="color: #C084FC;">แดชบอร์ดครู 6 คดี</span>
-                    <div class="card-footer-btn" style="background: linear-gradient(135deg, #8B5CF6, #6366F1); color: white;">
-                        <span>เปิดระบบครู (6 ข้อ)</span>
-                        <i class="fa-solid fa-arrow-right-long"></i>
+                    <div class="card-body-content">
+                        <h3 class="card-main-title">PDPA Fast-Pass: สปีดรันพิทักษ์ข้อมูล (ม.3)</h3>
+                        <p class="card-main-desc">
+                            เกม Speedrun 60 วินาที ฝึกทักษะแยกแยะการ์ดข้อมูลส่วนบุคคลทั่วไป vs อ่อนไหว 
+                            สุ่ม 15 ข้อจากคลัง 45 ข้อ รองรับทัชสกรีนบนมือถือ พร้อมคำนวณเกรดความเข้าใจทันที
+                        </p>
                     </div>
-                </div>
-            </a>
+                    <div class="card-action-footer">
+                        <span>เข้าสู่เกม Fast-Pass</span>
+                        <div class="card-launch-btn">
+                            <span>เริ่มสปีดรัน</span>
+                            <i class="fa-solid fa-play"></i>
+                        </div>
+                    </div>
+                </a>
 
-            <!-- Card 2.5: NEW Teacher Command Center (3 คดี) -->
-            <a href="cyber_shield_teacher_3.html" class="web-card card-teacher" style="border-color: #EC4899; background: linear-gradient(145deg, rgba(236, 72, 153, 0.12), rgba(15, 23, 42, 0.95));">
-                <div class="card-header-box">
-                    <div class="card-icon" style="background: rgba(236, 72, 153, 0.2); color: #F472B6; border: 1px solid rgba(236, 72, 153, 0.5);">
-                        <i class="fa-solid fa-graduation-cap"></i>
-                    </div>
-                    <span class="card-tag" style="background: rgba(236, 72, 153, 0.2); color: #F472B6; border-color: rgba(236, 72, 153, 0.5);">⚡ ใหม่: ครูผู้สอน (3 คดี)</span>
-                </div>
-                <div class="card-body">
-                    <h2 class="card-title">
-                        <span style="color: #F472B6;">Teacher Command Center (3 คดี - 90 คะแนน)</span>
-                    </h2>
-                    <p class="card-desc">
-                        แผงควบคุมครูผู้สอนสำหรับเกมเวอร์ชัน 3 คดี: ติดตามคะแนนสดตาราง <code>game_scores_3</code>, ตรวจคำตอบอัตนัยรายกลุ่ม และส่งออกรายงาน PDF พอดี 1 หน้า A4 ต่อกลุ่ม
-                    </p>
-                </div>
-                <div class="card-footer" style="border-top: 1px solid rgba(236, 72, 153, 0.3);">
-                    <span style="color: #F472B6;">แดชบอร์ดครู 3 คดี</span>
-                    <div class="card-footer-btn" style="background: linear-gradient(135deg, #EC4899, #DB2777); color: white;">
-                        <span>เปิดระบบครู (3 ข้อ)</span>
-                        <i class="fa-solid fa-arrow-right-long"></i>
-                    </div>
-                </div>
-            </a>
+            </div>
+        </section>
 
-            <!-- Card 3: Presentation & Learning Content -->
-            <a href="presentation.html" class="web-card card-presentation">
-                <div class="card-header-box">
-                    <div class="card-icon">
+        <!-- CATEGORY 3: สื่อบทเรียน & คลังคดี -->
+        <section id="learning" class="category-section" data-category="learning">
+            <div class="section-header">
+                <div class="section-title-wrap">
+                    <div class="section-icon-box icon-box-slides">
                         <i class="fa-solid fa-book-bookmark"></i>
                     </div>
-                    <span class="card-tag">สื่อบทเรียน</span>
-                </div>
-                <div class="card-body">
-                    <h2 class="card-title">
-                        <span>Cyber Law Presentation</span>
-                    </h2>
-                    <p class="card-desc">
-                        สไลด์เนื้อหาบทเรียนปฏิสัมพันธ์ สรุป พ.ร.บ. คอมพิวเตอร์ มาตราสำคัญ ตัวอย่างกรณีศึกษา และสื่อการสอนครบวงจร
-                    </p>
-                </div>
-                <div class="card-footer">
-                    <span>เข้าสู่เนื้อหาบทเรียน</span>
-                    <div class="card-footer-btn">
-                        <span>เปิดสไลด์</span>
-                        <i class="fa-solid fa-arrow-right-long"></i>
+                    <div>
+                        <h2 class="section-title">3. สื่อบทเรียนและคลังคดีอ้างอิง (Teaching Materials & Case Bank)</h2>
+                        <p class="section-desc">สไลด์สรุปเนื้อหา พ.ร.บ.คอมพิวเตอร์ 12 มาตราสำคัญ และคลังคดีพร้อมระบบปลดล็อกเฉลย</p>
                     </div>
                 </div>
-            </a>
+                <span class="section-count-badge">2 แอปพลิเคชัน</span>
+            </div>
 
-            <!-- Card 4: Cases Reference & Answer Keys -->
-            <a href="cases_reference.html" class="web-card card-cases">
-                <div class="card-header-box">
-                    <div class="card-icon">
-                        <i class="fa-solid fa-folder-tree"></i>
-                    </div>
-                    <span class="card-tag" style="border-color: var(--neon-yellow); color: var(--neon-yellow);">คลังข้อสอบ & เฉลย</span>
-                </div>
-                <div class="card-body">
-                    <h2 class="card-title">
-                        <span>Cases & Answer Keys</span>
-                    </h2>
-                    <p class="card-desc">
-                        รวบรวมแฟ้มคดีสืบสวนทั้งหมด 30 คดี พร้อมคำร้องทุกข์ หลักฐาน และระบบปลดล็อกเฉลยคำตอบฉบับครูผู้สอน
-                    </p>
-                </div>
-                <div class="card-footer">
-                    <span>ดูคลังคดี & เฉลย</span>
-                    <div class="card-footer-btn">
-                        <span>เปิดคลังคดี</span>
-                        <i class="fa-solid fa-arrow-right-long"></i>
-                    </div>
-                </div>
-            </a>
+            <div class="cards-grid">
 
-        </main>
+                <!-- Card 7: Cyber Law Presentation -->
+                <a href="presentation.html" class="modern-card theme-purple">
+                    <div class="card-header-flex">
+                        <div class="card-icon-container">
+                            <i class="fa-solid fa-book-open"></i>
+                        </div>
+                        <div class="card-tags-wrap">
+                            <span class="card-badge">📚 สไลด์ 12 มาตรา</span>
+                            <span class="card-badge">พ.ร.บ. 2560</span>
+                        </div>
+                    </div>
+                    <div class="card-body-content">
+                        <h3 class="card-main-title">Cyber Law Presentation (สไลด์ 12 มาตรา)</h3>
+                        <p class="card-main-desc">
+                            สไลด์บทเรียนปฏิสัมพันธ์ สรุป พ.ร.บ. คอมพิวเตอร์ พ.ศ. 2560 ครอบคลุม 12 มาตราสำคัญ 
+                            อัตราโทษปรับ/จำคุก ตัวอย่างกรณีศึกษาในชีวิตจริง และแบบทดสอบย่อย
+                        </p>
+                    </div>
+                    <div class="card-action-footer">
+                        <span>เข้าสู่เนื้อหาบทเรียน</span>
+                        <div class="card-launch-btn">
+                            <span>เปิดสไลด์</span>
+                            <i class="fa-solid fa-arrow-right"></i>
+                        </div>
+                    </div>
+                </a>
+
+                <!-- Card 8: Cases Reference -->
+                <a href="cases_reference.html" class="modern-card theme-amber">
+                    <div class="card-header-flex">
+                        <div class="card-icon-container">
+                            <i class="fa-solid fa-folder-open"></i>
+                        </div>
+                        <div class="card-tags-wrap">
+                            <span class="card-badge">📂 แฟ้ม 12 คดี</span>
+                            <span class="card-badge">ปลดล็อกเฉลยครู</span>
+                        </div>
+                    </div>
+                    <div class="card-body-content">
+                        <h3 class="card-main-title">Cases & Answer Keys (คลังคดี & เฉลยข้อสอบ)</h3>
+                        <p class="card-main-desc">
+                            รวบรวมแฟ้มคดีสืบสวนทั้งหมด พร้อมคำร้องทุกข์ หลักฐาน และระบบใส่รหัส Passcode 
+                            เพื่อปลดล็อกแนวทางเฉลยคำตอบ 3 บทบาทฉบับสมบูรณ์สำหรับครูผู้สอน
+                        </p>
+                    </div>
+                    <div class="card-action-footer">
+                        <span>ดูคลังคดี & เฉลย</span>
+                        <div class="card-launch-btn">
+                            <span>เปิดคลังคดี</span>
+                            <i class="fa-solid fa-arrow-right"></i>
+                        </div>
+                    </div>
+                </a>
+
+            </div>
+        </section>
+
+        <!-- CATEGORY 4: ศูนย์ควบคุมและแดชบอร์ดครูผู้สอน -->
+        <section id="teacher" class="category-section" data-category="teacher">
+            <div class="section-header">
+                <div class="section-title-wrap">
+                    <div class="section-icon-box icon-box-teacher">
+                        <i class="fa-solid fa-chalkboard-user"></i>
+                    </div>
+                    <div>
+                        <h2 class="section-title">4. ศูนย์ควบคุมและแดชบอร์ดครูผู้สอน (Teacher Command Centers)</h2>
+                        <p class="section-desc">ระบบมอนิเตอร์คะแนนสด ตรวจและปรับแก้คะแนนอัตนัย (Override) และส่งออกรายงาน PDF</p>
+                    </div>
+                </div>
+                <span class="section-count-badge">3 แอปพลิเคชัน</span>
+            </div>
+
+            <div class="cards-grid">
+
+                <!-- Card 9: Teacher Command Center 6 Cases -->
+                <a href="cyber_shield_teacher.html" class="modern-card theme-purple">
+                    <div class="card-header-flex">
+                        <div class="card-icon-container">
+                            <i class="fa-solid fa-chalkboard-user"></i>
+                        </div>
+                        <div class="card-tags-wrap">
+                            <span class="card-badge badge-realtime">🔴 Live Supabase</span>
+                            <span class="card-badge">Override คะแนนได้</span>
+                        </div>
+                    </div>
+                    <div class="card-body-content">
+                        <h3 class="card-main-title">Teacher Command Center (6 คดี - 180 คะแนน)</h3>
+                        <p class="card-main-desc">
+                            แผงควบคุมครูสำหรับเกมหลัก 6 คดี: ติดตามคะแนนสดรายกลุ่มผ่าน Supabase Realtime, 
+                            ตรวจคำตอบอัตนัย 3 บทบาท, ปรับแก้คะแนน (Override) พร้อมคอมเมนต์ และส่งออก PDF (A4)
+                        </p>
+                    </div>
+                    <div class="card-action-footer">
+                        <span>แดชบอร์ดครู (6 คดี)</span>
+                        <div class="card-launch-btn">
+                            <span>เปิดระบบครู</span>
+                            <i class="fa-solid fa-arrow-right"></i>
+                        </div>
+                    </div>
+                </a>
+
+                <!-- Card 10: Teacher Command Center 3 Cases -->
+                <a href="cyber_shield_teacher_3.html" class="modern-card theme-pink">
+                    <div class="card-header-flex">
+                        <div class="card-icon-container">
+                            <i class="fa-solid fa-graduation-cap"></i>
+                        </div>
+                        <div class="card-tags-wrap">
+                            <span class="card-badge badge-new">⚡ เวอร์ชัน 3 คดี</span>
+                            <span class="card-badge">90 คะแนน</span>
+                        </div>
+                    </div>
+                    <div class="card-body-content">
+                        <h3 class="card-main-title">Teacher Command Center (3 คดี - 90 คะแนน)</h3>
+                        <p class="card-main-desc">
+                            แผงควบคุมตรวจคะแนนสดสำหรับเกมเวอร์ชัน Fast-Track 3 คดี: ตรวจคำตอบอัตนัยรายกลุ่ม 
+                            และส่งออกรายงานผลการประเมิน PDF พอดี 1 หน้า A4 ต่อกลุ่มอย่างสวยงาม
+                        </p>
+                    </div>
+                    <div class="card-action-footer">
+                        <span>แดชบอร์ดครู (3 คดี)</span>
+                        <div class="card-launch-btn">
+                            <span>เปิดระบบครู</span>
+                            <i class="fa-solid fa-arrow-right"></i>
+                        </div>
+                    </div>
+                </a>
+
+                <!-- Card 11: Teacher Dashboard v3 -->
+                <a href="teacher_dashboard.html" class="modern-card theme-emerald">
+                    <div class="card-header-flex">
+                        <div class="card-icon-container">
+                            <i class="fa-solid fa-chart-column"></i>
+                        </div>
+                        <div class="card-tags-wrap">
+                            <span class="card-badge">📊 แดชบอร์ดปรนัย</span>
+                            <span class="card-badge">เกม v3</span>
+                        </div>
+                    </div>
+                    <div class="card-body-content">
+                        <h3 class="card-main-title">แดชบอร์ดครู v3 (เกมปรนัย)</h3>
+                        <p class="card-main-desc">
+                            แผงสรุปคะแนนสำหรับเกม Cyber Detective v3 (ปรนัย): ดูคะแนนสดรายบุคคล 
+                            สถิติข้อที่นักเรียนตอบผิดบ่อย และส่งออกรายงานสรุปคะแนนเป็น PDF สำหรับพิมพ์รายงาน
+                        </p>
+                    </div>
+                    <div class="card-action-footer">
+                        <span>แดชบอร์ดเกม v3</span>
+                        <div class="card-launch-btn">
+                            <span>เปิดระบบครู v3</span>
+                            <i class="fa-solid fa-arrow-right"></i>
+                        </div>
+                    </div>
+                </a>
+
+            </div>
+        </section>
 
     </div>
 
+    <!-- Clean Modern Footer -->
     <footer>
-        <p>© 2026 Cyber Law Detective & Teacher Platform. All rights reserved.</p>
+        <div>
+            <strong>Cyber Shield Detective Platform</strong> &copy; 2026 • สื่อการสอน พ.ร.บ.คอมพิวเตอร์ & PDPA ระดับชั้น ม.2 - ม.3
+        </div>
+        <div class="footer-links">
+            <a href="presentation.html"><i class="fa-solid fa-book-open"></i> สไลด์บทเรียน</a>
+            <a href="cases_reference.html"><i class="fa-solid fa-folder-open"></i> คลังคดี</a>
+            <a href="https://github.com/puripong1st/tech-dm-cyber-detective" target="_blank" rel="noopener noreferrer">
+                <i class="fa-brands fa-github"></i> GitHub Repository
+            </a>
+        </div>
     </footer>
 
+    <!-- Interactive Category Filter Tab Script -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const tabs = document.querySelectorAll('.filter-tab');
+            const sections = document.querySelectorAll('.category-section');
+
+            tabs.forEach(tab => {
+                tab.addEventListener('click', () => {
+                    // Update tab active state
+                    tabs.forEach(t => t.classList.remove('active'));
+                    tab.classList.add('active');
+
+                    const target = tab.getAttribute('data-target');
+
+                    if (target === 'all') {
+                        sections.forEach(sec => {
+                            sec.style.display = 'flex';
+                        });
+                        window.scrollTo({ top: 320, behavior: 'smooth' });
+                    } else {
+                        sections.forEach(sec => {
+                            if (sec.getAttribute('data-category') === target) {
+                                sec.style.display = 'flex';
+                                sec.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                            } else {
+                                sec.style.display = 'none';
+                            }
+                        });
+                    }
+                });
+            });
+        });
+    </script>
+
 </body>
+
 </html>

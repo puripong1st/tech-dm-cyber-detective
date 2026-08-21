@@ -1,0 +1,1445 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>PDPA Fast-Pass: สปีดรันพิทักษ์ข้อมูล | เกมแยกแยะข้อมูลส่วนบุคคล ม.3</title>
+    
+    <!-- Meta SEO & Open Graph -->
+    <meta name="description" content="เกมการเรียนรู้อินเทอร์แอคทีฟเรื่องกฎหมาย PDPA สำหรับนักเรียน ม.3 สปีดรัน 60 วินาที แยกแยะข้อมูลทั่วไปและข้อมูลอ่อนไหวจากคลังข้อสอบ 45 ข้อ สุ่ม 15 ข้อ">
+    <meta name="theme-color" content="#1E293B">
+    <link rel="icon" type="image/png" href="assets/pdpa_icon.png">
+
+    <!-- Google Fonts: Kanit & Chakra Petch -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:ital,wght@0,400;0,600;0,700;1,700&family=Kanit:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
+
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Kanit', 'sans-serif'],
+                        display: ['Chakra Petch', 'sans-serif']
+                    },
+                    colors: {
+                        brand: {
+                            navy: '#1E293B',
+                            dark: '#0F172A',
+                            lightBg: '#F8FAFC',
+                            general: '#0284C7',
+                            generalLight: '#E0F2FE',
+                            generalBorder: '#38BDF8',
+                            sensitive: '#E11D48',
+                            sensitiveLight: '#FFE4E6',
+                            sensitiveBorder: '#F43F5E',
+                            gold: '#F59E0B',
+                            silver: '#94A3B8',
+                            bronze: '#B45309'
+                        }
+                    },
+                    boxShadow: {
+                        'card': '0 20px 35px -10px rgba(15, 23, 42, 0.12), 0 1px 3px 0 rgba(0, 0, 0, 0.05)',
+                        'card-hover': '0 25px 40px -10px rgba(15, 23, 42, 0.2)',
+                        'glow-general': '0 0 25px -3px rgba(2, 132, 199, 0.4)',
+                        'glow-sensitive': '0 0 25px -3px rgba(225, 29, 72, 0.4)'
+                    }
+                }
+            }
+        }
+    </script>
+
+    <!-- Animate.css CDN -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+    
+    <!-- FontAwesome 6 CDN -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Canvas Confetti CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+    <style>
+        /* สไตล์พื้นฐานและการล็อคการลากข้อความ */
+        * {
+            -webkit-tap-highlight-color: transparent;
+            user-select: none;
+            -webkit-user-select: none;
+        }
+
+        body {
+            font-family: 'Kanit', sans-serif;
+            background-color: #F8FAFC;
+            color: #1E293B;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* ตกแต่งการ์ดแบบสัมผัสและลาก */
+        .game-card-element {
+            touch-action: none;
+            cursor: grab;
+            will-change: transform, opacity;
+        }
+
+        .game-card-element:active {
+            cursor: grabbing;
+        }
+
+        /* เอฟเฟกต์ Glow Pulse */
+        @keyframes pulseBorderGeneral {
+            0%, 100% { border-color: rgba(56, 189, 248, 0.4); box-shadow: 0 0 10px rgba(56, 189, 248, 0.2); }
+            50% { border-color: rgba(2, 132, 199, 0.9); box-shadow: 0 0 25px rgba(2, 132, 199, 0.4); }
+        }
+
+        @keyframes pulseBorderSensitive {
+            0%, 100% { border-color: rgba(244, 63, 94, 0.4); box-shadow: 0 0 10px rgba(244, 63, 94, 0.2); }
+            50% { border-color: rgba(225, 29, 72, 0.9); box-shadow: 0 0 25px rgba(225, 29, 72, 0.4); }
+        }
+
+        .zone-highlight-general {
+            animation: pulseBorderGeneral 1s infinite alternate;
+            background-color: #E0F2FE !important;
+            transform: scale(1.02);
+        }
+
+        .zone-highlight-sensitive {
+            animation: pulseBorderSensitive 1s infinite alternate;
+            background-color: #FFE4E6 !important;
+            transform: scale(1.02);
+        }
+
+        /* ซ่อน Scrollbar สำหรับแถบตารางสรุปผล */
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+
+        /* การปรับแต่งหน้าพิมพ์ (Print Optimization) */
+        @media print {
+            header, footer, #rulesBtn, #soundToggleBtn, #startGameBtn, .no-print {
+                display: none !important;
+            }
+            body {
+                background: white !important;
+                color: black !important;
+            }
+            #summaryScreen {
+                box-shadow: none !important;
+                border: 1px solid #CBD5E1 !important;
+                max-width: 100% !important;
+                padding: 1rem !important;
+            }
+            #reviewList {
+                max-height: none !important;
+                overflow: visible !important;
+            }
+        }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 flex flex-col min-h-screen selection:bg-sky-200">
+
+    <!-- ================================================================= -->
+    <!-- 🧭 TOP HEADER BAR (แถบนำทางด้านบนและสถานะรวม) -->
+    <!-- ================================================================= -->
+    <header class="w-full bg-slate-900 text-white shadow-md border-b border-slate-800 sticky top-0 z-40">
+        <div class="max-w-5xl mx-auto px-4 py-3 flex items-center justify-between">
+            <!-- Brand Logo & Title -->
+            <div class="flex items-center space-x-3">
+                <img src="assets/pdpa_icon.png" alt="PDPA Logo"
+                    class="w-10 h-10 rounded-xl object-cover shadow-lg border border-sky-400/40">
+                <div>
+                    <h1 class="font-display font-bold text-lg md:text-xl tracking-wide flex items-center gap-2">
+                        <span>PDPA FAST-PASS</span>
+                        <span class="text-xs font-sans font-medium px-2 py-0.5 rounded-full bg-sky-500/20 text-sky-300 border border-sky-400/30 hidden sm:inline-block">สปีดรันพิทักษ์ข้อมูล</span>
+                    </h1>
+                    <p class="text-xs text-slate-400 font-sans hidden md:block">กิจกรรม Warm-up 5 นาที • คลังข้อสอบ 45 ข้อ (สุ่มรอบละ 15 ข้อ)</p>
+                </div>
+            </div>
+
+            <!-- Quick Controls (Sound & Rules) -->
+            <div class="flex items-center space-x-2">
+                <button id="soundToggleBtn" onclick="toggleSound()" class="px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white text-sm border border-slate-700 transition flex items-center gap-1.5" title="เปิด/ปิดเสียง">
+                    <i id="soundIcon" class="fa-solid fa-volume-high text-sky-400"></i>
+                    <span class="text-xs font-display hidden sm:inline">เสียงเปิด</span>
+                </button>
+                <button id="rulesBtn" onclick="openRulesModal()" class="px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white text-sm border border-slate-700 transition flex items-center gap-1.5" title="กติกาการเล่น">
+                    <i class="fa-solid fa-circle-question text-amber-400"></i>
+                    <span class="text-xs font-display hidden sm:inline">กติกา</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- ================================================================= -->
+    <!-- 🎮 MAIN CONTAINER (พื้นที่แสดงผลทั้ง 3 หน้าจอ) -->
+    <!-- ================================================================= -->
+    <main class="flex-1 max-w-5xl w-full mx-auto p-4 sm:p-6 flex flex-col justify-center items-center relative">
+
+        <!-- ============================================================= -->
+        <!-- SCREEN 1: WELCOME & ONBOARDING (หน้าต้อนรับ) -->
+        <!-- ============================================================= -->
+        <section id="welcomeScreen" class="w-full max-w-2xl bg-white rounded-3xl p-6 sm:p-8 shadow-card border border-slate-200/80 animate__animated animate__fadeIn">
+            <!-- Badge -->
+            <div class="text-center mb-4">
+                <span class="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full text-xs font-semibold bg-sky-50 text-sky-700 border border-sky-200 shadow-sm">
+                    <i class="fa-solid fa-bolt-lightning text-sky-500"></i>
+                    Warm-up Challenge 60 วินาที • คลังข้อสอบ 45 ข้อ
+                </span>
+            </div>
+
+            <!-- Title & Slogan -->
+            <div class="text-center space-y-2 mb-6">
+                <h2 class="font-display font-bold text-2xl sm:text-3xl text-slate-900 leading-tight">
+                    PDPA Fast-Pass: <span class="text-transparent bg-clip-text bg-gradient-to-r from-sky-600 to-rose-600">สปีดรันพิทักษ์ข้อมูล</span>
+                </h2>
+                <p class="text-slate-600 text-sm sm:text-base leading-relaxed max-w-lg mx-auto">
+                    ยินดีต้อนรับนักสืบฝึกหัด ม.3! ระบบจะ <span class="font-bold text-sky-700">สุ่มการ์ดข้อมูล 15 ใบจากคลัง 45 ข้อ</span> ในแต่ละรอบ โดยคุณมีเวลา <span class="font-bold text-rose-600">60 วินาที</span> ในการแยกแยะระหว่าง <span class="text-sky-600 font-semibold">ข้อมูลทั่วไป</span> กับ <span class="text-rose-600 font-semibold">ข้อมูลอ่อนไหว</span> เพื่อผ่านด่านแรก!
+                </p>
+            </div>
+
+            <!-- Quick Cheat-Sheet Cards (สรุปหลักการแบบเข้าใจง่ายใน 10 วินาที) -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
+                <!-- ข้อมูลทั่วไป -->
+                <div class="p-4 rounded-2xl bg-sky-50/70 border border-sky-200/80 flex flex-col justify-between">
+                    <div class="flex items-center gap-3 mb-2">
+                        <div class="w-8 h-8 rounded-xl bg-sky-500 text-white flex items-center justify-center text-sm shadow-md shadow-sky-500/20">
+                            <i class="fa-solid fa-user-tag"></i>
+                        </div>
+                        <h3 class="font-display font-bold text-sky-900 text-base">1. ข้อมูลส่วนบุคคลทั่วไป</h3>
+                    </div>
+                    <p class="text-xs text-sky-800 leading-relaxed">
+                        ข้อมูลที่ระบุตัวตนได้ทั่วไป เช่น ชื่อ, เลขบัตรปชช., เบอร์โทร, อีเมล, IG, ที่อยู่, พิกัด GPS, IP Address, ทะเบียนรถ, เกรด
+                    </p>
+                    <div class="mt-2 text-[11px] font-semibold text-sky-600">
+                        👉 กดปุ่มทางซ้าย หรือ ปัดการ์ดไปทางซ้าย
+                    </div>
+                </div>
+
+                <!-- ข้อมูลอ่อนไหว -->
+                <div class="p-4 rounded-2xl bg-rose-50/70 border border-rose-200/80 flex flex-col justify-between">
+                    <div class="flex items-center gap-3 mb-2">
+                        <div class="w-8 h-8 rounded-xl bg-rose-500 text-white flex items-center justify-center text-sm shadow-md shadow-rose-500/20">
+                            <i class="fa-solid fa-triangle-exclamation"></i>
+                        </div>
+                        <h3 class="font-display font-bold text-rose-900 text-base">2. ข้อมูลที่มีความอ่อนไหว</h3>
+                    </div>
+                    <p class="text-xs text-rose-800 leading-relaxed">
+                        ข้อมูลเสี่ยงเลือกปฏิบัติหรือกระทบสิทธิขั้นสูง เช่น ลายนิ้วมือ, ม่านตา, สุขภาพ, กรุ๊ปเลือด, DNA, ศาสนา, คดีความ, การเมือง
+                    </p>
+                    <div class="mt-2 text-[11px] font-semibold text-rose-600">
+                        👉 กดปุ่มทางขวา หรือ ปัดการ์ดไปทางขวา
+                    </div>
+                </div>
+            </div>
+
+            <!-- How to Play Bar -->
+            <div class="bg-slate-100/80 rounded-xl p-3 mb-6 text-xs text-slate-600 flex flex-wrap items-center justify-around gap-2 border border-slate-200">
+                <div class="flex items-center gap-2">
+                    <i class="fa-solid fa-shuffle text-indigo-500"></i>
+                    <span>สุ่ม 15 ข้อไม่ซ้ำกันในรอบ</span>
+                </div>
+                <div class="flex items-center gap-2">
+                    <i class="fa-solid fa-computer-mouse text-slate-400"></i>
+                    <span>ลากการ์ด ซ้าย-ขวา</span>
+                </div>
+                <div class="flex items-center gap-2">
+                    <i class="fa-solid fa-keyboard text-slate-400"></i>
+                    <span>ปุ่มลูกศร <span class="font-bold bg-white px-1.5 py-0.5 rounded border border-slate-300">←</span> <span class="font-bold bg-white px-1.5 py-0.5 rounded border border-slate-300">→</span></span>
+                </div>
+            </div>
+
+            <!-- Start Button -->
+            <button id="startGameBtn" onclick="startGame()" class="w-full py-4 px-6 rounded-2xl bg-gradient-to-r from-sky-600 via-blue-600 to-indigo-600 hover:from-sky-500 hover:to-indigo-500 text-white font-display font-bold text-lg sm:text-xl shadow-lg shadow-blue-500/30 hover:shadow-blue-500/50 hover:scale-[1.01] active:scale-[0.99] transition duration-200 flex items-center justify-center gap-3">
+                <i class="fa-solid fa-play"></i>
+                <span>เริ่มสปีดรันเลย! (สุ่ม 15 ข้อจาก 45 ข้อ)</span>
+            </button>
+        </section>
+
+        <!-- ============================================================= -->
+        <!-- SCREEN 2: GAMEPLAY (หน้าเล่นเกมหลัก) -->
+        <!-- ============================================================= -->
+        <section id="gameScreen" class="w-full max-w-4xl flex flex-col items-center hidden">
+            
+            <!-- HUD TOP BAR (ตัวจับเวลา & แถบคะแนน) -->
+            <div class="w-full bg-white rounded-2xl p-4 shadow-sm border border-slate-200/80 mb-4 sm:mb-6">
+                <div class="grid grid-cols-3 items-center gap-2">
+                    
+                    <!-- Timer (เวลาถอยหลัง 60s) -->
+                    <div class="flex items-center gap-2.5">
+                        <div id="timerBadge" class="w-11 h-11 rounded-xl bg-slate-900 text-amber-400 flex items-center justify-center font-display font-bold text-lg shadow-sm border border-slate-700 transition-colors duration-300">
+                            <span id="timerText">60</span>
+                        </div>
+                        <div>
+                            <div class="text-[11px] text-slate-400 font-semibold uppercase tracking-wider">เวลาที่เหลือ</div>
+                            <div class="text-xs font-bold text-slate-700"><span id="timerSubText">วินาที</span></div>
+                        </div>
+                    </div>
+
+                    <!-- Card Progress (ความคืบหน้าการ์ด) -->
+                    <div class="flex flex-col items-center">
+                        <span class="text-xs font-display font-bold text-slate-600 mb-1">
+                            การ์ดที่ <span id="currentCardIndex" class="text-sky-600 text-sm">1</span> / <span id="totalCardsCount">15</span>
+                        </span>
+                        <div class="w-full max-w-[140px] bg-slate-100 rounded-full h-2 overflow-hidden border border-slate-200">
+                            <div id="progressBar" class="bg-gradient-to-r from-sky-500 to-indigo-600 h-2 rounded-full transition-all duration-300" style="width: 0%"></div>
+                        </div>
+                    </div>
+
+                    <!-- Live Score & Combo -->
+                    <div class="flex items-center justify-end gap-2.5">
+                        <div class="text-right">
+                            <div class="text-[11px] text-slate-400 font-semibold uppercase tracking-wider">คะแนนสะสม</div>
+                            <div class="text-base sm:text-lg font-display font-bold text-slate-900">
+                                <span id="scoreText" class="text-sky-600">0</span> <span class="text-xs text-slate-400">/ 150</span>
+                            </div>
+                        </div>
+                        <div id="streakContainer" class="flex w-10 h-10 rounded-xl bg-amber-50 border border-amber-200 text-amber-600 items-center justify-center font-display font-bold text-sm shadow-sm" title="ตอบถูกต่อเนื่อง">
+                            <span id="streakCount">🔥 0</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- GAMEPLAY ARENA: 2 DROP BINS + CENTER CARD -->
+            <div class="w-full relative flex flex-col md:flex-row items-center justify-between gap-4 md:gap-6 min-h-[360px] sm:min-h-[400px]">
+                
+                <!-- LEFT BIN: ข้อมูลทั่วไป (General Data) -->
+                <div id="binGeneral" onclick="submitAnswer('general')" class="w-full md:w-1/4 h-24 md:h-80 rounded-2xl md:rounded-3xl bg-sky-50/80 border-2 border-dashed border-sky-300 p-4 flex md:flex-col items-center justify-center gap-3 text-center transition-all duration-200 hover:border-sky-500 hover:bg-sky-100/70 cursor-pointer shadow-sm group">
+                    <div class="w-12 h-12 md:w-16 md:h-16 rounded-2xl bg-sky-500 text-white flex items-center justify-center text-xl md:text-2xl shadow-lg shadow-sky-500/30 group-hover:scale-110 transition duration-200">
+                        <i class="fa-solid fa-user-check"></i>
+                    </div>
+                    <div class="text-left md:text-center">
+                        <h4 class="font-display font-bold text-sky-900 text-sm md:text-base">ข้อมูลทั่วไป</h4>
+                        <p class="text-[11px] text-sky-700 hidden md:block mt-1">ชื่อ, ปชช., เบอร์, อีเมล, ที่อยู่, พิกัด, โซเชียล, เกรด</p>
+                    </div>
+                    <div class="ml-auto md:ml-0 md:mt-2 text-xs font-semibold text-sky-600 bg-white/90 px-2.5 py-1 rounded-full border border-sky-200 shadow-sm hidden sm:block">
+                        <i class="fa-solid fa-arrow-left mr-1"></i> เลื่อนซ้าย
+                    </div>
+                </div>
+
+                <!-- CENTER: FLOATING CARD DISPLAY -->
+                <div class="w-full md:w-2/4 flex flex-col items-center justify-center relative py-2">
+                    
+                    <!-- Main Interactive Card Wrapper -->
+                    <div id="cardContainer" class="w-full max-w-[340px] sm:max-w-[380px] h-[280px] sm:h-[300px] relative">
+                        <div id="gameCard" class="game-card-element w-full h-full bg-white rounded-3xl p-6 sm:p-7 shadow-card border-2 border-slate-200/90 flex flex-col justify-between items-center text-center relative overflow-hidden transition-all duration-200">
+                            
+                            <!-- Card Watermark / Top Tag -->
+                            <div class="w-full flex items-center justify-between text-xs text-slate-400">
+                                <span class="font-display tracking-widest text-[11px] font-semibold text-slate-400 bg-slate-100 px-2.5 py-0.5 rounded-full">
+                                    <i class="fa-solid fa-magnifying-glass text-sky-500 mr-1"></i> ตรวจสอบข้อมูล
+                                </span>
+                                <span id="cardBadgeNumber" class="font-display font-bold text-slate-400">#01</span>
+                            </div>
+
+                            <!-- Card Icon & Title -->
+                            <div class="my-auto space-y-3 w-full">
+                                <div id="cardIconWrap" class="w-16 h-16 mx-auto rounded-2xl bg-slate-100 text-slate-700 flex items-center justify-center text-3xl shadow-inner border border-slate-200 transition-colors">
+                                    <i id="cardIcon" class="fa-solid fa-id-card"></i>
+                                </div>
+                                <h3 id="cardTitle" class="font-display font-bold text-xl sm:text-2xl text-slate-900 leading-snug px-2">
+                                    ชื่อ-นามสกุลจริง
+                                </h3>
+                                <p id="cardHint" class="text-xs text-slate-500">
+                                    คิดวิเคราะห์: ข้อมูลนี้จัดเป็นข้อมูลประเภทใดตาม PDPA?
+                                </p>
+                            </div>
+
+                            <!-- Swipe indicator hint on card -->
+                            <div class="w-full flex items-center justify-between text-[11px] font-medium text-slate-400 border-t border-slate-100 pt-3">
+                                <span class="text-sky-600 flex items-center gap-1"><i class="fa-solid fa-chevron-left"></i> ทั่วไป</span>
+                                <span class="text-slate-300">| ลากหรือกดปุ่ม |</span>
+                                <span class="text-rose-600 flex items-center gap-1">อ่อนไหว <i class="fa-solid fa-chevron-right"></i></span>
+                            </div>
+
+                            <!-- Feedback Overlay (สำหรับแสดงผล ถูก/ผิด ทันที) -->
+                            <div id="cardFeedbackOverlay" class="absolute inset-0 bg-white/95 rounded-3xl p-6 flex flex-col items-center justify-center text-center opacity-0 pointer-events-none transition-opacity duration-200 z-20">
+                                <div id="feedbackIcon" class="w-14 h-14 rounded-2xl flex items-center justify-center text-2xl mb-2 shadow-md"></div>
+                                <h4 id="feedbackTitle" class="font-display font-bold text-base sm:text-lg mb-1"></h4>
+                                <p id="feedbackExplanation" class="text-xs sm:text-sm text-slate-600 leading-relaxed max-w-xs"></p>
+                                <div class="mt-3 text-[11px] text-slate-400 font-medium">กำลังไปยังข้อถัดไป...</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- RIGHT BIN: ข้อมูลอ่อนไหว (Sensitive Data) -->
+                <div id="binSensitive" onclick="submitAnswer('sensitive')" class="w-full md:w-1/4 h-24 md:h-80 rounded-2xl md:rounded-3xl bg-rose-50/80 border-2 border-dashed border-rose-300 p-4 flex md:flex-col items-center justify-center gap-3 text-center transition-all duration-200 hover:border-rose-500 hover:bg-rose-100/70 cursor-pointer shadow-sm group">
+                    <div class="w-12 h-12 md:w-16 md:h-16 rounded-2xl bg-rose-500 text-white flex items-center justify-center text-xl md:text-2xl shadow-lg shadow-rose-500/30 group-hover:scale-110 transition duration-200">
+                        <i class="fa-solid fa-shield-virus"></i>
+                    </div>
+                    <div class="text-left md:text-center">
+                        <h4 class="font-display font-bold text-rose-900 text-sm md:text-base">ข้อมูลอ่อนไหว</h4>
+                        <p class="text-[11px] text-rose-700 hidden md:block mt-1">ลายนิ้วมือ, ม่านตา, สุขภาพ, กรุ๊ปเลือด, ศาสนา, คดี, การเมือง</p>
+                    </div>
+                    <div class="ml-auto md:ml-0 md:mt-2 text-xs font-semibold text-rose-600 bg-white/90 px-2.5 py-1 rounded-full border border-rose-200 shadow-sm hidden sm:block">
+                        เลื่อนขวา <i class="fa-solid fa-arrow-right ml-1"></i>
+                    </div>
+                </div>
+            </div>
+
+            <!-- BOTTOM MOBILE BUTTONS (ปุ่มขนาดใหญ่สำหรับกดจิ้มบนมือถือและแท็บเล็ต) -->
+            <div class="w-full max-w-md grid grid-cols-2 gap-3 mt-4 sm:mt-6">
+                <!-- Left Button: General -->
+                <button onclick="submitAnswer('general')" class="py-3.5 px-4 rounded-2xl bg-white hover:bg-sky-50 active:bg-sky-100 text-sky-700 font-display font-bold text-base sm:text-lg border-2 border-sky-400/80 shadow-md shadow-sky-500/10 hover:shadow-sky-500/20 active:scale-[0.98] transition flex items-center justify-center gap-2">
+                    <i class="fa-solid fa-arrow-left text-sky-500"></i>
+                    <span>ข้อมูลทั่วไป</span>
+                </button>
+
+                <!-- Right Button: Sensitive -->
+                <button onclick="submitAnswer('sensitive')" class="py-3.5 px-4 rounded-2xl bg-white hover:bg-rose-50 active:bg-rose-100 text-rose-700 font-display font-bold text-base sm:text-lg border-2 border-rose-400/80 shadow-md shadow-rose-500/10 hover:shadow-rose-500/20 active:scale-[0.98] transition flex items-center justify-center gap-2">
+                    <span>ข้อมูลอ่อนไหว</span>
+                    <i class="fa-solid fa-arrow-right text-rose-500"></i>
+                </button>
+            </div>
+        </section>
+
+        <!-- ============================================================= -->
+        <!-- SCREEN 3: EVALUATION & SUMMARY (หน้าสรุปความสำเร็จและเฉลย) -->
+        <!-- ============================================================= -->
+        <section id="summaryScreen" class="w-full max-w-2xl bg-white rounded-3xl p-6 sm:p-8 shadow-card border border-slate-200/80 animate__animated animate__zoomIn hidden">
+            
+            <!-- Result Badge & Trophy -->
+            <div class="text-center mb-4">
+                <div id="gradeIconContainer" class="w-20 h-20 sm:w-24 sm:h-24 mx-auto rounded-3xl bg-gradient-to-tr from-amber-400 to-yellow-300 text-white flex items-center justify-center text-4xl sm:text-5xl shadow-xl shadow-amber-500/30 mb-3 animate__animated animate__bounceIn">
+                    <i id="gradeIcon" class="fa-solid fa-trophy"></i>
+                </div>
+                <span id="gradeTag" class="inline-flex items-center gap-1 px-3.5 py-1 rounded-full text-xs font-semibold bg-amber-50 text-amber-800 border border-amber-200">
+                    เกรดทองคำ (Gold Tier)
+                </span>
+            </div>
+
+            <!-- Score & Evaluation Title -->
+            <div class="text-center space-y-2 mb-6">
+                <h2 id="gradeTitle" class="font-display font-bold text-2xl sm:text-3xl text-slate-900">
+                    ผู้พิทักษ์ข้อมูลขั้นเทพ!
+                </h2>
+                <p id="gradeDescription" class="text-slate-600 text-sm sm:text-base max-w-md mx-auto leading-relaxed">
+                    ความจำแม่นยำร้อยเปอร์เซ็นต์! มีความรู้ความเข้าใจเรื่องประเภทข้อมูลตาม PDPA อย่างยอดเยี่ยม
+                </p>
+            </div>
+
+            <!-- Score Stats Matrix (สรุปตัวเลขสถิติ) -->
+            <div class="grid grid-cols-3 gap-2 sm:gap-3 bg-slate-50 rounded-2xl p-4 border border-slate-200 mb-6 text-center">
+                <div>
+                    <div class="text-[11px] text-slate-400 font-semibold uppercase">คะแนนที่ได้</div>
+                    <div class="font-display font-bold text-xl sm:text-2xl text-sky-600 mt-0.5">
+                        <span id="finalScore">0</span> <span class="text-xs text-slate-400 font-normal">/ 150</span>
+                    </div>
+                </div>
+                <div class="border-x border-slate-200">
+                    <div class="text-[11px] text-slate-400 font-semibold uppercase">ความแม่นยำ</div>
+                    <div class="font-display font-bold text-xl sm:text-2xl text-emerald-600 mt-0.5">
+                        <span id="finalAccuracy">0%</span>
+                    </div>
+                </div>
+                <div>
+                    <div class="text-[11px] text-slate-400 font-semibold uppercase">เวลาที่ใช้ไป</div>
+                    <div class="font-display font-bold text-xl sm:text-2xl text-indigo-600 mt-0.5">
+                        <span id="finalTimeUsed">0</span> <span class="text-xs text-slate-400 font-normal">วินาที</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Accordion / Review of Round's 15 Items (เฉลยข้อสอบและทบทวนความรู้ 15 ข้อในรอบที่เล่น) -->
+            <div class="mb-6">
+                <div class="flex items-center justify-between mb-2">
+                    <h4 class="font-display font-bold text-slate-800 text-sm flex items-center gap-2">
+                        <i class="fa-solid fa-list-check text-sky-500"></i>
+                        สรุปการตอบรายข้อในรอบนี้ (15 ข้อมูล)
+                    </h4>
+                    <span class="text-xs text-slate-400">ตรวจสอบจุดที่ตอบถูก/ผิด</span>
+                </div>
+                <div id="reviewList" class="max-h-64 overflow-y-auto space-y-2 pr-1 no-scrollbar text-xs">
+                    <!-- รายการจะถูกสร้างอัตโนมัติด้วย JavaScript -->
+                </div>
+            </div>
+
+            <!-- Action Buttons (เล่นอีกครั้ง / บันทึกภาพ) -->
+            <div class="flex flex-col sm:flex-row items-center gap-3 no-print">
+                <button onclick="startGame()" class="w-full sm:w-1/2 py-3.5 px-4 rounded-2xl bg-gradient-to-r from-sky-600 to-blue-600 hover:from-sky-500 hover:to-blue-500 text-white font-display font-bold text-base shadow-md shadow-sky-500/20 active:scale-[0.99] transition flex items-center justify-center gap-2">
+                    <i class="fa-solid fa-rotate-right"></i>
+                    <span>เล่นรอบใหม่ (สุ่ม 15 ข้อใหม่)</span>
+                </button>
+                <button onclick="window.print()" class="w-full sm:w-1/2 py-3.5 px-4 rounded-2xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-display font-bold text-base border border-slate-300 transition flex items-center justify-center gap-2">
+                    <i class="fa-solid fa-print text-slate-500"></i>
+                    <span>พิมพ์ผลงาน / แคปหน้าจอ</span>
+                </button>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- ================================================================= -->
+    <!-- 📖 MODAL: RULES & PDPA KNOWLEDGE (หน้าต่างกติกาและหลักการ) -->
+    <!-- ================================================================= -->
+    <div id="rulesModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden animate__animated animate__fadeIn">
+        <div class="bg-white w-full max-w-lg rounded-3xl p-6 shadow-2xl border border-slate-200 max-h-[90vh] overflow-y-auto">
+            <div class="flex items-center justify-between pb-3 border-b border-slate-100">
+                <div class="flex items-center gap-2 text-slate-900 font-display font-bold text-lg">
+                    <i class="fa-solid fa-book-open text-sky-500"></i>
+                    <span>กติกาและสาระสำคัญของ PDPA</span>
+                </div>
+                <button onclick="closeRulesModal()" class="w-8 h-8 rounded-full bg-slate-100 text-slate-500 hover:bg-slate-200 flex items-center justify-center">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+
+            <div class="py-4 space-y-4 text-xs sm:text-sm text-slate-600 leading-relaxed">
+                <div>
+                    <h5 class="font-bold text-slate-800 mb-1 text-sm text-sky-700">🎯 กติกาการแข่งขัน:</h5>
+                    <ul class="list-disc pl-5 space-y-1">
+                        <li>ระบบจะสุ่มคำถาม <strong>15 ข้อจากคลังทั้งหมด 45 ข้อ</strong> ในแต่ละรอบ</li>
+                        <li>มีเวลาทั้งหมด <strong>60 วินาที</strong> ในการตอบคำถาม</li>
+                        <li>ตอบถูกได้ <strong>+10 คะแนน</strong> (คะแนนเต็ม 150 คะแนน)</li>
+                        <li>ตอบผิดจะไม่ได้รับคะแนน และมีคำอธิบายสั้นๆ 1.5 วินาที</li>
+                        <li>สามารถใช้ <strong>เมาส์ลาก</strong>, <strong>ปัดนิ้วบนหน้าจอ</strong>, หรือ <strong>กดปุ่มลูกศร ← →</strong></li>
+                    </ul>
+                </div>
+
+                <div class="p-3 bg-sky-50 rounded-xl border border-sky-200">
+                    <h5 class="font-bold text-sky-900 mb-1">📘 ข้อมูลส่วนบุคคลทั่วไป (General Data)</h5>
+                    <p class="text-xs text-sky-800">
+                        ข้อมูลที่ระบุตัวบุคคลได้ ไม่ว่าจะทางตรงหรือทางอ้อม เช่น ชื่อ นามสกุล เลขบัตรประชาชน ที่อยู่ อีเมล เบอร์โทรศัพท์ ประวัติการศึกษา ข้อมูลทางโซเชียลมีเดีย ทะเบียนรถ IP Address
+                    </p>
+                </div>
+
+                <div class="p-3 bg-rose-50 rounded-xl border border-rose-200">
+                    <h5 class="font-bold text-rose-900 mb-1">🚨 ข้อมูลส่วนบุคคลที่มีความอ่อนไหว (Sensitive Data)</h5>
+                    <p class="text-xs text-rose-800">
+                        ข้อมูลที่อาจก่อให้เกิดการเลือกปฏิบัติหรืออันตรายต่อเจ้าของข้อมูลเป็นพิเศษ กฎหมาย PDPA มาตรา 26 กำหนดให้ขอความยินยอมโดยชัดแจ้งเสมอ เช่น เชื้อชาติ ศาสนา ความคิดเห็นทางการเมือง ประวัติอาชญากรรม ข้อมูลสุขภาพ กรุ๊ปเลือด รหัสพันธุกรรม (DNA) และข้อมูลชีวภาพ (Biometrics เช่น ลายนิ้วมือ ม่านตา ใบหน้า เสียง)
+                    </p>
+                </div>
+            </div>
+
+            <button onclick="closeRulesModal()" class="w-full py-3 bg-slate-900 hover:bg-slate-800 text-white rounded-xl font-display font-semibold text-sm">
+                เข้าใจแล้ว พร้อมลุย!
+            </button>
+        </div>
+    </div>
+
+    <!-- ================================================================= -->
+    <!-- 📄 FOOTER -->
+    <!-- ================================================================= -->
+    <footer class="w-full text-center py-4 text-xs text-slate-400 border-t border-slate-200 bg-white">
+        <p>© 2026 Cyber Shield Detective & PDPA Fast-Pass • คลังข้อสอบ 45 ข้อ สุ่มรอบละ 15 ข้อ ระดับชั้น ม.3</p>
+    </footer>
+
+    <!-- ================================================================= -->
+    <!-- 🧠 JAVASCRIPT LOGIC & GAME ENGINE -->
+    <!-- ================================================================= -->
+    <script>
+        /**
+         * 💾 1. คลังข้อมูลการ์ดคำถามทั้งหมด 45 ข้อ (PDPA 45-Card Database)
+         * แบ่งออกเป็น 2 หมวด: 'general' (ข้อมูลทั่วไป 23 ข้อ) และ 'sensitive' (ข้อมูลอ่อนไหว 22 ข้อ)
+         */
+        const PDPA_QUESTIONS_DATABASE = [
+            // ==========================================
+            // หมวด 1: ข้อมูลส่วนบุคคลทั่วไป (General Data - 23 ข้อ)
+            // ==========================================
+            {
+                id: 1,
+                title: "ชื่อ-นามสกุลจริง",
+                type: "general",
+                icon: "fa-id-card",
+                explanation: "ระบุตัวตนได้โดยตรง เป็นข้อมูลส่วนบุคคลทั่วไป"
+            },
+            {
+                id: 2,
+                title: "เบอร์โทรศัพท์มือถือ",
+                type: "general",
+                icon: "fa-phone",
+                explanation: "ข้อมูลติดต่อส่วนบุคคลพื้นฐาน จัดเป็นข้อมูลทั่วไป"
+            },
+            {
+                id: 3,
+                title: "อีเมลส่วนตัว",
+                type: "general",
+                icon: "fa-envelope",
+                explanation: "ที่อยู่อิเล็กทรอนิกส์ส่วนบุคคล เป็นข้อมูลทั่วไป"
+            },
+            {
+                id: 4,
+                title: "ไอดีไอจี (IG Username)",
+                type: "general",
+                icon: "fa-hashtag",
+                explanation: "ชื่อบัญชีโซเชียลมีเดียระบุตัวตนเจ้าของได้ เป็นข้อมูลทั่วไป"
+            },
+            {
+                id: 5,
+                title: "พิกัดบ้านจาก GPS",
+                type: "general",
+                icon: "fa-location-dot",
+                explanation: "ที่อยู่ที่ตั้งหรือแผนที่พิกัดปัจจุบัน จัดเป็นข้อมูลทั่วไป"
+            },
+            {
+                id: 6,
+                title: "ประวัติการศึกษาเกรดเฉลี่ย ม.3",
+                type: "general",
+                icon: "fa-graduation-cap",
+                explanation: "ประวัติการศึกษาและการสอบของนักเรียน เป็นข้อมูลทั่วไป"
+            },
+            {
+                id: 7,
+                title: "ทะเบียนรถยนต์ครอบครัว",
+                type: "general",
+                icon: "fa-car",
+                explanation: "เลขทะเบียนพาหนะระบุตัวตนเจ้าของรถได้ จัดเป็นข้อมูลทั่วไป"
+            },
+            {
+                id: 8,
+                title: "ที่อยู่ไปรษณีย์ส่งของ",
+                type: "general",
+                icon: "fa-box-open",
+                explanation: "ข้อมูลที่อยู่อาศัยทางกายภาพ จัดเป็นข้อมูลทั่วไป"
+            },
+            {
+                id: 9,
+                title: "เลขบัตรประชาชน 13 หลัก",
+                type: "general",
+                icon: "fa-address-card",
+                explanation: "เลขรหัสประจำตัวทางราชการ จัดเป็นข้อมูลทั่วไป (ต้องรักษาความมั่นคงปลอดภัยสูง)"
+            },
+            {
+                id: 10,
+                title: "ภาพถ่ายมุมกว้างกิจกรรมโรงเรียน",
+                type: "general",
+                icon: "fa-camera",
+                explanation: "ภาพถ่ายบุคคลในกิจกรรมทั่วไปที่ระบุตัวตนได้ จัดเป็นข้อมูลทั่วไป"
+            },
+            {
+                id: 11,
+                title: "หมายเลข IP Address คอมพิวเตอร์",
+                type: "general",
+                icon: "fa-network-wired",
+                explanation: "ข้อมูลจราจรทางอินเทอร์เน็ตที่เชื่อมโยงถึงอุปกรณ์ผู้ใช้ เป็นข้อมูลทั่วไป"
+            },
+            {
+                id: 12,
+                title: "วันเดือนปีเกิด และอายุ",
+                type: "general",
+                icon: "fa-cake-candles",
+                explanation: "ข้อมูลคุณลักษณะระบุตัวบุคคลพื้นฐาน จัดเป็นข้อมูลทั่วไป"
+            },
+            {
+                id: 13,
+                title: "เลขที่บัญชีธนาคารสำหรับโอนเงิน",
+                type: "general",
+                icon: "fa-building-columns",
+                explanation: "ข้อมูลทางการเงินเพื่อระบุบัญชีเจ้าของ จัดเป็นข้อมูลทั่วไป"
+            },
+            {
+                id: 14,
+                title: "ชื่อบัญชีผู้ใช้เกมออนไลน์ (Username)",
+                type: "general",
+                icon: "fa-gamepad",
+                explanation: "บัญชีเข้าใช้งานแพลตฟอร์มเกมที่ระบุตัวผู้เล่น จัดเป็นข้อมูลทั่วไป"
+            },
+            {
+                id: 15,
+                title: "ประวัติการสั่งซื้อของออนไลน์",
+                type: "general",
+                icon: "fa-cart-shopping",
+                explanation: "บันทึกพฤติกรรมและความชอบในการซื้อสินค้า จัดเป็นข้อมูลทั่วไป"
+            },
+            {
+                id: 16,
+                title: "ข้อมูลคุกกี้เว็บ (Cookie ID)",
+                type: "general",
+                icon: "fa-cookie-bite",
+                explanation: "ข้อมูลระบุพฤติกรรมการเข้าชมเว็บไซต์ จัดเป็นข้อมูลทั่วไป"
+            },
+            {
+                id: 17,
+                title: "รหัสประจำตัวนักเรียน 5 หลัก",
+                type: "general",
+                icon: "fa-id-badge",
+                explanation: "รหัสเฉพาะของโรงเรียนที่ชี้เฉพาะถึงตัวนักเรียน จัดเป็นข้อมูลทั่วไป"
+            },
+            {
+                id: 18,
+                title: "เลขที่หนังสือเดินทาง (Passport No.)",
+                type: "general",
+                icon: "fa-passport",
+                explanation: "เอกสารทางราชการสำหรับการเดินทางข้ามประเทศ จัดเป็นข้อมูลทั่วไป"
+            },
+            {
+                id: 19,
+                title: "ลายมือชื่อหรือลายเซ็นในเอกสาร",
+                type: "general",
+                icon: "fa-signature",
+                explanation: "สัญลักษณ์ยืนยันการทำนิติกรรมของบุคคล จัดเป็นข้อมูลทั่วไป"
+            },
+            {
+                id: 20,
+                title: "หมายเลขใบอนุญาตขับขี่",
+                type: "general",
+                icon: "fa-id-card-clip",
+                explanation: "ใบอนุญาตขับขี่ยานพาหนะที่ระบุตัวตน จัดเป็นข้อมูลทั่วไป"
+            },
+            {
+                id: 21,
+                title: "ภาพบันทึกจากกล้อง CCTV หน้าร้าน",
+                type: "general",
+                icon: "fa-video",
+                explanation: "ภาพเคลื่อนไหวบันทึกบุคคลในสถานที่ จัดเป็นข้อมูลทั่วไป"
+            },
+            {
+                id: 22,
+                title: "ประวัติการเช็กอินสถานที่ท่องเที่ยว",
+                type: "general",
+                icon: "fa-map-pin",
+                explanation: "ข้อมูลประวัติการเดินทางไปยังจุดต่างๆ จัดเป็นข้อมูลทั่วไป"
+            },
+            {
+                id: 23,
+                title: "ประวัติการทำงานและตำแหน่งอาชีพ",
+                type: "general",
+                icon: "fa-briefcase",
+                explanation: "ข้อมูลด้านการประกอบอาชีพและสถานที่ทำงาน จัดเป็นข้อมูลทั่วไป"
+            },
+
+            // ==========================================
+            // หมวด 2: ข้อมูลส่วนบุคคลที่อ่อนไหว (Sensitive Data - 22 ข้อ)
+            // ==========================================
+            {
+                id: 24,
+                title: "ข้อมูลสแกนลายนิ้วมือ",
+                type: "sensitive",
+                icon: "fa-fingerprint",
+                explanation: "ข้อมูลชีวภาพ Biometrics มีความอ่อนไหวสูงมาก ต้องปกป้องเป็นพิเศษ"
+            },
+            {
+                id: 25,
+                title: "ข้อมูลสแกนม่านตาและโครงสร้างใบหน้า",
+                type: "sensitive",
+                icon: "fa-eye",
+                explanation: "ข้อมูลชีวภาพที่ถอดแบบเฉพาะตัว เป็นข้อมูลอ่อนไหวตามกฎหมาย"
+            },
+            {
+                id: 26,
+                title: "ประวัติการรักษาโรคประจำตัว",
+                type: "sensitive",
+                icon: "fa-heart-pulse",
+                explanation: "ข้อมูลด้านสุขภาพและการแพทย์ จัดเป็นข้อมูลอ่อนไหวที่รั่วไหลไม่ได้"
+            },
+            {
+                id: 27,
+                title: "ข้อมูลกรุ๊ปเลือดและผลตรวจเลือด",
+                type: "sensitive",
+                icon: "fa-droplet",
+                explanation: "ข้อมูลพันธุกรรมและสุขภาพตามกฎหมาย จัดเป็นข้อมูลที่อ่อนไหว"
+            },
+            {
+                id: 28,
+                title: "ข้อมูลความเชื่อทางศาสนาและลัทธิ",
+                type: "sensitive",
+                icon: "fa-place-of-worship",
+                explanation: "ลัทธิความเชื่อและศาสนา มีผลต่อการเลือกปฏิบัติ เป็นข้อมูลอ่อนไหว"
+            },
+            {
+                id: 29,
+                title: "ประวัติอาชญากรรมและการทำผิดกฎหมาย",
+                type: "sensitive",
+                icon: "fa-scale-balanced",
+                explanation: "ประวัติคดีความและการทำผิดกฎหมาย ถือเป็นข้อมูลที่อ่อนไหวอย่างยิ่ง"
+            },
+            {
+                id: 30,
+                title: "ความคิดเห็นและแนวคิดทางการเมือง",
+                type: "sensitive",
+                icon: "fa-landmark-flag",
+                explanation: "อุดมการณ์และพฤติกรรมทางการเมือง จัดเป็นข้อมูลที่อ่อนไหวสูง"
+            },
+            {
+                id: 31,
+                title: "ข้อมูลอัตลักษณ์และรสนิยมทางเพศ",
+                type: "sensitive",
+                icon: "fa-venus-mars",
+                explanation: "พฤติกรรมและความหลากหลายทางเพศ จัดเป็นข้อมูลอ่อนไหวตามมาตรา 26"
+            },
+            {
+                id: 32,
+                title: "ประวัติการเข้าร่วมสหภาพแรงงาน",
+                type: "sensitive",
+                icon: "fa-people-group",
+                explanation: "การรวมกลุ่มและสมาชิกสหภาพแรงงาน จัดเป็นข้อมูลอ่อนไหวตามกฎหมาย"
+            },
+            {
+                id: 33,
+                title: "ข้อมูลรหัสพันธุกรรม (DNA)",
+                type: "sensitive",
+                icon: "fa-dna",
+                explanation: "ข้อมูลทางพันธุกรรมที่ระบุคุณลักษณะเชิงลึก จัดเป็นข้อมูลอ่อนไหวสูงสุด"
+            },
+            {
+                id: 34,
+                title: "ผลประเมินสุขภาพจิตและจิตบำบัด",
+                type: "sensitive",
+                icon: "fa-brain",
+                explanation: "ข้อมูลการดูแลสุขภาพจิตและการบำบัด จัดเป็นข้อมูลสุขภาพที่อ่อนไหว"
+            },
+            {
+                id: 35,
+                title: "เสียงพูดชีวภาพ (Voice Biometrics)",
+                type: "sensitive",
+                icon: "fa-microphone-lines",
+                explanation: "คลื่นเสียงชีวภาพที่ใช้ยืนยันตัวตนบุคคล จัดเป็นข้อมูลชีวภาพที่อ่อนไหว"
+            },
+            {
+                id: 36,
+                title: "ประวัติการบำบัดสารเสพติด",
+                type: "sensitive",
+                icon: "fa-capsules",
+                explanation: "ข้อมูลการฟื้นฟูสุขภาพและสารเสพติด กระทบต่อศักดิ์ศรี เป็นข้อมูลอ่อนไหว"
+            },
+            {
+                id: 37,
+                title: "ข้อมูลความพิการทางร่างกาย/สติปัญญา",
+                type: "sensitive",
+                icon: "fa-wheelchair",
+                explanation: "ภาวะความบกพร่องทางร่างกายและจิตใจ จัดเป็นข้อมูลอ่อนไหวตาม PDPA"
+            },
+            {
+                id: 38,
+                title: "ประวัติการผ่าตัดและใบรับรองแพทย์",
+                type: "sensitive",
+                icon: "fa-file-medical",
+                explanation: "บันทึกการรักษาและหัตถการทางการแพทย์ จัดเป็นข้อมูลอ่อนไหว"
+            },
+            {
+                id: 39,
+                title: "ข้อมูลเชื้อชาติและเผ่าพันธุ์กำเนิด",
+                type: "sensitive",
+                icon: "fa-globe",
+                explanation: "ข้อมูลทางชาติพันธุ์ อาจนำไปสู่การเลือกปฏิบัติ จัดเป็นข้อมูลอ่อนไหว"
+            },
+            {
+                id: 40,
+                title: "ข้อมูลการแพ้ยาและแพ้อาหารรุนแรง",
+                type: "sensitive",
+                icon: "fa-triangle-exclamation",
+                explanation: "ข้อมูลสภาวะภูมิแพ้ทางสุขภาพ จัดเป็นข้อมูลส่วนบุคคลที่อ่อนไหว"
+            },
+            {
+                id: 41,
+                title: "คลื่นไฟฟ้าสมองชีวภาพ (EEG Pattern)",
+                type: "sensitive",
+                icon: "fa-wave-square",
+                explanation: "สัญญาณชีพและข้อมูลชีวภาพระบบประสาท จัดเป็นข้อมูลอ่อนไหว"
+            },
+            {
+                id: 42,
+                title: "ประวัติการตรวจคัดกรองโรคติดต่อ",
+                type: "sensitive",
+                icon: "fa-virus-covid",
+                explanation: "ข้อมูลการติดเชื้อและการรักษาโรคติดต่อ จัดเป็นข้อมูลสุขภาพที่อ่อนไหว"
+            },
+            {
+                id: 43,
+                title: "ฟิล์มเอกซเรย์ปอดและผลสแกน CT",
+                type: "sensitive",
+                icon: "fa-x-ray",
+                explanation: "ภาพถ่ายวินิจฉัยทางการแพทย์ จัดเป็นข้อมูลสุขภาพที่มีความอ่อนไหวสูง"
+            },
+            {
+                id: 44,
+                title: "ข้อมูลการตั้งครรภ์และการวางแผนครอบครัว",
+                type: "sensitive",
+                icon: "fa-person-pregnant",
+                explanation: "ข้อมูลภาวะทางสรีรวิทยาและสุขภาพ จัดเป็นข้อมูลส่วนบุคคลที่อ่อนไหว"
+            },
+            {
+                id: 45,
+                title: "เวชระเบียนการรักษาทางทันตกรรม",
+                type: "sensitive",
+                icon: "fa-tooth",
+                explanation: "บันทึกการตรวจรักษาฟันและช่องปาก จัดเป็นข้อมูลสุขภาพที่อ่อนไหว"
+            }
+        ];
+
+        /**
+         * 🔊 2. ระบบเสียงสังเคราะห์ Web Audio API (ไม่ต้องพึ่งพาไฟล์เสียงภายนอก เล่นได้ 100% แม้ไม่มีเน็ต)
+         */
+        class SoundFX {
+            constructor() {
+                this.enabled = true;
+                this.ctx = null;
+            }
+
+            init() {
+                if (!this.ctx) {
+                    const AudioContext = window.AudioContext || window.webkitAudioContext;
+                    if (AudioContext) {
+                        this.ctx = new AudioContext();
+                    }
+                }
+                if (this.ctx && this.ctx.state === 'suspended') {
+                    this.ctx.resume();
+                }
+            }
+
+            playCorrect() {
+                if (!this.enabled) return;
+                this.init();
+                if (!this.ctx) return;
+
+                const now = this.ctx.currentTime;
+                const osc = this.ctx.createOscillator();
+                const gain = this.ctx.createGain();
+
+                osc.type = 'triangle';
+                // เสียงคอร์ดไพเราะ (C5 -> E5 -> G5)
+                osc.frequency.setValueAtTime(523.25, now);
+                osc.frequency.setValueAtTime(659.25, now + 0.08);
+                osc.frequency.setValueAtTime(783.99, now + 0.16);
+
+                gain.gain.setValueAtTime(0.2, now);
+                gain.gain.exponentialRampToValueAtTime(0.001, now + 0.35);
+
+                osc.connect(gain);
+                gain.connect(this.ctx.destination);
+
+                osc.start(now);
+                osc.stop(now + 0.35);
+            }
+
+            playWrong() {
+                if (!this.enabled) return;
+                this.init();
+                if (!this.ctx) return;
+
+                const now = this.ctx.currentTime;
+                const osc = this.ctx.createOscillator();
+                const gain = this.ctx.createGain();
+
+                osc.type = 'sawtooth';
+                // เสียงตุ่มเตือนเบาๆ เชิงปฏิเสธ (180Hz -> 110Hz)
+                osc.frequency.setValueAtTime(180, now);
+                osc.frequency.exponentialRampToValueAtTime(110, now + 0.25);
+
+                gain.gain.setValueAtTime(0.25, now);
+                gain.gain.exponentialRampToValueAtTime(0.001, now + 0.25);
+
+                osc.connect(gain);
+                gain.connect(this.ctx.destination);
+
+                osc.start(now);
+                osc.stop(now + 0.25);
+            }
+
+            playTick() {
+                if (!this.enabled) return;
+                this.init();
+                if (!this.ctx) return;
+
+                const now = this.ctx.currentTime;
+                const osc = this.ctx.createOscillator();
+                const gain = this.ctx.createGain();
+
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(800, now);
+
+                gain.gain.setValueAtTime(0.05, now);
+                gain.gain.exponentialRampToValueAtTime(0.001, now + 0.05);
+
+                osc.connect(gain);
+                gain.connect(this.ctx.destination);
+
+                osc.start(now);
+                osc.stop(now + 0.05);
+            }
+
+            playFanfare() {
+                if (!this.enabled) return;
+                this.init();
+                if (!this.ctx) return;
+
+                const notes = [523.25, 659.25, 783.99, 1046.50]; // C5, E5, G5, C6
+                notes.forEach((freq, index) => {
+                    const now = this.ctx.currentTime + (index * 0.12);
+                    const osc = this.ctx.createOscillator();
+                    const gain = this.ctx.createGain();
+
+                    osc.type = 'sine';
+                    osc.frequency.setValueAtTime(freq, now);
+
+                    gain.gain.setValueAtTime(0.2, now);
+                    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.4);
+
+                    osc.connect(gain);
+                    gain.connect(this.ctx.destination);
+
+                    osc.start(now);
+                    osc.stop(now + 0.4);
+                });
+            }
+        }
+
+        const sound = new SoundFX();
+
+        function toggleSound() {
+            sound.enabled = !sound.enabled;
+            const icon = document.getElementById('soundIcon');
+            const text = document.querySelector('#soundToggleBtn span');
+            if (sound.enabled) {
+                icon.className = 'fa-solid fa-volume-high text-sky-400';
+                if (text) text.innerText = 'เสียงเปิด';
+            } else {
+                icon.className = 'fa-solid fa-volume-xmark text-slate-500';
+                if (text) text.innerText = 'เสียงปิด';
+            }
+        }
+
+        /**
+         * ⚙️ 3. ตัวแปรสถานะหลักของเกม (Game State)
+         */
+        const QUESTIONS_PER_ROUND = 15; // จำนวนข้อในแต่ละรอบการเล่น
+        let gameActive = false;
+        let gameTimeLeft = 60;
+        let timerInterval = null;
+        let score = 0;
+        let streak = 0;
+        let maxStreak = 0;
+        let currentCardIndex = 0;
+        let activeDeck = []; // สำรับการ์ด 15 ใบที่สุ่มมาจาก 45 ข้อ
+        let playerAnswersLog = []; // บันทึกผลการตอบรายข้อสำหรับหน้าสรุป
+        let isProcessingAnswer = false; // ป้องกันการกดซ้ำซ้อนระหว่างแอนิเมชัน
+
+        /**
+         * 🔀 ฟังก์ชันสุ่มเรียงลำดับการ์ด (Fisher-Yates Shuffle)
+         */
+        function shuffleDeck(array) {
+            const arr = [...array];
+            for (let i = arr.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [arr[i], arr[j]] = [arr[j], arr[i]];
+            }
+            return arr;
+        }
+
+        /**
+         * 🚀 4. ฟังก์ชันเริ่มต้นเกม (Start Game - สุ่ม 15 ข้อจากคลัง 45 ข้อ)
+         */
+        function startGame() {
+            sound.init();
+
+            // รีเซ็ตสถานะทั้งหมด
+            gameActive = true;
+            gameTimeLeft = 60;
+            score = 0;
+            streak = 0;
+            maxStreak = 0;
+            currentCardIndex = 0;
+            isProcessingAnswer = false;
+            playerAnswersLog = [];
+
+            // 🎯 สุ่มสำรับการ์ด 15 ใบไม่ซ้ำกัน จากคลังข้อสอบทั้งหมด 45 ข้อ
+            const fullShuffled = shuffleDeck(PDPA_QUESTIONS_DATABASE);
+            activeDeck = fullShuffled.slice(0, QUESTIONS_PER_ROUND);
+
+            // อัปเดต UI หน้าจอ
+            document.getElementById('welcomeScreen').classList.add('hidden');
+            document.getElementById('summaryScreen').classList.add('hidden');
+            document.getElementById('gameScreen').classList.remove('hidden');
+
+            document.getElementById('scoreText').innerText = score;
+            document.getElementById('timerText').innerText = gameTimeLeft;
+            document.getElementById('streakCount').innerText = `🔥 ${streak}`;
+            document.getElementById('totalCardsCount').innerText = activeDeck.length;
+
+            updateProgressBar();
+            renderCurrentCard();
+
+            // เริ่มต้นระบบนับเวลาถอยหลัง 60 วินาที
+            if (timerInterval) clearInterval(timerInterval);
+            timerInterval = setInterval(() => {
+                if (!gameActive) return;
+                gameTimeLeft--;
+                document.getElementById('timerText').innerText = gameTimeLeft;
+
+                // เอฟเฟกต์เตือน 10 วินาทีสุดท้าย
+                if (gameTimeLeft <= 10) {
+                    document.getElementById('timerBadge').classList.add('bg-rose-600', 'text-white', 'animate-pulse');
+                    sound.playTick();
+                } else {
+                    document.getElementById('timerBadge').classList.remove('bg-rose-600', 'text-white', 'animate-pulse');
+                }
+
+                // เวลาหมด
+                if (gameTimeLeft <= 0) {
+                    endGame("time_up");
+                }
+            }, 1000);
+        }
+
+        /**
+         * 🎴 5. แสดงผลการ์ดปัจจุบันบนหน้าจอ (พร้อมระบบ Reset Style และ Animation)
+         */
+        function renderCurrentCard() {
+            if (currentCardIndex >= activeDeck.length) {
+                endGame("completed");
+                return;
+            }
+
+            const item = activeDeck[currentCardIndex];
+            const gameCard = document.getElementById('gameCard');
+            const cardFeedbackOverlay = document.getElementById('cardFeedbackOverlay');
+
+            // 1. ซ่อนหน้าต่าง Feedback
+            cardFeedbackOverlay.style.opacity = '0';
+            cardFeedbackOverlay.style.pointerEvents = 'none';
+
+            // 2. รีเซ็ต Inline Styles ที่ตกค้าง
+            gameCard.style.transition = 'none';
+            gameCard.style.opacity = '1';
+            gameCard.style.transform = 'translate(0px, 0px) rotate(0deg) scale(0.95)';
+            
+            // ลบคลาสแอนิเมชันและสีขอบเก่า
+            gameCard.classList.remove('border-emerald-500', 'border-rose-500', 'shadow-glow-general', 'shadow-glow-sensitive', 'animate__shakeX', 'animate__animated');
+
+            // 3. อัปเดตเนื้อหาการ์ด
+            document.getElementById('cardBadgeNumber').innerText = `#${String(currentCardIndex + 1).padStart(2, '0')}`;
+            document.getElementById('cardTitle').innerText = item.title;
+            document.getElementById('cardIcon').className = `fa-solid ${item.icon} text-slate-700`;
+            document.getElementById('currentCardIndex').innerText = currentCardIndex + 1;
+
+            // 4. บังคับ Reflow แล้วทำให้การ์ดเด้งขึ้นมาอย่างนุ่มนวล
+            void gameCard.offsetWidth;
+            gameCard.style.transition = 'transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.2s ease';
+            gameCard.style.transform = 'translate(0px, 0px) rotate(0deg) scale(1)';
+
+            updateProgressBar();
+            isProcessingAnswer = false;
+        }
+
+        /**
+         * 📊 6. อัปเดตแถบความคืบหน้า (Progress Bar)
+         */
+        function updateProgressBar() {
+            const progress = (currentCardIndex / activeDeck.length) * 100;
+            document.getElementById('progressBar').style.width = `${progress}%`;
+        }
+
+        /**
+         * 🎯 7. ตรวจสอบคำตอบเมื่อผู้เล่นตัดสินใจ (General หรือ Sensitive)
+         */
+        function submitAnswer(chosenType) {
+            if (!gameActive || isProcessingAnswer || currentCardIndex >= activeDeck.length) return;
+            isProcessingAnswer = true;
+
+            const currentItem = activeDeck[currentCardIndex];
+            const isCorrect = (chosenType === currentItem.type);
+            const gameCard = document.getElementById('gameCard');
+            const feedbackOverlay = document.getElementById('cardFeedbackOverlay');
+            const feedbackIcon = document.getElementById('feedbackIcon');
+            const feedbackTitle = document.getElementById('feedbackTitle');
+            const feedbackExplanation = document.getElementById('feedbackExplanation');
+
+            // บันทึก Log การตอบ
+            playerAnswersLog.push({
+                item: currentItem,
+                chosenType: chosenType,
+                isCorrect: isCorrect
+            });
+
+            if (isCorrect) {
+                // ================= ตอบถูก =================
+                score += 10;
+                streak++;
+                if (streak > maxStreak) maxStreak = streak;
+
+                sound.playCorrect();
+
+                // อัปเดตคะแนน
+                document.getElementById('scoreText').innerText = score;
+                document.getElementById('streakCount').innerText = `🔥 ${streak}`;
+
+                // เอฟเฟกต์การ์ดตอบถูก (สีเขียวเรืองแสง + ลอยออกข้างที่เลือก)
+                gameCard.style.transition = 'transform 0.3s ease-out, opacity 0.3s ease-out';
+                gameCard.classList.add('border-emerald-500', 'shadow-glow-general');
+                const flyDirection = (chosenType === 'general') ? -450 : 450;
+                gameCard.style.transform = `translate(${flyDirection}px, -60px) rotate(${flyDirection > 0 ? 25 : -25}deg)`;
+                gameCard.style.opacity = '0';
+
+                // ขยับไปข้อถัดไป
+                setTimeout(() => {
+                    currentCardIndex++;
+                    renderCurrentCard();
+                }, 320);
+
+            } else {
+                // ================= ตอบผิด =================
+                streak = 0;
+                document.getElementById('streakCount').innerText = `🔥 0`;
+
+                sound.playWrong();
+
+                // การสั่นของมือถือ (ถ้าอุปกรณ์รองรับ)
+                if (navigator.vibrate) navigator.vibrate([100, 50, 100]);
+
+                // เอฟเฟกต์การ์ดผิด
+                gameCard.classList.add('animate__animated', 'animate__shakeX', 'border-rose-500');
+
+                // แสดงข้อความเฉลยทันที 1.5 วินาที
+                feedbackIcon.className = 'w-14 h-14 rounded-2xl bg-rose-500 text-white flex items-center justify-center text-2xl mb-2 shadow-md shadow-rose-500/30';
+                feedbackIcon.innerHTML = '<i class="fa-solid fa-xmark"></i>';
+                feedbackTitle.className = 'font-display font-bold text-base sm:text-lg text-rose-600 mb-1';
+                feedbackTitle.innerText = `ยังไม่ถูกต้อง! (คำตอบคือ: ${currentItem.type === 'general' ? 'ข้อมูลทั่วไป' : 'ข้อมูลอ่อนไหว'})`;
+                feedbackExplanation.innerText = currentItem.explanation;
+
+                feedbackOverlay.style.opacity = '1';
+                feedbackOverlay.style.pointerEvents = 'auto';
+
+                // รอ 1.5 วินาที แล้วเลื่อนไปข้อถัดไป
+                setTimeout(() => {
+                    currentCardIndex++;
+                    renderCurrentCard();
+                }, 1500);
+            }
+        }
+
+        /**
+         * 🏁 8. จบเกมและสรุปผลคะแนน (End Game & Evaluation)
+         */
+        function endGame(reason) {
+            gameActive = false;
+            if (timerInterval) clearInterval(timerInterval);
+
+            // คำนวณเวลาที่ใช้ไป
+            const timeUsed = 60 - gameTimeLeft;
+            const accuracy = Math.round((score / (QUESTIONS_PER_ROUND * 10)) * 100);
+
+            // ซ่อนหน้าต่างเกม แสดงหน้าต่างสรุปผล
+            document.getElementById('gameScreen').classList.add('hidden');
+            document.getElementById('summaryScreen').classList.remove('hidden');
+
+            document.getElementById('finalScore').innerText = score;
+            document.getElementById('finalAccuracy').innerText = `${accuracy}%`;
+            document.getElementById('finalTimeUsed').innerText = timeUsed;
+
+            // ประเมินเกรดตามเกณฑ์ที่กำหนด
+            const gradeIcon = document.getElementById('gradeIcon');
+            const gradeIconContainer = document.getElementById('gradeIconContainer');
+            const gradeTag = document.getElementById('gradeTag');
+            const gradeTitle = document.getElementById('gradeTitle');
+            const gradeDescription = document.getElementById('gradeDescription');
+
+            if (score >= 130) {
+                // 🥇 เกรดทอง (130-150 คะแนน)
+                gradeIcon.className = 'fa-solid fa-crown text-white';
+                gradeIconContainer.className = 'w-20 h-20 sm:w-24 sm:h-24 mx-auto rounded-3xl bg-gradient-to-tr from-amber-400 to-yellow-500 text-white flex items-center justify-center text-4xl sm:text-5xl shadow-xl shadow-amber-500/40 mb-3';
+                gradeTag.className = 'inline-flex items-center gap-1 px-3.5 py-1 rounded-full text-xs font-semibold bg-amber-50 text-amber-900 border border-amber-300';
+                gradeTag.innerHTML = '<i class="fa-solid fa-trophy text-amber-500"></i> ระดับเหรียญทอง (Gold Master)';
+                gradeTitle.innerText = "ผู้พิทักษ์ข้อมูลขั้นเทพ! 🏆";
+                gradeDescription.innerText = "ความจำแม่นยำร้อยเปอร์เซ็นต์! มีความรู้ความเข้าใจเรื่องประเภทข้อมูลตาม PDPA อย่างยอดเยี่ยม พร้อมเป็นผู้นำด้านความปลอดภัยไซเบอร์";
+                
+                // จุดพลุเฉลิมฉลอง Confetti
+                sound.playFanfare();
+                triggerConfettiCelebration();
+
+            } else if (score >= 90) {
+                // 🥈 เกรดเงิน (90-120 คะแนน)
+                gradeIcon.className = 'fa-solid fa-medal text-white';
+                gradeIconContainer.className = 'w-20 h-20 sm:w-24 sm:h-24 mx-auto rounded-3xl bg-gradient-to-tr from-slate-400 to-slate-300 text-white flex items-center justify-center text-4xl sm:text-5xl shadow-xl shadow-slate-500/40 mb-3';
+                gradeTag.className = 'inline-flex items-center gap-1 px-3.5 py-1 rounded-full text-xs font-semibold bg-slate-100 text-slate-800 border border-slate-300';
+                gradeTag.innerHTML = '<i class="fa-solid fa-award text-slate-500"></i> ระดับเหรียญเงิน (Silver Protector)';
+                gradeTitle.innerText = "นักคุ้มครองข้อมูลระดับเหรียญเงิน! 🥈";
+                gradeDescription.innerText = "เกือบสมบูรณ์แบบแล้ว! แยกแยะข้อมูลส่วนใหญ่ได้ถูกต้อง ทบทวนจุดที่พลาดอีกนิดเดียวก็จะเก่งระดับเทพแล้วครับ";
+
+            } else {
+                // 🥉 เกรดทองแดง (ต่ำกว่า 90 คะแนน)
+                gradeIcon.className = 'fa-solid fa-seedling text-white';
+                gradeIconContainer.className = 'w-20 h-20 sm:w-24 sm:h-24 mx-auto rounded-3xl bg-gradient-to-tr from-amber-700 to-amber-600 text-white flex items-center justify-center text-4xl sm:text-5xl shadow-xl shadow-amber-900/40 mb-3';
+                gradeTag.className = 'inline-flex items-center gap-1 px-3.5 py-1 rounded-full text-xs font-semibold bg-amber-50 text-amber-900 border border-amber-200';
+                gradeTag.innerHTML = '<i class="fa-solid fa-book-bookmark text-amber-700"></i> ระดับฝึกหัด (Junior Apprentice)';
+                gradeTitle.innerText = "นักเรียนฝึกหัด! 🥉";
+                gradeDescription.innerText = "อย่าลืมกลับไปทบทวนความแตกต่างระหว่างข้อมูลทั่วไปและข้อมูลอ่อนไหว (โดยเฉพาะข้อมูลสุขภาพและชีวภาพ) แล้วมาประลองใหม่นะ!";
+            }
+
+            // แสดงรายการทบทวนคำถาม-คำตอบทั้ง 15 ข้อในรอบที่เล่น
+            renderReviewList();
+        }
+
+        /**
+         * 📋 9. สร้างรายการทบทวนข้อสอบ 15 ข้อในรอบที่เล่น
+         */
+        function renderReviewList() {
+            const reviewList = document.getElementById('reviewList');
+            reviewList.innerHTML = '';
+
+            activeDeck.forEach((item, index) => {
+                // หาดูว่าผู้เล่นตอบข้อนี้ว่าอย่างไร
+                const userLog = playerAnswersLog.find(log => log.item.id === item.id);
+                const isCorrect = userLog ? userLog.isCorrect : false;
+                const wasAnswered = Boolean(userLog);
+
+                const cardDiv = document.createElement('div');
+                cardDiv.className = `p-3 rounded-xl border flex items-start justify-between gap-3 ${
+                    !wasAnswered 
+                        ? 'bg-slate-50 border-slate-200 text-slate-400' 
+                        : isCorrect 
+                            ? 'bg-emerald-50/70 border-emerald-200 text-slate-800' 
+                            : 'bg-rose-50/70 border-rose-200 text-slate-800'
+                }`;
+
+                const badgeType = item.type === 'general' 
+                    ? '<span class="px-2 py-0.5 rounded-full bg-sky-100 text-sky-800 text-[10px] font-semibold">ข้อมูลทั่วไป</span>' 
+                    : '<span class="px-2 py-0.5 rounded-full bg-rose-100 text-rose-800 text-[10px] font-semibold">ข้อมูลอ่อนไหว</span>';
+
+                const statusIcon = !wasAnswered 
+                    ? '<span class="text-slate-400 font-bold">⏱️ ไม่ทัน</span>'
+                    : isCorrect 
+                        ? '<i class="fa-solid fa-circle-check text-emerald-500 text-base"></i>' 
+                        : '<i class="fa-solid fa-circle-xmark text-rose-500 text-base"></i>';
+
+                cardDiv.innerHTML = `
+                    <div class="flex-1">
+                        <div class="flex items-center gap-2 mb-1">
+                            <span class="font-bold text-slate-700">${index + 1}. ${item.title}</span>
+                            ${badgeType}
+                        </div>
+                        <p class="text-[11px] text-slate-500 leading-snug">💡 ${item.explanation}</p>
+                    </div>
+                    <div class="pt-0.5">${statusIcon}</div>
+                `;
+
+                reviewList.appendChild(cardDiv);
+            });
+        }
+
+        /**
+         * 🎊 10. เอฟเฟกต์พลุเฉลิมฉลอง (Confetti)
+         */
+        function triggerConfettiCelebration() {
+            if (typeof confetti === 'function') {
+                confetti({
+                    particleCount: 120,
+                    spread: 80,
+                    origin: { y: 0.6 }
+                });
+                setTimeout(() => {
+                    confetti({
+                        particleCount: 60,
+                        angle: 60,
+                        spread: 55,
+                        origin: { x: 0 }
+                    });
+                    confetti({
+                        particleCount: 60,
+                        angle: 120,
+                        spread: 55,
+                        origin: { x: 1 }
+                    });
+                }, 300);
+            }
+        }
+
+        /**
+         * 👆 11. ระบบสัมผัสและลากการ์ดด้วยเมาส์/นิ้วมือ (Touch & Drag Physics)
+         */
+        (function initCardDragEngine() {
+            const card = document.getElementById('gameCard');
+            const binGeneral = document.getElementById('binGeneral');
+            const binSensitive = document.getElementById('binSensitive');
+
+            let isDragging = false;
+            let startX = 0;
+            let startY = 0;
+            let currentTranslateX = 0;
+            let currentTranslateY = 0;
+
+            const THRESHOLD = 80; // ระยะการลากพิกเซลเพื่อตัดสินใจ
+
+            function onPointerDown(e) {
+                if (!gameActive || isProcessingAnswer) return;
+                isDragging = true;
+                startX = e.clientX || (e.touches && e.touches[0].clientX);
+                startY = e.clientY || (e.touches && e.touches[0].clientY);
+                card.style.transition = 'none';
+            }
+
+            function onPointerMove(e) {
+                if (!isDragging) return;
+                const clientX = e.clientX || (e.touches && e.touches[0].clientX);
+                const clientY = e.clientY || (e.touches && e.touches[0].clientY);
+
+                currentTranslateX = clientX - startX;
+                currentTranslateY = (clientY - startY) * 0.3; // ลดแรงดึงแนวตั้ง
+
+                const rotateDeg = currentTranslateX * 0.08;
+                card.style.transform = `translate(${currentTranslateX}px, ${currentTranslateY}px) rotate(${rotateDeg}deg)`;
+
+                // ไฮไลต์กล่องฝั่งที่กำลังลากไป
+                if (currentTranslateX < -40) {
+                    binGeneral.classList.add('zone-highlight-general');
+                    binSensitive.classList.remove('zone-highlight-sensitive');
+                } else if (currentTranslateX > 40) {
+                    binSensitive.classList.add('zone-highlight-sensitive');
+                    binGeneral.classList.remove('zone-highlight-general');
+                } else {
+                    binGeneral.classList.remove('zone-highlight-general');
+                    binSensitive.classList.remove('zone-highlight-sensitive');
+                }
+            }
+
+            function onPointerUp() {
+                if (!isDragging) return;
+                isDragging = false;
+                binGeneral.classList.remove('zone-highlight-general');
+                binSensitive.classList.remove('zone-highlight-sensitive');
+
+                if (currentTranslateX < -THRESHOLD) {
+                    // ปัดไปทางซ้าย -> ข้อมูลทั่วไป
+                    submitAnswer('general');
+                } else if (currentTranslateX > THRESHOLD) {
+                    // ปัดไปทางขวา -> ข้อมูลอ่อนไหว
+                    submitAnswer('sensitive');
+                } else {
+                    // เด้งกลับจุดศูนย์กลาง
+                    card.style.transition = 'transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1)';
+                    card.style.transform = 'translate(0px, 0px) rotate(0deg)';
+                }
+
+                currentTranslateX = 0;
+                currentTranslateY = 0;
+            }
+
+            // รองรับ Pointer Events (เมาส์, ปากกา, สัมผัส)
+            card.addEventListener('pointerdown', onPointerDown);
+            window.addEventListener('pointermove', onPointerMove);
+            window.addEventListener('pointerup', onPointerUp);
+            window.addEventListener('pointercancel', onPointerUp);
+        })();
+
+        /**
+         * ⌨️ 12. รองรับปุ่มคีย์บอร์ด (Arrow Left / Arrow Right)
+         */
+        window.addEventListener('keydown', (e) => {
+            if (!gameActive || isProcessingAnswer) return;
+            if (e.key === 'ArrowLeft') {
+                submitAnswer('general');
+            } else if (e.key === 'ArrowRight') {
+                submitAnswer('sensitive');
+            }
+        });
+
+        /**
+         * 📖 13. ฟังก์ชันเปิด/ปิดหน้าต่างกติกา (Rules Modal)
+         */
+        function openRulesModal() {
+            document.getElementById('rulesModal').classList.remove('hidden');
+        }
+
+        function closeRulesModal() {
+            document.getElementById('rulesModal').classList.add('hidden');
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,2585 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>กระดานสร้างใบงานสืบคดี PDPA ม.3 | Cyber Shield Detective Interactive Canvas</title>
+
+    <!-- Meta Tags & Open Graph -->
+    <meta name="description" content="เครื่องมือสร้างใบงานออนไลน์สไตล์โต้ตอบ (Interactive Canvas Assignment Board) เรื่องกฎหมาย PDPA สำหรับนักเรียน ม.3 ตกแต่งสไตล์คราฟต์ ลากวางสติกเกอร์ และส่งออกเป็นภาพ PNG ความละเอียดสูง">
+    <meta name="theme-color" content="#0f172a">
+    <link rel="icon" type="image/png" href="assets/pdpa_icon.png">
+
+    <!-- Google Fonts (7 Thai Fonts + UI Fonts) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bai+Jamjuree:wght@400;600;700&family=Chakra+Petch:wght@500;700&family=Charmonman:wght@400;700&family=Itim&family=Kanit:wght@300;400;500;600;700;800;900&family=Mali:wght@400;500;600;700&family=Mitr:wght@400;500;600&family=Prompt:wght@300;400;500;600;700&family=Sarabun:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Prompt', 'Kanit', 'sans-serif'],
+                        kanit: ['Kanit', 'sans-serif'],
+                        sarabun: ['Sarabun', 'sans-serif'],
+                        mitr: ['Mitr', 'sans-serif'],
+                        baijamjuree: ['Bai Jamjuree', 'sans-serif'],
+                        mali: ['Mali', 'cursive'],
+                        itim: ['Itim', 'cursive'],
+                        charmonman: ['Charmonman', 'cursive'],
+                        prompt: ['Prompt', 'sans-serif'],
+                        craft: ['Mali', 'Prompt', 'cursive'],
+                        mono: ['Chakra Petch', 'monospace'],
+                    },
+                    colors: {
+                        cyber: {
+                            50: '#f0fdf4',
+                            100: '#dcfce7',
+                            400: '#4ade80',
+                            500: '#22c55e',
+                            600: '#16a34a',
+                            700: '#15803d',
+                            800: '#166534',
+                            900: '#14532d',
+                            dark: '#0b0f19',
+                            card: '#131c2e',
+                            border: '#1e293b',
+                            cyan: '#06b6d4',
+                            blue: '#3b82f6',
+                            gold: '#eab308'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- Auto-PDF Generation Libraries -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <!-- Canvas Confetti for Celebration on Export -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+    <style>
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0f172a;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #334155;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #475569;
+        }
+
+        /* Anti-Clipping & Exact Metric Lock */
+        #assignmentSheet, #assignmentSheet * {
+            box-sizing: border-box !important;
+        }
+        .q-badge {
+            display: inline-block !important;
+            min-width: 28px !important;
+            padding: 1px 7px 2px 7px !important;
+            line-height: 1.35 !important;
+            text-align: center !important;
+            font-family: 'Chakra Petch', 'Prompt', sans-serif !important;
+            font-weight: 900 !important;
+            font-size: 11px !important;
+            border-radius: 4px !important;
+            vertical-align: middle !important;
+            box-sizing: border-box !important;
+        }
+        .evidence-badge {
+            display: inline-block !important;
+            padding: 2px 8px 3px 8px !important;
+            line-height: 1.3 !important;
+            text-align: center !important;
+            font-family: 'Chakra Petch', 'Prompt', sans-serif !important;
+            font-weight: 800 !important;
+            font-size: 9.5px !important;
+            border-radius: 4px !important;
+            box-sizing: border-box !important;
+        }
+
+        /* Typography Switcher Classes */
+        .font-style-kanit, .font-style-kanit * { font-family: 'Kanit', sans-serif !important; }
+        .font-style-sarabun, .font-style-sarabun * { font-family: 'Sarabun', sans-serif !important; }
+        .font-style-mitr, .font-style-mitr * { font-family: 'Mitr', sans-serif !important; }
+        .font-style-baijamjuree, .font-style-baijamjuree * { font-family: 'Bai Jamjuree', sans-serif !important; }
+        .font-style-mali, .font-style-mali * { font-family: 'Mali', cursive !important; }
+        .font-style-itim, .font-style-itim * { font-family: 'Itim', cursive !important; }
+        .font-style-charmonman, .font-style-charmonman * { font-family: 'Charmonman', cursive !important; }
+
+        /* Ink Color Palette for Text */
+        .ink-charcoal { color: #1e293b !important; }
+        .ink-blue { color: #1e40af !important; }
+        .ink-red { color: #991b1b !important; }
+        .ink-green { color: #065f46 !important; }
+        .ink-purple { color: #6b21a8 !important; }
+        .ink-brown { color: #451a03 !important; }
+
+        /* Paper Theme Background Styles */
+        .theme-cream {
+            background: linear-gradient(135deg, #fdfbf7 0%, #f6f0e6 100%);
+            color: #1e293b;
+            border-color: #e2d8c7;
+        }
+        .theme-pink {
+            background: linear-gradient(135deg, #fff5f7 0%, #fee2e8 100%);
+            color: #4c1d24;
+            border-color: #fbcfe8;
+        }
+        .theme-blue {
+            background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+            color: #0c4a6e;
+            border-color: #bae6fd;
+        }
+        .theme-gray {
+            background: linear-gradient(135deg, #ffffff 0%, #f1f5f9 100%);
+            color: #0f172a;
+            border-color: #cbd5e1;
+        }
+        .theme-dossier {
+            background: linear-gradient(135deg, #fef9e7 0%, #f9ebc8 100%);
+            color: #3b2a1a;
+            border-color: #e7cf9b;
+        }
+        .theme-cyber {
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            color: #f8fafc;
+            border-color: #334155;
+        }
+
+        /* Paper Border & Frame Styles */
+        .frame-standard {
+            border: 3px solid #1e293b !important;
+        }
+        .frame-grid {
+            background-image: radial-gradient(rgba(100, 116, 139, 0.25) 1.5px, transparent 1.5px) !important;
+            background-size: 16px 16px !important;
+            border: 3px solid #64748b !important;
+        }
+        .frame-caution {
+            border: 3px solid #0f172a !important;
+        }
+        .frame-dossier {
+            border: 4px solid #78350f !important;
+            box-shadow: inset 0 0 0 3px #d97706, inset 0 0 25px rgba(120, 53, 15, 0.15) !important;
+        }
+        .frame-craft {
+            border: 3px dashed #475569 !important;
+            box-shadow: inset 0 0 0 4px rgba(203, 213, 225, 0.6) !important;
+        }
+
+        /* Washi Tape Effect */
+        .washi-tape-top {
+            position: absolute;
+            top: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 90px;
+            height: 22px;
+            background: #fbbf24;
+            opacity: 0.9;
+            border-left: 2px dashed #ffffff;
+            border-right: 2px dashed #ffffff;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.12);
+            z-index: 5;
+        }
+
+        /* Polaroid Photo Frame */
+        .polaroid-frame {
+            background: #ffffff;
+            box-shadow: 0 8px 20px -4px rgba(0, 0, 0, 0.18), 0 2px 6px -1px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(0,0,0,0.08);
+        }
+
+        /* Detective Stamp Watermarks */
+        .stamp-mark {
+            display: inline-block;
+            padding: 4px 10px;
+            text-transform: uppercase;
+            font-family: 'Chakra Petch', sans-serif;
+            font-weight: 700;
+            letter-spacing: 1.5px;
+            border-radius: 4px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.08);
+        }
+
+        /* Drawing / Highlighter Canvas Overlay */
+        #drawingCanvas {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 22;
+            touch-action: none;
+        }
+        #drawingCanvas.drawing-mode-active {
+            pointer-events: auto !important;
+            cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='%23eab308'%3E%3Cpath d='M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z'/%3E%3C/svg%3E") 0 24, crosshair !important;
+        }
+
+        /* Sticker Manipulation Controls */
+        #stickersLayer {
+            position: absolute;
+            inset: 0;
+            pointer-events: none;
+            overflow: hidden;
+            z-index: 30;
+        }
+        .canvas-sticker-item {
+            position: absolute;
+            user-select: none;
+            touch-action: none;
+            cursor: grab;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            pointer-events: auto !important;
+            z-index: 10;
+        }
+        .canvas-sticker-item:active {
+            cursor: grabbing;
+        }
+        .canvas-sticker-item.selected {
+            outline: 2px dashed #3b82f6;
+            outline-offset: 6px;
+            z-index: 40 !important;
+        }
+        .canvas-sticker-item:not(.selected) .sticker-control-btn {
+            display: none !important;
+        }
+        .sticker-control-btn {
+            pointer-events: auto !important;
+            user-select: none;
+            transition: transform 0.15s ease, background-color 0.15s ease;
+        }
+        .sticker-control-btn:hover {
+            transform: scale(1.2);
+        }
+        .sticker-handle-rotate {
+            position: absolute;
+            top: -34px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 26px;
+            height: 26px;
+            background: #3b82f6;
+            color: #fff;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: grab;
+            font-size: 13px;
+            box-shadow: 0 3px 8px rgba(0,0,0,0.35);
+            z-index: 50;
+            border: 2px solid #ffffff;
+        }
+        .sticker-handle-rotate:active {
+            cursor: grabbing;
+            background: #1d4ed8;
+        }
+        .sticker-handle-rotate::after {
+            content: '';
+            position: absolute;
+            bottom: -9px;
+            left: 50%;
+            width: 2px;
+            height: 9px;
+            background: #3b82f6;
+        }
+        .sticker-handle-delete {
+            position: absolute;
+            top: -16px;
+            right: -16px;
+            width: 26px;
+            height: 26px;
+            background: #ef4444;
+            color: #fff;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 13px;
+            box-shadow: 0 3px 8px rgba(0,0,0,0.35);
+            z-index: 50;
+            border: 2px solid #ffffff;
+        }
+        .sticker-handle-delete:hover {
+            background: #dc2626;
+        }
+        .sticker-handle-resize {
+            position: absolute;
+            bottom: -14px;
+            right: -14px;
+            width: 26px;
+            height: 26px;
+            background: #10b981;
+            color: #fff;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: nwse-resize;
+            font-size: 12px;
+            box-shadow: 0 3px 8px rgba(0,0,0,0.35);
+            z-index: 50;
+            border: 2px solid #ffffff;
+        }
+        .sticker-handle-resize:active {
+            background: #059669;
+        }
+
+        /* Tab Navigation Active State */
+        .workspace-tab-btn.active {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: #022c22;
+            font-weight: 700;
+            border-color: #34d399;
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+        }
+
+        /* Grid Pattern Background for App */
+        .bg-grid-cyber {
+            background-size: 32px 32px;
+            background-image: 
+                linear-gradient(to right, rgba(255, 255, 255, 0.04) 1px, transparent 1px),
+                linear-gradient(to bottom, rgba(255, 255, 255, 0.04) 1px, transparent 1px);
+        }
+
+        /* Pulse glow animation */
+        @keyframes cyber-pulse {
+            0%, 100% { box-shadow: 0 0 15px rgba(34, 197, 94, 0.35); }
+            50% { box-shadow: 0 0 30px rgba(34, 197, 94, 0.7); }
+        }
+        .glow-active {
+            animation: cyber-pulse 2s infinite ease-in-out;
+        }
+
+
+        html, body {
+            height: 100vh;
+            max-height: 100vh;
+            overflow: hidden;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* PDF Print Rules — Force Exact 1 Page A4 Landscape */
+        @media print {
+            @page {
+                size: A4 landscape;
+                margin: 0;
+            }
+            *, *::before, *::after {
+                -webkit-print-color-adjust: exact !important;
+                print-color-adjust: exact !important;
+                color-adjust: exact !important;
+            }
+            html {
+                width: 297mm !important;
+                height: 210mm !important;
+                margin: 0 !important;
+                padding: 0 !important;
+                overflow: hidden !important;
+            }
+            body {
+                width: 297mm !important;
+                height: 210mm !important;
+                margin: 0 !important;
+                padding: 0 !important;
+                background: transparent !important;
+                overflow: hidden !important;
+                max-height: 210mm !important;
+            }
+            /* Hide everything except the sheet */
+            header,
+            #leftControlPanel,
+            #registrationModal,
+            .sticker-handle-rotate,
+            .sticker-handle-delete,
+            .sticker-handle-resize,
+            .sticker-control-btn {
+                display: none !important;
+            }
+            /* Hide the canvas action bar (zoom/download controls) */
+            #rightCanvasPanel > div:first-child {
+                display: none !important;
+            }
+            main {
+                display: block !important;
+                margin: 0 !important;
+                padding: 0 !important;
+                width: 297mm !important;
+                height: 210mm !important;
+                max-width: 297mm !important;
+                max-height: 210mm !important;
+                overflow: hidden !important;
+            }
+            #rightCanvasPanel {
+                display: block !important;
+                width: 297mm !important;
+                height: 210mm !important;
+                overflow: hidden !important;
+                margin: 0 !important;
+                padding: 0 !important;
+            }
+            #canvasScrollWrapper {
+                display: block !important;
+                width: 297mm !important;
+                height: 210mm !important;
+                margin: 0 !important;
+                padding: 0 !important;
+                background: transparent !important;
+                border: none !important;
+                overflow: hidden !important;
+                border-radius: 0 !important;
+            }
+            #assignmentSheet {
+                width: 297mm !important;
+                height: 210mm !important;
+                min-width: 297mm !important;
+                min-height: 210mm !important;
+                max-width: 297mm !important;
+                max-height: 210mm !important;
+                transform: none !important;
+                box-shadow: none !important;
+                border-radius: 0 !important;
+                margin: 0 !important;
+                padding: 14px !important;
+                overflow: hidden !important;
+                page-break-after: avoid !important;
+                page-break-inside: avoid !important;
+                break-after: avoid !important;
+                break-inside: avoid !important;
+            }
+        }
+    </style>
+</head>
+<body class="bg-slate-950 text-slate-100 font-sans h-screen max-h-screen overflow-hidden bg-grid-cyber antialiased flex flex-col">
+
+    <!-- ========================================================================= -->
+    <!-- 1. REGISTRATION & WELCOME GATE MODAL (หน้าจอลงทะเบียนแรกเข้าก่อนใช้งาน) -->
+    <!-- ========================================================================= -->
+    <div id="registrationModal" class="fixed inset-0 z-50 bg-slate-950/90 backdrop-blur-md flex items-center justify-center p-4 transition-all duration-500">
+        <div class="relative w-full max-w-xl bg-slate-900 border border-slate-700/80 rounded-2xl shadow-2xl overflow-hidden transform transition-all duration-300 p-6 md:p-8">
+            
+            <!-- Glow background decor -->
+            <div class="absolute -top-24 -left-24 w-48 h-48 bg-emerald-500/20 rounded-full blur-3xl pointer-events-none"></div>
+            <div class="absolute -bottom-24 -right-24 w-48 h-48 bg-cyan-500/20 rounded-full blur-3xl pointer-events-none"></div>
+
+            <!-- Modal Header -->
+            <div class="text-center relative z-10 mb-6">
+                <img src="assets/pdpa_icon.png" alt="PDPA Shield Logo"
+                    class="w-16 h-16 rounded-2xl object-cover shadow-lg border border-emerald-400/40 mb-3 mx-auto">
+                <div class="inline-block px-3 py-1 bg-emerald-950/80 border border-emerald-500/40 text-emerald-400 rounded-full text-xs font-mono tracking-wider mb-2">
+                    CYBER SHIELD DETECTIVE // GRADE 9
+                </div>
+                <h1 class="text-2xl md:text-3xl font-bold text-white tracking-tight font-kanit">
+                    ลงทะเบียนแฟ้มคดีนักสืบไซเบอร์
+                </h1>
+                <p class="text-sm text-slate-400 mt-1 font-light">
+                    กรอกข้อมูลนักเรียนเพื่อสร้างกรอบบัตรประจำตัวและเชื่อมต่อใบงานส่งคุณครู
+                </p>
+            </div>
+
+            <!-- Registration Form -->
+            <form id="regForm" onsubmit="handleRegistration(event)" class="space-y-4 relative z-10">
+                
+                <!-- Prefix, First Name & Last Name (Single Horizontal Row) -->
+                <div class="grid grid-cols-1 sm:grid-cols-12 gap-3">
+                    <!-- Prefix Dropdown -->
+                    <div class="sm:col-span-3">
+                        <label class="block text-xs font-medium text-slate-300 mb-1.5 flex items-center gap-1.5">
+                            <i class="fa-solid fa-tag text-emerald-400"></i> คำนำหน้า <span class="text-red-400">*</span>
+                        </label>
+                        <select id="regPrefix" required class="w-full bg-slate-800 border border-slate-700 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20 text-white rounded-xl px-2.5 py-2.5 text-sm outline-none transition">
+                            <option value="" disabled selected>เลือก...</option>
+                            <option value="ด.ช.">ด.ช.</option>
+                            <option value="ด.ญ.">ด.ญ.</option>
+                            <option value="นาย">นาย</option>
+                            <option value="นางสาว">นางสาว</option>
+                        </select>
+                    </div>
+
+                    <!-- First Name -->
+                    <div class="sm:col-span-4">
+                        <label class="block text-xs font-medium text-slate-300 mb-1.5 flex items-center gap-1.5">
+                            <i class="fa-solid fa-signature text-emerald-400"></i> ชื่อจริง <span class="text-red-400">*</span>
+                        </label>
+                        <input type="text" id="regFirstName" required placeholder="เช่น สมชาย" class="w-full bg-slate-800 border border-slate-700 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20 text-white rounded-xl px-3.5 py-2.5 text-sm outline-none transition placeholder:text-slate-500">
+                    </div>
+
+                    <!-- Last Name -->
+                    <div class="sm:col-span-5">
+                        <label class="block text-xs font-medium text-slate-300 mb-1.5 flex items-center gap-1.5">
+                            <i class="fa-solid fa-id-card text-emerald-400"></i> นามสกุล <span class="text-red-400">*</span>
+                        </label>
+                        <input type="text" id="regLastName" required placeholder="เช่น ดีใจมาก" class="w-full bg-slate-800 border border-slate-700 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20 text-white rounded-xl px-3.5 py-2.5 text-sm outline-none transition placeholder:text-slate-500">
+                    </div>
+                </div>
+
+                <!-- Class & Number -->
+                <div class="grid grid-cols-2 gap-3">
+                    <!-- Classroom Select (ม.3/1 - ม.3/15) -->
+                    <div>
+                        <label class="block text-xs font-medium text-slate-300 mb-1.5 flex items-center gap-1.5">
+                            <i class="fa-solid fa-chalkboard-user text-cyan-400"></i> ชั้นเรียน <span class="text-red-400">*</span>
+                        </label>
+                        <select id="regClassroom" required class="w-full bg-slate-800 border border-slate-700 focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500/20 text-white rounded-xl px-3 py-2.5 text-sm outline-none transition">
+                            <option value="" disabled selected>เลือกห้องเรียน...</option>
+                            <option value="ม.3/1">ม.3/1</option>
+                            <option value="ม.3/2">ม.3/2</option>
+                            <option value="ม.3/3">ม.3/3</option>
+                            <option value="ม.3/4">ม.3/4</option>
+                            <option value="ม.3/5">ม.3/5</option>
+                            <option value="ม.3/6">ม.3/6</option>
+                            <option value="ม.3/7">ม.3/7</option>
+                            <option value="ม.3/8">ม.3/8</option>
+                            <option value="ม.3/9">ม.3/9</option>
+                            <option value="ม.3/10">ม.3/10</option>
+                            <option value="ม.3/11">ม.3/11</option>
+                            <option value="ม.3/12">ม.3/12</option>
+                            <option value="ม.3/13">ม.3/13</option>
+                            <option value="ม.3/14">ม.3/14</option>
+                            <option value="ม.3/15">ม.3/15</option>
+                        </select>
+                    </div>
+
+                    <!-- Student Number Dropdown -->
+                    <div>
+                        <label class="block text-xs font-medium text-slate-300 mb-1">เลขที่ <span class="text-red-400">*</span></label>
+                        <select id="regStudentNumber" required class="w-full bg-slate-800 border border-slate-700 focus:border-emerald-500 text-white rounded-xl px-3.5 py-2.5 text-xs outline-none transition cursor-pointer">
+                            <option value="">เลือกเลขที่</option>
+                            <!-- Generated Dynamically via JS (1-50) -->
+                        </select>
+                    </div>
+                </div>
+
+                <div class="pt-2">
+                    <button type="submit" class="w-full py-3 px-4 bg-gradient-to-r from-emerald-500 to-cyan-500 hover:from-emerald-400 hover:to-cyan-400 text-slate-950 font-bold rounded-xl shadow-lg shadow-emerald-500/20 text-sm flex items-center justify-center gap-2 group transition">
+                        <span>🔓 เปิดแฟ้มคดีนักสืบไซเบอร์</span>
+                        <i class="fa-solid fa-arrow-right text-xs opacity-70 group-hover:translate-x-1 transition-transform"></i>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- ========================================================================= -->
+    <!-- TOP NAVIGATION BAR -->
+    <!-- ========================================================================= -->
+    <header class="h-14 bg-slate-900/90 backdrop-blur-md border-b border-slate-800 px-4 lg:px-6 shrink-0 flex items-center">
+        <div class="w-full max-w-[1900px] mx-auto flex items-center justify-between gap-3">
+            
+            <!-- Brand Logo & Title -->
+            <div class="flex items-center gap-2.5">
+                <img src="assets/pdpa_icon.png" alt="PDPA Shield Logo"
+                    class="w-8 h-8 rounded-lg object-cover shadow-md border border-emerald-400/40">
+                <div>
+                    <div class="flex items-center gap-2">
+                        <h1 class="text-sm md:text-base font-bold text-white font-kanit leading-tight">
+                            Cyber Shield Detective <span class="text-emerald-400 text-[11px] px-1.5 py-0.2 rounded-full bg-emerald-950/80 border border-emerald-500/30">PDPA ม.3</span>
+                        </h1>
+                    </div>
+                    <p class="text-[11px] text-slate-400 hidden sm:block leading-none">
+                        กระดานสร้างใบงานสืบคดีกฎหมายคุ้มครองข้อมูลส่วนบุคคล
+                    </p>
+                </div>
+            </div>
+
+            <!-- Student Profile Badge & Fast Controls -->
+            <div class="flex items-center gap-2 sm:gap-3">
+                
+                <!-- Quick Detective Info Chip -->
+                <div id="topUserChip" class="hidden sm:flex items-center gap-2 bg-slate-800/90 border border-slate-700/80 px-2.5 py-1 rounded-lg text-xs text-slate-200">
+                    <i class="fa-solid fa-user-secret text-emerald-400 text-xs"></i>
+                    <span id="chipStudentName" class="font-medium text-white text-xs">ยังไม่ลงทะเบียน</span>
+                    <span class="text-slate-500">|</span>
+                    <span id="chipStudentClass" class="text-cyan-400 text-xs">ม.3/-</span>
+                    <span class="text-slate-500">|</span>
+                    <span id="chipStudentNo" class="text-amber-400 text-xs">เลขที่ -</span>
+                    <button onclick="openRegistrationModal()" title="แก้ไขข้อมูลนักเรียน" class="ml-0.5 text-slate-400 hover:text-white transition">
+                        <i class="fa-solid fa-pen-to-square text-[11px]"></i>
+                    </button>
+                </div>
+
+                <!-- Reset / New Case Button -->
+                <button onclick="StorageEngine.clear()" title="ล้างข้อมูลทั้งหมดเพื่อเริ่มทำคดีใหม่" class="px-2.5 py-1.5 rounded-lg bg-slate-800 hover:bg-red-500/20 hover:text-red-400 text-slate-400 border border-slate-700 text-xs transition flex items-center gap-1.5">
+                    <i class="fa-solid fa-rotate-left text-[11px]"></i>
+                    <span class="hidden sm:inline">เริ่มคดีใหม่</span>
+                </button>
+
+                <!-- Primary PDF Export Button -->
+                <button onclick="exportAssignmentPDF()" class="px-3.5 py-1.5 rounded-lg bg-gradient-to-r from-emerald-500 to-green-600 hover:from-emerald-400 hover:to-green-500 text-slate-950 font-bold text-xs shadow-md shadow-emerald-500/30 hover:shadow-emerald-500/50 transition-all flex items-center gap-1.5 glow-active">
+                    <i class="fa-solid fa-file-pdf text-xs"></i>
+                    <span>💾 บันทึกเป็น PDF</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- ========================================================================= -->
+    <!-- 2. MAIN WORKSPACE (STUDIO SPLIT-PANE LAYOUT) -->
+    <!-- ========================================================================= -->
+    <main class="flex-1 w-full max-w-[1920px] mx-auto p-2 lg:p-3 grid grid-cols-1 lg:grid-cols-12 gap-3 overflow-hidden min-h-0 items-stretch">
+        
+        <!-- ===================================================================== -->
+        <!-- LEFT PANEL: WORKSPACE CONTROL DECK (แผงควบคุมระบบ 3 แท็บ) -->
+        <!-- ===================================================================== -->
+        <section id="leftControlPanel" class="lg:col-span-5 flex flex-col gap-2 h-full min-h-0 overflow-hidden">
+            
+            <!-- Navigation Tab Buttons (3 Tabs - Fixed at Top) -->
+            <div class="bg-slate-900/95 border border-slate-800 p-1 rounded-xl flex items-center gap-1 shadow-md shrink-0">
+                <button type="button" onclick="switchWorkspaceTab('tab-data')" id="btn-tab-data" class="workspace-tab-btn active flex-1 py-2 px-1.5 rounded-lg text-xs font-semibold flex items-center justify-center gap-1 transition text-slate-300 hover:text-white">
+                    <i class="fa-solid fa-pen-to-square text-xs"></i>
+                    <span>1. ข้อมูล & คำตอบ</span>
+                </button>
+                <button type="button" onclick="switchWorkspaceTab('tab-style')" id="btn-tab-style" class="workspace-tab-btn flex-1 py-2 px-1.5 rounded-lg text-xs font-semibold flex items-center justify-center gap-1 transition text-slate-300 hover:text-white">
+                    <i class="fa-solid fa-palette text-xs"></i>
+                    <span>2. ฟอนต์ & ลายกระดาษ</span>
+                </button>
+                <button type="button" onclick="switchWorkspaceTab('tab-craft')" id="btn-tab-craft" class="workspace-tab-btn flex-1 py-2 px-1.5 rounded-lg text-xs font-semibold flex items-center justify-center gap-1 transition text-slate-300 hover:text-white">
+                    <i class="fa-solid fa-wand-magic-sparkles text-xs"></i>
+                    <span>3. สติกเกอร์ & ไฮไลต์</span>
+                </button>
+            </div>
+
+            <!-- Scrollable Tab Content Container (Only Left Panel Scrolls!) -->
+            <div class="flex-1 overflow-y-auto pr-1.5 space-y-3 pb-8 min-h-0">
+
+                <!-- ============================================================= -->
+                <!-- TAB 1: DATA & ANSWERS (ข้อมูลข่าวและ 3 คำถามหลัก) -->
+                <!-- ============================================================= -->
+                <div id="tab-data" class="tab-panel space-y-4">
+                
+                <!-- Module 1: News Image & Evidence Source -->
+                <div class="bg-slate-900/95 border border-slate-800 rounded-2xl p-4 md:p-5 shadow-xl">
+                    <div class="flex items-center justify-between mb-3">
+                        <h2 class="text-sm font-bold text-white flex items-center gap-2 font-kanit">
+                            <i class="fa-solid fa-camera-retro text-emerald-400 text-base"></i>
+                            <span>1. ภาพหลักฐาน & ลิงก์ที่มาข่าว</span>
+                        </h2>
+                        <span class="text-[11px] text-slate-400 bg-slate-800 px-2 py-0.5 rounded-md">Evidence Box</span>
+                    </div>
+
+                    <div class="space-y-3">
+                        <!-- Image Upload Area (Supports Drag & Drop & Base64 preview) -->
+                        <div id="dropZone" class="relative group border-2 border-dashed border-slate-700 hover:border-emerald-500/70 bg-slate-800/40 rounded-xl p-4 text-center transition cursor-pointer flex flex-col items-center justify-center min-h-[110px]">
+                            <input type="file" id="imageInput" accept="image/*" class="absolute inset-0 opacity-0 cursor-pointer w-full h-full z-10" onchange="handleImageUpload(event)">
+                            
+                            <div id="uploadPlaceholder" class="flex flex-col items-center pointer-events-none">
+                                <div class="w-10 h-10 rounded-full bg-emerald-500/10 text-emerald-400 flex items-center justify-center text-lg mb-1 group-hover:scale-110 transition">
+                                    <i class="fa-solid fa-cloud-arrow-up"></i>
+                                </div>
+                                <p class="text-xs font-medium text-slate-200">
+                                    คลิกเพื่อเลือกภาพข่าว หรือ ลากวางไฟล์ภาพที่นี่
+                                </p>
+                                <p class="text-[10px] text-slate-400 mt-0.5">
+                                    รองรับ PNG, JPG, WebP (แปลงเป็น Base64 ป้องกันภาพหลุด 100%)
+                                </p>
+                            </div>
+
+                            <!-- Uploaded Image Thumbnail Preview -->
+                            <div id="uploadPreviewWrapper" class="hidden w-full flex items-center justify-between gap-3 relative z-20">
+                                <div class="flex items-center gap-3 overflow-hidden">
+                                    <img id="uploadThumb" src="" alt="Thumbnail" class="w-14 h-14 object-cover rounded-lg border border-slate-700 shadow">
+                                    <div class="text-left truncate">
+                                        <div id="uploadFileName" class="text-xs font-semibold text-emerald-400 truncate">evidence_photo.jpg</div>
+                                        <div class="text-[10px] text-slate-400">อัปโหลดเรียบร้อยพร้อมเรนเดอร์</div>
+                                    </div>
+                                </div>
+                                <button type="button" onclick="removeUploadedImage(event)" class="px-2.5 py-1.5 rounded-lg bg-red-500/20 hover:bg-red-500/30 text-red-300 text-xs flex items-center gap-1.5 transition">
+                                    <i class="fa-solid fa-trash-can"></i> ลบรูป
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- News Source URL Input -->
+                        <div>
+                            <label class="block text-xs font-medium text-slate-300 mb-1 flex items-center gap-1.5">
+                                <i class="fa-solid fa-link text-cyan-400"></i> ลิงก์ที่มาข่าวสาร (News Source URL)
+                            </label>
+                            <input type="text" id="newsUrlInput" oninput="syncLiveText()" placeholder="เช่น https://www.thaipbs.or.th/news/content/..." class="w-full bg-slate-800 border border-slate-700 focus:border-cyan-500 text-white rounded-xl px-3.5 py-2 text-xs outline-none transition placeholder:text-slate-500">
+                        </div>
+
+                        <!-- News Short Summary Input -->
+                        <div>
+                            <label class="block text-xs font-medium text-slate-300 mb-1 flex items-center gap-1.5">
+                                <i class="fa-solid fa-newspaper text-amber-400"></i> สรุปใจความสั้นๆ ของข่าวคดีนี้
+                            </label>
+                            <textarea id="newsSummaryInput" rows="3" oninput="syncLiveText()" placeholder="สรุปสั้นๆ 2-3 บรรทัด เช่น เกิดเหตุแอดมินร้านค้าทำรายชื่อลูกค้า 500 รายชื่อหลุดโพสต์ลงเพจเฟซบุ๊ก..." class="w-full bg-slate-800 border border-slate-700 focus:border-amber-500 text-white rounded-xl p-3 text-xs outline-none transition placeholder:text-slate-500 resize-none"></textarea>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Module 2: 3 Core Pedagogical PDPA Questions -->
+                <div class="bg-slate-900/95 border border-slate-800 rounded-2xl p-4 md:p-5 shadow-xl space-y-4">
+                    <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+                        <h2 class="text-sm font-bold text-white flex items-center gap-2 font-kanit">
+                            <i class="fa-solid fa-gavel text-cyan-400 text-base"></i>
+                            <span>2. บันทึกผลวิเคราะห์ 3 คำถามหลัก</span>
+                        </h2>
+                        <span class="text-[11px] text-emerald-400 bg-emerald-950/80 border border-emerald-500/30 px-2 py-0.5 rounded-md font-mono">
+                            Live Sync ⚡
+                        </span>
+                    </div>
+
+                    <!-- Question 1 -->
+                    <div class="bg-slate-800/40 border border-slate-700/60 rounded-xl p-3.5 space-y-2">
+                        <div class="flex items-start gap-2">
+                            <span class="w-5 h-5 rounded-md bg-red-500/20 text-red-400 text-xs flex items-center justify-center font-bold shrink-0 mt-0.5">1</span>
+                            <div>
+                                <label class="text-xs font-semibold text-red-300 block">
+                                    คำถามที่ 1 (วิเคราะห์ปัญหา):
+                                </label>
+                                <p class="text-[11px] text-slate-300">
+                                    คดีนี้ใครทำอะไรผิดกฎหมาย PDPA และทำไมข้อมูลนั้นถึงสำคัญ?
+                                </p>
+                            </div>
+                        </div>
+                        <textarea id="ans1Input" rows="3" oninput="syncLiveText()" placeholder="พิมพ์ตอบข้อ 1: ชี้ให้เห็นว่าใครเป็นผู้ละเมิด ข้อมูลอะไรหลุด (เช่น ข้อมูลสุขภาพ, เบอร์โทร, เลขบัตร) และส่งผลกระทบอย่างไร..." class="w-full bg-slate-900 border border-slate-700 focus:border-red-400 text-white rounded-lg p-2.5 text-xs outline-none transition placeholder:text-slate-600 resize-none"></textarea>
+                    </div>
+
+                    <!-- Question 2 -->
+                    <div class="bg-slate-800/40 border border-slate-700/60 rounded-xl p-3.5 space-y-2">
+                        <div class="flex items-start gap-2">
+                            <span class="w-5 h-5 rounded-md bg-amber-500/20 text-amber-400 text-xs flex items-center justify-center font-bold shrink-0 mt-0.5">2</span>
+                            <div>
+                                <label class="text-xs font-semibold text-amber-300 block">
+                                    คำถามที่ 2 (แก้ไขทันควัน):
+                                </label>
+                                <p class="text-[11px] text-slate-300">
+                                    ถ้าเราเป็นผู้เสียหายหรือแอดมินระบบ จะกู้ภัยแก้ไขปัญหาด่วนเฉพาะหน้าในเวลานี้ยังไง?
+                                </p>
+                            </div>
+                        </div>
+                        <textarea id="ans2Input" rows="3" oninput="syncLiveText()" placeholder="พิมพ์ตอบข้อ 2: วิธีดับไฟเฉพาะหน้า เช่น แจ้งปิดกั้นลิงก์ทันที, รีเซ็ตรหัสผ่าน, แจ้งเตือนผู้เสียหาย, ลงบันทึกประจำวัน..." class="w-full bg-slate-900 border border-slate-700 focus:border-amber-400 text-white rounded-lg p-2.5 text-xs outline-none transition placeholder:text-slate-600 resize-none"></textarea>
+                    </div>
+
+                    <!-- Question 3 -->
+                    <div class="bg-slate-800/40 border border-slate-700/60 rounded-xl p-3.5 space-y-2">
+                        <div class="flex items-start gap-2">
+                            <span class="w-5 h-5 rounded-md bg-emerald-500/20 text-emerald-400 text-xs flex items-center justify-center font-bold shrink-0 mt-0.5">3</span>
+                            <div>
+                                <label class="text-xs font-semibold text-emerald-300 block">
+                                    คำถามที่ 3 (แนะนำป้องกัน):
+                                </label>
+                                <p class="text-[11px] text-slate-300">
+                                    ในระยะยาว เราจะแนะนำให้เพื่อนหรือองค์กรติดตั้งระบบอะไรเพื่อป้องกันไม่ให้เกิดเรื่องซ้ำอีก?
+                                </p>
+                            </div>
+                        </div>
+                        <textarea id="ans3Input" rows="3" oninput="syncLiveText()" placeholder="พิมพ์ตอบข้อ 3: แนวทางระยะยาว เช่น ระบบ 2FA, การเข้ารหัส Encryption, อบรมพนักงานเรื่อง PDPA, ทำ Privacy Policy..." class="w-full bg-slate-900 border border-slate-700 focus:border-emerald-400 text-white rounded-lg p-2.5 text-xs outline-none transition placeholder:text-slate-600 resize-none"></textarea>
+                    </div>
+                </div>
+
+            </div>
+
+
+            <!-- ================================================================= -->
+            <!-- TAB 2: FONTS, INK & PAPER FRAMES (ฟอนต์ สีหมึก และกรอบกระดาษ) -->
+            <!-- ================================================================= -->
+            <div id="tab-style" class="tab-panel hidden space-y-4">
+                
+                <!-- 2.1 Thai Google Fonts Selector (7 Fonts) -->
+                <div class="bg-slate-900/95 border border-slate-800 rounded-2xl p-4 md:p-5 shadow-xl space-y-3">
+                    <div class="flex items-center justify-between">
+                        <h2 class="text-sm font-bold text-white flex items-center gap-2 font-kanit">
+                            <i class="fa-solid fa-font text-cyan-400 text-base"></i>
+                            <span>1. รูปแบบตัวอักษรภาษาไทย (7 Thai Fonts)</span>
+                        </h2>
+                        <span class="text-[10px] text-cyan-400 bg-cyan-950/80 px-2 py-0.5 rounded border border-cyan-800">เปลี่ยนทั้งใบงาน</span>
+                    </div>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                        <!-- Font 1: Kanit -->
+                        <button type="button" onclick="setGlobalFont('font-style-kanit')" class="font-btn p-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 border-2 border-emerald-400 text-left transition flex items-center justify-between" data-font="font-style-kanit">
+                            <div>
+                                <div class="text-xs font-bold text-white" style="font-family: 'Kanit', sans-serif;">Kanit (คานิท)</div>
+                                <div class="text-[10px] text-slate-400">โมเดิร์น คมชัด มาตรฐาน</div>
+                            </div>
+                            <span class="text-xs text-emerald-400 font-bold">กขค</span>
+                        </button>
+
+                        <!-- Font 2: Sarabun -->
+                        <button type="button" onclick="setGlobalFont('font-style-sarabun')" class="font-btn p-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 border-2 border-transparent text-left transition flex items-center justify-between" data-font="font-style-sarabun">
+                            <div>
+                                <div class="text-xs font-bold text-white" style="font-family: 'Sarabun', sans-serif;">Sarabun (สารบรรณ)</div>
+                                <div class="text-[10px] text-slate-400">สุภาพ ทางการ อ่านง่าย</div>
+                            </div>
+                            <span class="text-xs text-slate-300 font-bold" style="font-family: 'Sarabun', sans-serif;">กขค</span>
+                        </button>
+
+                        <!-- Font 3: Mitr -->
+                        <button type="button" onclick="setGlobalFont('font-style-mitr')" class="font-btn p-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 border-2 border-transparent text-left transition flex items-center justify-between" data-font="font-style-mitr">
+                            <div>
+                                <div class="text-xs font-bold text-white" style="font-family: 'Mitr', sans-serif;">Mitr (มิตร)</div>
+                                <div class="text-[10px] text-slate-400">เรียบหรู สบายตา คมชัด</div>
+                            </div>
+                            <span class="text-xs text-slate-300 font-bold" style="font-family: 'Mitr', sans-serif;">กขค</span>
+                        </button>
+
+                        <!-- Font 4: Bai Jamjuree -->
+                        <button type="button" onclick="setGlobalFont('font-style-baijamjuree')" class="font-btn p-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 border-2 border-transparent text-left transition flex items-center justify-between" data-font="font-style-baijamjuree">
+                            <div>
+                                <div class="text-xs font-bold text-white" style="font-family: 'Bai Jamjuree', sans-serif;">Bai Jamjuree</div>
+                                <div class="text-[10px] text-slate-400">โมเดิร์นไอที สไตล์ไซเบอร์</div>
+                            </div>
+                            <span class="text-xs text-slate-300 font-bold" style="font-family: 'Bai Jamjuree', sans-serif;">กขค</span>
+                        </button>
+
+                        <!-- Font 5: Mali -->
+                        <button type="button" onclick="setGlobalFont('font-style-mali')" class="font-btn p-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 border-2 border-transparent text-left transition flex items-center justify-between" data-font="font-style-mali">
+                            <div>
+                                <div class="text-xs font-bold text-white" style="font-family: 'Mali', cursive;">Mali (มะลิ)</div>
+                                <div class="text-[10px] text-slate-400">ลายมือนักเรียนน่ารัก</div>
+                            </div>
+                            <span class="text-xs text-amber-300 font-bold" style="font-family: 'Mali', cursive;">กขค</span>
+                        </button>
+
+                        <!-- Font 6: Itim -->
+                        <button type="button" onclick="setGlobalFont('font-style-itim')" class="font-btn p-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 border-2 border-transparent text-left transition flex items-center justify-between" data-font="font-style-itim">
+                            <div>
+                                <div class="text-xs font-bold text-white" style="font-family: 'Itim', cursive;">Itim (ไอติม)</div>
+                                <div class="text-[10px] text-slate-400">ตัวการ์ตูนโค้งมน สดใส</div>
+                            </div>
+                            <span class="text-xs text-pink-300 font-bold" style="font-family: 'Itim', cursive;">กขค</span>
+                        </button>
+
+                        <!-- Font 7: Charmonman -->
+                        <button type="button" onclick="setGlobalFont('font-style-charmonman')" class="font-btn col-span-1 sm:col-span-2 p-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 border-2 border-transparent text-left transition flex items-center justify-between" data-font="font-style-charmonman">
+                            <div>
+                                <div class="text-xs font-bold text-white" style="font-family: 'Charmonman', cursive;">Charmonman (ชามอนมาน)</div>
+                                <div class="text-[10px] text-slate-400">ลายมือหวัดวินเทจคราฟต์</div>
+                            </div>
+                            <span class="text-xs text-purple-300 font-bold" style="font-family: 'Charmonman', cursive;">กขค</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- 2.2 Ink Color Palette (6 Colors) -->
+                <div class="bg-slate-900/95 border border-slate-800 rounded-2xl p-4 md:p-5 shadow-xl space-y-3">
+                    <h2 class="text-sm font-bold text-white flex items-center gap-2 font-kanit">
+                        <i class="fa-solid fa-pen-nib text-amber-400 text-base"></i>
+                        <span>2. สีหมึกปากกาสำหรับข้อความ (Ink Color)</span>
+                    </h2>
+
+                    <div class="grid grid-cols-3 sm:grid-cols-6 gap-2">
+                        <!-- Charcoal -->
+                        <button type="button" onclick="setGlobalInkColor('ink-charcoal')" class="ink-btn p-2 rounded-xl bg-slate-800 hover:bg-slate-700 border-2 border-emerald-400 flex flex-col items-center gap-1 transition" data-ink="ink-charcoal">
+                            <div class="w-6 h-6 rounded-full bg-[#1e293b] border-2 border-slate-400 shadow"></div>
+                            <span class="text-[10px] text-slate-300">ดำชาร์โคล</span>
+                        </button>
+
+                        <!-- Royal Blue -->
+                        <button type="button" onclick="setGlobalInkColor('ink-blue')" class="ink-btn p-2 rounded-xl bg-slate-800 hover:bg-slate-700 border-2 border-transparent flex flex-col items-center gap-1 transition" data-ink="ink-blue">
+                            <div class="w-6 h-6 rounded-full bg-[#1e40af] border-2 border-blue-300 shadow"></div>
+                            <span class="text-[10px] text-slate-300">น้ำเงินคลาสสิก</span>
+                        </button>
+
+                        <!-- Red -->
+                        <button type="button" onclick="setGlobalInkColor('ink-red')" class="ink-btn p-2 rounded-xl bg-slate-800 hover:bg-slate-700 border-2 border-transparent flex flex-col items-center gap-1 transition" data-ink="ink-red">
+                            <div class="w-6 h-6 rounded-full bg-[#991b1b] border-2 border-red-300 shadow"></div>
+                            <span class="text-[10px] text-slate-300">แดงสืบสวน</span>
+                        </button>
+
+                        <!-- Forest Green -->
+                        <button type="button" onclick="setGlobalInkColor('ink-green')" class="ink-btn p-2 rounded-xl bg-slate-800 hover:bg-slate-700 border-2 border-transparent flex flex-col items-center gap-1 transition" data-ink="ink-green">
+                            <div class="w-6 h-6 rounded-full bg-[#065f46] border-2 border-emerald-300 shadow"></div>
+                            <span class="text-[10px] text-slate-300">เขียวมรกต</span>
+                        </button>
+
+                        <!-- Cyber Purple -->
+                        <button type="button" onclick="setGlobalInkColor('ink-purple')" class="ink-btn p-2 rounded-xl bg-slate-800 hover:bg-slate-700 border-2 border-transparent flex flex-col items-center gap-1 transition" data-ink="ink-purple">
+                            <div class="w-6 h-6 rounded-full bg-[#6b21a8] border-2 border-purple-300 shadow"></div>
+                            <span class="text-[10px] text-slate-300">ม่วงไซเบอร์</span>
+                        </button>
+
+                        <!-- Coffee Brown -->
+                        <button type="button" onclick="setGlobalInkColor('ink-brown')" class="ink-btn p-2 rounded-xl bg-slate-800 hover:bg-slate-700 border-2 border-transparent flex flex-col items-center gap-1 transition" data-ink="ink-brown">
+                            <div class="w-6 h-6 rounded-full bg-[#451a03] border-2 border-amber-500 shadow"></div>
+                            <span class="text-[10px] text-slate-300">น้ำตาลคราฟต์</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- 2.3 Paper Background Themes (6 Themes) -->
+                <div class="bg-slate-900/95 border border-slate-800 rounded-2xl p-4 md:p-5 shadow-xl space-y-3">
+                    <h2 class="text-sm font-bold text-white flex items-center gap-2 font-kanit">
+                        <i class="fa-solid fa-palette text-pink-400 text-base"></i>
+                        <span>3. โทนสีกระดาษใบงาน (Paper Color Palette)</span>
+                    </h2>
+
+                    <div class="grid grid-cols-3 sm:grid-cols-6 gap-2">
+                        <!-- Cream Minimal -->
+                        <button type="button" onclick="setPaperTheme('theme-cream')" class="theme-btn group flex flex-col items-center p-2 rounded-xl bg-slate-800 hover:bg-slate-700 border-2 border-emerald-400 transition" data-theme="theme-cream">
+                            <div class="w-7 h-7 rounded-full bg-[#fdfbf7] border border-amber-200 shadow-sm mb-1"></div>
+                            <span class="text-[10px] text-slate-300">ครีมมินิมอล</span>
+                        </button>
+
+                        <!-- Pastel Pink -->
+                        <button type="button" onclick="setPaperTheme('theme-pink')" class="theme-btn group flex flex-col items-center p-2 rounded-xl bg-slate-800 hover:bg-slate-700 border-2 border-transparent hover:border-pink-400 transition" data-theme="theme-pink">
+                            <div class="w-7 h-7 rounded-full bg-[#ffe4e8] border border-pink-300 shadow-sm mb-1"></div>
+                            <span class="text-[10px] text-slate-300">ชมพูพาสเทล</span>
+                        </button>
+
+                        <!-- Pastel Blue -->
+                        <button type="button" onclick="setPaperTheme('theme-blue')" class="theme-btn group flex flex-col items-center p-2 rounded-xl bg-slate-800 hover:bg-slate-700 border-2 border-transparent hover:border-sky-400 transition" data-theme="theme-blue">
+                            <div class="w-7 h-7 rounded-full bg-[#e0f2fe] border border-sky-300 shadow-sm mb-1"></div>
+                            <span class="text-[10px] text-slate-300">ฟ้าคราม</span>
+                        </button>
+
+                        <!-- Clean Slate Gray -->
+                        <button type="button" onclick="setPaperTheme('theme-gray')" class="theme-btn group flex flex-col items-center p-2 rounded-xl bg-slate-800 hover:bg-slate-700 border-2 border-transparent hover:border-slate-400 transition" data-theme="theme-gray">
+                            <div class="w-7 h-7 rounded-full bg-[#ffffff] border border-slate-300 shadow-sm mb-1"></div>
+                            <span class="text-[10px] text-slate-300">ขาวคลีน</span>
+                        </button>
+
+                        <!-- Retro Manila Folder -->
+                        <button type="button" onclick="setPaperTheme('theme-dossier')" class="theme-btn group flex flex-col items-center p-2 rounded-xl bg-slate-800 hover:bg-slate-700 border-2 border-transparent hover:border-amber-600 transition" data-theme="theme-dossier">
+                            <div class="w-7 h-7 rounded-full bg-[#f9ebc8] border border-amber-400 shadow-sm mb-1"></div>
+                            <span class="text-[10px] text-slate-300">แฟ้มคดี</span>
+                        </button>
+
+                        <!-- Cyber Midnight -->
+                        <button type="button" onclick="setPaperTheme('theme-cyber')" class="theme-btn group flex flex-col items-center p-2 rounded-xl bg-slate-800 hover:bg-slate-700 border-2 border-transparent hover:border-cyan-400 transition" data-theme="theme-cyber">
+                            <div class="w-7 h-7 rounded-full bg-[#0f172a] border border-slate-600 shadow-sm mb-1"></div>
+                            <span class="text-[10px] text-slate-300">ไซเบอร์ดาร์ก</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- 2.4 Paper Frame & Border Styles (5 Styles) -->
+                <div class="bg-slate-900/95 border border-slate-800 rounded-2xl p-4 md:p-5 shadow-xl space-y-3">
+                    <h2 class="text-sm font-bold text-white flex items-center gap-2 font-kanit">
+                        <i class="fa-solid fa-border-all text-purple-400 text-base"></i>
+                        <span>4. ลวดลายขอบใบงาน (Frame / Border Style)</span>
+                    </h2>
+
+                    <div class="grid grid-cols-2 sm:grid-cols-5 gap-2">
+                        <!-- Standard -->
+                        <button type="button" onclick="setPaperFrameStyle('frame-standard')" class="frame-btn p-2 rounded-xl bg-slate-800 hover:bg-slate-700 border-2 border-emerald-400 text-center transition" data-frame="frame-standard">
+                            <div class="w-full h-7 rounded border-2 border-slate-900 bg-white/70 mb-1 flex items-center justify-center text-[10px] font-mono">2px</div>
+                            <span class="text-[10px] text-slate-300">มาตรฐาน</span>
+                        </button>
+
+                        <!-- Grid Paper -->
+                        <button type="button" onclick="setPaperFrameStyle('frame-grid')" class="frame-btn p-2 rounded-xl bg-slate-800 hover:bg-slate-700 border-2 border-transparent text-center transition" data-frame="frame-grid">
+                            <div class="w-full h-7 rounded border border-slate-400 bg-slate-200 mb-1 flex items-center justify-center text-[10px]">📐 กริด</div>
+                            <span class="text-[10px] text-slate-300">สมุดกริด</span>
+                        </button>
+
+                        <!-- Caution Tape -->
+                        <button type="button" onclick="setPaperFrameStyle('frame-caution')" class="frame-btn p-2 rounded-xl bg-slate-800 hover:bg-slate-700 border-2 border-transparent text-center transition" data-frame="frame-caution">
+                            <div class="w-full h-7 rounded border-2 border-amber-400 bg-slate-900 mb-1 flex items-center justify-center text-[9px] text-amber-400 font-bold">🚧 CAUTION</div>
+                            <span class="text-[10px] text-slate-300">เทปไซเบอร์</span>
+                        </button>
+
+                        <!-- Vintage Dossier -->
+                        <button type="button" onclick="setPaperFrameStyle('frame-dossier')" class="frame-btn p-2 rounded-xl bg-slate-800 hover:bg-slate-700 border-2 border-transparent text-center transition" data-frame="frame-dossier">
+                            <div class="w-full h-7 rounded border-2 border-amber-800 bg-[#f9ebc8] mb-1 flex items-center justify-center text-[10px] text-amber-900">📁 แฟ้มลับ</div>
+                            <span class="text-[10px] text-slate-300">แฟ้มคดีเก่า</span>
+                        </button>
+
+                        <!-- Craft Paper -->
+                        <button type="button" onclick="setPaperFrameStyle('frame-craft')" class="frame-btn p-2 rounded-xl bg-slate-800 hover:bg-slate-700 border-2 border-transparent text-center transition" data-frame="frame-craft">
+                            <div class="w-full h-7 rounded border-2 border-dashed border-slate-600 bg-slate-100 mb-1 flex items-center justify-center text-[10px]">✂️ รอยปรุ</div>
+                            <span class="text-[10px] text-slate-300">ขอบคราฟต์</span>
+                        </button>
+                    </div>
+                </div>
+
+            </div>
+
+
+            <!-- ================================================================= -->
+            <!-- TAB 3: STICKERS & HIGHLIGHTER STUDIO (สติกเกอร์และปากกาไฮไลต์) -->
+            <!-- ================================================================= -->
+            <div id="tab-craft" class="tab-panel hidden space-y-4">
+                
+                <!-- 3.1 Custom Sticker Image Upload Button -->
+                <div class="bg-gradient-to-r from-purple-950/80 to-slate-900 border border-purple-500/40 rounded-2xl p-4 shadow-xl flex items-center justify-between gap-3">
+                    <div>
+                        <h3 class="text-xs font-bold text-purple-300 font-kanit flex items-center gap-1.5">
+                            <i class="fa-solid fa-cloud-arrow-up"></i>
+                            <span>อัปโหลดภาพมาเป็นสติกเกอร์เอง</span>
+                        </h3>
+                        <p class="text-[10px] text-slate-400 mt-0.5">เลือกรูปภาพจากเครื่องเพื่อแปลงเป็นสติกเกอร์ลากวางบนใบงาน</p>
+                    </div>
+                    <label class="px-3.5 py-2 rounded-xl bg-purple-600 hover:bg-purple-500 text-white font-bold text-xs shadow-lg cursor-pointer transition flex items-center gap-1.5 shrink-0">
+                        <i class="fa-solid fa-plus"></i>
+                        <span>เพิ่มรูปสติกเกอร์</span>
+                        <input type="file" accept="image/*" class="hidden" onchange="handleCustomStickerUpload(event)">
+                    </label>
+                </div>
+
+                <!-- 3.2 Active Sticker Action Toolbar -->
+                <div id="activeStickerToolbar" class="hidden p-3 bg-gradient-to-r from-blue-950/90 to-slate-900 border border-blue-500/50 rounded-2xl flex flex-wrap items-center justify-between gap-2 shadow-lg transition-all animate-fadeIn">
+                    <div class="flex items-center gap-1.5 text-xs text-blue-300 font-semibold font-kanit">
+                        <i class="fa-solid fa-wand-magic-sparkles text-blue-400"></i>
+                        <span>ปรับแต่งสติกเกอร์ที่เลือก:</span>
+                    </div>
+                    <div class="flex items-center gap-1.5 flex-wrap">
+                        <button type="button" onclick="rotateActiveSticker(-15)" class="px-2 py-1 bg-slate-800 hover:bg-blue-600 text-white rounded-lg border border-slate-700 transition text-xs flex items-center gap-1" title="หมุนซ้าย 15 องศา">
+                            <i class="fa-solid fa-rotate-left"></i> -15°
+                        </button>
+                        <button type="button" onclick="rotateActiveSticker(15)" class="px-2 py-1 bg-slate-800 hover:bg-blue-600 text-white rounded-lg border border-slate-700 transition text-xs flex items-center gap-1" title="หมุนขวา 15 องศา">
+                            <i class="fa-solid fa-rotate-right"></i> +15°
+                        </button>
+                        <button type="button" onclick="resizeActiveSticker(0.85)" class="px-2 py-1 bg-slate-800 hover:bg-emerald-600 text-white rounded-lg border border-slate-700 transition text-xs flex items-center gap-1" title="ย่อขนาดเล็กลง">
+                            <i class="fa-solid fa-minus"></i> ย่อ
+                        </button>
+                        <button type="button" onclick="resizeActiveSticker(1.15)" class="px-2 py-1 bg-slate-800 hover:bg-emerald-600 text-white rounded-lg border border-slate-700 transition text-xs flex items-center gap-1" title="ขยายขนาดใหญ่ขึ้น">
+                            <i class="fa-solid fa-plus"></i> ขยาย
+                        </button>
+                        <button type="button" onclick="bringActiveStickerToFront()" class="px-2 py-1 bg-slate-800 hover:bg-cyan-600 text-cyan-300 hover:text-white rounded-lg border border-slate-700 transition text-xs flex items-center gap-1" title="นำมาไว้ข้างหน้าสุด">
+                            <i class="fa-solid fa-layer-group"></i> หน้าสุด
+                        </button>
+                        <button type="button" onclick="deleteActiveSticker()" class="px-2.5 py-1 bg-red-600 hover:bg-red-500 text-white font-bold rounded-lg transition text-xs flex items-center gap-1 shadow" title="ลบสติกเกอร์">
+                            <i class="fa-solid fa-trash-can"></i> ลบ
+                        </button>
+                    </div>
+                </div>
+
+                <!-- 3.3 Expanded 30+ Stickers Deck -->
+                <div class="bg-slate-900/95 border border-slate-800 rounded-2xl p-4 md:p-5 shadow-xl space-y-4">
+                    <div class="flex items-center justify-between">
+                        <h2 class="text-sm font-bold text-white flex items-center gap-2 font-kanit">
+                            <i class="fa-solid fa-stamp text-amber-400 text-base"></i>
+                            <span>คลังสติกเกอร์ & ตราประทับคดี (คลิกเพื่อแปะ)</span>
+                        </h2>
+                        <button type="button" onclick="clearAllStickers()" class="text-[11px] text-slate-400 hover:text-red-400 transition flex items-center gap-1">
+                            <i class="fa-solid fa-rotate-left"></i> ล้างสติกเกอร์
+                        </button>
+                    </div>
+
+                    <!-- Category: Official Detective Stamps -->
+                    <div class="space-y-1.5">
+                        <div class="text-[11px] font-semibold text-slate-400 flex items-center gap-1">
+                            <i class="fa-solid fa-shield-halved text-emerald-400"></i> ตราประทับทางการ (Official Stamps)
+                        </div>
+                        <div class="grid grid-cols-3 sm:grid-cols-4 gap-2 bg-slate-950/60 p-2.5 rounded-xl border border-slate-800">
+                            <!-- PDPA SHIELD EMBLEM -->
+                            <button type="button" onclick="addSticker('pdpa_shield')" title="ตราโล่ PDPA ประจำวิชา" class="p-1.5 rounded-lg bg-sky-950/50 hover:bg-sky-500/20 border border-sky-500/50 text-center transition group flex items-center justify-center">
+                                <img src="assets/pdpa_icon.png" alt="PDPA Shield" class="w-8 h-8 rounded-lg object-cover group-hover:scale-110 transition duration-200">
+                            </button>
+                            <!-- TOP SECRET -->
+                            <button type="button" onclick="addSticker('top_secret')" class="p-2 rounded-lg bg-slate-800/80 hover:bg-red-500/20 border border-slate-700 text-center transition group">
+                                <span class="px-1.5 py-0.5 bg-red-600 text-white font-mono text-[9px] font-bold rounded group-hover:scale-105 inline-block">TOP SECRET</span>
+                            </button>
+                            <!-- CONFIDENTIAL -->
+                            <button type="button" onclick="addSticker('confidential')" class="p-2 rounded-lg bg-slate-800/80 hover:bg-purple-500/20 border border-slate-700 text-center transition group">
+                                <span class="px-1.5 py-0.5 bg-purple-700 text-white font-mono text-[8px] font-bold rounded group-hover:scale-105 inline-block">CONFIDENTIAL</span>
+                            </button>
+                            <!-- PDPA ALERT -->
+                            <button type="button" onclick="addSticker('pdpa_alert')" class="p-2 rounded-lg bg-slate-800/80 hover:bg-amber-500/20 border border-slate-700 text-center transition group">
+                                <span class="px-1.5 py-0.5 bg-amber-500 text-slate-950 font-mono text-[9px] font-bold rounded group-hover:scale-105 inline-block">PDPA ALERT</span>
+                            </button>
+                            <!-- CRIME SCENE -->
+                            <button type="button" onclick="addSticker('crime_scene')" class="p-2 rounded-lg bg-slate-800/80 hover:bg-yellow-500/20 border border-slate-700 text-center transition group">
+                                <span class="px-1.5 py-0.5 bg-yellow-400 text-slate-950 font-mono text-[8px] font-bold rounded group-hover:scale-105 inline-block">CRIME SCENE</span>
+                            </button>
+                            <!-- EVIDENCE A -->
+                            <button type="button" onclick="addSticker('evidence_a')" class="p-2 rounded-lg bg-slate-800/80 hover:bg-blue-500/20 border border-slate-700 text-center transition group">
+                                <span class="px-1.5 py-0.5 bg-blue-600 text-white font-mono text-[9px] font-bold rounded group-hover:scale-105 inline-block">EVIDENCE [A]</span>
+                            </button>
+                            <!-- EVIDENCE B -->
+                            <button type="button" onclick="addSticker('evidence_b')" class="p-2 rounded-lg bg-slate-800/80 hover:bg-blue-500/20 border border-slate-700 text-center transition group">
+                                <span class="px-1.5 py-0.5 bg-indigo-600 text-white font-mono text-[9px] font-bold rounded group-hover:scale-105 inline-block">EVIDENCE [B]</span>
+                            </button>
+                            <!-- APPROVED -->
+                            <button type="button" onclick="addSticker('approved')" class="p-2 rounded-lg bg-slate-800/80 hover:bg-emerald-500/20 border border-slate-700 text-center transition group">
+                                <span class="px-1.5 py-0.5 bg-emerald-600 text-white font-mono text-[9px] font-bold rounded group-hover:scale-105 inline-block">APPROVED</span>
+                            </button>
+                            <!-- VERIFIED -->
+                            <button type="button" onclick="addSticker('verified')" class="p-2 rounded-lg bg-slate-800/80 hover:bg-green-500/20 border border-slate-700 text-center transition group">
+                                <span class="px-1.5 py-0.5 bg-green-600 text-white font-mono text-[8px] font-bold rounded group-hover:scale-105 inline-block">✅ VERIFIED</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Category: Detective & Cyber Icons -->
+                    <div class="space-y-1.5">
+                        <div class="text-[11px] font-semibold text-slate-400 flex items-center gap-1">
+                            <i class="fa-solid fa-magnifying-glass text-cyan-400"></i> ไอคอนสืบสวน & ไซเบอร์ (20+ ลาย)
+                        </div>
+                        <div class="grid grid-cols-4 sm:grid-cols-6 gap-2 bg-slate-950/60 p-2.5 rounded-xl border border-slate-800">
+                            <!-- 1. Magnifier -->
+                            <button type="button" onclick="addSticker('magnifier')" title="แว่นขยาย" class="p-2 rounded-lg bg-slate-800/80 hover:bg-slate-700 border border-slate-700 text-center text-xl transition">🔍</button>
+                            <!-- 2. Shield -->
+                            <button type="button" onclick="addSticker('shield')" title="โล่ป้องกัน" class="p-2 rounded-lg bg-slate-800/80 hover:bg-slate-700 border border-slate-700 text-center text-xl transition">🛡️</button>
+                            <!-- 3. Lock -->
+                            <button type="button" onclick="addSticker('lock')" title="กุญแจล็อก" class="p-2 rounded-lg bg-slate-800/80 hover:bg-slate-700 border border-slate-700 text-center text-xl transition">🔒</button>
+                            <!-- 4. Warning -->
+                            <button type="button" onclick="addSticker('warning')" title="เตือนภัย" class="p-2 rounded-lg bg-slate-800/80 hover:bg-slate-700 border border-slate-700 text-center text-xl transition">⚠️</button>
+                            <!-- 5. Robot -->
+                            <button type="button" onclick="addSticker('robot')" title="บอทสืบสวน" class="p-2 rounded-lg bg-slate-800/80 hover:bg-slate-700 border border-slate-700 text-center text-xl transition">🤖</button>
+                            <!-- 6. Justice -->
+                            <button type="button" onclick="addSticker('justice')" title="ตราชั่งกฎหมาย" class="p-2 rounded-lg bg-slate-800/80 hover:bg-slate-700 border border-slate-700 text-center text-xl transition">⚖️</button>
+                            <!-- 7. Chip -->
+                            <button type="button" onclick="addSticker('chip')" title="ชิปข้อมูล" class="p-2 rounded-lg bg-slate-800/80 hover:bg-slate-700 border border-slate-700 text-center text-xl transition">💾</button>
+                            <!-- 8. Hat -->
+                            <button type="button" onclick="addSticker('hat')" title="หมวกนักสืบ" class="p-2 rounded-lg bg-slate-800/80 hover:bg-slate-700 border border-slate-700 text-center text-xl transition">🕵️‍♂️</button>
+                            <!-- 9. Pin -->
+                            <button type="button" onclick="addSticker('pin')" title="หมุดปัก" class="p-2 rounded-lg bg-slate-800/80 hover:bg-slate-700 border border-slate-700 text-center text-xl transition">📌</button>
+                            <!-- 10. Star -->
+                            <button type="button" onclick="addSticker('star')" title="ดาวเกียรติยศ" class="p-2 rounded-lg bg-slate-800/80 hover:bg-slate-700 border border-slate-700 text-center text-xl transition">⭐</button>
+                            <!-- 11. Bulb -->
+                            <button type="button" onclick="addSticker('bulb')" title="ไอเดีย" class="p-2 rounded-lg bg-slate-800/80 hover:bg-slate-700 border border-slate-700 text-center text-xl transition">💡</button>
+                            <!-- 12. Fingerprint -->
+                            <button type="button" onclick="addSticker('fingerprint')" title="ลายนิ้วมือ" class="p-2 rounded-lg bg-slate-800/80 hover:bg-slate-700 border border-slate-700 text-center text-xl transition">🧬</button>
+                            <!-- 13. Target -->
+                            <button type="button" onclick="addSticker('target')" title="เป้าหมาย" class="p-2 rounded-lg bg-slate-800/80 hover:bg-slate-700 border border-slate-700 text-center text-xl transition">🎯</button>
+                            <!-- 14. CCTV -->
+                            <button type="button" onclick="addSticker('cctv')" title="กล้องวงจรปิด" class="p-2 rounded-lg bg-slate-800/80 hover:bg-slate-700 border border-slate-700 text-center text-xl transition">📹</button>
+                            <!-- 15. Laptop -->
+                            <button type="button" onclick="addSticker('laptop')" title="โน้ตบุ๊ก" class="p-2 rounded-lg bg-slate-800/80 hover:bg-slate-700 border border-slate-700 text-center text-xl transition">💻</button>
+                            <!-- 16. Siren -->
+                            <button type="button" onclick="addSticker('siren')" title="หวอฉุกเฉิน" class="p-2 rounded-lg bg-slate-800/80 hover:bg-slate-700 border border-slate-700 text-center text-xl transition">🚨</button>
+                            <!-- 17. Folder -->
+                            <button type="button" onclick="addSticker('folder')" title="แฟ้มเอกสาร" class="p-2 rounded-lg bg-slate-800/80 hover:bg-slate-700 border border-slate-700 text-center text-xl transition">📂</button>
+                            <!-- 18. Key -->
+                            <button type="button" onclick="addSticker('key')" title="ลูกกุญแจ" class="p-2 rounded-lg bg-slate-800/80 hover:bg-slate-700 border border-slate-700 text-center text-xl transition">🔑</button>
+                            <!-- 19. Firewall -->
+                            <button type="button" onclick="addSticker('firewall')" title="ไฟร์วอลล์" class="p-2 rounded-lg bg-slate-800/80 hover:bg-slate-700 border border-slate-700 text-center text-xl transition">🧱</button>
+                            <!-- 20. Package -->
+                            <button type="button" onclick="addSticker('package')" title="กล่องพัสดุ" class="p-2 rounded-lg bg-slate-800/80 hover:bg-slate-700 border border-slate-700 text-center text-xl transition">📦</button>
+                            <!-- 21. Phone -->
+                            <button type="button" onclick="addSticker('phone')" title="สมาร์ตโฟน" class="p-2 rounded-lg bg-slate-800/80 hover:bg-slate-700 border border-slate-700 text-center text-xl transition">📱</button>
+                            <!-- 22. Scroll -->
+                            <button type="button" onclick="addSticker('scroll')" title="เอกสารราชการ" class="p-2 rounded-lg bg-slate-800/80 hover:bg-slate-700 border border-slate-700 text-center text-xl transition">📜</button>
+                            <!-- 23. Yellow Washi -->
+                            <button type="button" onclick="addSticker('washi')" title="เทปวาชิเหลือง" class="p-2 rounded-lg bg-slate-800/80 hover:bg-slate-700 border border-slate-700 flex items-center justify-center">
+                                <div class="w-7 h-2.5 bg-amber-400 rounded"></div>
+                            </button>
+                            <!-- 24. Pink Washi -->
+                            <button type="button" onclick="addSticker('washi_pink')" title="เทปวาชิชมพู" class="p-2 rounded-lg bg-slate-800/80 hover:bg-slate-700 border border-slate-700 flex items-center justify-center">
+                                <div class="w-7 h-2.5 bg-pink-400 rounded"></div>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 3.4 Neon Highlighter & Drawing Studio -->
+                <div class="bg-slate-900/95 border border-slate-800 rounded-2xl p-4 md:p-5 shadow-xl space-y-3.5">
+                    <div class="flex items-center justify-between">
+                        <h2 class="text-sm font-bold text-white flex items-center gap-2 font-kanit">
+                            <i class="fa-solid fa-highlighter text-yellow-400 text-base"></i>
+                            <span>สตูดิโอปากกาไฮไลต์นีออน (Highlighter Studio)</span>
+                        </h2>
+                    </div>
+
+                    <!-- Highlighter Mode Toggle Switch -->
+                    <div class="flex items-center justify-between bg-slate-950 p-3 rounded-xl border border-slate-800">
+                        <div class="flex items-center gap-2">
+                            <span id="drawStatusIcon" class="w-3 h-3 rounded-full bg-slate-600"></span>
+                            <span id="drawStatusText" class="text-xs font-semibold text-slate-300 font-kanit">โหมดวาด: ปิดอยู่ (เลือก/ลากสติกเกอร์ได้ปกติ)</span>
+                        </div>
+                        <button type="button" onclick="toggleDrawingMode()" id="drawModeBtn" class="px-3.5 py-1.5 rounded-lg bg-slate-800 hover:bg-yellow-500 hover:text-slate-950 text-yellow-400 font-bold text-xs border border-yellow-500/40 transition flex items-center gap-1.5 shadow">
+                            <i class="fa-solid fa-pen"></i>
+                            <span>เปิดโหมดไฮไลต์</span>
+                        </button>
+                    </div>
+
+                    <!-- Highlighter Colors & Brush Sizes -->
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                        <!-- Colors -->
+                        <div class="space-y-1.5">
+                            <div class="text-[11px] font-semibold text-slate-400">สีไฮไลต์โปร่งแสง:</div>
+                            <div class="flex items-center gap-2">
+                                <!-- Yellow -->
+                                <button type="button" onclick="setHighlighterColor('rgba(250, 204, 21, 0.45)')" class="hl-color-btn w-8 h-8 rounded-full bg-yellow-400 border-2 border-white shadow-lg transition scale-110" data-color="rgba(250, 204, 21, 0.45)"></button>
+                                <!-- Mint Green -->
+                                <button type="button" onclick="setHighlighterColor('rgba(52, 211, 153, 0.45)')" class="hl-color-btn w-8 h-8 rounded-full bg-emerald-400 border-2 border-transparent hover:border-white shadow transition" data-color="rgba(52, 211, 153, 0.45)"></button>
+                                <!-- Neon Pink -->
+                                <button type="button" onclick="setHighlighterColor('rgba(244, 114, 182, 0.45)')" class="hl-color-btn w-8 h-8 rounded-full bg-pink-400 border-2 border-transparent hover:border-white shadow transition" data-color="rgba(244, 114, 182, 0.45)"></button>
+                                <!-- Sky Blue -->
+                                <button type="button" onclick="setHighlighterColor('rgba(56, 189, 248, 0.45)')" class="hl-color-btn w-8 h-8 rounded-full bg-sky-400 border-2 border-transparent hover:border-white shadow transition" data-color="rgba(56, 189, 248, 0.45)"></button>
+                                <!-- Red Pen -->
+                                <button type="button" onclick="setHighlighterColor('rgba(239, 68, 68, 0.75)')" class="hl-color-btn w-8 h-8 rounded-full bg-red-500 border-2 border-transparent hover:border-white shadow transition" data-color="rgba(239, 68, 68, 0.75)"></button>
+                            </div>
+                        </div>
+
+                        <!-- Brush Sizes -->
+                        <div class="space-y-1.5">
+                            <div class="text-[11px] font-semibold text-slate-400">ขนาดหัวปากกา:</div>
+                            <div class="flex items-center gap-2">
+                                <button type="button" onclick="setHighlighterSize(8)" class="hl-size-btn flex-1 py-1.5 bg-slate-800 hover:bg-slate-700 text-white rounded-lg border border-slate-700 text-xs text-center transition" data-size="8">เล็ก (8px)</button>
+                                <button type="button" onclick="setHighlighterSize(16)" class="hl-size-btn flex-1 py-1.5 bg-slate-700 text-yellow-400 font-bold rounded-lg border border-yellow-500/50 text-xs text-center transition" data-size="16">กลาง (16px)</button>
+                                <button type="button" onclick="setHighlighterSize(26)" class="hl-size-btn flex-1 py-1.5 bg-slate-800 hover:bg-slate-700 text-white rounded-lg border border-slate-700 text-xs text-center transition" data-size="26">หนา (26px)</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Action Buttons (Undo & Clear) -->
+                    <div class="flex items-center justify-end gap-2 pt-2 border-t border-slate-800">
+                        <button type="button" onclick="undoDrawingStroke()" class="px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white text-xs border border-slate-700 transition flex items-center gap-1.5">
+                            <i class="fa-solid fa-rotate-left"></i> ย้อนกลับ (Undo)
+                        </button>
+                        <button type="button" onclick="clearDrawingCanvas()" class="px-3 py-1.5 rounded-lg bg-red-500/20 hover:bg-red-500/30 text-red-300 text-xs border border-red-500/40 transition flex items-center gap-1.5">
+                            <i class="fa-solid fa-eraser"></i> ล้างเส้นวาดทั้งหมด
+                        </button>
+                    </div>
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- ===================================================================== -->
+        <!-- ===================================================================== -->
+        <!-- RIGHT PANEL: THE ACTIVE CANVAS SHEET (กระดานส่งงานดิจิทัล - FIXED STUDIO) -->
+        <!-- ===================================================================== -->
+        <section id="rightCanvasPanel" class="lg:col-span-7 flex flex-col gap-1.5 h-full min-h-0 overflow-hidden">
+            
+            <!-- Canvas Action Bar & Controls -->
+            <div class="bg-slate-900/90 border border-slate-800 rounded-xl px-3 py-1.5 flex flex-wrap items-center justify-between gap-2 shadow-sm shrink-0">
+                <div class="flex items-center gap-2">
+                    <span class="text-xs font-semibold text-slate-300 flex items-center gap-1.5 font-kanit">
+                        <i class="fa-solid fa-tv text-emerald-400 text-xs"></i> ตัวอย่างกระดานส่งงาน (Live Preview)
+                    </span>
+                    <span class="text-[10px] text-slate-400 bg-slate-800/90 px-2 py-0.5 rounded border border-slate-700 font-mono">
+                        A4 แนวนอน (1123 x 794 px)
+                    </span>
+                </div>
+
+                <div class="flex items-center gap-1.5">
+                    <!-- Zoom adjustment buttons -->
+                    <div class="inline-flex rounded-lg bg-slate-800/80 p-0.5 border border-slate-700 text-xs">
+                        <button onclick="adjustCanvasZoom(-0.05)" title="ย่อขนาดแสดงผล" class="px-2 py-0.5 text-slate-300 hover:text-white transition">
+                            <i class="fa-solid fa-minus text-[10px]"></i>
+                        </button>
+                        <span id="zoomLevelDisplay" class="px-2 py-0.5 text-slate-400 font-mono text-[11px]">100%</span>
+                        <button onclick="adjustCanvasZoom(0.05)" title="ขยายขนาดแสดงผล" class="px-2 py-0.5 text-slate-300 hover:text-white transition">
+                            <i class="fa-solid fa-plus text-[10px]"></i>
+                        </button>
+                        <button onclick="resetCanvasZoom()" title="ขนาดพอดีจออัตโนมัติ (Fit)" class="px-2 py-0.5 text-slate-300 hover:text-emerald-400 transition border-l border-slate-700 text-[10px] flex items-center gap-1">
+                            <i class="fa-solid fa-expand text-[9px]"></i> พอดีจอ
+                        </button>
+                    </div>
+
+                    <!-- Direct PDF Download Button on Canvas Header -->
+                    <button onclick="exportAssignmentPDF()" class="px-3 py-1 rounded-lg bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold text-xs shadow-sm transition flex items-center gap-1.5">
+                        <i class="fa-solid fa-file-pdf text-[11px]"></i>
+                        <span>บันทึก PDF</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Scrollable / Scalable Container for Canvas (No giant black void!) -->
+            <div id="canvasScrollWrapper" class="flex-1 w-full overflow-hidden flex items-center justify-center p-1 rounded-xl bg-slate-900/30 border border-slate-800/40 min-h-0 relative">
+                
+                <!-- ============================================================= -->
+                <!-- THE ACTUAL ASSIGNMENT SHEET (EXACT A4 LANDSCAPE: 1123 x 794 PX) -->
+                <!-- ============================================================= -->
+                <div id="assignmentSheet" class="theme-cream frame-standard relative w-[1123px] h-[794px] min-w-[1123px] min-h-[794px] max-h-[794px] rounded-xl p-5 shadow-2xl transition-transform duration-100 origin-center shrink-0 flex flex-col justify-between" style="box-sizing: border-box; width: 1123px; height: 794px;">
+                    
+                    <!-- Paper Texture Overlay & Decorative Elements -->
+                    <div class="absolute -top-12 -right-12 w-36 h-36 bg-amber-400/10 rounded-full blur-2xl pointer-events-none"></div>
+                    <div class="absolute -bottom-12 -left-12 w-36 h-36 bg-blue-400/10 rounded-full blur-2xl pointer-events-none"></div>
+                    
+                    <!-- Corner Pins for Craft Feel -->
+                    <div class="absolute top-2.5 left-2.5 text-slate-400/60 text-xs pointer-events-none select-none z-10">📌</div>
+                    <div class="absolute top-2.5 right-2.5 text-slate-400/60 text-xs pointer-events-none select-none z-10">📌</div>
+
+                    <!-- Caution Tape Frame Overlay (100% html2canvas compatible) -->
+                    <div id="cautionFrameDecor" class="hidden absolute inset-0 pointer-events-none rounded-xl overflow-hidden z-20">
+                        <div class="absolute top-0 left-0 right-0 h-3" style="background: repeating-linear-gradient(45deg, #eab308, #eab308 10px, #0f172a 10px, #0f172a 20px);"></div>
+                        <div class="absolute bottom-0 left-0 right-0 h-3" style="background: repeating-linear-gradient(45deg, #eab308, #eab308 10px, #0f172a 10px, #0f172a 20px);"></div>
+                        <div class="absolute top-0 bottom-0 left-0 w-3" style="background: repeating-linear-gradient(45deg, #eab308, #eab308 10px, #0f172a 10px, #0f172a 20px);"></div>
+                        <div class="absolute top-0 bottom-0 right-0 w-3" style="background: repeating-linear-gradient(45deg, #eab308, #eab308 10px, #0f172a 10px, #0f172a 20px);"></div>
+                    </div>
+
+                    <!-- ========================================================= -->
+                    <!-- TOP: FRAMED HEADER BANNER (กรอบข้อมูลส่วนบุคคลด้านบนสุดแนวนอน) -->
+                    <!-- ========================================================= -->
+                    <div class="w-full shrink-0">
+                        <div class="w-full bg-white border-2 border-slate-800 rounded-xl px-4 py-2 shadow-xs flex items-center justify-between gap-2">
+                            
+                            <!-- Left: Detective Identity Box (Horizontal Single Line Format) -->
+                            <div class="flex items-center gap-2.5 text-slate-900 font-kanit text-sm font-semibold">
+                                <span class="w-6 h-6 rounded bg-slate-900 text-white flex items-center justify-center text-xs">🔍</span>
+                                <span class="text-slate-800">แฟ้มคดีของนักสืบ:</span>
+                                <span id="sheetStudentFullName" class="text-emerald-700 font-bold underline decoration-emerald-500/50 underline-offset-4">
+                                    ด.ช. สมชาย ดีใจ
+                                </span>
+                                <span class="text-slate-300 font-normal">|</span>
+                                <span class="font-medium text-slate-600">ชั้นเรียน:</span>
+                                <span id="sheetStudentClass" class="text-blue-700 font-bold">ม.3/1</span>
+                                <span class="text-slate-300 font-normal">|</span>
+                                <span class="font-medium text-slate-600">เลขที่:</span>
+                                <span id="sheetStudentNo" class="text-amber-700 font-bold">5</span>
+                            </div>
+
+                            <!-- Right: Assignment Title & Verification Stamp (Crisp Non-Floating Badge) -->
+                            <div class="flex items-center">
+                                <div style="display:inline-flex; align-items:center; gap:6px; height:24px; line-height:24px; padding:0 10px; font-family:'Chakra Petch',sans-serif; font-weight:800; font-size:11px; letter-spacing:0.5px; border-radius:6px;" class="bg-slate-900 text-emerald-400 border border-emerald-400/60 shadow-xs whitespace-nowrap">
+                                    <span style="width:6px; height:6px; border-radius:50%; background:#34d399; display:inline-block;"></span>
+                                    <span>PDPA OFFICIAL CASE #2562</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Main Sheet Title & Instruction Subheader -->
+                        <div class="text-center mt-1.5">
+                            <h2 class="text-lg font-black text-slate-900 font-kanit tracking-tight flex items-center justify-center gap-2 leading-none">
+                                <span class="text-emerald-600">🛡️</span>
+                                <span>ใบงานปฏิบัติการสืบคดีไซเบอร์ & วิเคราะห์กฎหมาย PDPA</span>
+                            </h2>
+                            <p class="text-[11px] text-slate-600 font-medium mt-0.5 leading-none">
+                                กลุ่มสาระการเรียนรู้วิทยาศาสตร์และเทคโนโลยี (วิทยาการคำนวณ มัธยมศึกษาปีที่ 3)
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- ========================================================= -->
+                    <!-- MIDDLE BODY: TWO COLUMNS (EVIDENCE & 3 CORE QUESTIONS) -->
+                    <!-- ========================================================= -->
+                    <div class="grid grid-cols-12 gap-4 h-[620px] w-full items-stretch shrink-0">
+                        
+                        <!-- Left Column: Evidence Photo & News Summary (5 Cols) -->
+                        <div class="col-span-5 flex flex-col h-[620px] gap-3">
+                            
+                            <!-- Evidence Photo Frame (Polaroid Craft Style: h-[260px]) -->
+                            <div class="polaroid-frame p-3 rounded-xl flex flex-col items-center relative h-[260px] shrink-0 bg-white border border-slate-200 shadow-sm">
+                                <div class="washi-tape-top"></div>
+                                
+                                <div class="w-full h-[175px] bg-slate-100 rounded-lg overflow-hidden border border-slate-200 flex items-center justify-center relative">
+                                    <img id="sheetEvidenceImage" src="" alt="ภาพหลักฐานคดี" class="hidden w-full h-full object-cover">
+                                    
+                                    <!-- Fallback when no image uploaded -->
+                                    <div id="sheetImageFallback" class="flex flex-col items-center justify-center text-slate-400 p-3 text-center">
+                                        <i class="fa-solid fa-file-shield text-3xl text-slate-300 mb-1"></i>
+                                        <span class="text-xs font-semibold text-slate-600">ภาพหลักฐานข่าวสารคดี</span>
+                                        <span class="text-[10px] text-slate-400">(อัปโหลดรูปภาพได้ที่แผงซ้าย)</span>
+                                    </div>
+
+                                    <!-- Top Secret Badge on Image -->
+                                    <div class="evidence-badge absolute bottom-2 right-2 bg-slate-900 text-emerald-400 border border-slate-800 shadow-md z-10 pointer-events-none">
+                                        EVIDENCE FILE
+                                    </div>
+                                </div>
+
+                                <!-- News Source Badge & Caption -->
+                                <div class="w-full mt-2.5 pt-1.5 border-t border-slate-200 flex items-center justify-between text-[11px] leading-normal text-slate-600">
+                                    <span class="font-semibold flex items-center gap-1 shrink-0 text-slate-700 whitespace-nowrap">
+                                        <i class="fa-solid fa-link text-blue-500 text-[10px]"></i> ที่มา:
+                                    </span>
+                                    <span id="sheetNewsUrl" class="font-mono text-[10px] text-blue-600 truncate max-w-[270px] text-right font-medium">
+                                        https://news.example.com
+                                    </span>
+                                </div>
+                            </div>
+
+                            <!-- Case Summary Box: h-[348px] -->
+                            <div class="bg-white border-2 border-slate-800 rounded-xl p-3.5 shadow-sm flex flex-col h-[348px] shrink-0">
+                                <div class="flex items-center gap-2 text-xs font-bold text-slate-900 border-b border-slate-200 pb-1.5 mb-2 font-kanit">
+                                    <i class="fa-solid fa-newspaper text-amber-600 text-sm"></i>
+                                    <span>สรุปเหตุการณ์ที่เกิดขึ้นในคดี:</span>
+                                </div>
+                                <div class="h-[285px] bg-amber-50/25 rounded-lg p-2.5 border border-amber-100/50 overflow-hidden">
+                                    <p id="sheetNewsSummary" class="text-xs font-style-kanit ink-charcoal leading-relaxed break-words whitespace-pre-line">
+                                        (นักเรียนยังไม่ได้พิมพ์สรุปข่าวสาร สามารถพิมพ์ที่แผงควบคุมฝั่งซ้ายได้เลย...)
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Right Column: 3 Core Pedagogical Questions (7 Cols) -->
+                        <div class="col-span-7 flex flex-col h-[620px] gap-3">
+                            
+                            <!-- Question Card 1: h-[198px] -->
+                            <div class="bg-white border-2 border-slate-800 rounded-xl p-3 shadow-sm flex flex-col h-[198px] shrink-0">
+                                <div class="flex items-center justify-between gap-2 border-b border-red-100/80 pb-1 mb-1.5">
+                                    <div class="flex items-center gap-2">
+                                        <span class="q-badge bg-red-600 text-white shadow-xs">Q1</span>
+                                        <h3 class="text-xs font-bold text-red-950 font-kanit">
+                                            ภารกิจที่ 1: ชี้จุดละเมิดกฎหมาย PDPA
+                                        </h3>
+                                    </div>
+                                    <span class="text-[10px] text-red-700 font-semibold bg-red-50 px-2 py-0.5 rounded border border-red-200/60 whitespace-nowrap">วิเคราะห์ปัญหา</span>
+                                </div>
+                                <p class="text-[11px] font-medium text-slate-700 mb-1 leading-snug">
+                                    🎯 คดีนี้ใครทำอะไรผิดกฎหมาย PDPA และทำไมข้อมูลนั้นถึงสำคัญ?
+                                </p>
+                                <div class="h-[115px] bg-red-50/35 rounded-lg p-2 border border-red-100/60 overflow-hidden">
+                                    <p id="sheetAns1" class="text-xs font-style-kanit ink-charcoal leading-relaxed break-words whitespace-pre-line">
+                                        (รอการบันทึกคำตอบข้อ 1...)
+                                    </p>
+                                </div>
+                            </div>
+
+                            <!-- Question Card 2: h-[198px] -->
+                            <div class="bg-white border-2 border-slate-800 rounded-xl p-3 shadow-sm flex flex-col h-[198px] shrink-0">
+                                <div class="flex items-center justify-between gap-2 border-b border-amber-100/80 pb-1 mb-1.5">
+                                    <div class="flex items-center gap-2">
+                                        <span class="q-badge bg-amber-500 text-slate-950 shadow-xs">Q2</span>
+                                        <h3 class="text-xs font-bold text-amber-950 font-kanit">
+                                            ภารกิจที่ 2: มาตรการกู้ภัยฉุกเฉินเฉพาะหน้า
+                                        </h3>
+                                    </div>
+                                    <span class="text-[10px] text-amber-800 font-semibold bg-amber-50 px-2 py-0.5 rounded border border-amber-200/60 whitespace-nowrap">แก้ไขทันควัน</span>
+                                </div>
+                                <p class="text-[11px] font-medium text-slate-700 mb-1 leading-snug">
+                                    🚨 ถ้าเราเป็นผู้เสียหายหรือแอดมิน จะกู้ภัยแก้ไขปัญหาด่วนเฉพาะหน้าในเวลานี้ยังไง?
+                                </p>
+                                <div class="h-[115px] bg-amber-50/35 rounded-lg p-2 border border-amber-100/70 overflow-hidden">
+                                    <p id="sheetAns2" class="text-xs font-style-kanit ink-charcoal leading-relaxed break-words whitespace-pre-line">
+                                        (รอการบันทึกคำตอบข้อ 2...)
+                                    </p>
+                                </div>
+                            </div>
+
+                            <!-- Question Card 3: h-[198px] -->
+                            <div class="bg-white border-2 border-slate-800 rounded-xl p-3 shadow-sm flex flex-col h-[198px] shrink-0">
+                                <div class="flex items-center justify-between gap-2 border-b border-emerald-100/80 pb-1 mb-1.5">
+                                    <div class="flex items-center gap-2">
+                                        <span class="q-badge bg-emerald-600 text-white shadow-xs">Q3</span>
+                                        <h3 class="text-xs font-bold text-emerald-950 font-kanit">
+                                            ภารกิจที่ 3: แผนเกราะป้องกันระยะยาว
+                                        </h3>
+                                    </div>
+                                    <span class="text-[10px] text-emerald-800 font-semibold bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200/60 whitespace-nowrap">แนะนำป้องกัน</span>
+                                </div>
+                                <p class="text-[11px] font-medium text-slate-700 mb-1 leading-snug">
+                                    🛡️ ในระยะยาว เราจะแนะนำให้เพื่อนหรือองค์กรติดตั้งระบบอะไรเพื่อป้องกันเรื่องซ้ำอีก?
+                                </p>
+                                <div class="h-[115px] bg-emerald-50/35 rounded-lg p-2 border border-emerald-100/60 overflow-hidden">
+                                    <p id="sheetAns3" class="text-xs font-style-kanit ink-charcoal leading-relaxed break-words whitespace-pre-line">
+                                        (รอการบันทึกคำตอบข้อ 3...)
+                                    </p>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+
+                    <!-- ========================================================= -->
+                    <!-- BOTTOM FOOTER OF SHEET -->
+                    <!-- ========================================================= -->
+                    <div class="w-full shrink-0 pt-1.5 border-t-2 border-slate-800/80 flex items-center justify-between text-[11px] text-slate-600 font-medium leading-none">
+                        <div class="flex items-center gap-3">
+                            <span class="flex items-center gap-1.5">
+                                <i class="fa-solid fa-shield-heart text-emerald-600"></i>
+                                <span>Cyber Shield Detective Academy</span>
+                            </span>
+                            <span>•</span>
+                            <span id="sheetTimestamp">วันที่บันทึกคดี: 21 สิงหาคม 2569</span>
+                        </div>
+                    </div>
+
+                    <!-- ========================================================= -->
+                    <!-- HIGHLIGHTER DRAWING CANVAS OVERLAY (1123 x 794 A4 EXACT) -->
+                    <!-- ========================================================= -->
+                    <canvas id="drawingCanvas" width="1123" height="794"></canvas>
+
+                    <!-- ========================================================= -->
+                    <!-- DYNAMIC STICKER LAYER OVERLAY (ลาก วาง ย่อขยาย หมุน) -->
+                    <!-- ========================================================= -->
+                    <div id="stickersLayer" class="absolute inset-0 pointer-events-none overflow-hidden" onclick="handleLayerClick(event)">
+                        <!-- Draggable Stickers will be injected here via JavaScript -->
+                    </div>
+
+                </div>
+            </div>
+
+        </section>
+
+    </main>
+
+
+    <!-- ========================================================================= -->
+    <!-- 3. JAVASCRIPT STATE MANAGEMENT & INTERACTIVE LOGIC (VANILLA JS) -->
+    <!-- ========================================================================= -->
+    <script>
+        // =========================================================================
+        // A. GLOBAL APPLICATION STATE
+        // =========================================================================
+        const AppState = {
+            student: {
+                prefix: '',
+                firstName: '',
+                lastName: '',
+                classroom: '',
+                studentNumber: '',
+                isRegistered: false
+            },
+            news: {
+                imageUrl: '',
+                sourceUrl: '',
+                summary: '',
+                ans1: '',
+                ans2: '',
+                ans3: ''
+            },
+            fontFamily: 'font-style-kanit',
+            inkColor: 'ink-charcoal',
+            frameStyle: 'frame-standard',
+            theme: 'theme-cream',
+            stickers: [], // Array of { id, type, customHtml, x, y, scale, rotation }
+            activeStickerId: null,
+            zoom: 1.0
+        };
+
+        // Predefined Vector & Icon Sticker Templates (30+ High Quality Templates)
+        const STICKER_TEMPLATES = {
+            // Official Badges & Stamps
+            pdpa_shield: { html: '<img src="assets/pdpa_icon.png" alt="PDPA Shield Emblem" style="width:75px; height:75px; object-fit:contain; border-radius:16px; filter:drop-shadow(0 6px 14px rgba(14,165,233,0.45)); border:2px solid rgba(56,189,248,0.6);">' },
+            top_secret: { html: '<div style="background:#dc2626; color:#ffffff; font-family:\'Chakra Petch\',sans-serif; font-weight:800; font-size:13px; padding:6px 14px; border:2px solid #ffffff; border-radius:4px; box-shadow:0 4px 10px rgba(220,38,38,0.4); text-transform:uppercase; letter-spacing:1px;">TOP SECRET</div>' },
+            confidential: { html: '<div style="background:#7e22ce; color:#ffffff; font-family:\'Chakra Petch\',sans-serif; font-weight:800; font-size:12px; padding:6px 12px; border:2px solid #ffffff; border-radius:4px; box-shadow:0 4px 10px rgba(126,34,206,0.4); text-transform:uppercase; letter-spacing:1px;">CONFIDENTIAL 📑</div>' },
+            pdpa_alert: { html: '<div style="background:#f59e0b; color:#0f172a; font-family:\'Chakra Petch\',sans-serif; font-weight:800; font-size:13px; padding:6px 14px; border:2px solid #0f172a; border-radius:4px; box-shadow:0 4px 10px rgba(245,158,11,0.4); text-transform:uppercase; letter-spacing:1px;">PDPA ALERT 🚨</div>' },
+            crime_scene: { html: '<div style="background:#eab308; color:#0f172a; font-family:\'Chakra Petch\',sans-serif; font-weight:900; font-size:11px; padding:5px 12px; border:2px dashed #0f172a; border-radius:3px; box-shadow:0 4px 8px rgba(0,0,0,0.25); text-transform:uppercase; letter-spacing:1.5px;">🚧 CRIME SCENE 🚧</div>' },
+            evidence_a: { html: '<div style="background:#2563eb; color:#ffffff; font-family:\'Chakra Petch\',sans-serif; font-weight:800; font-size:12px; padding:5px 12px; border:2px solid #ffffff; border-radius:4px; box-shadow:0 4px 8px rgba(37,99,235,0.4);">EVIDENCE [A]</div>' },
+            evidence_b: { html: '<div style="background:#4f46e5; color:#ffffff; font-family:\'Chakra Petch\',sans-serif; font-weight:800; font-size:12px; padding:5px 12px; border:2px solid #ffffff; border-radius:4px; box-shadow:0 4px 8px rgba(79,70,229,0.4);">EVIDENCE [B]</div>' },
+            approved: { html: '<div style="background:#16a34a; color:#ffffff; font-family:\'Chakra Petch\',sans-serif; font-weight:800; font-size:12px; padding:5px 12px; border:2px solid #ffffff; border-radius:4px; box-shadow:0 4px 8px rgba(22,163,74,0.4);">APPROVED ✔️</div>' },
+            verified: { html: '<div style="background:#059669; color:#ffffff; font-family:\'Kanit\',sans-serif; font-weight:700; font-size:12px; padding:4px 10px; border-radius:20px; box-shadow:0 3px 8px rgba(5,150,105,0.3); display:flex; align-items:center; gap:4px;"><span>✅ ผ่านการตรวจ</span></div>' },
+
+            // Emojis & Icons
+            magnifier: { html: '<span style="font-size: 44px; filter: drop-shadow(0 4px 6px rgba(0,0,0,0.25));">🔍</span>' },
+            shield: { html: '<span style="font-size: 44px; filter: drop-shadow(0 4px 6px rgba(0,0,0,0.25));">🛡️</span>' },
+            lock: { html: '<span style="font-size: 44px; filter: drop-shadow(0 4px 6px rgba(0,0,0,0.25));">🔒</span>' },
+            warning: { html: '<span style="font-size: 44px; filter: drop-shadow(0 4px 6px rgba(0,0,0,0.25));">⚠️</span>' },
+            robot: { html: '<span style="font-size: 44px; filter: drop-shadow(0 4px 6px rgba(0,0,0,0.25));">🤖</span>' },
+            justice: { html: '<span style="font-size: 44px; filter: drop-shadow(0 4px 6px rgba(0,0,0,0.25));">⚖️</span>' },
+            chip: { html: '<span style="font-size: 44px; filter: drop-shadow(0 4px 6px rgba(0,0,0,0.25));">💾</span>' },
+            hat: { html: '<span style="font-size: 44px; filter: drop-shadow(0 4px 6px rgba(0,0,0,0.25));">🕵️‍♂️</span>' },
+            pin: { html: '<span style="font-size: 42px; filter: drop-shadow(0 4px 6px rgba(0,0,0,0.25));">📌</span>' },
+            star: { html: '<span style="font-size: 44px; filter: drop-shadow(0 4px 6px rgba(0,0,0,0.25));">⭐</span>' },
+            bulb: { html: '<span style="font-size: 44px; filter: drop-shadow(0 4px 6px rgba(0,0,0,0.25));">💡</span>' },
+            fingerprint: { html: '<span style="font-size: 44px; filter: drop-shadow(0 4px 6px rgba(0,0,0,0.25));">🧬</span>' },
+            target: { html: '<span style="font-size: 44px; filter: drop-shadow(0 4px 6px rgba(0,0,0,0.25));">🎯</span>' },
+            cctv: { html: '<span style="font-size: 44px; filter: drop-shadow(0 4px 6px rgba(0,0,0,0.25));">📹</span>' },
+            laptop: { html: '<span style="font-size: 44px; filter: drop-shadow(0 4px 6px rgba(0,0,0,0.25));">💻</span>' },
+            siren: { html: '<span style="font-size: 44px; filter: drop-shadow(0 4px 6px rgba(0,0,0,0.25));">🚨</span>' },
+            folder: { html: '<span style="font-size: 44px; filter: drop-shadow(0 4px 6px rgba(0,0,0,0.25));">📂</span>' },
+            key: { html: '<span style="font-size: 44px; filter: drop-shadow(0 4px 6px rgba(0,0,0,0.25));">🔑</span>' },
+            firewall: { html: '<span style="font-size: 44px; filter: drop-shadow(0 4px 6px rgba(0,0,0,0.25));">🧱</span>' },
+            package: { html: '<span style="font-size: 44px; filter: drop-shadow(0 4px 6px rgba(0,0,0,0.25));">📦</span>' },
+            phone: { html: '<span style="font-size: 44px; filter: drop-shadow(0 4px 6px rgba(0,0,0,0.25));">📱</span>' },
+            scroll: { html: '<span style="font-size: 44px; filter: drop-shadow(0 4px 6px rgba(0,0,0,0.25));">📜</span>' },
+            washi: { html: '<div style="width:85px; height:22px; background:rgba(251,191,36,0.9); border-left:2px dashed #ffffff; border-right:2px dashed #ffffff; box-shadow:0 2px 6px rgba(0,0,0,0.2); transform:rotate(-2deg);"></div>' },
+            washi_pink: { html: '<div style="width:85px; height:22px; background:rgba(244,114,182,0.9); border-left:2px dashed #ffffff; border-right:2px dashed #ffffff; box-shadow:0 2px 6px rgba(0,0,0,0.2); transform:rotate(2deg);"></div>' }
+        };
+
+        // =========================================================================
+        // LOCALSTORAGE PERSISTENCE ENGINE (ป้องกันข้อมูลสูญหายเมื่อกด F5 หรือรีเฟรช)
+        // =========================================================================
+        const StorageEngine = {
+            KEY: 'cyber_shield_pdpa_assignment_draft_v2',
+
+            save() {
+                try {
+                    const data = {
+                        student: AppState.student,
+                        news: {
+                            imageUrl: AppState.news.imageUrl || '',
+                            sourceUrl: document.getElementById('newsUrlInput') ? document.getElementById('newsUrlInput').value : '',
+                            summary: document.getElementById('newsSummaryInput') ? document.getElementById('newsSummaryInput').value : '',
+                            ans1: document.getElementById('ans1Input') ? document.getElementById('ans1Input').value : '',
+                            ans2: document.getElementById('ans2Input') ? document.getElementById('ans2Input').value : '',
+                            ans3: document.getElementById('ans3Input') ? document.getElementById('ans3Input').value : ''
+                        },
+                        fontFamily: AppState.fontFamily,
+                        inkColor: AppState.inkColor,
+                        frameStyle: AppState.frameStyle,
+                        theme: AppState.theme,
+                        stickers: AppState.stickers || [],
+                        drawingStrokes: (typeof DrawingEngine !== 'undefined' && DrawingEngine.strokes) ? DrawingEngine.strokes : []
+                    };
+                    localStorage.setItem(this.KEY, JSON.stringify(data));
+                } catch (err) {
+                    console.warn('AutoSave error:', err);
+                }
+            },
+
+            load() {
+                try {
+                    const raw = localStorage.getItem(this.KEY);
+                    if (!raw) return false;
+                    const data = JSON.parse(raw);
+                    if (!data) return false;
+
+                    // 1. Restore Student Data
+                    if (data.student && data.student.isRegistered) {
+                        AppState.student = data.student;
+                        if (document.getElementById('regPrefix')) document.getElementById('regPrefix').value = data.student.prefix || '';
+                        if (document.getElementById('regFirstName')) document.getElementById('regFirstName').value = data.student.firstName || '';
+                        if (document.getElementById('regLastName')) document.getElementById('regLastName').value = data.student.lastName || '';
+                        if (document.getElementById('regClassroom')) document.getElementById('regClassroom').value = data.student.classroom || '';
+                        if (document.getElementById('regStudentNumber')) document.getElementById('regStudentNumber').value = data.student.studentNumber || '';
+
+                        const fullName = `${data.student.prefix} ${data.student.firstName} ${data.student.lastName}`;
+                        if (document.getElementById('chipStudentName')) document.getElementById('chipStudentName').textContent = fullName;
+                        if (document.getElementById('chipStudentClass')) document.getElementById('chipStudentClass').textContent = data.student.classroom;
+                        if (document.getElementById('chipStudentNo')) document.getElementById('chipStudentNo').textContent = `เลขที่ ${data.student.studentNumber}`;
+                        if (document.getElementById('topUserChip')) document.getElementById('topUserChip').classList.remove('hidden');
+
+                        if (document.getElementById('sheetStudentFullName')) document.getElementById('sheetStudentFullName').textContent = fullName;
+                        if (document.getElementById('sheetStudentClass')) document.getElementById('sheetStudentClass').textContent = data.student.classroom;
+                        if (document.getElementById('sheetStudentNo')) document.getElementById('sheetStudentNo').textContent = data.student.studentNumber;
+
+                        const modal = document.getElementById('registrationModal');
+                        if (modal) {
+                            modal.classList.add('hidden', 'opacity-0', 'pointer-events-none');
+                        }
+                    }
+
+                    // 2. Restore News & Answers Data
+                    if (data.news) {
+                        if (document.getElementById('newsUrlInput')) document.getElementById('newsUrlInput').value = data.news.sourceUrl || '';
+                        if (document.getElementById('newsSummaryInput')) document.getElementById('newsSummaryInput').value = data.news.summary || '';
+                        if (document.getElementById('ans1Input')) document.getElementById('ans1Input').value = data.news.ans1 || '';
+                        if (document.getElementById('ans2Input')) document.getElementById('ans2Input').value = data.news.ans2 || '';
+                        if (document.getElementById('ans3Input')) document.getElementById('ans3Input').value = data.news.ans3 || '';
+
+                        if (data.news.imageUrl) {
+                            AppState.news.imageUrl = data.news.imageUrl;
+                            const sheetImg = document.getElementById('sheetEvidenceImage');
+                            if (sheetImg) {
+                                sheetImg.src = data.news.imageUrl;
+                                sheetImg.classList.remove('hidden');
+                            }
+                            const fallback = document.getElementById('sheetImageFallback');
+                            if (fallback) fallback.classList.add('hidden');
+
+                            const thumb = document.getElementById('uploadThumb');
+                            if (thumb) thumb.src = data.news.imageUrl;
+                            const placeholder = document.getElementById('uploadPlaceholder');
+                            if (placeholder) placeholder.classList.add('hidden');
+                            const previewWrapper = document.getElementById('uploadPreviewWrapper');
+                            if (previewWrapper) previewWrapper.classList.remove('hidden');
+                        }
+                        syncLiveText(false); // don't trigger save again on load
+                    }
+
+                    // 3. Restore Styles
+                    if (data.fontFamily) setGlobalFont(data.fontFamily, false);
+                    if (data.inkColor) setGlobalInkColor(data.inkColor, false);
+                    if (data.frameStyle) setPaperFrameStyle(data.frameStyle, false);
+                    if (data.theme) setPaperTheme(data.theme, false);
+
+                    // 4. Restore Stickers
+                    if (Array.isArray(data.stickers) && data.stickers.length > 0) {
+                        const layer = document.getElementById('stickersLayer');
+                        if (layer) layer.innerHTML = '';
+                        AppState.stickers = data.stickers;
+                        data.stickers.forEach(stk => {
+                            renderStickerDOM(stk);
+                        });
+                    }
+
+                    // 5. Restore Highlighter Drawing Strokes
+                    if (Array.isArray(data.drawingStrokes) && data.drawingStrokes.length > 0) {
+                        DrawingEngine.strokes = data.drawingStrokes;
+                        DrawingEngine.redrawAll();
+                    }
+
+                    return true;
+                } catch (err) {
+                    console.error('StorageEngine load error:', err);
+                    return false;
+                }
+            },
+
+            clear() {
+                if (confirm('⚠️ คุณต้องการล้างข้อมูลทั้งหมดเพื่อเริ่มทำคดีใหม่หรือไม่? (ข้อมูลที่บันทึกไว้ในเบราว์เซอร์จะหายไปทั้งหมด)')) {
+                    localStorage.removeItem(this.KEY);
+                    location.reload();
+                }
+            }
+        };
+
+        // =========================================================================
+        // B. INITIALIZATION ON DOM READY
+        // =========================================================================
+        document.addEventListener('DOMContentLoaded', () => {
+            populateStudentNumbers();
+            updateCurrentTimestamp();
+            setupDragAndDrop();
+            setupKeyboardShortcuts();
+            DrawingEngine.init();
+            
+            // Auto-load draft from localStorage
+            StorageEngine.load();
+
+            // Auto fit canvas zoom to screen
+            setTimeout(resetCanvasZoom, 100);
+            window.addEventListener('resize', resetCanvasZoom);
+            window.addEventListener('beforeunload', () => StorageEngine.save());
+        });
+
+        // Populate Student Number Options 1 to 50
+        function populateStudentNumbers() {
+            const select = document.getElementById('regStudentNumber');
+            if (!select) return;
+            select.innerHTML = '<option value="">เลือกเลขที่</option>';
+            for (let i = 1; i <= 50; i++) {
+                const opt = document.createElement('option');
+                opt.value = i;
+                opt.textContent = `เลขที่ ${i}`;
+                select.appendChild(opt);
+            }
+        }
+
+        function updateCurrentTimestamp() {
+            const now = new Date();
+            const thaiMonths = ["มกราคม", "กุมภาพันธ์", "มีนาคม", "เมษายน", "พฤษภาคม", "มิถุนายน", "กรกฎาคม", "สิงหาคม", "กันยายน", "ตุลาคม", "พฤศจิกายน", "ธันวาคม"];
+            const formattedDate = `วันที่บันทึกคดี: ${now.getDate()} ${thaiMonths[now.getMonth()]} ${now.getFullYear() + 543}`;
+            const stampEl = document.getElementById('sheetTimestamp');
+            if (stampEl) stampEl.textContent = formattedDate;
+        }
+
+        // =========================================================================
+        // C. TAB SWITCHING SYSTEM
+        // =========================================================================
+        function switchWorkspaceTab(tabId) {
+            document.querySelectorAll('.tab-panel').forEach(panel => {
+                panel.classList.add('hidden');
+            });
+            const activePanel = document.getElementById(tabId);
+            if (activePanel) activePanel.classList.remove('hidden');
+
+            document.querySelectorAll('.workspace-tab-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            const activeBtn = document.getElementById('btn-' + tabId);
+            if (activeBtn) activeBtn.classList.add('active');
+        }
+
+        // =========================================================================
+        // D. REGISTRATION GATE & STUDENT PROFILE
+        // =========================================================================
+        function handleRegistration(e) {
+            e.preventDefault();
+            const prefix = document.getElementById('regPrefix').value;
+            const firstName = document.getElementById('regFirstName').value.trim();
+            const lastName = document.getElementById('regLastName').value.trim();
+            const classroom = document.getElementById('regClassroom').value;
+            const studentNumber = document.getElementById('regStudentNumber').value;
+
+            if (!prefix || !firstName || !lastName || !classroom || !studentNumber) {
+                const errAlert = document.getElementById('regErrorAlert');
+                if (errAlert) errAlert.classList.remove('hidden');
+                return;
+            }
+
+            AppState.student = {
+                prefix,
+                firstName,
+                lastName,
+                classroom,
+                studentNumber,
+                isRegistered: true
+            };
+
+            document.getElementById('chipStudentName').textContent = `${prefix} ${firstName} ${lastName}`;
+            document.getElementById('chipStudentClass').textContent = classroom;
+            document.getElementById('chipStudentNo').textContent = `เลขที่ ${studentNumber}`;
+            document.getElementById('topUserChip').classList.remove('hidden');
+
+            document.getElementById('sheetStudentFullName').textContent = `${prefix} ${firstName} ${lastName}`;
+            document.getElementById('sheetStudentClass').textContent = classroom;
+            document.getElementById('sheetStudentNo').textContent = studentNumber;
+
+            const modal = document.getElementById('registrationModal');
+            modal.classList.add('opacity-0', 'pointer-events-none');
+            setTimeout(() => { modal.classList.add('hidden'); }, 500);
+
+            StorageEngine.save();
+        }
+
+        function openRegistrationModal() {
+            const modal = document.getElementById('registrationModal');
+            modal.classList.remove('hidden');
+            setTimeout(() => { modal.classList.remove('opacity-0', 'pointer-events-none'); }, 10);
+        }
+
+        // =========================================================================
+        // E. REAL-TIME LIVE TEXT & IMAGE SYNC
+        // =========================================================================
+        function syncLiveText(triggerSave = true) {
+            const newsUrl = document.getElementById('newsUrlInput').value.trim();
+            const newsSummary = document.getElementById('newsSummaryInput').value.trim();
+            const ans1 = document.getElementById('ans1Input').value.trim();
+            const ans2 = document.getElementById('ans2Input').value.trim();
+            const ans3 = document.getElementById('ans3Input').value.trim();
+
+            document.getElementById('sheetNewsUrl').textContent = newsUrl || 'https://news.example.com';
+            document.getElementById('sheetNewsSummary').textContent = newsSummary || '(ยังไม่ได้พิมพ์สรุปข่าวสาร สามารถพิมพ์ที่แผงควบคุมฝั่งซ้ายได้เลย...)';
+            document.getElementById('sheetAns1').textContent = ans1 || '(รอการบันทึกคำตอบข้อ 1...)';
+            document.getElementById('sheetAns2').textContent = ans2 || '(รอการบันทึกคำตอบข้อ 2...)';
+            document.getElementById('sheetAns3').textContent = ans3 || '(รอการบันทึกคำตอบข้อ 3...)';
+
+            AppState.news.sourceUrl = newsUrl;
+            AppState.news.summary = newsSummary;
+            AppState.news.ans1 = ans1;
+            AppState.news.ans2 = ans2;
+            AppState.news.ans3 = ans3;
+
+            if (triggerSave) StorageEngine.save();
+        }
+
+        function handleImageUpload(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = function(event) {
+                const base64Data = event.target.result;
+                AppState.news.imageUrl = base64Data;
+                const thumb = document.getElementById('uploadThumb');
+                if (thumb) thumb.src = base64Data;
+                document.getElementById('uploadPlaceholder').classList.add('hidden');
+                document.getElementById('uploadPreviewWrapper').classList.remove('hidden');
+                const sheetImg = document.getElementById('sheetEvidenceImage');
+                if (sheetImg) {
+                    sheetImg.src = base64Data;
+                    sheetImg.classList.remove('hidden');
+                }
+                document.getElementById('sheetImageFallback').classList.add('hidden');
+                StorageEngine.save();
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function removeUploadedImage(e) {
+            if (e) e.stopPropagation();
+            AppState.news.imageUrl = '';
+            document.getElementById('imageInput').value = '';
+            document.getElementById('uploadPlaceholder').classList.remove('hidden');
+            document.getElementById('uploadPreviewWrapper').classList.add('hidden');
+            const sheetImg = document.getElementById('sheetEvidenceImage');
+            if (sheetImg) {
+                sheetImg.src = '';
+                sheetImg.classList.add('hidden');
+            }
+            document.getElementById('sheetImageFallback').classList.remove('hidden');
+            StorageEngine.save();
+        }
+
+        function setupDragAndDrop() {
+            const dropZone = document.getElementById('dropZone');
+            if (!dropZone) return;
+            ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+                dropZone.addEventListener(eventName, (e) => { e.preventDefault(); e.stopPropagation(); }, false);
+            });
+            dropZone.addEventListener('drop', (e) => {
+                const files = e.dataTransfer.files;
+                if (files.length > 0) handleImageUpload({ target: { files } });
+            });
+        }
+
+        // =========================================================================
+        // F. TYPOGRAPHY, INK COLOR & PAPER FRAME CONTROLLERS
+        // =========================================================================
+        function setGlobalFont(fontClass, triggerSave = true) {
+            AppState.fontFamily = fontClass;
+            const textElements = [document.getElementById('sheetNewsSummary'), document.getElementById('sheetAns1'), document.getElementById('sheetAns2'), document.getElementById('sheetAns3')];
+            const allFontClasses = ['font-style-kanit', 'font-style-sarabun', 'font-style-mitr', 'font-style-baijamjuree', 'font-style-mali', 'font-style-itim', 'font-style-charmonman'];
+            textElements.forEach(el => {
+                if (!el) return;
+                allFontClasses.forEach(cls => el.classList.remove(cls));
+                el.classList.add(fontClass);
+            });
+
+            document.querySelectorAll('.font-btn').forEach(btn => {
+                if (btn.getAttribute('data-font') === fontClass) {
+                    btn.classList.add('border-emerald-400', 'bg-slate-700');
+                    btn.classList.remove('border-transparent');
+                } else {
+                    btn.classList.remove('border-emerald-400', 'bg-slate-700');
+                    btn.classList.add('border-transparent');
+                }
+            });
+
+            if (triggerSave) StorageEngine.save();
+        }
+
+        function setGlobalInkColor(inkClass, triggerSave = true) {
+            AppState.inkColor = inkClass;
+            const textElements = [document.getElementById('sheetNewsSummary'), document.getElementById('sheetAns1'), document.getElementById('sheetAns2'), document.getElementById('sheetAns3')];
+            const allInkClasses = ['ink-charcoal', 'ink-blue', 'ink-red', 'ink-green', 'ink-purple', 'ink-brown'];
+            textElements.forEach(el => {
+                if (!el) return;
+                allInkClasses.forEach(cls => el.classList.remove(cls));
+                el.classList.add(inkClass);
+            });
+
+            document.querySelectorAll('.ink-btn').forEach(btn => {
+                if (btn.getAttribute('data-ink') === inkClass) {
+                    btn.classList.add('border-emerald-400', 'bg-slate-700');
+                    btn.classList.remove('border-transparent');
+                } else {
+                    btn.classList.remove('border-emerald-400', 'bg-slate-700');
+                    btn.classList.add('border-transparent');
+                }
+            });
+
+            if (triggerSave) StorageEngine.save();
+        }
+
+        function setPaperFrameStyle(frameClass, triggerSave = true) {
+            AppState.frameStyle = frameClass;
+            const sheet = document.getElementById('assignmentSheet');
+            const cautionDecor = document.getElementById('cautionFrameDecor');
+            if (!sheet) return;
+            const allFrames = ['frame-standard', 'frame-grid', 'frame-caution', 'frame-dossier', 'frame-craft'];
+            allFrames.forEach(f => sheet.classList.remove(f));
+            sheet.classList.add(frameClass);
+
+            if (cautionDecor) {
+                if (frameClass === 'frame-caution') {
+                    cautionDecor.classList.remove('hidden');
+                } else {
+                    cautionDecor.classList.add('hidden');
+                }
+            }
+
+            document.querySelectorAll('.frame-btn').forEach(btn => {
+                if (btn.getAttribute('data-frame') === frameClass) {
+                    btn.classList.add('border-emerald-400', 'bg-slate-700');
+                    btn.classList.remove('border-transparent');
+                } else {
+                    btn.classList.remove('border-emerald-400', 'bg-slate-700');
+                    btn.classList.add('border-transparent');
+                }
+            });
+
+            if (triggerSave) StorageEngine.save();
+        }
+
+        function setPaperTheme(themeClass, triggerSave = true) {
+            AppState.theme = themeClass;
+            const sheet = document.getElementById('assignmentSheet');
+            if (sheet) {
+                ['theme-cream', 'theme-pink', 'theme-blue', 'theme-gray', 'theme-dossier', 'theme-cyber'].forEach(cls => sheet.classList.remove(cls));
+                sheet.classList.add(themeClass);
+            }
+
+            document.querySelectorAll('.theme-btn').forEach(btn => {
+                if (btn.getAttribute('data-theme') === themeClass) {
+                    btn.classList.add('border-emerald-400', 'bg-slate-700');
+                    btn.classList.remove('border-transparent');
+                } else {
+                    btn.classList.remove('border-emerald-400', 'bg-slate-700');
+                    btn.classList.add('border-transparent');
+                }
+            });
+
+            if (triggerSave) StorageEngine.save();
+        }
+
+        // =========================================================================
+        // G. CANVA-LIKE STICKER ENGINE & CUSTOM IMAGE UPLOADER
+        // =========================================================================
+        function handleCustomStickerUpload(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = function(event) {
+                const base64Img = event.target.result;
+                const customTypeId = 'custom_' + Date.now();
+                const customHtml = `<img src="${base64Img}" alt="Custom Sticker" style="max-width: 140px; max-height: 140px; object-fit: contain; filter: drop-shadow(0 4px 10px rgba(0,0,0,0.3)); border-radius: 8px;">`;
+                STICKER_TEMPLATES[customTypeId] = { html: customHtml };
+                addSticker(customTypeId, customHtml);
+                e.target.value = '';
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function addSticker(type, customHtml = null) {
+            const htmlContent = customHtml || (STICKER_TEMPLATES[type] ? STICKER_TEMPLATES[type].html : null);
+            if (!htmlContent) return;
+
+            const id = 'sticker_' + Date.now() + '_' + Math.floor(Math.random() * 1000);
+            const stickerObj = {
+                id,
+                type,
+                customHtml: customHtml || null,
+                x: 540 + (Math.random() * 80 - 40),
+                y: 400 + (Math.random() * 80 - 40),
+                scale: 1.0,
+                rotation: Math.floor(Math.random() * 20 - 10)
+            };
+
+            AppState.stickers.push(stickerObj);
+            renderStickerDOM(stickerObj);
+            selectSticker(id);
+            StorageEngine.save();
+        }
+
+        function renderStickerDOM(sticker) {
+            const layer = document.getElementById('stickersLayer');
+            const el = document.createElement('div');
+            el.id = sticker.id;
+            el.className = 'canvas-sticker-item';
+            el.style.left = `${sticker.x}px`;
+            el.style.top = `${sticker.y}px`;
+            el.style.transform = `translate(-50%, -50%) rotate(${sticker.rotation}deg) scale(${sticker.scale})`;
+
+            const htmlContent = sticker.customHtml || (STICKER_TEMPLATES[sticker.type] ? STICKER_TEMPLATES[sticker.type].html : '');
+
+            // Inject Content & Controls
+            el.innerHTML = `
+                <div class="sticker-content pointer-events-auto">
+                    ${htmlContent}
+                </div>
+                <div class="sticker-handle-rotate sticker-control-btn" title="คลิกค้างแล้วหมุน"><i class="fa-solid fa-arrows-rotate"></i></div>
+                <div class="sticker-handle-delete sticker-control-btn" title="ลบสติกเกอร์"><i class="fa-solid fa-xmark"></i></div>
+                <div class="sticker-handle-resize sticker-control-btn" title="คลิกค้างแล้วย่อขยาย"><i class="fa-solid fa-up-right-and-down-left-from-center"></i></div>
+            `;
+
+            // Attach Mouse & Touch Listeners for Drag, Resize, Rotate, Delete
+            attachStickerListeners(el, sticker);
+
+            layer.appendChild(el);
+        }
+
+        function attachStickerListeners(el, sticker) {
+            let isDragging = false;
+            let isResizing = false;
+            let isRotating = false;
+            let startX, startY, startLeft, startTop, startScale, startDist, startAngle, startRotation;
+
+            const rotateHandle = el.querySelector('.sticker-handle-rotate');
+            const resizeHandle = el.querySelector('.sticker-handle-resize');
+            const deleteHandle = el.querySelector('.sticker-handle-delete');
+
+            // --- 1. DELETE BUTTON LOGIC ---
+            const onDeleteAction = (e) => {
+                e.stopPropagation();
+                e.preventDefault();
+                deleteSticker(sticker.id, e);
+            };
+            if (deleteHandle) {
+                deleteHandle.addEventListener('click', onDeleteAction);
+                deleteHandle.addEventListener('mousedown', (e) => e.stopPropagation());
+                deleteHandle.addEventListener('touchstart', (e) => { e.stopPropagation(); onDeleteAction(e); }, { passive: false });
+            }
+
+            // --- 2. DRAG LOGIC ---
+            const onDragStart = (e) => {
+                if (DrawingEngine.isActiveMode) return;
+                if (e.target.closest('.sticker-control-btn')) return;
+                e.stopPropagation();
+                selectSticker(sticker.id);
+                isDragging = true;
+                
+                const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+                const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+                startX = clientX;
+                startY = clientY;
+                startLeft = sticker.x;
+                startTop = sticker.y;
+
+                window.addEventListener('mousemove', onDragMove, { passive: false });
+                window.addEventListener('mouseup', onDragEnd);
+                window.addEventListener('touchmove', onDragMove, { passive: false });
+                window.addEventListener('touchend', onDragEnd);
+            };
+
+            const onDragMove = (e) => {
+                if (!isDragging) return;
+                if (e.touches) e.preventDefault();
+                const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+                const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+                
+                const zoomFactor = AppState.zoom || 1.0;
+                const dx = (clientX - startX) / zoomFactor;
+                const dy = (clientY - startY) / zoomFactor;
+
+                sticker.x = Math.round(startLeft + dx);
+                sticker.y = Math.round(startTop + dy);
+
+                el.style.left = `${sticker.x}px`;
+                el.style.top = `${sticker.y}px`;
+            };
+
+            const onDragEnd = () => {
+                if (isDragging) {
+                    isDragging = false;
+                    StorageEngine.save();
+                }
+                window.removeEventListener('mousemove', onDragMove);
+                window.removeEventListener('mouseup', onDragEnd);
+                window.removeEventListener('touchmove', onDragMove);
+                window.removeEventListener('touchend', onDragEnd);
+            };
+
+            el.addEventListener('mousedown', onDragStart);
+            el.addEventListener('touchstart', onDragStart, { passive: false });
+
+            // --- 3. RESIZE LOGIC ---
+            const onResizeStart = (e) => {
+                e.stopPropagation();
+                e.preventDefault();
+                isResizing = true;
+                selectSticker(sticker.id);
+
+                const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+                const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+                const rect = el.getBoundingClientRect();
+                const centerX = rect.left + rect.width / 2;
+                const centerY = rect.top + rect.height / 2;
+
+                startDist = Math.hypot(clientX - centerX, clientY - centerY) || 1;
+                startScale = sticker.scale;
+
+                window.addEventListener('mousemove', onResizeMove, { passive: false });
+                window.addEventListener('mouseup', onResizeEnd);
+                window.addEventListener('touchmove', onResizeMove, { passive: false });
+                window.addEventListener('touchend', onResizeEnd);
+            };
+
+            const onResizeMove = (e) => {
+                if (!isResizing) return;
+                if (e.touches) e.preventDefault();
+                const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+                const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+                const rect = el.getBoundingClientRect();
+                const centerX = rect.left + rect.width / 2;
+                const centerY = rect.top + rect.height / 2;
+
+                const currentDist = Math.hypot(clientX - centerX, clientY - centerY);
+                let newScale = startScale * (currentDist / startDist);
+                newScale = Math.max(0.35, Math.min(newScale, 3.5)); // 0.35x to 3.5x
+
+                sticker.scale = Math.round(newScale * 100) / 100;
+                el.style.transform = `translate(-50%, -50%) rotate(${sticker.rotation}deg) scale(${sticker.scale})`;
+            };
+
+            const onResizeEnd = () => {
+                if (isResizing) {
+                    isResizing = false;
+                    StorageEngine.save();
+                }
+                window.removeEventListener('mousemove', onResizeMove);
+                window.removeEventListener('mouseup', onResizeEnd);
+                window.removeEventListener('touchmove', onResizeMove);
+                window.removeEventListener('touchend', onResizeEnd);
+            };
+
+            if (resizeHandle) {
+                resizeHandle.addEventListener('mousedown', onResizeStart);
+                resizeHandle.addEventListener('touchstart', onResizeStart, { passive: false });
+            }
+
+            // --- 4. ROTATE LOGIC ---
+            const onRotateStart = (e) => {
+                e.stopPropagation();
+                e.preventDefault();
+                isRotating = true;
+                selectSticker(sticker.id);
+
+                const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+                const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+                const rect = el.getBoundingClientRect();
+                const centerX = rect.left + rect.width / 2;
+                const centerY = rect.top + rect.height / 2;
+
+                startAngle = Math.atan2(clientY - centerY, clientX - centerX);
+                startRotation = sticker.rotation;
+
+                window.addEventListener('mousemove', onRotateMove, { passive: false });
+                window.addEventListener('mouseup', onRotateEnd);
+                window.addEventListener('touchmove', onRotateMove, { passive: false });
+                window.addEventListener('touchend', onRotateEnd);
+            };
+
+            const onRotateMove = (e) => {
+                if (!isRotating) return;
+                if (e.touches) e.preventDefault();
+                const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+                const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+                const rect = el.getBoundingClientRect();
+                const centerX = rect.left + rect.width / 2;
+                const centerY = rect.top + rect.height / 2;
+
+                const currentAngle = Math.atan2(clientY - centerY, clientX - centerX);
+                const angleDeg = (currentAngle - startAngle) * (180 / Math.PI);
+
+                sticker.rotation = Math.round(startRotation + angleDeg) % 360;
+                el.style.transform = `translate(-50%, -50%) rotate(${sticker.rotation}deg) scale(${sticker.scale})`;
+            };
+
+            const onRotateEnd = () => {
+                if (isRotating) {
+                    isRotating = false;
+                    StorageEngine.save();
+                }
+                window.removeEventListener('mousemove', onRotateMove);
+                window.removeEventListener('mouseup', onRotateEnd);
+                window.removeEventListener('touchmove', onRotateMove);
+                window.removeEventListener('touchend', onRotateEnd);
+            };
+
+            if (rotateHandle) {
+                rotateHandle.addEventListener('mousedown', onRotateStart);
+                rotateHandle.addEventListener('touchstart', onRotateStart, { passive: false });
+            }
+        }
+
+        function selectSticker(id) {
+            AppState.activeStickerId = id;
+            document.querySelectorAll('.canvas-sticker-item').forEach(el => {
+                if (el.id === id) {
+                    el.classList.add('selected');
+                } else {
+                    el.classList.remove('selected');
+                }
+            });
+            updateSelectedStickerUI();
+        }
+
+        function deselectAllStickers() {
+            AppState.activeStickerId = null;
+            document.querySelectorAll('.canvas-sticker-item').forEach(el => {
+                el.classList.remove('selected');
+            });
+            updateSelectedStickerUI();
+        }
+
+        function updateSelectedStickerUI() {
+            const toolbar = document.getElementById('activeStickerToolbar');
+            if (!toolbar) return;
+            if (AppState.activeStickerId) {
+                toolbar.classList.remove('hidden');
+            } else {
+                toolbar.classList.add('hidden');
+            }
+        }
+
+        function rotateActiveSticker(deltaDeg) {
+            if (!AppState.activeStickerId) return;
+            const sticker = AppState.stickers.find(s => s.id === AppState.activeStickerId);
+            if (!sticker) return;
+            sticker.rotation = (sticker.rotation + deltaDeg) % 360;
+            const el = document.getElementById(sticker.id);
+            if (el) {
+                el.style.transform = `translate(-50%, -50%) rotate(${sticker.rotation}deg) scale(${sticker.scale})`;
+            }
+        }
+
+        function resizeActiveSticker(multiplier) {
+            if (!AppState.activeStickerId) return;
+            const sticker = AppState.stickers.find(s => s.id === AppState.activeStickerId);
+            if (!sticker) return;
+            let newScale = Math.max(0.35, Math.min(sticker.scale * multiplier, 3.5));
+            sticker.scale = Math.round(newScale * 100) / 100;
+            const el = document.getElementById(sticker.id);
+            if (el) {
+                el.style.transform = `translate(-50%, -50%) rotate(${sticker.rotation}deg) scale(${sticker.scale})`;
+            }
+        }
+
+        function bringActiveStickerToFront() {
+            if (!AppState.activeStickerId) return;
+            const el = document.getElementById(AppState.activeStickerId);
+            if (el && el.parentElement) {
+                el.parentElement.appendChild(el);
+            }
+        }
+
+        function deleteActiveSticker() {
+            if (AppState.activeStickerId) {
+                deleteSticker(AppState.activeStickerId);
+            }
+        }
+
+        function deleteSticker(id, e) {
+            if (e) {
+                e.stopPropagation();
+                e.preventDefault();
+            }
+            AppState.stickers = AppState.stickers.filter(s => s.id !== id);
+            const el = document.getElementById(id);
+            if (el) el.remove();
+            if (AppState.activeStickerId === id) {
+                AppState.activeStickerId = null;
+                updateSelectedStickerUI();
+            }
+        }
+
+        function clearAllStickers() {
+            if (AppState.stickers.length === 0) return;
+            if (confirm('คุณต้องการลบสติกเกอร์ทั้งหมดบนใบงานหรือไม่?')) {
+                AppState.stickers = [];
+                AppState.activeStickerId = null;
+                document.getElementById('stickersLayer').innerHTML = '';
+                updateSelectedStickerUI();
+            }
+        }
+
+        function handleLayerClick(e) {
+            if (e.target.id === 'stickersLayer' || e.target.id === 'assignmentSheet' || e.target.id === 'drawingCanvas') {
+                deselectAllStickers();
+            }
+        }
+
+        function setupKeyboardShortcuts() {
+            window.addEventListener('keydown', (e) => {
+                if (e.key === 'Delete' || e.key === 'Backspace') {
+                    if (AppState.activeStickerId && document.activeElement.tagName !== 'INPUT' && document.activeElement.tagName !== 'TEXTAREA') {
+                        deleteSticker(AppState.activeStickerId);
+                    }
+                }
+            });
+        }
+
+        // =========================================================================
+        // H. NEON HIGHLIGHTER & DRAWING CANVAS ENGINE
+        // =========================================================================
+        const DrawingEngine = {
+            canvas: null,
+            ctx: null,
+            isDrawing: false,
+            isActiveMode: false,
+            currentColor: 'rgba(250, 204, 21, 0.45)', // Neon Yellow
+            currentSize: 16,
+            strokes: [], // Stack of completed strokes for Undo: [ { color, size, points: [{x,y}, ...] } ]
+            currentStroke: null,
+
+            init() {
+                this.canvas = document.getElementById('drawingCanvas');
+                if (!this.canvas) return;
+                this.ctx = this.canvas.getContext('2d');
+                this.canvas.width = 1123;
+                this.canvas.height = 794;
+
+                // Attach Mouse & Touch Listeners
+                this.canvas.addEventListener('mousedown', (e) => this.start(e));
+                this.canvas.addEventListener('mousemove', (e) => this.draw(e));
+                window.addEventListener('mouseup', () => this.stop());
+
+                this.canvas.addEventListener('touchstart', (e) => this.start(e), { passive: false });
+                this.canvas.addEventListener('touchmove', (e) => this.draw(e), { passive: false });
+                window.addEventListener('touchend', () => this.stop());
+            },
+
+            getCanvasCoords(e) {
+                const rect = this.canvas.getBoundingClientRect();
+                const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+                const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+                const scaleX = this.canvas.width / rect.width;
+                const scaleY = this.canvas.height / rect.height;
+                return {
+                    x: (clientX - rect.left) * scaleX,
+                    y: (clientY - rect.top) * scaleY
+                };
+            },
+
+            start(e) {
+                if (!this.isActiveMode) return;
+                if (e.touches) e.preventDefault();
+                this.isDrawing = true;
+                const pt = this.getCanvasCoords(e);
+                this.currentStroke = {
+                    color: this.currentColor,
+                    size: this.currentSize,
+                    points: [pt]
+                };
+                this.drawPoint(pt);
+            },
+
+            draw(e) {
+                if (!this.isDrawing || !this.isActiveMode) return;
+                if (e.touches) e.preventDefault();
+                const pt = this.getCanvasCoords(e);
+                this.currentStroke.points.push(pt);
+                this.redrawAll();
+            },
+
+            stop() {
+                if (this.isDrawing && this.currentStroke && this.currentStroke.points.length > 0) {
+                    this.strokes.push(this.currentStroke);
+                    this.currentStroke = null;
+                }
+                this.isDrawing = false;
+            },
+
+            drawPoint(pt) {
+                this.ctx.beginPath();
+                this.ctx.fillStyle = this.currentColor;
+                this.ctx.arc(pt.x, pt.y, this.currentSize / 2, 0, Math.PI * 2);
+                this.ctx.fill();
+            },
+
+            redrawAll() {
+                this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+                
+                // Draw all stored strokes
+                const allStrokes = [...this.strokes];
+                if (this.currentStroke) allStrokes.push(this.currentStroke);
+
+                for (const stroke of allStrokes) {
+                    if (stroke.points.length < 1) continue;
+                    this.ctx.beginPath();
+                    this.ctx.strokeStyle = stroke.color;
+                    this.ctx.lineWidth = stroke.size;
+                    this.ctx.lineCap = 'round';
+                    this.ctx.lineJoin = 'round';
+
+                    if (stroke.points.length === 1) {
+                        this.ctx.fillStyle = stroke.color;
+                        this.ctx.arc(stroke.points[0].x, stroke.points[0].y, stroke.size / 2, 0, Math.PI * 2);
+                        this.ctx.fill();
+                    } else {
+                        this.ctx.moveTo(stroke.points[0].x, stroke.points[0].y);
+                        for (let i = 1; i < stroke.points.length; i++) {
+                            this.ctx.lineTo(stroke.points[i].x, stroke.points[i].y);
+                        }
+                        this.ctx.stroke();
+                    }
+                }
+            },
+
+            undo() {
+                if (this.strokes.length > 0) {
+                    this.strokes.pop();
+                    this.redrawAll();
+                }
+            },
+
+            clear() {
+                this.strokes = [];
+                this.currentStroke = null;
+                if (this.ctx && this.canvas) {
+                    this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+                }
+            }
+        };
+
+        function toggleDrawingMode() {
+            DrawingEngine.isActiveMode = !DrawingEngine.isActiveMode;
+            const canvas = document.getElementById('drawingCanvas');
+            const btn = document.getElementById('drawModeBtn');
+            const icon = document.getElementById('drawStatusIcon');
+            const text = document.getElementById('drawStatusText');
+
+            if (DrawingEngine.isActiveMode) {
+                canvas.classList.add('drawing-mode-active');
+                btn.className = 'px-3.5 py-1.5 rounded-lg bg-yellow-500 text-slate-950 font-bold text-xs border border-yellow-400 transition flex items-center gap-1.5 shadow-lg';
+                btn.innerHTML = '<i class="fa-solid fa-hand"></i><span>ปิดโหมดวาด (เลือกสติกเกอร์)</span>';
+                icon.className = 'w-3 h-3 rounded-full bg-yellow-400 animate-pulse';
+                text.textContent = 'โหมดวาด: เปิดอยู่ (ขีดไฮไลต์บนใบงานได้เลย)';
+                text.className = 'text-xs font-semibold text-yellow-400 font-kanit';
+                deselectAllStickers();
+            } else {
+                canvas.classList.remove('drawing-mode-active');
+                btn.className = 'px-3.5 py-1.5 rounded-lg bg-slate-800 hover:bg-yellow-500 hover:text-slate-950 text-yellow-400 font-bold text-xs border border-yellow-500/40 transition flex items-center gap-1.5 shadow';
+                btn.innerHTML = '<i class="fa-solid fa-pen"></i><span>เปิดโหมดไฮไลต์</span>';
+                icon.className = 'w-3 h-3 rounded-full bg-slate-600';
+                text.textContent = 'โหมดวาด: ปิดอยู่ (เลือก/ลากสติกเกอร์ได้ปกติ)';
+                text.className = 'text-xs font-semibold text-slate-300 font-kanit';
+            }
+        }
+
+        function setHighlighterColor(colorRgba) {
+            DrawingEngine.currentColor = colorRgba;
+            document.querySelectorAll('.hl-color-btn').forEach(btn => {
+                if (btn.getAttribute('data-color') === colorRgba) {
+                    btn.classList.add('border-white', 'scale-110');
+                    btn.classList.remove('border-transparent');
+                } else {
+                    btn.classList.remove('border-white', 'scale-110');
+                    btn.classList.add('border-transparent');
+                }
+            });
+            if (!DrawingEngine.isActiveMode) toggleDrawingMode();
+        }
+
+        function setHighlighterSize(sizePx) {
+            DrawingEngine.currentSize = sizePx;
+            document.querySelectorAll('.hl-size-btn').forEach(btn => {
+                if (parseInt(btn.getAttribute('data-size')) === sizePx) {
+                    btn.className = 'hl-size-btn flex-1 py-1.5 bg-slate-700 text-yellow-400 font-bold rounded-lg border border-yellow-500/50 text-xs text-center transition';
+                } else {
+                    btn.className = 'hl-size-btn flex-1 py-1.5 bg-slate-800 hover:bg-slate-700 text-white rounded-lg border border-slate-700 text-xs text-center transition';
+                }
+            });
+        }
+
+        function undoDrawingStroke() {
+            DrawingEngine.undo();
+        }
+
+        function clearDrawingCanvas() {
+            if (confirm('คุณต้องการล้างเส้นไฮไลต์และลายเส้นทั้งหมดหรือไม่?')) {
+                DrawingEngine.clear();
+            }
+        }
+
+        // =========================================================================
+        // I. ZOOM CONTROLS
+        // =========================================================================
+        function adjustCanvasZoom(delta) {
+            AppState.zoom = Math.max(0.35, Math.min(AppState.zoom + delta, 1.4));
+            applyCanvasZoom();
+        }
+
+        function resetCanvasZoom() {
+            const container = document.getElementById('canvasScrollWrapper');
+            if (!container) return;
+            const availableWidth = container.clientWidth - 12;
+            const availableHeight = container.clientHeight - 12;
+            
+            if (availableWidth <= 0 || availableHeight <= 0) return;
+
+            const scaleX = availableWidth / 1123;
+            const scaleY = availableHeight / 794;
+            const autoScale = Math.min(scaleX, scaleY, 1.0);
+            
+            AppState.zoom = Math.max(0.25, Math.round(autoScale * 100) / 100);
+            applyCanvasZoom();
+        }
+
+        function applyCanvasZoom() {
+            const sheet = document.getElementById('assignmentSheet');
+            if (!sheet) return;
+            sheet.style.transform = `scale(${AppState.zoom})`;
+            const display = document.getElementById('zoomLevelDisplay');
+            if (display) display.textContent = `${Math.round(AppState.zoom * 100)}%`;
+        }
+
+        // =========================================================================
+        // J. HIGH-QUALITY VECTOR PDF EXPORT / NATIVE BROWSER PRINT (100% PRECISE A4)
+        // =========================================================================
+        function exportAssignmentPDF() {
+            if (!AppState.student.isRegistered) {
+                openRegistrationModal();
+                alert('กรุณากรอกข้อมูลนักเรียนให้ครบถ้วนก่อนบันทึกไฟล์ PDF');
+                return;
+            }
+
+            // 1. Prepare UI
+            deselectAllStickers();
+
+            // 2. Alert Instructions
+            alert('คำแนะนำก่อนพิมพ์:\n\nเพื่อให้ได้ภาพใบงานที่สมบูรณ์ 100%\nในหน้าต่างถัดไป โปรดติ๊กเครื่องหมายถูกที่ช่อง\n✅ "กราฟิกพื้นหลัง" (Background Graphics)\n\nจากนั้นเลือก "บันทึกเป็น PDF" (Save as PDF)');
+
+            // 3. Trigger native print dialog with exact A4 landscape preview
+            // Use setTimeout to allow alert to close cleanly before print dialog opens
+            setTimeout(() => {
+                window.print();
+            }, 500);
+        }
+
+
+    </script>
+</body>
+</html>

@@ -1694,6 +1694,18 @@ app.get('/presentation', (req, res) => {
     res.sendFile(path.join(__dirname, 'presentation.html'));
 });
 
+app.get('/pdpa_presentation', (req, res) => {
+    res.sendFile(path.join(__dirname, 'pdpa_presentation.html'));
+});
+
+app.get('/pdpa_assignment', (req, res) => {
+    res.sendFile(path.join(__dirname, 'pdpa_assignment_board.html'));
+});
+
+app.get('/pdpa_assignment_board', (req, res) => {
+    res.sendFile(path.join(__dirname, 'pdpa_assignment_board.html'));
+});
+
 app.get('/cases', (req, res) => {
     res.sendFile(path.join(__dirname, 'cases_reference.html'));
 });

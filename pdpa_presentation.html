@@ -1,0 +1,2124 @@
+<!DOCTYPE html>
+<html lang="th" class="h-full">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PDPA 101: คู่มือพิทักษ์ข้อมูลส่วนตัวสุดคูล ฉบับวัยรุ่น ม.3</title>
+
+    <!-- Meta Information -->
+    <meta name="description"
+        content="สไลด์นำเสนอเชิงโต้ตอบ PDPA 101 สำหรับนักเรียนชั้น ม.3 สรุปเข้าใจง่าย สวยงาม มินิมอล ตัวอักษรคมชัด อ่านง่าย พร้อมกิจกรรมและตัวอย่างคดีจริง">
+    <meta name="theme-color" content="#0284C7">
+    <link rel="icon" type="image/png" href="assets/pdpa_icon.png">
+
+    <!-- Google Fonts: Kanit (Thai Modern Sans-Serif) & Inter (Numbers & Clean Tech) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Kanit:wght@300;400;500;600;700;800&family=Sarabun:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Kanit', 'Sarabun', 'sans-serif'],
+                        mono: ['Inter', 'monospace'],
+                    },
+                    colors: {
+                        brand: {
+                            50: '#F0F9FF',
+                            100: '#E0F2FE',
+                            200: '#BAE6FD',
+                            300: '#7DD3FC',
+                            400: '#38BDF8',
+                            500: '#0EA5E9',
+                            600: '#0284C7',
+                            700: '#0369A1',
+                            800: '#075985',
+                            900: '#0C4A6E',
+                        },
+                        navy: {
+                            800: '#1E293B',
+                            900: '#0F172A',
+                            950: '#020617',
+                        }
+                    },
+                    boxShadow: {
+                        'soft': '0 4px 20px -2px rgba(15, 23, 42, 0.05), 0 2px 6px -1px rgba(15, 23, 42, 0.02)',
+                        'soft-lg': '0 12px 30px -4px rgba(15, 23, 42, 0.08), 0 4px 12px -2px rgba(15, 23, 42, 0.03)',
+                        'glow': '0 0 20px rgba(14, 165, 233, 0.3)',
+                    }
+                }
+            }
+        }
+    </script>
+
+    <!-- FontAwesome 6 CDN -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <!-- Custom CSS Styles -->
+    <style>
+        /* Modern Scrollbar */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #F1F5F9;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #CBD5E1;
+            border-radius: 9999px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #94A3B8;
+        }
+
+        /* Slide Transition System */
+        .slide-container {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+        }
+
+        .slide-pane {
+            position: absolute;
+            inset: 0;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateX(25px);
+            transition: opacity 0.35s cubic-bezier(0.16, 1, 0.3, 1),
+                transform 0.35s cubic-bezier(0.16, 1, 0.3, 1),
+                visibility 0.35s;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 1.25rem 1rem;
+        }
+
+        @media (min-width: 768px) {
+            .slide-pane {
+                padding: 1.75rem 2rem;
+            }
+        }
+
+        .slide-pane.active {
+            opacity: 1;
+            visibility: visible;
+            transform: translateX(0);
+            z-index: 10;
+        }
+
+        .slide-pane.prev {
+            transform: translateX(-25px);
+        }
+
+        /* Slide Content Canvas Box */
+        .slide-canvas {
+            width: 100%;
+            max-width: 1040px;
+            margin: 0 auto;
+        }
+
+        /* Card Flip Styles */
+        .perspective-1000 {
+            perspective: 1000px;
+        }
+
+        .transform-style-3d {
+            transform-style: preserve-3d;
+        }
+
+        .backface-hidden {
+            backface-visibility: hidden;
+        }
+
+        .rotate-y-180 {
+            transform: rotateY(180deg);
+        }
+
+        /* Subtle grid background */
+        .bg-grid-pattern {
+            background-size: 28px 28px;
+            background-image:
+                linear-gradient(to right, rgba(226, 232, 240, 0.5) 1px, transparent 1px),
+                linear-gradient(to bottom, rgba(226, 232, 240, 0.5) 1px, transparent 1px);
+        }
+    </style>
+</head>
+
+<body
+    class="h-full bg-slate-50 text-slate-800 font-sans antialiased select-none flex flex-col justify-between overflow-hidden">
+
+    <!-- 🌐 TOP PROGRESS BAR & HEADER -->
+    <header class="fixed top-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-md border-b border-slate-200/80 shadow-xs">
+        <div class="h-1 bg-slate-100 w-full overflow-hidden">
+            <div id="slideProgressBar"
+                class="h-full bg-linear-to-r from-sky-400 to-brand-600 transition-all duration-300 ease-out"
+                style="width: 9.09%;"></div>
+        </div>
+        <div class="max-w-6xl mx-auto px-4 py-2.5 flex items-center justify-between">
+            <!-- Left Branding -->
+            <div class="flex items-center gap-2.5">
+                <img src="assets/pdpa_icon.png" alt="PDPA Shield Logo"
+                    class="w-9 h-9 rounded-xl object-cover shadow-xs border border-sky-400/40">
+                <div>
+                    <h1 class="text-sm md:text-base font-bold text-navy-900 leading-tight">
+                        PDPA 101 <span class="text-sky-500 font-normal">| คู่มือพิทักษ์ข้อมูล ม.3</span>
+                    </h1>
+                    <p class="text-xs text-slate-500 hidden sm:block">พ.ร.บ. คุ้มครองข้อมูลส่วนบุคคล พ.ศ. 2562</p>
+                </div>
+            </div>
+
+            <!-- Slide Indicator & Tools -->
+            <div class="flex items-center gap-2 md:gap-3">
+                <!-- Sound Toggle -->
+                <button id="soundToggleBtn" onclick="toggleSound()" title="เปิด/ปิดเสียงเอฟเฟกต์"
+                    class="px-3 py-1.5 rounded-lg border border-slate-200 text-slate-600 hover:text-sky-600 hover:bg-sky-50 text-xs md:text-sm font-semibold transition flex items-center gap-1.5 cursor-pointer">
+                    <i id="soundIcon" class="fa-solid fa-volume-high text-xs"></i>
+                    <span class="hidden md:inline">เสียง</span>
+                </button>
+
+                <!-- Fullscreen Toggle -->
+                <button onclick="toggleFullscreen()" title="เต็มจอ (F11)"
+                    class="px-3 py-1.5 rounded-lg border border-slate-200 text-slate-600 hover:text-sky-600 hover:bg-sky-50 text-xs md:text-sm font-semibold transition flex items-center gap-1.5 cursor-pointer">
+                    <i class="fa-solid fa-expand text-xs"></i>
+                    <span class="hidden md:inline">เต็มจอ</span>
+                </button>
+
+                <!-- Deck Selector Dropdown -->
+                <div class="relative">
+                    <button onclick="toggleDeckMenu()"
+                        class="px-3 py-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-navy-900 text-xs md:text-sm font-bold font-mono transition flex items-center gap-1.5 cursor-pointer">
+                        <span id="currentSlideNum">01</span> / <span id="totalSlideNum">11</span>
+                        <i class="fa-solid fa-chevron-down text-[10px] text-slate-400"></i>
+                    </button>
+                    <!-- Quick Menu Popover -->
+                    <div id="deckMenu"
+                        class="hidden absolute right-0 mt-2 w-72 bg-white rounded-2xl shadow-soft-lg border border-slate-200 p-2.5 z-50">
+                        <div class="text-xs font-bold text-slate-400 uppercase tracking-wider px-2.5 py-1 mb-1">
+                            สารบัญสไลด์ (11 หน้า)</div>
+                        <div class="space-y-1 max-h-72 overflow-y-auto" id="deckMenuList">
+                            <!-- Populated dynamically -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- 🖼️ MAIN SLIDE PRESENTATION AREA -->
+    <main class="relative flex-1 w-full h-full pt-14 pb-16 bg-grid-pattern overflow-hidden">
+        <div class="slide-container h-full">
+
+            <!-- ======================================================== -->
+            <!-- 🌟 SLIDE 1: Welcome & PDPA Intro -->
+            <!-- ======================================================== -->
+            <section id="slide-1" class="slide-pane active">
+                <div class="slide-canvas text-center">
+                    <!-- Badge -->
+                    <div
+                        class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-sky-50 border border-sky-200 text-sky-700 text-xs md:text-sm font-medium mb-3">
+                        <i class="fa-solid fa-shield-cat text-sky-500"></i>
+                        <span>วิชาพิทักษ์สิทธิ์ดิจิทัล ม.3</span>
+                        <span class="w-1.5 h-1.5 rounded-full bg-sky-400"></span>
+                        <span class="text-slate-500">บังคับใช้เต็มรูปแบบ 1 มิ.ย. 2565</span>
+                    </div>
+
+                    <!-- Title -->
+                    <h1
+                        class="text-3xl sm:text-4xl md:text-5xl font-black text-navy-900 tracking-tight leading-tight mb-3">
+                        PDPA 101: พิทักษ์สิทธิ์ดิจิทัล <br class="hidden sm:inline">
+                        <span
+                            class="text-transparent bg-clip-text bg-linear-to-r from-sky-500 to-brand-600">คู่มือสุดคูล
+                            ฉบับวัยรุ่น ม.3</span>
+                    </h1>
+
+                    <p
+                        class="text-slate-600 text-sm sm:text-base md:text-lg max-w-2xl mx-auto font-light leading-relaxed mb-6">
+                        รู้ทันกฎหมายคุ้มครองข้อมูลส่วนบุคคล เข้าใจง่าย ไม่น่าเบื่อ ไม่ตกเป็นเหยื่อแก๊งคอลเซ็นเตอร์
+                        และปกป้องสิทธิ์ของตนเองในโลกออนไลน์ได้อย่างมั่นใจ!
+                    </p>
+
+                    <!-- Interactive Digital Privacy Pass Card -->
+                    <div
+                        class="bg-white rounded-2xl p-5 shadow-soft border border-slate-200 max-w-lg mx-auto mb-6 text-left transition hover:shadow-soft-lg">
+                        <div class="flex items-center justify-between border-b border-slate-100 pb-3 mb-3">
+                            <div class="flex items-center gap-3">
+                                <img src="assets/pdpa_icon.png" alt="PDPA Shield Pass"
+                                    class="w-11 h-11 rounded-xl object-cover border border-sky-300 shadow-xs">
+                                <div>
+                                    <div class="text-xs text-slate-400 font-mono font-bold">DIGITAL PRIVACY PASS</div>
+                                    <div class="text-sm md:text-base font-bold text-navy-900">เกราะป้องกันข้อมูลส่วนตัว
+                                        ม.3</div>
+                                </div>
+                            </div>
+                            <span id="passStatusBadge"
+                                class="px-3 py-1 rounded-full bg-amber-50 border border-amber-200 text-amber-700 text-xs font-semibold">
+                                <i class="fa-solid fa-lock text-[10px] mr-1"></i>ยังไม่เปิดเกราะ
+                            </span>
+                        </div>
+
+                        <!-- Interactive Consent Checkbox -->
+                        <label
+                            class="flex items-start gap-3 p-3 rounded-xl bg-slate-50 border border-slate-200 hover:border-sky-300 transition cursor-pointer group">
+                            <input type="checkbox" id="consentCheckbox" onchange="handleConsentChange(this)"
+                                class="mt-1 w-5 h-5 text-sky-600 rounded border-slate-300 focus:ring-sky-500 cursor-pointer">
+                            <div
+                                class="text-xs md:text-sm text-slate-700 group-hover:text-navy-900 transition leading-snug">
+                                <strong
+                                    class="text-navy-900 block font-bold mb-0.5 text-sm md:text-base">ขอใช้สิทธิ์ความเป็นเจ้าของข้อมูลดิจิทัล</strong>
+                                ข้าพเจ้าพร้อมเรียนรู้ 8 พลังวิเศษตามกฎหมาย PDPA
+                                เพื่อไม่ให้ใครเอาข้อมูลไปแกล้งหรือหาผลประโยชน์
+                            </div>
+                        </label>
+                    </div>
+
+                    <!-- Action Button -->
+                    <button id="startLessonBtn" onclick="nextSlide()"
+                        class="px-8 py-3.5 rounded-xl bg-sky-500 hover:bg-sky-600 text-white font-bold text-base md:text-lg shadow-glow hover:shadow-lg transition duration-200 flex items-center gap-2.5 mx-auto cursor-pointer">
+                        <span>เริ่มเรียนรู้และคุ้มครองข้อมูล</span>
+                        <i class="fa-solid fa-arrow-right text-sm"></i>
+                    </button>
+                </div>
+            </section>
+
+            <!-- ======================================================== -->
+            <!-- 🛡️ SLIDE 2: ทำไมถึงต้องมีกฎหมาย PDPA? -->
+            <!-- ======================================================== -->
+            <section id="slide-2" class="slide-pane">
+                <div class="slide-canvas">
+                    <!-- Header -->
+                    <div class="text-center mb-4">
+                        <div
+                            class="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full bg-rose-50 text-rose-600 text-xs md:text-sm font-bold uppercase tracking-wider mb-1.5 border border-rose-200">
+                            <i class="fa-solid fa-circle-exclamation"></i> หมวดนำ: ที่มาและความจำเป็น
+                        </div>
+                        <h2 class="text-2xl sm:text-3xl md:text-4xl font-extrabold text-navy-900">
+                            ทำไมถึงต้องมีกฎหมาย <span class="text-sky-500">PDPA?</span>
+                        </h2>
+                        <p class="text-slate-600 text-sm md:text-base mt-1 max-w-2xl mx-auto">
+                            รู้ทัน 3 วิกฤตภัยคุกคามยุคดิจิทัล ที่ทำให้ประเทศไทยต้องออกกฎหมายมาคุ้มครองพวกเราทุกคน
+                        </p>
+                    </div>
+
+                    <!-- 3 Core Reasons Grid -->
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+                        <!-- Card 1 -->
+                        <div
+                            class="bg-white rounded-2xl p-5 shadow-soft border border-slate-200 hover:border-rose-300 transition flex flex-col justify-between group">
+                            <div>
+                                <div
+                                    class="w-12 h-12 rounded-xl bg-rose-50 text-rose-600 flex items-center justify-center text-xl mb-3 group-hover:scale-105 transition">
+                                    <i class="fa-solid fa-phone-slash"></i>
+                                </div>
+                                <h3 class="text-base md:text-lg font-bold text-navy-900 mb-2 leading-snug">
+                                    1. ภัยคุกคามจากการล่วงละเมิดข้อมูลสูงขึ้น
+                                </h3>
+                                <p class="text-xs md:text-sm text-slate-600 leading-relaxed">
+                                    เบอร์โทรและข้อมูลติดต่อถูกแอบนำไปซื้อขายต่อโดยไม่ยินยอม จนเกิดความเดือดร้อนรำคาญ
+                                    เช่น การโทรสแปมขายของ หรือตกเป็นเป้าหมายของ <strong>แก๊งคอลเซ็นเตอร์ & Online
+                                        Scams</strong> ที่นำข้อมูลมาหลอกล่อเหยื่อ
+                                </p>
+                            </div>
+                            <div
+                                class="mt-3 pt-2.5 border-t border-slate-100 text-xs font-semibold text-rose-700 bg-rose-50/60 p-2 rounded-lg">
+                                ⚠️ ป้องกันข้อมูลหลุดไปอยู่ในมือมิจฉาชีพ
+                            </div>
+                        </div>
+
+                        <!-- Card 2 -->
+                        <div
+                            class="bg-white rounded-2xl p-5 shadow-soft border border-slate-200 hover:border-amber-300 transition flex flex-col justify-between group">
+                            <div>
+                                <div
+                                    class="w-12 h-12 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center text-xl mb-3 group-hover:scale-105 transition">
+                                    <i class="fa-solid fa-bolt"></i>
+                                </div>
+                                <h3 class="text-base md:text-lg font-bold text-navy-900 mb-2 leading-snug">
+                                    2. เทคโนโลยีเอื้อให้เข้าถึงข้อมูลง่ายเกินไป
+                                </h3>
+                                <p class="text-xs md:text-sm text-slate-600 leading-relaxed">
+                                    เทคโนโลยีที่พัฒนาอย่างรวดเร็วทำให้เก็บ รวบรวม
+                                    หรือแชร์ข้อมูลผู้อื่นได้ง่ายเพียงปลายนิ้ว หากไม่มีกฎหมายมาควบคุม
+                                    ข้อมูลเหล่านี้จะถูกนำไปใช้อย่างไร้ขอบเขต สร้างความเสียหายต่อสังคม
+                                </p>
+                            </div>
+                            <div
+                                class="mt-3 pt-2.5 border-t border-slate-100 text-xs font-semibold text-amber-700 bg-amber-50/60 p-2 rounded-lg">
+                                🔒 ขีดเส้นกรอบการใช้เทคโนโลยีให้ถูกต้อง
+                            </div>
+                        </div>
+
+                        <!-- Card 3 -->
+                        <div
+                            class="bg-white rounded-2xl p-5 shadow-soft border border-slate-200 hover:border-sky-300 transition flex flex-col justify-between group">
+                            <div>
+                                <div
+                                    class="w-12 h-12 rounded-xl bg-sky-50 text-sky-600 flex items-center justify-center text-xl mb-3 group-hover:scale-105 transition">
+                                    <i class="fa-solid fa-scale-balanced"></i>
+                                </div>
+                                <h3 class="text-base md:text-lg font-bold text-navy-900 mb-2 leading-snug">
+                                    3. สร้างมาตรฐานสากลและกลไกเยียวยา
+                                </h3>
+                                <p class="text-xs md:text-sm text-slate-600 leading-relaxed">
+                                    ประเทศไทยจำเป็นต้องมีกฎหมายกลางที่กำหนดหลักเกณฑ์และมาตรการกำกับดูแลที่เป็นมาตรฐานสากล
+                                    เพื่อปกป้องสิทธิและ
+                                    <strong>ให้การเยียวยาแก่ประชาชนผู้ถูกละเมิดสิทธิอย่างเป็นธรรม</strong>
+                                </p>
+                            </div>
+                            <div
+                                class="mt-3 pt-2.5 border-t border-slate-100 text-xs font-semibold text-sky-700 bg-sky-50/60 p-2 rounded-lg">
+                                ⚖️ คุ้มครองสิทธิและชดเชยเยียวยาผู้เสียหาย
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Bottom Banner -->
+                    <div
+                        class="bg-sky-50/90 rounded-xl p-3 text-center text-xs md:text-sm text-sky-900 border border-sky-200 font-medium">
+                        💡 <strong>บทสรุป:</strong> PDPA เกิดขึ้นเพื่อเป็น <strong>"เกราะป้องกัน"</strong>
+                        ให้ข้อมูลส่วนตัวของคนไทยปลอดภัยในยุคไซเบอร์
+                    </div>
+                </div>
+            </section>
+
+            <!-- ======================================================== -->
+            <!-- 🌟 SLIDE 3: กฎหมาย PDPA มีความสำคัญอย่างไร? -->
+            <!-- ======================================================== -->
+            <section id="slide-3" class="slide-pane">
+                <div class="slide-canvas">
+                    <!-- Header -->
+                    <div class="text-center mb-4">
+                        <div
+                            class="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full bg-emerald-50 text-emerald-600 text-xs md:text-sm font-bold uppercase tracking-wider mb-1.5 border border-emerald-200">
+                            <i class="fa-solid fa-star"></i> หมวดนำ: คุณค่าและประโยชน์ของกฎหมาย
+                        </div>
+                        <h2 class="text-2xl sm:text-3xl md:text-4xl font-extrabold text-navy-900">
+                            กฎหมาย PDPA มีความสำคัญอย่างไร? <span class="text-sky-500">(3 เสาหลักเพื่อทุกคน)</span>
+                        </h2>
+                        <p class="text-slate-600 text-sm md:text-base mt-1 max-w-2xl mx-auto">
+                            PDPA ไม่ได้มาขัดขวางการใช้เทคโนโลยี แต่สร้างความเป็นธรรม ความโปร่งใส และความปลอดภัย
+                        </p>
+                    </div>
+
+                    <!-- 3 Pillars -->
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+                        <!-- Pillar 1 -->
+                        <div
+                            class="bg-white rounded-2xl p-5 shadow-soft border-2 border-sky-200 hover:border-sky-400 transition flex flex-col justify-between group">
+                            <div>
+                                <span
+                                    class="px-2.5 py-1 rounded-full bg-sky-100 text-sky-700 text-xs font-bold uppercase tracking-wider mb-2.5 inline-block">
+                                    Empowerment
+                                </span>
+                                <div
+                                    class="w-12 h-12 rounded-xl bg-sky-500 text-white flex items-center justify-center text-xl mb-3 shadow-xs group-hover:scale-105 transition">
+                                    <i class="fa-solid fa-hand-holding-heart"></i>
+                                </div>
+                                <h3 class="text-base md:text-lg font-bold text-navy-900 mb-2 leading-snug">
+                                    1. คืนอำนาจควบคุมข้อมูลให้ประชาชน
+                                </h3>
+                                <p class="text-xs md:text-sm text-slate-600 leading-relaxed">
+                                    ทุกคนได้รับสิทธิ์ขั้นพื้นฐานในการปกป้องและตัดสินใจเกี่ยวกับข้อมูลตนเอง เช่น
+                                    สิทธิ์ได้รับแจ้งก่อนเก็บ, เลือกให้หรือถอนความยินยอม, ขอสำเนา, คัดค้าน และ
+                                    <strong>สั่งให้ลบทำลายข้อมูลเมื่อไม่มีความจำเป็น</strong>
+                                </p>
+                            </div>
+                            <div class="mt-3 pt-2.5 border-t border-slate-100 text-xs font-bold text-sky-700">
+                                🙋 ข้อมูลเรา = เราเป็นเจ้าของ 100%
+                            </div>
+                        </div>
+
+                        <!-- Pillar 2 -->
+                        <div
+                            class="bg-white rounded-2xl p-5 shadow-soft border-2 border-brand-200 hover:border-brand-400 transition flex flex-col justify-between group">
+                            <div>
+                                <span
+                                    class="px-2.5 py-1 rounded-full bg-brand-100 text-brand-700 text-xs font-bold uppercase tracking-wider mb-2.5 inline-block">
+                                    Accountability
+                                </span>
+                                <div
+                                    class="w-12 h-12 rounded-xl bg-brand-600 text-white flex items-center justify-center text-xl mb-3 shadow-xs group-hover:scale-105 transition">
+                                    <i class="fa-solid fa-building-shield"></i>
+                                </div>
+                                <h3 class="text-base md:text-lg font-bold text-navy-900 mb-2 leading-snug">
+                                    2. ยกระดับความโปร่งใสและหน้าที่องค์กร
+                                </h3>
+                                <p class="text-xs md:text-sm text-slate-600 leading-relaxed">
+                                    บังคับให้องค์กรที่เก็บข้อมูล ต้องมีมาตรการรักษาความปลอดภัยที่รัดกุม
+                                    ป้องกันข้อมูลรั่วไหล หากละเลยจะได้รับบทลงโทษเด็ดขาด <strong>ทั้งโทษแพ่ง อาญา
+                                        และปรับทางปกครองสูงสุด 5 ล้านบาท</strong>
+                                </p>
+                            </div>
+                            <div class="mt-3 pt-2.5 border-t border-slate-100 text-xs font-bold text-brand-700">
+                                🏢 บังคับองค์กรต้องรับผิดชอบจริงจัง
+                            </div>
+                        </div>
+
+                        <!-- Pillar 3 -->
+                        <div
+                            class="bg-white rounded-2xl p-5 shadow-soft border-2 border-emerald-200 hover:border-emerald-400 transition flex flex-col justify-between group">
+                            <div>
+                                <span
+                                    class="px-2.5 py-1 rounded-full bg-emerald-100 text-emerald-700 text-xs font-bold uppercase tracking-wider mb-2.5 inline-block">
+                                    Building Trust
+                                </span>
+                                <div
+                                    class="w-12 h-12 rounded-xl bg-emerald-500 text-white flex items-center justify-center text-xl mb-3 shadow-xs group-hover:scale-105 transition">
+                                    <i class="fa-solid fa-globe"></i>
+                                </div>
+                                <h3 class="text-base md:text-lg font-bold text-navy-900 mb-2 leading-snug">
+                                    3. สร้างความเชื่อมั่นเศรษฐกิจดิจิทัล
+                                </h3>
+                                <p class="text-xs md:text-sm text-slate-600 leading-relaxed">
+                                    ถอดแบบมาจากกฎหมายมาตรฐานระดับโลกอย่าง <strong>GDPR ของสหภาพยุโรป</strong>
+                                    ช่วยสร้างความไว้วางใจในการทำธุรกรรมออนไลน์ รองรับการโอนย้ายข้อมูลข้ามพรมแดน
+                                    และขับเคลื่อนธุรกิจไทยในเวทีสากล
+                                </p>
+                            </div>
+                            <div class="mt-3 pt-2.5 border-t border-slate-100 text-xs font-bold text-emerald-700">
+                                🌍 มาตรฐานสากลเทียบเท่าระดับโลก
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Bottom Banner -->
+                    <div
+                        class="bg-emerald-50/90 rounded-xl p-3 text-center text-xs md:text-sm text-emerald-900 border border-emerald-200 font-medium">
+                        🤝 <strong>สรุป:</strong> PDPA สร้างความสมดุลระหว่าง <strong>"สิทธิส่วนบุคคลของประชาชน"</strong>
+                        และ <strong>"การขับเคลื่อนเศรษฐกิจดิจิทัลของประเทศ"</strong>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ======================================================== -->
+            <!-- 🔍 SLIDE 4: นิยามข้อมูลส่วนบุคคลทั่วไป -->
+            <!-- ======================================================== -->
+            <section id="slide-4" class="slide-pane">
+                <div class="slide-canvas">
+                    <!-- Header -->
+                    <div class="text-center mb-4">
+                        <div
+                            class="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full bg-sky-50 text-sky-600 text-xs md:text-sm font-bold uppercase tracking-wider mb-1">
+                            <i class="fa-solid fa-id-card"></i> หมวดที่ 1: พื้นฐานข้อมูล
+                        </div>
+                        <h2 class="text-2xl sm:text-3xl md:text-4xl font-extrabold text-navy-900">
+                            ข้อมูลส่วนบุคคลทั่วไป <span class="text-sky-500">(General Personal Data)</span> คืออะไร?
+                        </h2>
+                        <p class="text-slate-600 text-sm md:text-base mt-1 max-w-2xl mx-auto">
+                            <strong>"ข้อมูลใดก็ตามเกี่ยวกับบุคคลที่ยังมีชีวิตอยู่ ซึ่งทำให้ระบุตัวตนได้
+                                ไม่ว่าทางตรงหรือทางอ้อม"</strong> (ไม่รวมผู้เสียชีวิต)
+                        </p>
+                    </div>
+
+                    <!-- 2-Column Balanced Container -->
+                    <div class="grid grid-cols-1 md:grid-cols-12 gap-4 items-stretch">
+                        <!-- Left: Interactive Profile Card (6 cols) -->
+                        <div
+                            class="md:col-span-6 bg-white rounded-2xl p-5 shadow-soft border border-slate-200 flex flex-col justify-between">
+                            <div>
+                                <div class="flex items-center justify-between border-b border-slate-100 pb-2.5 mb-3">
+                                    <span class="text-xs font-mono font-bold text-slate-400">STUDENT PROFILE #M3</span>
+                                    <span
+                                        class="text-xs bg-emerald-50 text-emerald-700 px-2.5 py-1 rounded-full border border-emerald-200 font-semibold">
+                                        <i class="fa-solid fa-circle-check mr-1 text-[11px]"></i>มนุษย์ที่ยังมีชีวิต
+                                    </span>
+                                </div>
+
+                                <div class="space-y-2">
+                                    <!-- Name -->
+                                    <div onclick="inspectDataPoint('name')"
+                                        class="p-2.5 rounded-xl border border-slate-100 hover:border-sky-300 hover:bg-sky-50/50 transition cursor-pointer flex items-center justify-between group">
+                                        <div class="flex items-center gap-3">
+                                            <div
+                                                class="w-8 h-8 rounded-lg bg-sky-100 text-sky-600 flex items-center justify-center text-sm">
+                                                <i class="fa-solid fa-user"></i>
+                                            </div>
+                                            <div>
+                                                <div class="text-[11px] text-slate-400">ชื่อ-นามสกุล / ชื่อเล่น</div>
+                                                <div class="text-xs md:text-sm font-bold text-navy-900">ด.ช. ภูมิพัฒน์
+                                                    ศรีวิชัย (เจมส์)</div>
+                                            </div>
+                                        </div>
+                                        <span
+                                            class="text-xs px-2.5 py-1 rounded bg-sky-100 text-sky-700 font-bold group-hover:bg-sky-200">ทางตรง</span>
+                                    </div>
+
+                                    <!-- Contact -->
+                                    <div onclick="inspectDataPoint('contact')"
+                                        class="p-2.5 rounded-xl border border-slate-100 hover:border-sky-300 hover:bg-sky-50/50 transition cursor-pointer flex items-center justify-between group">
+                                        <div class="flex items-center gap-3">
+                                            <div
+                                                class="w-8 h-8 rounded-lg bg-emerald-100 text-emerald-600 flex items-center justify-center text-sm">
+                                                <i class="fa-solid fa-phone"></i>
+                                            </div>
+                                            <div>
+                                                <div class="text-[11px] text-slate-400">เบอร์โทรศัพท์ & อีเมล</div>
+                                                <div class="text-xs md:text-sm font-bold text-navy-900">089-xxx-5678 |
+                                                    james.m3@school.ac.th</div>
+                                            </div>
+                                        </div>
+                                        <span
+                                            class="text-xs px-2.5 py-1 rounded bg-sky-100 text-sky-700 font-bold group-hover:bg-sky-200">ทางตรง</span>
+                                    </div>
+
+                                    <!-- Gamer Tag -->
+                                    <div onclick="inspectDataPoint('game')"
+                                        class="p-2.5 rounded-xl border border-slate-100 hover:border-purple-300 hover:bg-purple-50/50 transition cursor-pointer flex items-center justify-between group">
+                                        <div class="flex items-center gap-3">
+                                            <div
+                                                class="w-8 h-8 rounded-lg bg-purple-100 text-purple-600 flex items-center justify-center text-sm">
+                                                <i class="fa-solid fa-gamepad"></i>
+                                            </div>
+                                            <div>
+                                                <div class="text-[11px] text-slate-400">Gamer ID / Discord Tag</div>
+                                                <div class="text-xs md:text-sm font-bold text-navy-900">ShadowNinja#2026
+                                                    / ROV Pro</div>
+                                            </div>
+                                        </div>
+                                        <span
+                                            class="text-xs px-2.5 py-1 rounded bg-purple-100 text-purple-700 font-bold group-hover:bg-purple-200">ทางอ้อม</span>
+                                    </div>
+
+                                    <!-- GPS & IP -->
+                                    <div onclick="inspectDataPoint('gps')"
+                                        class="p-2.5 rounded-xl border border-slate-100 hover:border-amber-300 hover:bg-amber-50/50 transition cursor-pointer flex items-center justify-between group">
+                                        <div class="flex items-center gap-3">
+                                            <div
+                                                class="w-8 h-8 rounded-lg bg-amber-100 text-amber-600 flex items-center justify-center text-sm">
+                                                <i class="fa-solid fa-location-dot"></i>
+                                            </div>
+                                            <div>
+                                                <div class="text-[11px] text-slate-400">พิกัด GPS & หมายเลข IP</div>
+                                                <div class="text-xs md:text-sm font-bold text-navy-900">13.7563° N,
+                                                    100.5018° E (IP: 171.96.x.x)</div>
+                                            </div>
+                                        </div>
+                                        <span
+                                            class="text-xs px-2.5 py-1 rounded bg-purple-100 text-purple-700 font-bold group-hover:bg-purple-200">ทางอ้อม</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div
+                                class="text-xs text-slate-500 text-center mt-3 pt-2 border-t border-slate-100 font-medium">
+                                💡 แตะที่ข้อมูลแต่ละแถวเพื่อดูคำอธิบาย
+                            </div>
+                        </div>
+
+                        <!-- Right: Explanation & Categories (6 cols) -->
+                        <div class="md:col-span-6 flex flex-col justify-between space-y-3">
+                            <!-- Dynamic Explainer Box -->
+                            <div id="dataPointDetailBox"
+                                class="bg-white rounded-2xl p-5 shadow-soft border-l-4 border-sky-500 border-t border-r border-b border-slate-200 flex-1">
+                                <div class="flex items-center gap-2 text-sky-600 font-bold text-sm md:text-base mb-1.5">
+                                    <i class="fa-solid fa-lightbulb text-sm"></i>
+                                    <span id="dataPointTitle">เลือกแตะที่ข้อมูลด้านซ้ายได้เลย!</span>
+                                </div>
+                                <p id="dataPointDesc" class="text-slate-700 text-xs md:text-sm leading-relaxed">
+                                    ข้อมูลทุกอย่างที่คนอื่นเอามาปะติดปะต่อแล้วรู้ได้ทันทีว่าเป็น
+                                    <strong>"ตัวเรา"</strong> ไม่ว่าจะชื่อ บัญชีโซเชียล เลขไอพี หรือรูปถ่าย
+                                    ล้วนถือเป็นข้อมูลส่วนบุคคลทั่วไปที่กฎหมาย PDPA ให้ความคุ้มครองทั้งสิ้น
+                                </p>
+                            </div>
+
+                            <!-- Direct vs Indirect Comparison -->
+                            <div class="grid grid-cols-2 gap-3">
+                                <div class="bg-sky-50/90 border border-sky-200 rounded-xl p-3">
+                                    <div
+                                        class="text-xs md:text-sm font-bold text-sky-900 mb-1 flex items-center gap-1.5">
+                                        <i class="fa-solid fa-bullseye text-sky-500"></i> ระบุตัวตนทางตรง
+                                    </div>
+                                    <div class="text-xs text-slate-700 leading-snug">
+                                        เห็นปุ๊บรู้ปั๊บว่าเป็นใคร เช่น ชื่อ-นามสกุล, เลขบัตรประชาชน, รูปถ่ายหน้าชัด
+                                    </div>
+                                </div>
+                                <div class="bg-purple-50/90 border border-purple-200 rounded-xl p-3">
+                                    <div
+                                        class="text-xs md:text-sm font-bold text-purple-900 mb-1 flex items-center gap-1.5">
+                                        <i class="fa-solid fa-network-wired text-purple-500"></i> ระบุตัวตนทางอ้อม
+                                    </div>
+                                    <div class="text-xs text-slate-700 leading-snug">
+                                        ดูเดี่ยวๆ อาจยังไม่รู้ แต่นำไปเทียบฐานข้อมูลอื่นก็รู้ตัวตน เช่น IP, ไอดีเกม, GPS
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ======================================================== -->
+            <!-- ⚠️ SLIDE 5: ข้อมูลส่วนบุคคลที่อ่อนไหว (Sensitive Data Alert) -->
+            <!-- ======================================================== -->
+            <section id="slide-5" class="slide-pane">
+                <div class="slide-canvas">
+                    <!-- Header -->
+                    <div class="text-center mb-4">
+                        <div
+                            class="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full bg-rose-50 text-rose-600 text-xs md:text-sm font-bold uppercase tracking-wider mb-1 border border-rose-200">
+                            <i class="fa-solid fa-triangle-exclamation"></i> หมวดที่ 2: เขตหวงห้ามระดับสูงสุด
+                        </div>
+                        <h2 class="text-2xl sm:text-3xl md:text-4xl font-extrabold text-navy-900">
+                            ข้อมูลส่วนบุคคลที่อ่อนไหว <span class="text-rose-500">(Sensitive Data Alert!) ⚠️</span>
+                        </h2>
+                        <p class="text-slate-600 text-sm md:text-base mt-1 max-w-2xl mx-auto">
+                            ข้อมูลส่วนตัวขั้นลึกซึ้ง <strong>"กฎหมายสั่งห้ามเก็บเด็ดขาด"</strong>
+                            เว้นแต่จะได้รับความยินยอมโดยชัดแจ้ง (Explicit Consent) เท่านั้น
+                        </p>
+                    </div>
+
+                    <!-- 6 Sensitive Categories 3x2 Grid -->
+                    <div class="grid grid-cols-2 md:grid-cols-3 gap-3 mb-3.5">
+                        <!-- Card 1 -->
+                        <div onclick="showSensitiveInfo(1)"
+                            class="bg-white rounded-xl p-4 border border-rose-100 hover:border-rose-300 shadow-soft hover:shadow-md transition cursor-pointer text-left group">
+                            <div
+                                class="w-10 h-10 rounded-lg bg-rose-50 text-rose-600 flex items-center justify-center text-lg mb-2 group-hover:scale-110 transition">
+                                <i class="fa-solid fa-fingerprint"></i>
+                            </div>
+                            <div class="text-xs md:text-sm font-bold text-navy-900 group-hover:text-rose-600">
+                                ข้อมูลชีวภาพ (Biometrics)</div>
+                            <div class="text-xs text-slate-500 mt-0.5 leading-snug">ลายนิ้วมือ, ม่านตา, ใบหน้า
+                                (เปลี่ยนไม่ได้ตลอดชีวิต!)</div>
+                        </div>
+
+                        <!-- Card 2 -->
+                        <div onclick="showSensitiveInfo(2)"
+                            class="bg-white rounded-xl p-4 border border-rose-100 hover:border-rose-300 shadow-soft hover:shadow-md transition cursor-pointer text-left group">
+                            <div
+                                class="w-10 h-10 rounded-lg bg-rose-50 text-rose-600 flex items-center justify-center text-lg mb-2 group-hover:scale-110 transition">
+                                <i class="fa-solid fa-heart-pulse"></i>
+                            </div>
+                            <div class="text-xs md:text-sm font-bold text-navy-900 group-hover:text-rose-600">สุขภาพ &
+                                พันธุกรรม</div>
+                            <div class="text-xs text-slate-500 mt-0.5 leading-snug">ประวัติรักษา, โรคประจำตัว, ผลเลือด,
+                                ความพิการ</div>
+                        </div>
+
+                        <!-- Card 3 -->
+                        <div onclick="showSensitiveInfo(3)"
+                            class="bg-white rounded-xl p-4 border border-rose-100 hover:border-rose-300 shadow-soft hover:shadow-md transition cursor-pointer text-left group">
+                            <div
+                                class="w-10 h-10 rounded-lg bg-rose-50 text-rose-600 flex items-center justify-center text-lg mb-2 group-hover:scale-110 transition">
+                                <i class="fa-solid fa-hands-praying"></i>
+                            </div>
+                            <div class="text-xs md:text-sm font-bold text-navy-900 group-hover:text-rose-600">ศาสนา &
+                                ลัทธิความเชื่อ</div>
+                            <div class="text-xs text-slate-500 mt-0.5 leading-snug">ความเชื่อส่วนบุคคล
+                                ป้องกันการเลือกปฏิบัติในโรงเรียน</div>
+                        </div>
+
+                        <!-- Card 4 -->
+                        <div onclick="showSensitiveInfo(4)"
+                            class="bg-white rounded-xl p-4 border border-rose-100 hover:border-rose-300 shadow-soft hover:shadow-md transition cursor-pointer text-left group">
+                            <div
+                                class="w-10 h-10 rounded-lg bg-rose-50 text-rose-600 flex items-center justify-center text-lg mb-2 group-hover:scale-110 transition">
+                                <i class="fa-solid fa-venus-mars"></i>
+                            </div>
+                            <div class="text-xs md:text-sm font-bold text-navy-900 group-hover:text-rose-600">รสนิยม /
+                                พฤติกรรมทางเพศ</div>
+                            <div class="text-xs text-slate-500 mt-0.5 leading-snug">เพศสภาพ ความเป็นส่วนตัวสูงสุด
+                                ห้ามนำไปประจาน</div>
+                        </div>
+
+                        <!-- Card 5 -->
+                        <div onclick="showSensitiveInfo(5)"
+                            class="bg-white rounded-xl p-4 border border-rose-100 hover:border-rose-300 shadow-soft hover:shadow-md transition cursor-pointer text-left group">
+                            <div
+                                class="w-10 h-10 rounded-lg bg-rose-50 text-rose-600 flex items-center justify-center text-lg mb-2 group-hover:scale-110 transition">
+                                <i class="fa-solid fa-scale-balanced"></i>
+                            </div>
+                            <div class="text-xs md:text-sm font-bold text-navy-900 group-hover:text-rose-600">
+                                ประวัติอาชญากรรม</div>
+                            <div class="text-xs text-slate-500 mt-0.5 leading-snug">ข้อมูลคดีความ
+                                ต้องมีกฎหมายเฉพาะรองรับเท่านั้น</div>
+                        </div>
+
+                        <!-- Card 6 -->
+                        <div onclick="showSensitiveInfo(6)"
+                            class="bg-white rounded-xl p-4 border border-rose-100 hover:border-rose-300 shadow-soft hover:shadow-md transition cursor-pointer text-left group">
+                            <div
+                                class="w-10 h-10 rounded-lg bg-rose-50 text-rose-600 flex items-center justify-center text-lg mb-2 group-hover:scale-110 transition">
+                                <i class="fa-solid fa-landmark"></i>
+                            </div>
+                            <div class="text-xs md:text-sm font-bold text-navy-900 group-hover:text-rose-600">
+                                ความคิดเห็นทางการเมือง</div>
+                            <div class="text-xs text-slate-500 mt-0.5 leading-snug">อุดมการณ์ความคิดเห็น
+                                เสรีภาพทางประชาธิปไตย</div>
+                        </div>
+                    </div>
+
+                    <!-- Caution Banner -->
+                    <div id="sensitiveAlertBox"
+                        class="bg-rose-50/90 border border-rose-200 rounded-xl p-3 flex items-center gap-3">
+                        <i class="fa-solid fa-circle-exclamation text-rose-600 text-lg shrink-0"></i>
+                        <div class="text-xs md:text-sm text-rose-950 font-medium">
+                            <strong>กฎเหล็ก PDPA:</strong> ใครที่นำข้อมูลอ่อนไหวไปเปิดเผยโดยมิชอบ
+                            จนทำให้เราเสื่อมเสียชื่อเสียง มีโทษจำคุกสูงสุดถึง <strong>1 ปี หรือปรับ 1,000,000
+                                บาท</strong>!
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ======================================================== -->
+            <!-- 👥 SLIDE 6: 3 ตัวละครหลักในจักรวาล PDPA -->
+            <!-- ======================================================== -->
+            <section id="slide-6" class="slide-pane">
+                <div class="slide-canvas">
+                    <!-- Header -->
+                    <div class="text-center mb-4">
+                        <div
+                            class="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full bg-sky-50 text-sky-600 text-xs md:text-sm font-bold uppercase tracking-wider mb-1">
+                            <i class="fa-solid fa-users-viewfinder"></i> หมวดที่ 3: บทบาทหน้าที่
+                        </div>
+                        <h2 class="text-2xl sm:text-3xl md:text-4xl font-extrabold text-navy-900">
+                            3 ตัวละครหลักในจักรวาล PDPA
+                        </h2>
+                        <p class="text-slate-600 text-sm md:text-base mt-1 max-w-2xl mx-auto">
+                            ทำความเข้าใจความสัมพันธ์ของ 3 ฝ่าย เพื่อรู้ว่าใครคือคนที่เราต้องทวงสิทธิ์!
+                        </p>
+                    </div>
+
+                    <!-- 3 Cards -->
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+                        <!-- Role 1 -->
+                        <div
+                            class="bg-white rounded-2xl p-5 shadow-soft border border-slate-200 hover:border-sky-300 transition flex flex-col justify-between group">
+                            <div>
+                                <div class="flex items-center justify-between mb-3">
+                                    <div
+                                        class="w-12 h-12 rounded-xl bg-sky-100 text-sky-600 flex items-center justify-center text-xl group-hover:scale-105 transition">
+                                        <i class="fa-solid fa-child-reaching"></i>
+                                    </div>
+                                    <span
+                                        class="text-xs font-mono font-bold text-sky-600 bg-sky-50 px-2.5 py-1 rounded-full border border-sky-200">ROLE
+                                        01</span>
+                                </div>
+                                <h3 class="text-base md:text-lg font-bold text-navy-900 mb-1.5">เจ้าของข้อมูล <span
+                                        class="text-slate-400 font-normal text-sm">(Subject)</span></h3>
+                                <p class="text-xs md:text-sm text-slate-600 leading-relaxed">
+                                    คือ <strong>"ตัวเรา"</strong> และเพื่อนๆ ม.3 ทุกคนที่เป็นมนุษย์ที่มีชีวิต
+                                    มีสิทธิ์ในข้อมูลของตัวเอง 100% ตลอดเวลา
+                                </p>
+                            </div>
+                            <div
+                                class="mt-3 pt-2.5 border-t border-slate-100 text-xs text-sky-700 bg-sky-50/60 p-2 rounded-lg font-semibold">
+                                🎯 <strong>พลัง:</strong> มี 8 สิทธิ์วิเศษในการสั่งการ
+                            </div>
+                        </div>
+
+                        <!-- Role 2 -->
+                        <div
+                            class="bg-white rounded-2xl p-5 shadow-soft border border-slate-200 hover:border-brand-400 transition flex flex-col justify-between group">
+                            <div>
+                                <div class="flex items-center justify-between mb-3">
+                                    <div
+                                        class="w-12 h-12 rounded-xl bg-brand-100 text-brand-600 flex items-center justify-center text-xl group-hover:scale-105 transition">
+                                        <i class="fa-solid fa-building-columns"></i>
+                                    </div>
+                                    <span
+                                        class="text-xs font-mono font-bold text-brand-600 bg-brand-50 px-2.5 py-1 rounded-full border border-brand-200">ROLE
+                                        02</span>
+                                </div>
+                                <h3 class="text-base md:text-lg font-bold text-navy-900 mb-1.5">ผู้ควบคุมข้อมูล <span
+                                        class="text-slate-400 font-normal text-sm">(Controller)</span></h3>
+                                <p class="text-xs md:text-sm text-slate-600 leading-relaxed">
+                                    คือ <strong>โรงเรียน, ค่ายเกม, แพลตฟอร์ม IG/TikTok</strong> ที่มีอำนาจตัดสินใจว่า
+                                    "จะเก็บอะไร เอาไปทำอะไร"
+                                </p>
+                            </div>
+                            <div
+                                class="mt-3 pt-2.5 border-t border-slate-100 text-xs text-brand-700 bg-brand-50/60 p-2 rounded-lg font-semibold">
+                                ⚖️ <strong>หน้าที่:</strong> ดูแลความปลอดภัย & ทำตามสิทธิ์เรา
+                            </div>
+                        </div>
+
+                        <!-- Role 3 -->
+                        <div
+                            class="bg-white rounded-2xl p-5 shadow-soft border border-slate-200 hover:border-purple-300 transition flex flex-col justify-between group">
+                            <div>
+                                <div class="flex items-center justify-between mb-3">
+                                    <div
+                                        class="w-12 h-12 rounded-xl bg-purple-100 text-purple-600 flex items-center justify-center text-xl group-hover:scale-105 transition">
+                                        <i class="fa-solid fa-server"></i>
+                                    </div>
+                                    <span
+                                        class="text-xs font-mono font-bold text-purple-600 bg-purple-50 px-2.5 py-1 rounded-full border border-purple-200">ROLE
+                                        03</span>
+                                </div>
+                                <h3 class="text-base md:text-lg font-bold text-navy-900 mb-1.5">ผู้ประมวลผลข้อมูล <span
+                                        class="text-slate-400 font-normal text-sm">(Processor)</span></h3>
+                                <p class="text-xs md:text-sm text-slate-600 leading-relaxed">
+                                    คือ <strong>บริษัทรับจ้างภายนอก</strong> เช่น บริษัทคลาวด์
+                                    หรือโปรแกรมเมอร์ที่โรงเรียนจ้างมาพัฒนาระบบ
+                                </p>
+                            </div>
+                            <div
+                                class="mt-3 pt-2.5 border-t border-slate-100 text-xs text-purple-700 bg-purple-50/60 p-2 rounded-lg font-semibold">
+                                🛠️ <strong>หน้าที่:</strong> ทำตามคำสั่ง Controller เท่านั้น
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Flow Diagram -->
+                    <div class="bg-white rounded-xl p-3 text-center border border-slate-200 shadow-xs">
+                        <div
+                            class="text-xs md:text-sm text-slate-700 font-bold flex items-center justify-center gap-2 flex-wrap">
+                            <span class="px-3 py-1 rounded-lg bg-sky-50 text-sky-700 border border-sky-200">🧑‍🎓 ตัวเรา
+                                (Subject)</span>
+                            <i class="fa-solid fa-arrow-right text-xs text-slate-400"></i>
+                            <span class="px-3 py-1 rounded-lg bg-brand-50 text-brand-700 border border-brand-200">🏫
+                                โรงเรียน / ค่ายเกม (Controller)</span>
+                            <i class="fa-solid fa-arrow-right text-xs text-slate-400"></i>
+                            <span class="px-3 py-1 rounded-lg bg-purple-50 text-purple-700 border border-purple-200">☁️
+                                Cloud / Dev รับจ้าง (Processor)</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ======================================================== -->
+            <!-- ✍️ SLIDE 7: กฎความยินยอมผู้เยาว์ ม.3 -->
+            <!-- ======================================================== -->
+            <section id="slide-7" class="slide-pane">
+                <div class="slide-canvas">
+                    <!-- Header -->
+                    <div class="text-center mb-4">
+                        <div
+                            class="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full bg-sky-50 text-sky-600 text-xs md:text-sm font-bold uppercase tracking-wider mb-1">
+                            <i class="fa-solid fa-signature"></i> หมวดที่ 4: กฎความยินยอม
+                        </div>
+                        <h2 class="text-2xl sm:text-3xl md:text-4xl font-extrabold text-navy-900">
+                            กฎความยินยอมสำหรับวัยรุ่น ม.3 <span class="text-sky-500">(อายุ 14-15 ปี)</span>
+                        </h2>
+                        <p class="text-slate-600 text-sm md:text-base mt-1 max-w-2xl mx-auto">
+                            ในฐานะ "ผู้เยาว์" ตามกฎหมาย กฎหมาย PDPA แบ่งมาตรฐานการยินยอมไว้ 2 เลนชัดเจน:
+                        </p>
+                    </div>
+
+                    <!-- 2-Column Comparison Layout -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                        <!-- Left: Self Consent -->
+                        <div
+                            class="bg-white rounded-2xl p-5 shadow-soft border-2 border-emerald-300 flex flex-col justify-between">
+                            <div>
+                                <div class="flex items-center justify-between border-b border-emerald-100 pb-3 mb-3">
+                                    <div class="flex items-center gap-2.5">
+                                        <div
+                                            class="w-10 h-10 rounded-lg bg-emerald-100 text-emerald-600 flex items-center justify-center text-lg">
+                                            <i class="fa-solid fa-circle-check"></i>
+                                        </div>
+                                        <div>
+                                            <h3 class="text-sm md:text-base font-bold text-navy-900">กิจกรรมสมควรแก่วัย
+                                            </h3>
+                                            <span
+                                                class="text-xs text-emerald-600 font-semibold">ไม่มีภาระผูกพันหรือความเสี่ยงสูง</span>
+                                        </div>
+                                    </div>
+                                    <span
+                                        class="px-2.5 py-1 rounded-full bg-emerald-500 text-white text-xs font-bold uppercase tracking-wider">
+                                        ม.3 ยินยอมเองได้
+                                    </span>
+                                </div>
+                                <ul class="space-y-2 text-xs md:text-sm text-slate-700">
+                                    <li class="flex items-start gap-2">
+                                        <i class="fa-solid fa-check text-emerald-500 mt-1 text-xs"></i>
+                                        <span>สมัครเข้าร่วมกิจกรรมชมรม / กีฬาสีของโรงเรียน</span>
+                                    </li>
+                                    <li class="flex items-start gap-2">
+                                        <i class="fa-solid fa-check text-emerald-500 mt-1 text-xs"></i>
+                                        <span>กรอกแบบสอบถามความคิดเห็นทางวิชาการ</span>
+                                    </li>
+                                    <li class="flex items-start gap-2">
+                                        <i class="fa-solid fa-check text-emerald-500 mt-1 text-xs"></i>
+                                        <span>กิจกรรมที่ให้สิทธิประโยชน์แก่ตัวเราฝ่ายเดียว</span>
+                                    </li>
+                                </ul>
+                            </div>
+                            <div
+                                class="mt-3.5 pt-2.5 border-t border-slate-100 text-xs text-emerald-800 bg-emerald-50/70 p-2 rounded-lg font-medium">
+                                💡 <strong>ตัวอย่าง:</strong> สมัครแข่ง E-Sport ภายในโรงเรียน กดยินยอมได้เองทันที
+                            </div>
+                        </div>
+
+                        <!-- Right: Dual Consent -->
+                        <div
+                            class="bg-white rounded-2xl p-5 shadow-soft border-2 border-amber-300 flex flex-col justify-between">
+                            <div>
+                                <div class="flex items-center justify-between border-b border-amber-100 pb-3 mb-3">
+                                    <div class="flex items-center gap-2.5">
+                                        <div
+                                            class="w-10 h-10 rounded-lg bg-amber-100 text-amber-600 flex items-center justify-center text-lg">
+                                            <i class="fa-solid fa-user-group"></i>
+                                        </div>
+                                        <div>
+                                            <h3 class="text-sm md:text-base font-bold text-navy-900">กิจกรรมธุรกิจ /
+                                                ภาระผูกพัน</h3>
+                                            <span class="text-xs text-amber-600 font-semibold">มีเงื่อนไขการค้า
+                                                หรือข้อมูลอ่อนไหว</span>
+                                        </div>
+                                    </div>
+                                    <span
+                                        class="px-2.5 py-1 rounded-full bg-amber-500 text-white text-xs font-bold uppercase tracking-wider">
+                                        ผู้ปกครองร่วมด้วย
+                                    </span>
+                                </div>
+                                <ul class="space-y-2 text-xs md:text-sm text-slate-700">
+                                    <li class="flex items-start gap-2">
+                                        <i class="fa-solid fa-circle-exclamation text-amber-500 mt-1 text-xs"></i>
+                                        <span>สมัครแอปที่เก็บข้อมูลเพื่อยิงโฆษณาตามพฤติกรรม</span>
+                                    </li>
+                                    <li class="flex items-start gap-2">
+                                        <i class="fa-solid fa-circle-exclamation text-amber-500 mt-1 text-xs"></i>
+                                        <span>การซื้อขายสินค้าออนไลน์ที่มีสัญญาผูกพัน</span>
+                                    </li>
+                                    <li class="flex items-start gap-2">
+                                        <i class="fa-solid fa-circle-exclamation text-amber-500 mt-1 text-xs"></i>
+                                        <span>การให้ข้อมูลส่วนบุคคลที่อ่อนไหว (Sensitive Data)</span>
+                                    </li>
+                                </ul>
+                            </div>
+                            <div
+                                class="mt-3.5 pt-2.5 border-t border-slate-100 text-xs text-amber-800 bg-amber-50/70 p-2 rounded-lg font-medium">
+                                ⚠️ <strong>ตัวอย่าง:</strong> สมัครกระเป๋าเงินดิจิทัล ต้องให้ผู้ปกครองกดยืนยันร่วม
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Note on Under 10 Years Old -->
+                    <div
+                        class="bg-slate-100 rounded-xl p-2.5 text-center text-xs md:text-sm text-slate-700 border border-slate-200 font-medium">
+                        👶 <strong>เกร็ดความรู้:</strong> หากเป็นน้องๆ ที่อายุ <strong>ต่ำกว่า 10 ปีบริบูรณ์</strong>
+                        การให้ความยินยอมทุกกรณีต้องได้รับความเห็นชอบจากผู้ปกครอง 100% เสมอ!
+                    </div>
+                </div>
+            </section>
+
+            <!-- ======================================================== -->
+            <!-- ⚡ SLIDE 8: 8 Data Subject Rights -->
+            <!-- ======================================================== -->
+            <section id="slide-8" class="slide-pane">
+                <div class="slide-canvas">
+                    <!-- Header -->
+                    <div class="text-center mb-3.5">
+                        <div
+                            class="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full bg-sky-50 text-sky-600 text-xs md:text-sm font-bold uppercase tracking-wider mb-1">
+                            <i class="fa-solid fa-wand-magic-sparkles"></i> หมวดที่ 5: พลังวิเศษ 8 ประการ
+                        </div>
+                        <h2 class="text-2xl sm:text-3xl md:text-4xl font-extrabold text-navy-900">
+                            แผงควบคุม 8 พลังวิเศษพิทักษ์ข้อมูล <span class="text-sky-500">(Data Rights)</span>
+                        </h2>
+                        <p class="text-slate-600 text-sm md:text-base mt-1">
+                            ข้อมูลเป็นของเราเสมอ! คลิกแต่ละพลังวิเศษเพื่อดูวิธีใช้งานจริงฉบับวัยรุ่น ม.3
+                        </p>
+                    </div>
+
+                    <!-- 8 Rights 4x2 Grid -->
+                    <div class="grid grid-cols-2 sm:grid-cols-4 gap-2.5 mb-3.5">
+                        <!-- Right 1 -->
+                        <button onclick="openRightDetail(1)"
+                            class="bg-white p-3 rounded-xl border border-slate-200 hover:border-sky-400 hover:shadow-soft text-left transition group cursor-pointer">
+                            <div
+                                class="w-8 h-8 rounded-lg bg-sky-100 text-sky-600 flex items-center justify-center text-sm mb-1.5 group-hover:scale-110 transition">
+                                <i class="fa-solid fa-bullhorn"></i>
+                            </div>
+                            <div class="text-xs md:text-sm font-bold text-navy-900 group-hover:text-sky-600">1.
+                                ขอแจ้งให้ทราบ</div>
+                            <div class="text-[10px] md:text-xs text-slate-400">Right to be informed</div>
+                        </button>
+
+                        <!-- Right 2 -->
+                        <button onclick="openRightDetail(2)"
+                            class="bg-white p-3 rounded-xl border border-slate-200 hover:border-sky-400 hover:shadow-soft text-left transition group cursor-pointer">
+                            <div
+                                class="w-8 h-8 rounded-lg bg-sky-100 text-sky-600 flex items-center justify-center text-sm mb-1.5 group-hover:scale-110 transition">
+                                <i class="fa-solid fa-file-arrow-down"></i>
+                            </div>
+                            <div class="text-xs md:text-sm font-bold text-navy-900 group-hover:text-sky-600">2.
+                                ขอเข้าถึง & สำเนา</div>
+                            <div class="text-[10px] md:text-xs text-slate-400">Right to access</div>
+                        </button>
+
+                        <!-- Right 3 -->
+                        <button onclick="openRightDetail(3)"
+                            class="bg-white p-3 rounded-xl border border-slate-200 hover:border-sky-400 hover:shadow-soft text-left transition group cursor-pointer">
+                            <div
+                                class="w-8 h-8 rounded-lg bg-sky-100 text-sky-600 flex items-center justify-center text-sm mb-1.5 group-hover:scale-110 transition">
+                                <i class="fa-solid fa-pen-to-square"></i>
+                            </div>
+                            <div class="text-xs md:text-sm font-bold text-navy-900 group-hover:text-sky-600">3.
+                                ขอแก้ไขข้อมูล</div>
+                            <div class="text-[10px] md:text-xs text-slate-400">Right to rectification</div>
+                        </button>
+
+                        <!-- Right 4 -->
+                        <button onclick="openRightDetail(4)"
+                            class="bg-white p-3 rounded-xl border border-slate-200 hover:border-rose-400 hover:shadow-soft text-left transition group cursor-pointer">
+                            <div
+                                class="w-8 h-8 rounded-lg bg-rose-100 text-rose-600 flex items-center justify-center text-sm mb-1.5 group-hover:scale-110 transition">
+                                <i class="fa-solid fa-trash-can"></i>
+                            </div>
+                            <div class="text-xs md:text-sm font-bold text-navy-900 group-hover:text-rose-600">4.
+                                ขอลบหรือทำลาย</div>
+                            <div class="text-[10px] md:text-xs text-slate-400">Right to erasure</div>
+                        </button>
+
+                        <!-- Right 5 -->
+                        <button onclick="openRightDetail(5)"
+                            class="bg-white p-3 rounded-xl border border-slate-200 hover:border-amber-400 hover:shadow-soft text-left transition group cursor-pointer">
+                            <div
+                                class="w-8 h-8 rounded-lg bg-amber-100 text-amber-600 flex items-center justify-center text-sm mb-1.5 group-hover:scale-110 transition">
+                                <i class="fa-solid fa-circle-pause"></i>
+                            </div>
+                            <div class="text-xs md:text-sm font-bold text-navy-900 group-hover:text-amber-600">5.
+                                ขอระงับการใช้</div>
+                            <div class="text-[10px] md:text-xs text-slate-400">Right to restriction</div>
+                        </button>
+
+                        <!-- Right 6 -->
+                        <button onclick="openRightDetail(6)"
+                            class="bg-white p-3 rounded-xl border border-slate-200 hover:border-purple-400 hover:shadow-soft text-left transition group cursor-pointer">
+                            <div
+                                class="w-8 h-8 rounded-lg bg-purple-100 text-purple-600 flex items-center justify-center text-sm mb-1.5 group-hover:scale-110 transition">
+                                <i class="fa-solid fa-file-export"></i>
+                            </div>
+                            <div class="text-xs md:text-sm font-bold text-navy-900 group-hover:text-purple-600">6.
+                                ขอโอนย้ายข้อมูล</div>
+                            <div class="text-[10px] md:text-xs text-slate-400">Right to portability</div>
+                        </button>
+
+                        <!-- Right 7 -->
+                        <button onclick="openRightDetail(7)"
+                            class="bg-white p-3 rounded-xl border border-slate-200 hover:border-red-400 hover:shadow-soft text-left transition group cursor-pointer">
+                            <div
+                                class="w-8 h-8 rounded-lg bg-red-100 text-red-600 flex items-center justify-center text-sm mb-1.5 group-hover:scale-110 transition">
+                                <i class="fa-solid fa-ban"></i>
+                            </div>
+                            <div class="text-xs md:text-sm font-bold text-navy-900 group-hover:text-red-600">7.
+                                ขอคัดค้านการใช้</div>
+                            <div class="text-[10px] md:text-xs text-slate-400">Right to object</div>
+                        </button>
+
+                        <!-- Right 8 -->
+                        <button onclick="openRightDetail(8)"
+                            class="bg-white p-3 rounded-xl border border-slate-200 hover:border-emerald-400 hover:shadow-soft text-left transition group cursor-pointer">
+                            <div
+                                class="w-8 h-8 rounded-lg bg-emerald-100 text-emerald-600 flex items-center justify-center text-sm mb-1.5 group-hover:scale-110 transition">
+                                <i class="fa-solid fa-arrow-rotate-left"></i>
+                            </div>
+                            <div class="text-xs md:text-sm font-bold text-navy-900 group-hover:text-emerald-600">8.
+                                ขอถอนความยินยอม</div>
+                            <div class="text-[10px] md:text-xs text-slate-400">Right to withdraw</div>
+                        </button>
+                    </div>
+
+                    <!-- Detail Display Box -->
+                    <div id="rightDetailBox" class="bg-white rounded-2xl p-4 shadow-soft border border-slate-200">
+                        <div class="flex items-center gap-2 text-sky-600 font-bold text-sm md:text-base mb-1.5">
+                            <i id="rightDetailIcon" class="fa-solid fa-wand-magic-sparkles text-sm"></i>
+                            <span id="rightDetailTitle">คลิกที่การ์ดพลังวิเศษด้านบนเพื่อดูตัวอย่าง</span>
+                        </div>
+                        <p id="rightDetailDesc" class="text-xs md:text-sm text-slate-700 leading-relaxed">
+                            ทั้ง 8 สิทธิ์นี้เป็นเกราะคุ้มกันตามกฎหมาย เมื่อเราสั่งใช้สิทธิ์ ผู้ควบคุมข้อมูล (Data
+                            Controller) มีหน้าที่ต้องดำเนินการภายในระยะเวลาที่กฎหมายกำหนด
+                        </p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ======================================================== -->
+            <!-- ⚖️ SLIDE 9: อัตราโทษปรับ 3 ด้าน & พ.ร.ก. ไซเบอร์ 2568 -->
+            <!-- ======================================================== -->
+            <section id="slide-9" class="slide-pane">
+                <div class="slide-canvas">
+                    <!-- Header -->
+                    <div class="text-center mb-4">
+                        <div
+                            class="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full bg-rose-50 text-rose-600 text-xs md:text-sm font-bold uppercase tracking-wider mb-1 border border-rose-200">
+                            <i class="fa-solid fa-gavel"></i> หมวดที่ 6: บทลงโทษผู้ฝ่าฝืน
+                        </div>
+                        <h2 class="text-2xl sm:text-3xl md:text-4xl font-extrabold text-navy-900">
+                            อัตราโทษปรับ 3 ด้าน & <span class="text-rose-600">กฎหมายไซเบอร์ พ.ศ. 2568</span>
+                        </h2>
+                        <p class="text-slate-600 text-sm md:text-base mt-1 max-w-2xl mx-auto">
+                            PDPA เป็นกฎหมายที่มีบทลงโทษสะสมทั้งทางแพ่ง อาญา และปกครอง
+                            พร้อมกฎหมายใหม่ปราบปรามการซื้อขายข้อมูล!
+                        </p>
+                    </div>
+
+                    <!-- 4 Penalties Cards -->
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5 mb-4">
+                        <!-- Penalty 1 -->
+                        <div
+                            class="bg-white rounded-2xl p-4 shadow-soft border border-slate-200 hover:border-sky-300 transition">
+                            <div
+                                class="w-10 h-10 rounded-lg bg-sky-100 text-sky-600 flex items-center justify-center text-lg mb-2.5">
+                                <i class="fa-solid fa-landmark-flag"></i>
+                            </div>
+                            <div class="text-xs font-bold text-slate-400 uppercase tracking-wider">โทษทางปกครอง</div>
+                            <div class="text-lg md:text-xl font-black text-navy-900 mt-0.5 mb-1.5">ปรับสูงสุด 5 ล้าน
+                            </div>
+                            <p class="text-xs md:text-sm text-slate-600 leading-relaxed">
+                                ปรับองค์กรที่ละเลยความปลอดภัย หรือไม่รายงานเหตุข้อมูลรั่วไหลใน 72 ชม.
+                            </p>
+                        </div>
+
+                        <!-- Penalty 2 -->
+                        <div
+                            class="bg-white rounded-2xl p-4 shadow-soft border border-slate-200 hover:border-rose-300 transition">
+                            <div
+                                class="w-10 h-10 rounded-lg bg-rose-100 text-rose-600 flex items-center justify-center text-lg mb-2.5">
+                                <i class="fa-solid fa-handcuffs"></i>
+                            </div>
+                            <div class="text-xs font-bold text-slate-400 uppercase tracking-wider">โทษทางอาญา</div>
+                            <div class="text-lg md:text-xl font-black text-rose-600 mt-0.5 mb-1.5">คุก 1 ปี / ปรับ 1
+                                ล้าน</div>
+                            <p class="text-xs md:text-sm text-slate-600 leading-relaxed">
+                                นำข้อมูลอ่อนไหวไปเปิดเผยโดยมิชอบ ทำให้เจ้าของข้อมูลอับอาย เสียชื่อเสียง
+                            </p>
+                        </div>
+
+                        <!-- Penalty 3 -->
+                        <div
+                            class="bg-white rounded-2xl p-4 shadow-soft border border-slate-200 hover:border-amber-300 transition">
+                            <div
+                                class="w-10 h-10 rounded-lg bg-amber-100 text-amber-600 flex items-center justify-center text-lg mb-2.5">
+                                <i class="fa-solid fa-coins"></i>
+                            </div>
+                            <div class="text-xs font-bold text-slate-400 uppercase tracking-wider">โทษทางแพ่ง</div>
+                            <div class="text-lg md:text-xl font-black text-amber-600 mt-0.5 mb-1.5">ชดใช้จริง + 2 เท่า
+                            </div>
+                            <p class="text-xs md:text-sm text-slate-600 leading-relaxed">
+                                จ่ายค่าเสียหายจริงแก่เหยื่อ + ศาลสั่งปรับสินไหมเพื่อการลงโทษอีก 2 เท่า
+                            </p>
+                        </div>
+
+                        <!-- Penalty 4 -->
+                        <div
+                            class="bg-linear-to-b from-rose-50 to-white rounded-2xl p-4 shadow-soft border-2 border-rose-400 transition">
+                            <div
+                                class="w-10 h-10 rounded-lg bg-rose-600 text-white flex items-center justify-center text-lg mb-2.5 shadow-xs">
+                                <i class="fa-solid fa-shield-virus"></i>
+                            </div>
+                            <div class="text-xs font-black text-rose-600 uppercase tracking-wider">กฎหมายไซเบอร์ 2568
+                            </div>
+                            <div class="text-lg md:text-xl font-black text-navy-900 mt-0.5 mb-1.5">คุกสูงสุด 5 ปี!</div>
+                            <p class="text-xs md:text-sm text-slate-600 leading-relaxed">
+                                ปราบปรามขบวนการซื้อขายข้อมูลคนอื่นให้มิจฉาชีพ ปรับสูงสุด 500,000 บาท
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Summary Banner -->
+                    <div
+                        class="bg-slate-100 rounded-xl p-2.5 text-center text-xs md:text-sm text-slate-800 border border-slate-200 font-medium">
+                        ⚡ <strong>สรุป:</strong> กฎหมายไทยเอาจริงทั้งคนปล่อยข้อมูลรั่ว
+                        และแก๊งที่ลักลอบซื้อขายข้อมูลเพื่อไปหลอกลวง!
+                    </div>
+                </div>
+            </section>
+
+            <!-- ======================================================== -->
+            <!-- 🦖 SLIDE 10: 4 Landmark Case Studies in Thailand -->
+            <!-- ======================================================== -->
+            <section id="slide-10" class="slide-pane">
+                <div class="slide-canvas">
+                    <!-- Header -->
+                    <div class="text-center mb-3.5">
+                        <div
+                            class="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full bg-sky-50 text-sky-600 text-xs md:text-sm font-bold uppercase tracking-wider mb-1">
+                            <i class="fa-solid fa-newspaper"></i> หมวดที่ 7: บทเรียนคดีจริงในไทย
+                        </div>
+                        <h2 class="text-2xl sm:text-3xl md:text-4xl font-extrabold text-navy-900">
+                            มหากาพย์ 4 คดีเด็ดเตือนใจในไทย <span class="text-sky-500">(ละเมิดจริง ปรับจริง!)</span>
+                        </h2>
+                        <p class="text-slate-600 text-sm md:text-base mt-1">
+                            คลิกเลือกดูคดีตัวอย่างที่เกิดขึ้นจริง พร้อมชมคลิปข่าวและสรุปบทเรียนสำคัญ
+                        </p>
+                    </div>
+
+                    <!-- Case Selector Tabs -->
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-2 mb-3">
+                        <button onclick="selectCaseStudy(1)" id="caseTab-1"
+                            class="case-tab active py-2 px-3 rounded-xl border border-sky-400 bg-sky-50 text-sky-700 font-bold text-xs md:text-sm transition cursor-pointer flex items-center justify-center gap-2 shadow-xs">
+                            <i class="fa-solid fa-laptop-code text-xs"></i> คดี JIB ปรับ 7 ล้าน
+                        </button>
+                        <button onclick="selectCaseStudy(2)" id="caseTab-2"
+                            class="case-tab py-2 px-3 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 text-slate-700 font-semibold text-xs md:text-sm transition cursor-pointer flex items-center justify-center gap-2">
+                            <i class="fa-solid fa-hospital text-xs"></i> ประวัติคนไข้ถุงขนม
+                        </button>
+                        <button onclick="selectCaseStudy(3)" id="caseTab-3"
+                            class="case-tab py-2 px-3 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 text-slate-700 font-semibold text-xs md:text-sm transition cursor-pointer flex items-center justify-center gap-2">
+                            <i class="fa-solid fa-cubes text-xs"></i> แอปจองของเล่น
+                        </button>
+                        <button onclick="selectCaseStudy(4)" id="caseTab-4"
+                            class="case-tab py-2 px-3 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 text-slate-700 font-semibold text-xs md:text-sm transition cursor-pointer flex items-center justify-center gap-2">
+                            <i class="fa-solid fa-eye text-xs"></i> ระงับสแกนม่านตา
+                        </button>
+                    </div>
+
+                    <!-- 2-Column Split Container -->
+                    <div id="caseStudyContentBox"
+                        class="bg-white rounded-2xl p-4 shadow-soft border border-slate-200 min-h-[300px]">
+                        <!-- Populated dynamically by selectCaseStudy() -->
+                    </div>
+                </div>
+            </section>
+
+            <!-- ======================================================== -->
+            <!-- 💬 SLIDE 11: FAQs & Certificate -->
+            <!-- ======================================================== -->
+            <section id="slide-11" class="slide-pane">
+                <div class="slide-canvas">
+                    <!-- Header -->
+                    <div class="text-center mb-3.5">
+                        <div
+                            class="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full bg-sky-50 text-sky-600 text-xs md:text-sm font-bold uppercase tracking-wider mb-1">
+                            <i class="fa-solid fa-circle-question"></i> หมวดที่ 8: ไขข้อข้องใจวัยรุ่น ม.3
+                        </div>
+                        <h2 class="text-2xl sm:text-3xl md:text-4xl font-extrabold text-navy-900">
+                            ตอบข้อคำถามยอดฮิต <span class="text-sky-500">"จริงหรือมั่ว?" สไตล์วัยรุ่น</span>
+                        </h2>
+                        <p class="text-slate-600 text-sm md:text-base mt-1">
+                            คลิกการ์ดคำถามเพื่อพลิกดูคำตอบทางกฎหมายที่ถูกต้อง!
+                        </p>
+                    </div>
+
+                    <!-- 4 Flip Cards Grid -->
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5 mb-4">
+                        <!-- FAQ 1 -->
+                        <div class="faq-flip-card h-36 md:h-40 perspective-1000 cursor-pointer"
+                            onclick="toggleCardFlip(this)">
+                            <div
+                                class="relative w-full h-full transition-transform duration-500 transform-style-3d faq-card-inner rounded-2xl shadow-soft">
+                                <div
+                                    class="absolute inset-0 bg-white border border-slate-200 rounded-2xl p-4 flex flex-col justify-between backface-hidden">
+                                    <div class="flex items-center justify-between text-xs text-slate-400">
+                                        <span class="font-mono font-bold text-sky-600 text-xs md:text-sm">คำถามยอดฮิต
+                                            01</span>
+                                        <span class="text-xs bg-slate-100 px-2 py-0.5 rounded font-medium">แตะดูคำตอบ
+                                            👆</span>
+                                    </div>
+                                    <h4 class="text-xs sm:text-sm md:text-base font-bold text-navy-900 leading-snug">
+                                        📸 ถ่ายเซลฟี่ในห้องเรียนแล้วติดหน้าเพื่อนข้างหลังไปลง IG สตอรี่ ผิด PDPA ไหม?
+                                    </h4>
+                                    <div class="text-xs text-sky-600 font-bold flex items-center gap-1">
+                                        <span>แตะเพื่อเฉลย</span> <i class="fa-solid fa-rotate text-[10px]"></i>
+                                    </div>
+                                </div>
+                                <div
+                                    class="absolute inset-0 bg-sky-50 border border-sky-300 rounded-2xl p-4 flex flex-col justify-between rotate-y-180 backface-hidden">
+                                    <div>
+                                        <div
+                                            class="text-xs md:text-sm font-bold text-emerald-700 flex items-center gap-1.5 mb-1">
+                                            <i class="fa-solid fa-circle-check"></i> ไม่ผิดกฎหมายจ้า!
+                                        </div>
+                                        <p class="text-xs md:text-sm text-slate-700 leading-relaxed">
+                                            ใช้เพื่อวัตถุประสงค์ส่วนตัวในชีวิตประจำวัน ไม่ได้มีเจตนากลั่นแกล้ง แฉ
+                                            หรือหาผลกำไรทางการค้า
+                                        </p>
+                                    </div>
+                                    <div class="text-[10px] text-slate-400">แตะเพื่อพลิกกลับ</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- FAQ 2 -->
+                        <div class="faq-flip-card h-36 md:h-40 perspective-1000 cursor-pointer"
+                            onclick="toggleCardFlip(this)">
+                            <div
+                                class="relative w-full h-full transition-transform duration-500 transform-style-3d faq-card-inner rounded-2xl shadow-soft">
+                                <div
+                                    class="absolute inset-0 bg-white border border-slate-200 rounded-2xl p-4 flex flex-col justify-between backface-hidden">
+                                    <div class="flex items-center justify-between text-xs text-slate-400">
+                                        <span class="font-mono font-bold text-sky-600 text-xs md:text-sm">คำถามยอดฮิต
+                                            02</span>
+                                        <span class="text-xs bg-slate-100 px-2 py-0.5 rounded font-medium">แตะดูคำตอบ
+                                            👆</span>
+                                    </div>
+                                    <h4 class="text-xs sm:text-sm md:text-base font-bold text-navy-900 leading-snug">
+                                        📹 โรงเรียนติดกล้องวงจรปิด (CCTV) ต้องขอยินยอมนักเรียนทุกคนไหม?
+                                    </h4>
+                                    <div class="text-xs text-sky-600 font-bold flex items-center gap-1">
+                                        <span>แตะเพื่อเฉลย</span> <i class="fa-solid fa-rotate text-[10px]"></i>
+                                    </div>
+                                </div>
+                                <div
+                                    class="absolute inset-0 bg-sky-50 border border-sky-300 rounded-2xl p-4 flex flex-col justify-between rotate-y-180 backface-hidden">
+                                    <div>
+                                        <div
+                                            class="text-xs md:text-sm font-bold text-sky-800 flex items-center gap-1.5 mb-1">
+                                            <i class="fa-solid fa-shield-halved"></i> ไม่ต้องขอความยินยอม!
+                                        </div>
+                                        <p class="text-xs md:text-sm text-slate-700 leading-relaxed">
+                                            ใช้ฐาน <strong>"ประโยชน์อันชอบธรรม (Legitimate Interest)"</strong>
+                                            เพื่อความปลอดภัย แต่ต้องติดป้ายเตือนให้ชัดเจน
+                                        </p>
+                                    </div>
+                                    <div class="text-[10px] text-slate-400">แตะเพื่อพลิกกลับ</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- FAQ 3 -->
+                        <div class="faq-flip-card h-36 md:h-40 perspective-1000 cursor-pointer"
+                            onclick="toggleCardFlip(this)">
+                            <div
+                                class="relative w-full h-full transition-transform duration-500 transform-style-3d faq-card-inner rounded-2xl shadow-soft">
+                                <div
+                                    class="absolute inset-0 bg-white border border-slate-200 rounded-2xl p-4 flex flex-col justify-between backface-hidden">
+                                    <div class="flex items-center justify-between text-xs text-slate-400">
+                                        <span class="font-mono font-bold text-sky-600 text-xs md:text-sm">คำถามยอดฮิต
+                                            03</span>
+                                        <span class="text-xs bg-slate-100 px-2 py-0.5 rounded font-medium">แตะดูคำตอบ
+                                            👆</span>
+                                    </div>
+                                    <h4 class="text-xs sm:text-sm md:text-base font-bold text-navy-900 leading-snug">
+                                        🎮 ค่ายเกมมือถือบังคับมัดรวมยินยอมแชร์เบอร์โทรเพื่อแลกเข้าเล่นได้ไหม?
+                                    </h4>
+                                    <div class="text-xs text-sky-600 font-bold flex items-center gap-1">
+                                        <span>แตะเพื่อเฉลย</span> <i class="fa-solid fa-rotate text-[10px]"></i>
+                                    </div>
+                                </div>
+                                <div
+                                    class="absolute inset-0 bg-rose-50 border border-rose-300 rounded-2xl p-4 flex flex-col justify-between rotate-y-180 backface-hidden">
+                                    <div>
+                                        <div
+                                            class="text-xs md:text-sm font-bold text-rose-700 flex items-center gap-1.5 mb-1">
+                                            <i class="fa-solid fa-circle-xmark"></i> บังคับไม่ได้เด็ดขาด!
+                                        </div>
+                                        <p class="text-xs md:text-sm text-slate-700 leading-relaxed">
+                                            ความยินยอมต้องเป็นอิสระ ห้ามนำข้อตกลงที่ไม่จำเป็นมามัดรวมบังคับแลกบริการ
+                                        </p>
+                                    </div>
+                                    <div class="text-[10px] text-slate-400">แตะเพื่อพลิกกลับ</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- FAQ 4 -->
+                        <div class="faq-flip-card h-36 md:h-40 perspective-1000 cursor-pointer"
+                            onclick="toggleCardFlip(this)">
+                            <div
+                                class="relative w-full h-full transition-transform duration-500 transform-style-3d faq-card-inner rounded-2xl shadow-soft">
+                                <div
+                                    class="absolute inset-0 bg-white border border-slate-200 rounded-2xl p-4 flex flex-col justify-between backface-hidden">
+                                    <div class="flex items-center justify-between text-xs text-slate-400">
+                                        <span class="font-mono font-bold text-sky-600 text-xs md:text-sm">คำถามยอดฮิต
+                                            04</span>
+                                        <span class="text-xs bg-slate-100 px-2 py-0.5 rounded font-medium">แตะดูคำตอบ
+                                            👆</span>
+                                    </div>
+                                    <h4 class="text-xs sm:text-sm md:text-base font-bold text-navy-900 leading-snug">
+                                        📦 โดนเพื่อนเอาเบอร์และที่อยู่ไปแกล้งสั่งของเก็บเงินปลายทาง ทำอย่างไร?
+                                    </h4>
+                                    <div class="text-xs text-sky-600 font-bold flex items-center gap-1">
+                                        <span>แตะเพื่อเฉลย</span> <i class="fa-solid fa-rotate text-[10px]"></i>
+                                    </div>
+                                </div>
+                                <div
+                                    class="absolute inset-0 bg-rose-50 border border-rose-300 rounded-2xl p-4 flex flex-col justify-between rotate-y-180 backface-hidden">
+                                    <div>
+                                        <div
+                                            class="text-xs md:text-sm font-bold text-rose-700 flex items-center gap-1.5 mb-1">
+                                            <i class="fa-solid fa-gavel"></i> ผิดกฎหมายชัดเจน!
+                                        </div>
+                                        <p class="text-xs md:text-sm text-slate-700 leading-relaxed">
+                                            เป็นการนำข้อมูลไปใช้โดยมิชอบสร้างความเดือดร้อนรำคาญ มีความผิดทั้งแพ่ง อาญา
+                                            และ PDPA
+                                        </p>
+                                    </div>
+                                    <div class="text-[10px] text-slate-400">แตะเพื่อพลิกกลับ</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Graduation / Certificate Action -->
+                    <div class="text-center">
+                        <button onclick="openCertificateModal()"
+                            class="px-7 py-3 rounded-xl bg-sky-500 hover:bg-sky-600 text-white font-bold text-sm md:text-base shadow-glow transition flex items-center gap-2.5 mx-auto cursor-pointer">
+                            <i class="fa-solid fa-award text-base"></i>
+                            <span>รับเกียรติบัตรดิจิทัล "ผู้พิทักษ์ข้อมูล ม.3"</span>
+                        </button>
+                    </div>
+                </div>
+            </section>
+
+        </div>
+    </main>
+
+    <!-- 🎮 BOTTOM CONTROLS & NAVIGATION BAR -->
+    <footer
+        class="fixed bottom-0 left-0 right-0 z-40 bg-white/95 backdrop-blur-md border-t border-slate-200/80 px-4 py-2.5">
+        <div class="max-w-6xl mx-auto flex items-center justify-between">
+            <!-- Left: Keyboard & Gesture Tips -->
+            <div class="hidden sm:flex items-center gap-2 text-xs md:text-sm text-slate-500">
+                <span
+                    class="flex items-center gap-1 bg-slate-100 px-2.5 py-0.5 rounded font-mono text-xs border border-slate-200">
+                    <kbd>←</kbd> <kbd>→</kbd>
+                </span>
+                <span>กดปุ่มลูกศร หรือ ปัดหน้าจอเพื่อเลื่อนสไลด์</span>
+            </div>
+
+            <!-- Center: Interactive Pagination Dots -->
+            <div class="flex items-center gap-2" id="paginationDots">
+                <!-- Dots rendered dynamically -->
+            </div>
+
+            <!-- Right: Prev / Next Buttons -->
+            <div class="flex items-center gap-2">
+                <button id="prevBtn" onclick="prevSlide()"
+                    class="px-3.5 py-1.5 rounded-lg border border-slate-200 hover:border-sky-300 hover:bg-sky-50 text-slate-700 text-xs md:text-sm font-bold transition flex items-center gap-1.5 cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed">
+                    <i class="fa-solid fa-arrow-left text-xs"></i>
+                    <span class="hidden md:inline">ก่อนหน้า</span>
+                </button>
+                <button id="nextBtn" onclick="nextSlide()"
+                    class="px-4 py-1.5 rounded-lg bg-sky-500 hover:bg-sky-600 text-white text-xs md:text-sm font-bold shadow-xs transition flex items-center gap-1.5 cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed">
+                    <span class="hidden md:inline">ถัดไป</span>
+                    <i class="fa-solid fa-arrow-right text-xs"></i>
+                </button>
+            </div>
+        </div>
+    </footer>
+
+    <!-- 🎓 MODAL: Certificate of Completion -->
+    <div id="certificateModal"
+        class="hidden fixed inset-0 z-50 bg-navy-950/60 backdrop-blur-xs flex items-center justify-center p-4">
+        <div
+            class="bg-white rounded-3xl p-6 md:p-8 max-w-lg w-full shadow-soft-lg border border-slate-200 text-center relative">
+            <button onclick="closeCertificateModal()"
+                class="absolute top-4 right-4 w-8 h-8 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-500 flex items-center justify-center cursor-pointer transition">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+
+            <img src="assets/pdpa_icon.png" alt="PDPA Shield"
+                class="w-16 h-16 rounded-2xl object-cover mx-auto mb-3 shadow-md border border-sky-400/40">
+
+            <h3 class="text-xl md:text-2xl font-extrabold text-navy-900 mb-1">ยินดีด้วย! คุณผ่านวิชาพิทักษ์สิทธิ์ดิจิทัล
+            </h3>
+            <p class="text-xs md:text-sm text-slate-500 mb-4">หลักสูตร PDPA 101 สำหรับวัยรุ่น ม.3</p>
+
+            <div class="bg-slate-50 rounded-2xl p-4 border border-slate-200 text-left mb-4">
+                <label class="block text-xs md:text-sm font-bold text-slate-700 mb-1.5">กรอกชื่อ-นามสกุล
+                    ของนักเรียน:</label>
+                <input type="text" id="studentCertName" placeholder="เช่น ด.ช. ภูมิพัฒน์ ศรีวิชัย (ม.3/1)"
+                    class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 focus:border-sky-500 focus:ring-1 focus:ring-sky-500 text-sm md:text-base outline-none">
+            </div>
+
+            <div class="flex gap-2.5">
+                <button onclick="printCertificate()"
+                    class="flex-1 py-2.5 rounded-xl bg-sky-500 hover:bg-sky-600 text-white font-bold text-sm md:text-base transition flex items-center justify-center gap-2 cursor-pointer shadow-xs">
+                    <i class="fa-solid fa-print"></i> พิมพ์ / บันทึก PDF
+                </button>
+                <button onclick="closeCertificateModal()"
+                    class="px-5 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-sm md:text-base transition cursor-pointer">
+                    ปิด
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ======================================================== -->
+    <!-- ⚡ JAVASCRIPT LOGIC -->
+    <!-- ======================================================== -->
+    <script>
+        // State Management
+        let currentSlide = 1;
+        const totalSlides = 11;
+        let soundEnabled = true;
+
+        // Slide Metadata for Menu (11 Slides)
+        const slideMeta = [
+            { num: 1, title: "หน้าแรก & ต้อนรับยินยอม (Welcome)" },
+            { num: 2, title: "ทำไมถึงต้องมีกฎหมาย PDPA? (Why PDPA?)" },
+            { num: 3, title: "กฎหมาย PDPA มีความสำคัญอย่างไร? (Importance)" },
+            { num: 4, title: "นิยามข้อมูลส่วนบุคคลทั่วไป (General Data)" },
+            { num: 5, title: "ข้อมูลส่วนบุคคลที่อ่อนไหว (Sensitive Data)" },
+            { num: 6, title: "3 ตัวละครหลักในสิทธิ์ข้อมูล (PDPA Roles)" },
+            { num: 7, title: "กฎความยินยอมผู้เยาว์ ม.3 (Consent Standard)" },
+            { num: 8, title: "แผงควบคุม 8 พลังวิเศษ (Subject Rights)" },
+            { num: 9, title: "อัตราโทษปรับ 3 ด้าน & กฎหมาย 2568" },
+            { num: 10, title: "4 คดีเด็ดเตือนใจในไทย (Case Studies)" },
+            { num: 11, title: "ตอบคำถามยอดฮิต ม.3 & เกียรติบัตร" },
+        ];
+
+        // Web Audio API Sound Synthesizer
+        const AudioContext = window.AudioContext || window.webkitAudioContext;
+        let audioCtx = null;
+
+        function playSound(type) {
+            if (!soundEnabled) return;
+            try {
+                if (!audioCtx) audioCtx = new AudioContext();
+                if (audioCtx.state === 'suspended') audioCtx.resume();
+
+                const now = audioCtx.currentTime;
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+
+                if (type === 'click') {
+                    osc.type = 'sine';
+                    osc.frequency.setValueAtTime(800, now);
+                    osc.frequency.exponentialRampToValueAtTime(400, now + 0.05);
+                    gain.gain.setValueAtTime(0.12, now);
+                    gain.gain.linearRampToValueAtTime(0.01, now + 0.05);
+                    osc.start(now);
+                    osc.stop(now + 0.05);
+                } else if (type === 'success') {
+                    osc.type = 'triangle';
+                    osc.frequency.setValueAtTime(523.25, now);
+                    osc.frequency.setValueAtTime(659.25, now + 0.08);
+                    osc.frequency.setValueAtTime(783.99, now + 0.16);
+                    gain.gain.setValueAtTime(0.15, now);
+                    gain.gain.linearRampToValueAtTime(0.01, now + 0.35);
+                    osc.start(now);
+                    osc.stop(now + 0.35);
+                } else if (type === 'flip') {
+                    osc.type = 'sine';
+                    osc.frequency.setValueAtTime(300, now);
+                    osc.frequency.exponentialRampToValueAtTime(600, now + 0.08);
+                    gain.gain.setValueAtTime(0.1, now);
+                    gain.gain.linearRampToValueAtTime(0.01, now + 0.08);
+                    osc.start(now);
+                    osc.stop(now + 0.08);
+                }
+            } catch (e) {
+                console.log('Audio disabled or blocked by browser policy');
+            }
+        }
+
+        function toggleSound() {
+            soundEnabled = !soundEnabled;
+            const icon = document.getElementById('soundIcon');
+            if (soundEnabled) {
+                icon.className = 'fa-solid fa-volume-high text-xs';
+                playSound('click');
+            } else {
+                icon.className = 'fa-solid fa-volume-xmark text-rose-500 text-xs';
+            }
+        }
+
+        // Slide Navigation Logic
+        function goToSlide(slideNumber) {
+            if (slideNumber < 1 || slideNumber > totalSlides || slideNumber === currentSlide) return;
+
+            const prevSlideEl = document.getElementById(`slide-${currentSlide}`);
+            const nextSlideEl = document.getElementById(`slide-${slideNumber}`);
+
+            if (slideNumber > currentSlide) {
+                prevSlideEl.classList.remove('active');
+                prevSlideEl.classList.add('prev');
+                nextSlideEl.classList.remove('prev');
+                nextSlideEl.classList.add('active');
+            } else {
+                prevSlideEl.classList.remove('active');
+                nextSlideEl.classList.remove('prev');
+                nextSlideEl.classList.add('active');
+            }
+
+            currentSlide = slideNumber;
+            updateUIState();
+            playSound('click');
+            closeDeckMenu();
+        }
+
+        function nextSlide() {
+            if (currentSlide < totalSlides) {
+                goToSlide(currentSlide + 1);
+            }
+        }
+
+        function prevSlide() {
+            if (currentSlide > 1) {
+                goToSlide(currentSlide - 1);
+            }
+        }
+
+        function updateUIState() {
+            // Update Number
+            document.getElementById('currentSlideNum').innerText = currentSlide.toString().padStart(2, '0');
+            document.getElementById('totalSlideNum').innerText = totalSlides.toString().padStart(2, '0');
+
+            // Update Progress Bar
+            const progressPercent = (currentSlide / totalSlides) * 100;
+            document.getElementById('slideProgressBar').style.width = `${progressPercent}%`;
+
+            // Update Buttons Disabled State
+            document.getElementById('prevBtn').disabled = (currentSlide === 1);
+            document.getElementById('nextBtn').disabled = (currentSlide === totalSlides);
+
+            // Update Pagination Dots
+            const dots = document.querySelectorAll('.pagination-dot');
+            dots.forEach((dot, index) => {
+                if (index + 1 === currentSlide) {
+                    dot.className = 'pagination-dot w-6 h-2.5 rounded-full bg-sky-500 transition-all duration-300';
+                } else {
+                    dot.className = 'pagination-dot w-2.5 h-2.5 rounded-full bg-slate-200 hover:bg-slate-300 transition-all duration-300 cursor-pointer';
+                }
+            });
+        }
+
+        // Initialize Pagination Dots & Menu
+        function initNavigation() {
+            const dotsContainer = document.getElementById('paginationDots');
+            const menuContainer = document.getElementById('deckMenuList');
+
+            dotsContainer.innerHTML = '';
+            menuContainer.innerHTML = '';
+
+            slideMeta.forEach((slide) => {
+                // Dot
+                const dot = document.createElement('button');
+                dot.className = `pagination-dot w-2.5 h-2.5 rounded-full transition-all duration-300 ${slide.num === 1 ? 'w-6 bg-sky-500' : 'bg-slate-200'}`;
+                dot.onclick = () => goToSlide(slide.num);
+                dot.title = `ไปที่สไลด์ ${slide.num}: ${slide.title}`;
+                dotsContainer.appendChild(dot);
+
+                // Menu Item
+                const menuItem = document.createElement('button');
+                menuItem.className = 'w-full text-left px-3 py-2 rounded-xl text-xs md:text-sm hover:bg-sky-50 hover:text-sky-700 transition flex items-center justify-between cursor-pointer';
+                menuItem.innerHTML = `
+                    <span class="truncate"><strong class="font-mono text-sky-600">${slide.num.toString().padStart(2, '0')}.</strong> ${slide.title}</span>
+                    <i class="fa-solid fa-arrow-right text-xs text-slate-300"></i>
+                `;
+                menuItem.onclick = () => goToSlide(slide.num);
+                menuContainer.appendChild(menuItem);
+            });
+
+            updateUIState();
+            selectCaseStudy(1);
+        }
+
+        function toggleDeckMenu() {
+            const menu = document.getElementById('deckMenu');
+            menu.classList.toggle('hidden');
+        }
+
+        function closeDeckMenu() {
+            const menu = document.getElementById('deckMenu');
+            if (menu) menu.classList.add('hidden');
+        }
+
+        // Keyboard Navigation
+        window.addEventListener('keydown', (e) => {
+            if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+            if (e.key === 'ArrowRight' || e.key === ' ' || e.key === 'PageDown') {
+                nextSlide();
+            } else if (e.key === 'ArrowLeft' || e.key === 'PageUp') {
+                prevSlide();
+            } else if (e.key === 'Home') {
+                goToSlide(1);
+            } else if (e.key === 'End') {
+                goToSlide(totalSlides);
+            }
+        });
+
+        // Touch Swipe Gestures
+        let touchStartX = 0;
+        let touchEndX = 0;
+
+        window.addEventListener('touchstart', (e) => {
+            touchStartX = e.changedTouches[0].screenX;
+        }, { passive: true });
+
+        window.addEventListener('touchend', (e) => {
+            touchEndX = e.changedTouches[0].screenX;
+            handleSwipe();
+        }, { passive: true });
+
+        function handleSwipe() {
+            const threshold = 50;
+            if (touchStartX - touchEndX > threshold) {
+                nextSlide();
+            } else if (touchEndX - touchStartX > threshold) {
+                prevSlide();
+            }
+        }
+
+        // Fullscreen Toggle
+        function toggleFullscreen() {
+            if (!document.fullscreenElement) {
+                document.documentElement.requestFullscreen().catch(err => {
+                    alert(`ไม่สามารถเปิดโหมดเต็มจอได้: ${err.message}`);
+                });
+            } else {
+                if (document.exitFullscreen) {
+                    document.exitFullscreen();
+                }
+            }
+        }
+
+        // ========================================================
+        // 🌟 SLIDE 1: Consent Pass Logic
+        // ========================================================
+        function handleConsentChange(checkbox) {
+            const badge = document.getElementById('passStatusBadge');
+            if (checkbox.checked) {
+                badge.className = 'px-3 py-1 rounded-full bg-emerald-50 border border-emerald-200 text-emerald-700 text-xs font-semibold animate-pulse';
+                badge.innerHTML = '<i class="fa-solid fa-shield-check text-xs mr-1"></i>เปิดเกราะป้องกันข้อมูลแล้ว';
+                playSound('success');
+            } else {
+                badge.className = 'px-3 py-1 rounded-full bg-amber-50 border border-amber-200 text-amber-700 text-xs font-semibold';
+                badge.innerHTML = '<i class="fa-solid fa-lock text-xs mr-1"></i>ยังไม่เปิดเกราะ';
+            }
+        }
+
+        // ========================================================
+        // 🔍 SLIDE 4: Data Point Inspection
+        // ========================================================
+        const dataPointKnowledge = {
+            name: {
+                title: "ชื่อ-นามสกุล: ระบุตัวตนทางตรง (Direct)",
+                desc: "เป็นข้อมูลขั้นพื้นฐานที่ตรงไปตรงมาที่สุด เพียงแค่มีชื่อและนามสกุลก็สามารถสืบหาตัวตนของบุคคลได้ทันที กฎหมายจึงคุ้มครองไม่ให้ใครนำชื่อเราไปแอบอ้างทำกิจกรรมต่างๆ โดยที่เราไม่ยินยอม"
+            },
+            contact: {
+                title: "เบอร์โทรศัพท์ & อีเมล: ระบุตัวตนทางตรง (Direct)",
+                desc: "เบอร์โทรศัพท์มือถือและอีเมลส่วนตัวผูกอยู่กับเครื่องและบัญชีของเรา มักเป็นเป้าหมายหลักที่แก๊งคอลเซ็นเตอร์และบริษัทโฆษณาต้องการซื้อขายเพื่อส่งข้อความ SMS สแปมและโทรมาหลอกลวง"
+            },
+            game: {
+                title: "Gamer Tag & Discord: ระบุตัวตนทางอ้อม (Indirect)",
+                desc: "แม้ไอดีเกมจะเป็นนามแฝง (Nickname) แต่ถ้าผู้ไม่หวังดีนำไอดีนี้ไปค้นหาใน Google หรือเทียบกับประวัติการเติมเงิน ก็จะสามารถเชื่อมโยงกลับมายังตัวตนจริงของนักเรียนได้เช่นกัน!"
+            },
+            gps: {
+                title: "พิกัด GPS & IP Address: ระบุตัวตนทางอ้อม (Indirect)",
+                desc: "หมายเลขไอพีเครื่องและพิกัดตำแหน่งสามารถบอกได้ว่าเรากำลังเชื่อมต่อเน็ตจากบ้านไหน โรงเรียนใด หากรั่วไหลอาจทำให้มิจฉาชีพติดตามพฤติกรรมและการเดินทางในชีวิตประจำวันของเราได้"
+            }
+        };
+
+        function inspectDataPoint(key) {
+            const data = dataPointKnowledge[key];
+            if (!data) return;
+            document.getElementById('dataPointTitle').innerText = data.title;
+            document.getElementById('dataPointDesc').innerText = data.desc;
+            playSound('click');
+        }
+
+        // ========================================================
+        // ⚠️ SLIDE 5: Sensitive Info Categories
+        // ========================================================
+        const sensitiveDataTips = {
+            1: "ข้อมูลชีวภาพ (Biometrics) เช่น ลายนิ้วมือ ม่านตา ใบหน้า หากหลุดไปแล้วเรา 'เปลี่ยนไม่ได้ตลอดชีวิต' ไม่เหมือนรหัสผ่านที่เปลี่ยนใหม่ได้ จึงต้องคุ้มครองสูงสุด!",
+            2: "ข้อมูลสุขภาพและพันธุกรรม มีความเป็นส่วนตัวสูงมาก หากรั่วไหลอาจทำให้ถูกปฏิเสธเข้าทำงาน ทำประกัน หรือถูกเพื่อนล้อเลียนในโรงเรียนได้",
+            3: "ศาสนาและความเชื่อส่วนบุคคล เป็นสิทธิเสรีภาพตามรัฐธรรมนูญ กฎหมายห้ามไม่ให้ใครนำไปใช้เพื่อเลือกปฏิบัติหรือแบ่งแยกกลุ่มคน",
+            4: "รสนิยมทางเพศและเพศสภาพ เป็นความลับส่วนบุคคลสูงสุด การนำไปเปิดเผยประจานมีโทษอาญาจำคุกอย่างเฉียบขาด",
+            5: "ประวัติอาชญากรรมและการต้องโทษ ป้องกันการตีตราและให้โอกาสคนกลับตัวสู่สังคม ต้องมีกฎหมายเฉพาะสั่งอนุญาตเท่านั้นจึงจะเปิดเผยได้",
+            6: "ความคิดเห็นทางการเมืองและอุดมการณ์ เป็นเสรีภาพทางความคิด ต้องได้รับการคุ้มครองไม่ให้ถูกคุกคามหรือสอดแนม"
+        };
+
+        function showSensitiveInfo(id) {
+            const alertBox = document.getElementById('sensitiveAlertBox');
+            if (sensitiveDataTips[id]) {
+                alertBox.innerHTML = `
+                    <i class="fa-solid fa-shield-halved text-rose-600 text-lg shrink-0"></i>
+                    <div class="text-xs md:text-sm text-rose-950 font-medium">
+                        ${sensitiveDataTips[id]}
+                    </div>
+                `;
+                playSound('click');
+            }
+        }
+
+        // ========================================================
+        // ⚡ SLIDE 8: 8 Data Subject Rights Details
+        // ========================================================
+        const rightsData = {
+            1: {
+                title: "1. สิทธิ์ได้รับการแจ้งให้ทราบ (Right to be informed)",
+                icon: "fa-solid fa-bullhorn",
+                desc: "ก่อนที่เราจะกดตกลงให้ข้อมูล องค์กรต้องทำเอกสาร Privacy Notice แจ้งให้ชัดเจนว่า: จะเก็บข้อมูลอะไรบ้าง? เอาไปทำอะไร? เก็บไว้นานกี่ปี? และจะแชร์ต่อให้ใครบ้าง โดยต้องเขียนด้วยภาษาที่เข้าใจง่าย"
+            },
+            2: {
+                title: "2. สิทธิ์ขอเข้าถึงและรับสำเนา (Right to access)",
+                icon: "fa-solid fa-file-arrow-down",
+                desc: "เรามีสิทธิ์สั่งให้แอปพลิเคชันหรือโรงเรียนส่งรายงานสรุปและสำเนาข้อมูลที่เขาเก็บเกี่ยวกับตัวเรามาให้ดูได้ ว่าเขามีประวัติอะไรของเราบ้าง (กระบวนการ DSAR)"
+            },
+            3: {
+                title: "3. สิทธิ์ขอแก้ไขข้อมูลให้ถูกต้อง (Right to rectification)",
+                icon: "fa-solid fa-pen-to-square",
+                desc: "หากพบว่าข้อมูลสะกดชื่อผิด เปลี่ยนเบอร์ใหม่ หรือข้อมูลล้าสมัย เรามีสิทธิ์สั่งให้ผู้ควบคุมข้อมูลแก้ไขและอัปเดตให้ถูกต้องและเป็นปัจจุบันทันที"
+            },
+            4: {
+                title: "4. สิทธิ์ขอลบหรือทำลายข้อมูล (Right to erasure / Right to be forgotten)",
+                icon: "fa-solid fa-trash-can",
+                desc: "เมื่อเราเลิกเล่นเกม เลิกใช้แอป หรือข้อมูลนั้นหมดความจำเป็นแล้ว เราสามารถยื่นเรื่องสั่งให้เขาลบข้อมูลทั้งหมดออกจากระบบและทำลายถาวรได้ทันที"
+            },
+            5: {
+                title: "5. สิทธิ์ขอให้ระงับการใช้ข้อมูล (Right to restriction of processing)",
+                icon: "fa-solid fa-circle-pause",
+                desc: "เราสามารถสั่งให้เขา 'หยุดใช้ข้อมูลชั่วคราว' ได้ เช่น ในระหว่างที่เรากำลังตรวจสอบว่าข้อมูลที่เขาบันทึกไว้นั้นถูกต้องหรือไม่ หรือระหว่างรอการลบข้อมูล"
+            },
+            6: {
+                title: "6. สิทธิ์ขอให้โอนย้ายข้อมูล (Right to data portability)",
+                icon: "fa-solid fa-file-export",
+                desc: "เราสามารถสั่งให้ผู้ให้บริการแปลงข้อมูลส่วนตัวของเราให้อยู่ในรูปแบบไฟล์ดิจิทัลที่อ่านง่าย และส่งต่อไปยังผู้ให้บริการรายใหม่ได้โดยตรง"
+            },
+            7: {
+                title: "7. สิทธิ์ขอคัดค้านการประมวลผล (Right to object)",
+                icon: "fa-solid fa-ban",
+                desc: "เรามีสิทธิ์คัดค้านไม่ให้เขาเอาข้อมูลเราไปทำการตลาดแบบตรง (Direct Marketing) เช่น โทรมาขายประกัน ขายของ หรือนำข้อมูลพฤติกรรมเราไปวิเคราะห์เพื่อยิงโฆษณา"
+            },
+            8: {
+                title: "8. สิทธิ์ขอถอนความยินยอม (Right to withdraw consent)",
+                icon: "fa-solid fa-arrow-rotate-left",
+                desc: "หากเราเคยยินยอมให้ข้อมูลเมื่อวาน วันนี้เปลี่ยนใจไม่อยากให้ใช้แล้ว ก็สามารถกดถอนความยินยอมได้ตลอดเวลา และระบบต้องทำให้การถอนยินยอมทำได้ง่ายพอๆ กับตอนกดสมัคร!"
+            }
+        };
+
+        function openRightDetail(id) {
+            const item = rightsData[id];
+            if (!item) return;
+
+            document.getElementById('rightDetailTitle').innerText = item.title;
+            document.getElementById('rightDetailIcon').className = item.icon;
+            document.getElementById('rightDetailDesc').innerText = item.desc;
+            playSound('click');
+        }
+
+        // ========================================================
+        // 🦖 SLIDE 10: Landmark Case Studies Data with HD Video Thumbnail Previews
+        // ========================================================
+        const caseStudies = {
+            1: {
+                title: "คดีที่ 1: บริษัทไอทีค้ายักษ์ใหญ่ JIB ถูกสั่งปรับ 7 ล้านบาท!",
+                badge: "คดีประวัติศาสตร์ครั้งแรกในไทย",
+                youtubeId: "fS3-r6IRFrI",
+                thumbnailUrl: "https://img.youtube.com/vi/fS3-r6IRFrI/hqdefault.jpg",
+                videoDirectUrl: "https://www.youtube.com/watch?v=fS3-r6IRFrI",
+                altVideoUrl: "https://www.youtube.com/watch?v=S7tesAuxbhc",
+                altVideoLabel: "ข่าวสำรอง (เรื่องเล่าเช้านี้)",
+                videoLabel: "PDPC เรียก JIB แจงด่วนปมข้อมูลรั่วไหล",
+                channel: "PPTV HD 36",
+                facts: "พนักงานภายในบริษัทแอบลักลอบนำรายชื่อ ข้อมูลการสั่งซื้อ และเบอร์โทรของลูกค้าจำนวนมากไปขายต่อให้แก๊งคอลเซ็นเตอร์ จนมีผู้เสียหายถูกโทรหลอกลวงเป็นวงกว้าง",
+                violations: [
+                    "1. ขาดระบบความปลอดภัยและขาดการควบคุมสิทธิ์การเข้าถึงข้อมูลของพนักงาน (ปรับ 3 ล้าน)",
+                    "2. ละเลยไม่รายงานเหตุการณ์ข้อมูลรั่วไหลต่อสำนักงาน PDPC ภายใน 72 ชั่วโมง (ปรับ 3 ล้าน)",
+                    "3. ล่าช้าในการแต่งตั้งเจ้าหน้าที่คุ้มครองข้อมูลส่วนบุคคล (DPO) ประจำบริษัท (ปรับ 1 ล้าน)"
+                ],
+                lesson: "💡 บทเรียน: องค์กรต้องมีระบบ Access Control ที่รัดกุม ไม่ใช่ปล่อยให้พนักงานทุกคนดาวน์โหลดฐานข้อมูลลูกค้าได้ตามใจชอบ"
+            },
+            2: {
+                title: "คดีที่ 2: ประวัติคนไข้ห่อถุงขนม (รพ. ปรับ 1.21 ล้าน / คนรับจ้างปรับ 16,940 บาท)",
+                badge: "ความผิดพลาดจากการทำลายเอกสาร",
+                youtubeId: "BRliHMdDwHg",
+                thumbnailUrl: "https://img.youtube.com/vi/BRliHMdDwHg/hqdefault.jpg",
+                videoDirectUrl: "https://www.youtube.com/watch?v=BRliHMdDwHg",
+                altVideoUrl: "https://www.youtube.com/watch?v=o-Q32hgJqjk",
+                altVideoLabel: "ข่าวสำรอง (ครอบครัวข่าว 3)",
+                videoLabel: "PDPA ปรับ 1.2 ล้าน ถุงขนมรียูสจากเวชระเบียน",
+                channel: "FM91 Trafficpro",
+                facts: "โรงพยาบาลเอกชนว่าจ้างผู้รับเหมาช่วงให้มาทำลายกระดาษเวชระเบียนคนไข้ แต่คนรับจ้างแอบนำไปขายต่อ จนแม่ค้านำมาพับทำถุงใส่ขนมและซองอาหารแจกจ่ายในชุมชน",
+                violations: [
+                    "1. โรงพยาบาลละเลยการตรวจสอบและควบคุมผู้รับเหมาที่จัดการทำลายข้อมูลอ่อนไหว (ปรับ 1.21 ล้าน)",
+                    "2. ข้อมูลสุขภาพคนไข้หลุดสู่ที่สาธารณะ สร้างความเสียหายต่อชื่อเสียงและความเป็นส่วนตัวของผู้ป่วย"
+                ],
+                lesson: "💡 บทเรียน: การจ้าง Data Processor ทำลายข้อมูล ต้องมีใบรับรองและตรวจสอบการทำลายจริง ไม่ใช่ทิ้งไว้ให้รั่วไหล"
+            },
+            3: {
+                title: "คดีที่ 3: ระบบจองของเล่นสะสม (ค่ายของเล่นปรับ 5 แสน / โปรแกรมเมอร์ปรับ 3 ล้าน)",
+                badge: "Processor โดนปรับหนักกว่าแบรนด์!",
+                youtubeId: "0O8kHSBZq_0",
+                thumbnailUrl: "https://img.youtube.com/vi/0O8kHSBZq_0/hqdefault.jpg",
+                videoDirectUrl: "https://www.youtube.com/watch?v=0O8kHSBZq_0",
+                altVideoUrl: "https://www.youtube.com/watch?v=j29iL9QlijM",
+                altVideoLabel: "คลิปสำรอง (บทลงโทษ PDPA)",
+                videoLabel: "เจาะลึกบทบาทและความรับผิดชอบ Data Processor",
+                channel: "PDPA Thailand",
+                facts: "เว็บไซต์จองของเล่นถูกแฮกเกอร์เจาะระบบแก้ไขประวัติการจองกว่า 200,000 รายการ แต่บริษัทพัฒนาโปรแกรมหลังบ้านจงใจปกปิดและไม่ยอมแจ้งให้แบรนด์ของเล่นทราบ",
+                violations: [
+                    "1. ผู้พัฒนาหลังบ้าน (Data Processor) ปิดบังข้อมูลและล่าช้าในการรายงานเหตุขัดข้องความมั่นปลอดภัย (ปรับ 3 ล้าน)",
+                    "2. ระบบไม่มีการเข้ารหัสข้อมูลที่รัดกุมเพียงพอ ทำให้แฮกเกอร์เข้าถึงข้อมูลได้ง่าย"
+                ],
+                lesson: "💡 บทเรียน: ผู้รับจ้างเขียนโปรแกรมหลังบ้านมีหน้าที่ตามกฎหมาย หากปกปิดช่องโหว่จะโดนโทษปรับหนักกว่าเจ้าของแบรนด์!"
+            },
+            4: {
+                title: "คดีที่ 4: คดีสั่งระงับสแกนม่านตาแลกเหรียญคริปโต Worldcoin (ปี 2568)",
+                badge: "การคุ้มครองข้อมูลชีวภาพ Biometrics",
+                youtubeId: "0cy0sSWgqog",
+                thumbnailUrl: "https://img.youtube.com/vi/0cy0sSWgqog/hqdefault.jpg",
+                videoDirectUrl: "https://www.youtube.com/watch?v=0cy0sSWgqog",
+                altVideoUrl: "https://www.youtube.com/watch?v=ZRsjMVeZq5A",
+                altVideoLabel: "ข่าวสำรอง (ข่าวเด็ด 7 สี)",
+                videoLabel: "สคส. สั่งลบข้อมูลสแกนม่านตา Worldcoin 1.2 ล้านคน",
+                channel: "ฐานเศรษฐกิจ",
+                facts: "ผู้ให้บริการโครงการเหรียญดิจิทัลตระเวนตั้งจุดสแกนม่านตาคนไทยแลกกับการแจกเหรียญคริปโตฟรี จนคณะกรรมการ PDPC ออกคำสั่งด่วนให้ระงับและสั่งทำลายข้อมูลกว่า 1.2 ล้านคนทิ้งทันที",
+                violations: [
+                    "1. ลักลอบเก็บข้อมูลอ่อนไหวขั้นสูงสุด (Biometrics) โดยมีระบบคัดกรองความยินยอมที่ไม่รัดกุม",
+                    "2. มีความเสี่ยงในการส่งข้อมูลชีวภาพข้ามประเทศโดยไร้มาตรการคุ้มครองที่ได้มาตรฐานสากล"
+                ],
+                lesson: "💡 บทเรียน: อย่าเห็นแก่ของแจกฟรีจนยอมแลกสแกนม่านตาหรือลายนิ้วมือ เพราะข้อมูลชีวมิติเปลี่ยนใหม่ไม่ได้ตลอดชีวิต!"
+            }
+        };
+
+        function selectCaseStudy(caseId) {
+            // Update Tab styles
+            for (let i = 1; i <= 4; i++) {
+                const tab = document.getElementById(`caseTab-${i}`);
+                if (i === caseId) {
+                    tab.className = 'case-tab active py-2 px-3 rounded-xl border border-sky-400 bg-sky-50 text-sky-700 font-bold text-xs md:text-sm transition cursor-pointer flex items-center justify-center gap-2 shadow-xs';
+                } else {
+                    tab.className = 'case-tab py-2 px-3 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 text-slate-700 font-semibold text-xs md:text-sm transition cursor-pointer flex items-center justify-center gap-2';
+                }
+            }
+
+            const c = caseStudies[caseId];
+            if (!c) return;
+
+            const box = document.getElementById('caseStudyContentBox');
+            box.innerHTML = `
+                <div class="grid grid-cols-1 md:grid-cols-12 gap-4 items-start">
+                    <!-- Left: Interactive Video Preview Thumbnail (5 cols) -->
+                    <div class="md:col-span-5 space-y-2.5">
+                        <a href="${c.videoDirectUrl}" target="_blank" rel="noopener noreferrer" title="คลิกเพื่อดูคลิปข่าวเต็มบน YouTube" class="relative w-full aspect-video rounded-xl overflow-hidden shadow-sm border border-slate-200 bg-slate-900 group block cursor-pointer">
+                            <img 
+                                src="${c.thumbnailUrl}" 
+                                alt="${c.videoLabel}" 
+                                class="w-full h-full object-cover group-hover:scale-105 transition duration-300"
+                                onerror="this.src='https://img.youtube.com/vi/${c.youtubeId}/mqdefault.jpg'"
+                            />
+                            <div class="absolute inset-0 bg-gradient-to-t from-black/85 via-black/25 to-transparent"></div>
+                            
+                            <!-- Glowing YouTube Play Button -->
+                            <div class="absolute inset-0 flex items-center justify-center">
+                                <div class="w-14 h-10 rounded-xl bg-red-600 group-hover:bg-red-700 text-white flex items-center justify-center text-base shadow-lg group-hover:scale-110 transition duration-200">
+                                    <i class="fa-solid fa-play ml-0.5"></i>
+                                </div>
+                            </div>
+
+                            <!-- Channel & Direct Play Badge -->
+                            <div class="absolute bottom-2.5 left-2.5 right-2.5 flex items-center justify-between text-white text-xs">
+                                <span class="bg-black/70 backdrop-blur-xs px-2.5 py-1 rounded font-medium truncate max-w-[65%]">
+                                    <i class="fa-solid fa-tv text-[10px] mr-1 text-sky-400"></i>${c.channel}
+                                </span>
+                                <span class="bg-red-600 px-2.5 py-1 rounded font-bold flex items-center gap-1 shadow-xs">
+                                    <span>ชมคลิปข่าว</span>
+                                    <i class="fa-solid fa-arrow-up-right-from-square text-[9px]"></i>
+                                </span>
+                            </div>
+                        </a>
+                        
+                        <!-- Video Action Bar -->
+                        <div class="space-y-1.5 px-0.5">
+                            <div class="text-xs text-slate-600 font-semibold truncate flex items-center gap-1.5">
+                                <i class="fa-solid fa-circle-play text-red-500 text-xs"></i>
+                                <span class="truncate font-bold text-navy-900">${c.videoLabel}</span>
+                            </div>
+                            <div class="flex items-center gap-2 flex-wrap">
+                                <a href="${c.videoDirectUrl}" target="_blank" rel="noopener noreferrer" title="เปิดดูคลิปนี้บน YouTube โดยตรง" class="px-3.5 py-1.5 rounded-lg bg-red-600 hover:bg-red-700 text-white text-xs md:text-sm font-bold shadow-xs transition flex items-center gap-1.5">
+                                    <i class="fa-brands fa-youtube text-sm"></i>
+                                    <span>เปิดดูบน YouTube ↗</span>
+                                </a>
+                                <a href="${c.altVideoUrl}" target="_blank" rel="noopener noreferrer" title="เปิดดูคลิปสำรอง" class="px-3 py-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs md:text-sm font-semibold border border-slate-200 transition flex items-center gap-1.5">
+                                    <i class="fa-solid fa-arrow-up-right-from-square text-[10px]"></i>
+                                    <span>${c.altVideoLabel}</span>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Right: Case Information (7 cols) -->
+                    <div class="md:col-span-7 space-y-2">
+                        <div class="flex flex-wrap items-center justify-between gap-2 border-b border-slate-100 pb-1.5">
+                            <h3 class="text-sm md:text-base font-bold text-navy-900 leading-snug">${c.title}</h3>
+                            <span class="text-xs font-bold bg-rose-50 text-rose-700 border border-rose-200 px-2.5 py-0.5 rounded-full shrink-0">
+                                ${c.badge}
+                            </span>
+                        </div>
+                        <p class="text-xs md:text-sm text-slate-700 leading-relaxed">
+                            <strong>พฤติการณ์:</strong> ${c.facts}
+                        </p>
+                        <div class="bg-slate-50 p-2.5 rounded-xl border border-slate-100">
+                            <div class="text-xs md:text-sm font-bold text-slate-700 mb-1">กระทงความผิดและบทลงโทษ:</div>
+                            <ul class="text-xs md:text-sm text-slate-600 space-y-1">
+                                ${c.violations.map(v => `<li>• ${v}</li>`).join('')}
+                            </ul>
+                        </div>
+                        <div class="text-xs md:text-sm font-semibold text-sky-900 bg-sky-50/90 p-2 rounded-xl border border-sky-200">
+                            ${c.lesson}
+                        </div>
+                    </div>
+                </div>
+            `;
+            playSound('click');
+        }
+
+        // ========================================================
+        // 💬 SLIDE 11: Interactive Flip Cards & Certificate Modal
+        // ========================================================
+        function toggleCardFlip(card) {
+            const inner = card.querySelector('.faq-card-inner');
+            inner.classList.toggle('rotate-y-180');
+            playSound('flip');
+        }
+
+        function openCertificateModal() {
+            document.getElementById('certificateModal').classList.remove('hidden');
+            playSound('success');
+        }
+
+        function closeCertificateModal() {
+            document.getElementById('certificateModal').classList.add('hidden');
+        }
+
+        function printCertificate() {
+            const name = document.getElementById('studentCertName').value.trim() || "ผู้พิทักษ์ข้อมูล ม.3";
+            const printWindow = window.open('', '_blank');
+            printWindow.document.write(`
+                <!DOCTYPE html>
+                <html lang="th">
+                <head>
+                    <title>เกียรติบัตร PDPA 101 - ${name}</title>
+                    <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+                    <style>
+                        body { font-family: 'Kanit', sans-serif; text-align: center; padding: 40px; background: #fff; color: #0F172A; }
+                        .cert-box { border: 8px double #0284C7; padding: 40px; border-radius: 20px; max-width: 800px; margin: auto; }
+                        h1 { color: #0284C7; font-size: 32px; font-weight: 800; margin-bottom: 8px; }
+                        h2 { font-size: 24px; color: #1E293B; margin-bottom: 24px; }
+                        .student-name { font-size: 30px; font-weight: bold; color: #0369A1; text-decoration: underline; margin: 30px 0; }
+                        p { font-size: 18px; line-height: 1.6; color: #475569; }
+                        .date { margin-top: 35px; font-size: 16px; color: #64748B; }
+                    </style>
+                </head>
+                <body>
+                    <div class="cert-box">
+                        <img src="assets/pdpa_icon.png" style="width: 80px; height: 80px; border-radius: 18px; margin: 0 auto 15px auto; display: block; box-shadow: 0 4px 12px rgba(2, 132, 199, 0.25);">
+                        <h1>เกียรติบัตรรับรองความรู้ดิจิทัล</h1>
+                        <h2>หลักสูตร PDPA 101: ผู้พิทักษ์สิทธิ์ดิจิทัล ฉบับ ม.3</h2>
+                        <p>ขอมอบเกียรติบัตรฉบับนี้เพื่อแสดงว่า</p>
+                        <div class="student-name">${name}</div>
+                        <p>ได้ผ่านการเรียนรู้สาระสำคัญของ พ.ร.บ. คุ้มครองข้อมูลส่วนบุคคล พ.ศ. 2562<br>เข้าใจ 8 สิทธิ์คุ้มครองตนเอง และบทลงโทษทางกฎหมายอย่างสมบูรณ์แบบ</p>
+                        <div class="date">ให้ไว้ ณ วันที่ ${new Date().toLocaleDateString('th-TH', { year: 'numeric', month: 'long', day: 'numeric' })}</div>
+                    </div>
+                    <script>
+                        window.onload = function() { window.print(); }
+                    <\/script>
+                </body>
+                </html>
+            `);
+            printWindow.document.close();
+        }
+
+        // Initialize on DOM Ready
+        document.addEventListener('DOMContentLoaded', () => {
+            initNavigation();
+        });
+    </script>
+</body>
+
+</html>
