@@ -1,45 +1,75 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <!-- 1. Hub / Homepage -->
   <url>
     <loc>https://tech-dm-cyber-detective.vercel.app/</loc>
-    <lastmod>2026-08-13</lastmod>
+    <lastmod>2026-08-21</lastmod>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
   </url>
+
+  <!-- 2. Flagship Cyber Shield Detective Game (6 Cases) -->
   <url>
     <loc>https://tech-dm-cyber-detective.vercel.app/cyber_shield_detective.html</loc>
-    <lastmod>2026-08-13</lastmod>
+    <lastmod>2026-08-21</lastmod>
     <changefreq>weekly</changefreq>
-    <priority>0.9</priority>
+    <priority>0.95</priority>
   </url>
+
+  <!-- 3. Fast-Track Cyber Shield Detective Game (3 Cases) -->
+  <url>
+    <loc>https://tech-dm-cyber-detective.vercel.app/cyber_shield_detective_3.html</loc>
+    <lastmod>2026-08-21</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.85</priority>
+  </url>
+
+  <!-- 4. Interactive Slide Deck: Cyber Crime Act 12 Sections -->
   <url>
     <loc>https://tech-dm-cyber-detective.vercel.app/presentation.html</loc>
-    <lastmod>2026-08-13</lastmod>
+    <lastmod>2026-08-21</lastmod>
     <changefreq>weekly</changefreq>
-    <priority>0.9</priority>
+    <priority>0.90</priority>
   </url>
+
+  <!-- 5. Interactive Slide Deck: PDPA 101 for Secondary Students -->
+  <url>
+    <loc>https://tech-dm-cyber-detective.vercel.app/pdpa_presentation.html</loc>
+    <lastmod>2026-08-21</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.90</priority>
+  </url>
+
+  <!-- 6. PDPA Online Assignment Canvas Board -->
+  <url>
+    <loc>https://tech-dm-cyber-detective.vercel.app/pdpa_assignment_board.html</loc>
+    <lastmod>2026-08-21</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.85</priority>
+  </url>
+
+  <!-- 7. PDPA Fast-Pass Speedrun Game -->
+  <url>
+    <loc>https://tech-dm-cyber-detective.vercel.app/pdpa_fast_pass.html</loc>
+    <lastmod>2026-08-21</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.85</priority>
+  </url>
+
+  <!-- 8. Case Bank & Teacher Reference -->
   <url>
     <loc>https://tech-dm-cyber-detective.vercel.app/cases_reference.html</loc>
-    <lastmod>2026-08-13</lastmod>
+    <lastmod>2026-08-21</lastmod>
     <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
+    <priority>0.85</priority>
   </url>
+
+  <!-- 9. Cyber Detective Quiz v3 (Multiple Choice) -->
   <url>
     <loc>https://tech-dm-cyber-detective.vercel.app/cyber_detective.html</loc>
-    <lastmod>2026-08-13</lastmod>
+    <lastmod>2026-08-21</lastmod>
     <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://tech-dm-cyber-detective.vercel.app/cyber_shield_teacher.html</loc>
-    <lastmod>2026-08-13</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://tech-dm-cyber-detective.vercel.app/teacher_dashboard.html</loc>
-    <lastmod>2026-08-13</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.5</priority>
+    <priority>0.80</priority>
   </url>
 </urlset>
+

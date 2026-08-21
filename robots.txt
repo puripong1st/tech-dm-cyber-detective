@@ -1,4 +1,20 @@
 User-agent: *
 Allow: /
+Allow: /assets/
+Allow: /css/
+Allow: /js/
+
+# Disallow private teacher command centers and API endpoints
+Disallow: /cyber_shield_teacher.html
+Disallow: /cyber_shield_teacher_3.html
+Disallow: /teacher_dashboard.html
+Disallow: /cyber_shield_teacher
+Disallow: /cyber_shield_teacher_3
+Disallow: /shield_teacher
+Disallow: /shield_teacher_3
+Disallow: /teacher_dashboard
+Disallow: /teacher
+Disallow: /api/
 
 Sitemap: https://tech-dm-cyber-detective.vercel.app/sitemap.xml
+

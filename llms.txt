@@ -1,0 +1,18 @@
+﻿# Cyber Shield Detective Platform (ศูนย์รวมสื่อ & เกมการเรียนรู้กฎหมายไซเบอร์)
+
+> แพลตฟอร์มการจัดการเรียนรู้ พ.ร.บ.ว่าด้วยการกระทำความผิดเกี่ยวกับคอมพิวเตอร์ พ.ศ. 2560 และ พ.ร.บ.คุ้มครองข้อมูลส่วนบุคคล พ.ศ. 2562 (PDPA) สำหรับนักเรียนระดับชั้นมัธยมศึกษาปีที่ 2 - 3 พร้อมระบบประเมินผลอัตนัยด้วย Google Gemini AI
+
+## Main Educational Tools & Applications
+
+- [Cyber Shield Detective](https://tech-dm-cyber-detective.vercel.app/cyber_shield_detective.html): เกมสืบคดีกฎหมายคอมพิวเตอร์ 6 คดีหลัก 9 ช่องการ์ตูน พร้อมการตอบ 3 บทบาท (นักกฎหมาย, ผู้บรรเทาภัย, วิศวกรความปลอดภัย) และประเมินผลด้วย Gemini AI
+- [Cyber Shield Detective Fast-Track](https://tech-dm-cyber-detective.vercel.app/cyber_shield_detective_3.html): เกมสืบคดีฉบับย่อ 3 คดี เหมาะสำหรับคาบเรียน 50 นาที
+- [Quest: Cyber Law Presentation](https://tech-dm-cyber-detective.vercel.app/presentation.html): สไลด์สรุปเนื้อหา พ.ร.บ.คอมพิวเตอร์ 12 มาตราสำคัญ พร้อมตัวอย่างคดีจริง
+- [PDPA 101 Presentation](https://tech-dm-cyber-detective.vercel.app/pdpa_presentation.html): สไลด์การเรียนรู้ PDPA 101 ข้อมูลทั่วไป/อ่อนไหว 8 สิทธิเจ้าของข้อมูล และแบบทดสอบรับเกียรติบัตร
+- [PDPA Assignment Board](https://tech-dm-cyber-detective.vercel.app/pdpa_assignment_board.html): กระดานสร้างใบงานสืบคดี PDPA ออนไลน์ สไตล์ Interactive Canvas พร้อม Export รูปภาพ HD
+- [PDPA Fast-Pass](https://tech-dm-cyber-detective.vercel.app/pdpa_fast_pass.html): เกม Speedrun 60 วินาที แยกแยะข้อมูลทั่วไป vs ข้อมูลอ่อนไหว คลัง 45 ข้อ
+- [Case Bank & Solutions](https://tech-dm-cyber-detective.vercel.app/cases_reference.html): คลังข้อมูลอ้างอิงและแฟ้มคดีตัวอย่าง 12 คดี พร้อมเฉลยและเกณฑ์ประเมิน
+- [Cyber Detective Multiple-Choice Quiz](https://tech-dm-cyber-detective.vercel.app/cyber_detective.html): แบบทดสอบกฎหมายคอมพิวเตอร์ 30 คดีจำลอง
+
+## Core Curriculum Coverage
+- Computer-Related Crime Act B.E. 2560 (2017) Sections: 5, 6, 7, 8, 9, 10, 11, 12, 14(1), 14(2), 14(4), 16
+- Personal Data Protection Act B.E. 2562 (2019) (PDPA): General Data, Sensitive Data, 8 Data Subject Rights, Minor Consent
