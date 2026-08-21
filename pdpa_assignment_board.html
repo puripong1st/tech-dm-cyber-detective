@@ -696,7 +696,7 @@
                 <!-- Primary PDF Export Button -->
                 <button onclick="exportAssignmentPDF()" class="px-3.5 py-1.5 rounded-lg bg-gradient-to-r from-emerald-500 to-green-600 hover:from-emerald-400 hover:to-green-500 text-slate-950 font-bold text-xs shadow-md shadow-emerald-500/30 hover:shadow-emerald-500/50 transition-all flex items-center gap-1.5 glow-active">
                     <i class="fa-solid fa-file-pdf text-xs"></i>
-                    <span>💾 บันทึกเป็น PDF</span>
+                    <span>📄 พิมพ์ / บันทึก PDF</span>
                 </button>
             </div>
         </div>
@@ -1346,7 +1346,7 @@
                     <!-- Direct PDF Download Button on Canvas Header -->
                     <button onclick="exportAssignmentPDF()" class="px-3 py-1 rounded-lg bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold text-xs shadow-sm transition flex items-center gap-1.5">
                         <i class="fa-solid fa-file-pdf text-[11px]"></i>
-                        <span>บันทึก PDF</span>
+                        <span>พิมพ์ / บันทึก PDF</span>
                     </button>
                 </div>
             </div>
@@ -2631,22 +2631,21 @@
         function exportAssignmentPDF() {
             if (!AppState.student.isRegistered) {
                 openRegistrationModal();
-                alert('กรุณากรอกข้อมูลนักเรียนให้ครบถ้วนก่อนบันทึกไฟล์ PDF');
+                alert('กรุณากรอกข้อมูลนักเรียนให้ครบถ้วนก่อนพิมพ์/บันทึกใบงาน');
                 return;
             }
 
-            // 1. Prepare UI
+            // 1. Deselect any active sticker handles so selection borders don't appear in print
             deselectAllStickers();
 
-            // 2. Alert Instructions
-            alert('คำแนะนำก่อนพิมพ์:\n\nเพื่อให้ได้ภาพใบงานที่สมบูรณ์ 100%\nในหน้าต่างถัดไป โปรดติ๊กเครื่องหมายถูกที่ช่อง\n✅ "กราฟิกพื้นหลัง" (Background Graphics)\n\nจากนั้นเลือก "บันทึกเป็น PDF" (Save as PDF)');
-
-            // 3. Trigger native print dialog with exact A4 landscape preview
-            // Use setTimeout to allow alert to close cleanly before print dialog opens
+            // 2. Trigger native print dialog immediately (No blocking alert)
             setTimeout(() => {
                 window.print();
-            }, 500);
+            }, 100);
         }
+
+        // Backward compatibility alias
+        const exportAssignmentPNG = exportAssignmentPDF;
 
 
     </script>
