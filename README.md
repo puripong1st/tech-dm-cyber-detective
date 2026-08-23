@@ -49,12 +49,12 @@
 
 | แอปพลิเคชัน / สื่อการสอน | ลิงก์เข้าใช้งานสด (Live URL) | คู่มือเจาะลึก (.md) | กลุ่มเป้าหมาย | หน้าที่และจุดเด่นสำคัญ |
 |---|---|:---:|:---:|---|
-| 🏠 **Main Portal Hub** | [`/`](https://tech-dm-cyber-detective.vercel.app/) | [📖 `index.md`](docs/pages/index.md) | ทุกคน | ศูนย์รวมสื่อ เกม และลิงก์เข้าถึงทุกระบบ ดีไซน์ Cyber Dark Theme โหลดเร็ว Sub-second |
+| 🏠 **Main Portal Hub** | [`/`](https://tech-dm-cyber-detective.vercel.app/) | [📖 `index.md`](docs/pages/index.md) | ทุกคน | หน้าเริ่มต้นแบบ Friendly Geometric แบ่งชัดเจนเป็นหมวดเรียนรู้ สื่อและชิ้นงาน และเครื่องมือครู |
 | 🎮 **Cyber Shield Detective (6 คดี)** | [`/cyber_shield_detective.html`](https://tech-dm-cyber-detective.vercel.app/cyber_shield_detective.html) | [📖 `cyber_shield_detective.md`](docs/pages/cyber_shield_detective.md) | นักเรียน ม.3 | เกมสืบคดีการ์ตูน 9 ช่อง วิเคราะห์อัตนัย 3 บทบาท ประเมินผลสดด้วย Gemini AI (180 คะแนน) |
 | ⚡ **Cyber Shield Detective (Fast-Track 3 คดี)** | [`/cyber_shield_detective_3.html`](https://tech-dm-cyber-detective.vercel.app/cyber_shield_detective_3.html) | [📖 `cyber_shield_detective_3.md`](docs/pages/cyber_shield_detective_3.md) | นักเรียน ม.3 | เกมสืบคดีเวอร์ชันรวบรัด 3 คดี เหมาะสำหรับคาบเรียน 50 นาที พร้อมส่งคะแนนสด (90 คะแนน) |
 | 📖 **Quest: สไลด์บทเรียน 12 มาตรา** | [`/presentation.html`](https://tech-dm-cyber-detective.vercel.app/presentation.html) | [📖 `presentation.md`](docs/pages/presentation.md) | ครู / นักเรียน | สไลด์สรุป พ.ร.บ.คอมพิวเตอร์ 2560 ครบ 12 มาตรา พร้อมควิซโต้ตอบและเพลงประกอบแนว RPG |
 | 🛡️ **PDPA 101: สไลด์คู่มือ ม.3** | [`/pdpa_presentation.html`](https://tech-dm-cyber-detective.vercel.app/pdpa_presentation.html) | [📖 `pdpa_presentation.md`](docs/pages/pdpa_presentation.md) | ครู / นักเรียน | สไลด์นำเสนอเชิงโต้ตอบ สรุปข้อมูลทั่วไป vs อ่อนไหว สิทธิ 8 ประการ และแบบทดสอบรับเกียรติบัตร |
-| 🎨 **PDPA Assignment Board** | [`/pdpa_assignment_board.html`](https://tech-dm-cyber-detective.vercel.app/pdpa_assignment_board.html) | [📖 `pdpa_assignment_board.md`](docs/pages/pdpa_assignment_board.md) | นักเรียน ม.3 | กระดานสร้างใบงานออนไลน์สไตล์ Canva สำหรับสรุปวิเคราะห์คดี PDPA พร้อมส่งออกภาพ PNG HD |
+| 🎨 **PDPA Assignment Board** | [`/pdpa_assignment_board.html`](https://tech-dm-cyber-detective.vercel.app/pdpa_assignment_board.html) | [📖 `pdpa_assignment_board.md`](docs/pages/pdpa_assignment_board.md) | นักเรียน ม.3 | กระดานสร้างใบงานออนไลน์สไตล์ Canva สำหรับสรุปวิเคราะห์คดี PDPA พร้อมพิมพ์หรือบันทึก PDF A4 |
 | ⚡ **PDPA Fast-Pass (Speedrun 60s)** | [`/pdpa_fast_pass.html`](https://tech-dm-cyber-detective.vercel.app/pdpa_fast_pass.html) | [📖 `pdpa_fast_pass.md`](docs/pages/pdpa_fast_pass.md) | นักเรียน ม.3 | เกมแยกแยะการ์ดข้อมูลส่วนบุคคลทั่วไป vs อ่อนไหว จับเวลา 60 วินาที สุ่มจากคลัง 45 ข้อ |
 | 📂 **Cases & Answer Keys Bank** | [`/cases_reference.html`](https://tech-dm-cyber-detective.vercel.app/cases_reference.html) | [📖 `cases_reference.md`](docs/pages/cases_reference.md) | ครูผู้สอน | คลังแฟ้มคดีการ์ตูน 12 คดี กฎหมายที่เกี่ยวข้อง และระบบปลดล็อกเฉลย 3 บทบาทสำหรับครู |
 | 👩‍🏫 **Teacher Command Center (6 คดี)** | `/cyber_shield_teacher.html` | [📖 `cyber_shield_teacher.md`](docs/pages/cyber_shield_teacher.md) | ครูผู้สอน | แผงควบคุมมอนิเตอร์คะแนนสดผ่าน Supabase Realtime, ตรวจคำตอบอัตนัย, ปรับแก้คะแนน (Override) และ Export PDF |
@@ -68,14 +68,14 @@
 
 เอกสารคู่มือการใช้งานและโครงสร้างสถาปัตยกรรมเชิงลึกทั้ง 12 หน้า จัดเก็บไว้ในโฟลเดอร์ [`docs/pages/`](docs/pages/) ทุกไฟล์ประกอบด้วย **6 ส่วนมาตรฐานเข้มข้น**: 1) ภาพรวม & วัตถุประสงค์ 2) สิ่งที่ครูควรชี้แนะ 3) ขั้นตอนการใช้งานพร้อมภาพแคปจริง 4) เกณฑ์การประเมินรูบริก 5) ผ่าสถาปัตยกรรมโค้ดและการทำงานเชิงลึก 6) การจัดการข้อผิดพลาด (Edge Cases):
 
-1. **[Main Portal Hub (`docs/pages/index.md`)](docs/pages/index.md)** - คู่มือหน้าหลัก แถบกรองหมวดหมู่ การ์ดเชื่อมโยง 12 ระบบ และ Microdata JSON-LD
+1. **[Main Portal Hub (`docs/pages/index.md`)](docs/pages/index.md)** - คู่มือหน้าแรก Direction A เส้นทางนักเรียน/ครู หมวดเครื่องมือ 3 กลุ่ม และ Structured Data JSON-LD
 2. **[Cyber Shield Detective 6 คดี (`docs/pages/cyber_shield_detective.md`)](docs/pages/cyber_shield_detective.md)** - คู่มือเกมสืบคดีการ์ตูน 9 ช่อง วิเคราะห์อัตนัย 3 บทบาท ตรวจสดด้วย Gemini AI (เต็ม 180 คะแนน)
 3. **[Cyber Shield Detective Fast-Track 3 คดี (`docs/pages/cyber_shield_detective_3.md`)](docs/pages/cyber_shield_detective_3.md)** - คู่มือเกมสืบคดีฉบับรวบรัด 3 คดีหลัก สำหรับคาบเรียน 50 นาที (เต็ม 90 คะแนน)
 4. **[Teacher Command Center 6 คดี (`docs/pages/cyber_shield_teacher.md`)](docs/pages/cyber_shield_teacher.md)** - คู่มือห้องบัญชาการครูผู้สอน มอนิเตอร์คะแนนสดผ่าน Supabase Realtime, ปรับแก้คะแนน Override และ Export PDF
 5. **[Teacher Command Center 3 คดี (`docs/pages/cyber_shield_teacher_3.md`)](docs/pages/cyber_shield_teacher_3.md)** - คู่มือแผงควบคุมครูสำหรับเกม 3 คดี พร้อมระบบพิมพ์รายงานผลพอดี 1 หน้า A4
 6. **[สไลด์บทเรียน พ.ร.บ.คอมพิวเตอร์ 12 มาตรา RPG (`docs/pages/presentation.md`)](docs/pages/presentation.md)** - คู่มือสไลด์เรโทร RPG, Web Audio API Sound FX, และควิซสะสมค่า HP
 7. **[สไลด์บทเรียน PDPA 101 & เกียรติบัตร (`docs/pages/pdpa_presentation.md`)](docs/pages/pdpa_presentation.md)** - คู่มือสไลด์ PDPA สรุปข้อมูลทั่วไป vs อ่อนไหว สิทธิ 8 ประการ และสร้างเกียรติบัตร Canvas PNG
-8. **[กระดานสร้างใบงาน PDPA Canvas (`docs/pages/pdpa_assignment_board.md`)](docs/pages/pdpa_assignment_board.md)** - คู่มือสตูดิโอสร้างใบงานออนไลน์สไตล์ Canva, ลากวางสติกเกอร์ และ Export PNG HD
+8. **[กระดานสร้างใบงาน PDPA Canvas (`docs/pages/pdpa_assignment_board.md`)](docs/pages/pdpa_assignment_board.md)** - คู่มือสตูดิโอสร้างใบงานออนไลน์สไตล์ Canva ลากวางสติกเกอร์ และส่งงานเป็น PDF A4
 9. **[PDPA Fast-Pass สปีดรัน 60 วินาที (`docs/pages/pdpa_fast_pass.md`)](docs/pages/pdpa_fast_pass.md)** - คู่มือเกม Speedrun Card Sorting แยกแยะข้อมูลส่วนบุคคลจากคลัง 45 ข้อ พร้อมระบบคอมโบ
 10. **[คลังคดี 12 คดี & เฉลยครู (`docs/pages/cases_reference.md`)](docs/pages/cases_reference.md)** - คู่มือคลังแฟ้มคดีการ์ตูน ระบบค้นหา และ Passcode Unlock ปลดล็อกเฉลย 3 บทบาทสำหรับครู
 11. **[Realtime Teacher Dashboard v3 (`docs/pages/teacher_dashboard.md`)](docs/pages/teacher_dashboard.md)** - คู่มือแดชบอร์ดสแตนด์อโลน แปลงคะแนนดิบ 1,080 สู่เกรดเก็บ 10 คะแนน พร้อมโหมดซ่อนชื่อจริง

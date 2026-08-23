@@ -1,1276 +1,601 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="th">
-
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>เกม พ.ร.บ.คอมพิวเตอร์ 2560 & PDPA ม.3 | สื่อการสอนและสืบคดีไซเบอร์ Cyber Shield Detective</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>เกม พ.ร.บ.คอมพิวเตอร์และ PDPA ม.3 | Cyber Shield Detective</title>
+  <meta name="description" content="เกม พ.ร.บ.คอมพิวเตอร์ 2560 และ PDPA สำหรับ ม.3 รวมเกมสืบคดี สไลด์ บทเรียน และใบงานออนไลน์สำหรับนักเรียนและครู ใช้ฟรีผ่านเว็บ ไม่ต้องติดตั้ง">
+  <meta name="author" content="Cyber Shield Detective Team">
+  <meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1">
+  <meta name="theme-color" content="#F7F4EC">
+  <link rel="canonical" href="https://tech-dm-cyber-detective.vercel.app/">
+  <link rel="icon" type="image/webp" href="favicon.webp">
+  <link rel="alternate icon" type="image/png" href="favicon.png">
+  <link rel="apple-touch-icon" href="favicon.png">
 
-    <!-- SEO Meta Tags -->
-    <meta name="google-site-verification" content="O3pc6KHLALRFMBuOyRKW-XdUb04EdGycLs4Iy--7d70" />
-    <meta name="description"
-        content="แพลตฟอร์มสื่อและเกมการเรียนรู้กฎหมายคอมพิวเตอร์ (พ.ร.บ. คอมพิวเตอร์ 2560) และ PDPA สำหรับนักเรียน ม.3 พร้อมระบบประเมินผลอัตนัยด้วย Gemini AI, สไลด์บทเรียนอินเทอร์แอคทีฟ 12 มาตรา, คลังเฉลยข้อสอบ และกระดานใบงานออนไลน์">
-    <meta name="keywords"
-        content="พ.ร.บ.คอมพิวเตอร์, กฎหมายคอมพิวเตอร์, พรบคอม, พ.ร.บ. คอมพิวเตอร์ 2560, PDPA, พ.ร.บ.คุ้มครองข้อมูลส่วนบุคคล, วิทยาการคำนวณ ม.3, สื่อการสอนกฎหมายคอมพิวเตอร์, เกมกฎหมายคอมพิวเตอร์, Cyber Shield Detective, สืบคดีไซเบอร์, สไลด์ พรบคอม 12 มาตรา, ระบบตรวจคะแนน AI, ข้อสอบ พรบคอม, เฉลย พรบคอม">
-    <meta name="author" content="Cyber Shield Detective Team">
-    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
-    <meta name="theme-color" content="#070913">
-    <link rel="canonical" href="https://tech-dm-cyber-detective.vercel.app/">
+  <meta property="og:type" content="website">
+  <meta property="og:locale" content="th_TH">
+  <meta property="og:site_name" content="Cyber Shield Detective">
+  <meta property="og:title" content="เกม พ.ร.บ.คอมพิวเตอร์และ PDPA สำหรับ ม.3">
+  <meta property="og:description" content="เกมและสื่อการเรียนรู้กฎหมายไซเบอร์ที่ช่วยให้นักเรียนได้คิดผ่านคดีจริงจำลอง และช่วยครูจัดคาบเรียนเป็นขั้นตอน">
+  <meta property="og:url" content="https://tech-dm-cyber-detective.vercel.app/">
+  <!-- intentionally omit og:image until a production 1200x630 social image is available -->
 
-    <!-- Open Graph / Facebook -->
-    <meta property="og:type" content="website">
-    <meta property="og:url" content="https://tech-dm-cyber-detective.vercel.app/">
-    <meta property="og:title" content="เกม พ.ร.บ.คอมพิวเตอร์ 2560 & PDPA ม.3 | Cyber Shield Detective">
-    <meta property="og:description"
-        content="แพลตฟอร์มเกมสืบคดีกฎหมายคอมพิวเตอร์ 2560 และ PDPA ประเมินผลอัตนัยด้วย Gemini AI พร้อมสไลด์สรุป 12 มาตราและคลังคดีพร้อมเฉลย">
-    <meta property="og:image" content="https://tech-dm-cyber-detective.vercel.app/favicon.png">
-    <meta property="og:site_name" content="Cyber Shield Detective Platform">
-    <meta property="og:locale" content="th_TH">
-
-    <!-- Twitter Card -->
-    <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:url" content="https://tech-dm-cyber-detective.vercel.app/">
-    <meta name="twitter:title" content="เกม พ.ร.บ.คอมพิวเตอร์ 2560 & PDPA ม.3 | Cyber Shield Detective">
-    <meta name="twitter:description"
-        content="แพลตฟอร์มเกมสืบคดีกฎหมายคอมพิวเตอร์ 2560 และ PDPA ประเมินผลอัตนัยด้วย Gemini AI พร้อมสไลด์สรุป 12 มาตราและคลังคดีพร้อมเฉลย">
-    <meta name="twitter:image" content="https://tech-dm-cyber-detective.vercel.app/favicon.png">
-
-    <!-- Structured Data (JSON-LD: WebSite + Organization + Breadcrumbs + FAQ + ItemList) -->
-    <script type="application/ld+json">
-    {
-      "@context": "https://schema.org",
-      "@graph": [
-        {
-          "@type": "WebSite",
-          "@id": "https://tech-dm-cyber-detective.vercel.app/#website",
-          "url": "https://tech-dm-cyber-detective.vercel.app/",
-          "name": "Cyber Shield Detective Platform",
-          "alternateName": "ศูนย์รวมสื่อ & เกมการเรียนรู้กฎหมายไซเบอร์และ PDPA",
-          "description": "แพลตฟอร์มสื่อและเกมการเรียนรู้ พ.ร.บ.คอมพิวเตอร์ 2560 และ PDPA สำหรับนักเรียน ม.3 ประเมินผลอัตนัยด้วย Gemini AI",
-          "inLanguage": "th-TH"
-        },
-        {
-          "@type": "EducationalOrganization",
-          "@id": "https://tech-dm-cyber-detective.vercel.app/#organization",
-          "name": "Cyber Shield Detective Team",
-          "url": "https://tech-dm-cyber-detective.vercel.app/",
-          "logo": {
-            "@type": "ImageObject",
-            "url": "https://tech-dm-cyber-detective.vercel.app/favicon.png",
-            "width": "256",
-            "height": "256"
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "WebSite",
+        "@id": "https://tech-dm-cyber-detective.vercel.app/#website",
+        "url": "https://tech-dm-cyber-detective.vercel.app/",
+        "name": "Cyber Shield Detective",
+        "description": "เกมและสื่อการเรียนรู้กฎหมายไซเบอร์สำหรับนักเรียน ม.3 และครูผู้สอน",
+        "inLanguage": "th"
+      },
+      {
+        "@type": "ItemList",
+        "@id": "https://tech-dm-cyber-detective.vercel.app/#recommended-tools",
+        "name": "เครื่องมือแนะนำ",
+        "numberOfItems": 4,
+        "itemListElement": [
+          {
+            "@type": "ListItem",
+            "position": 1,
+            "name": "เกม Cyber Shield Detective — 6 คดี",
+            "url": "https://tech-dm-cyber-detective.vercel.app/cyber_shield_detective.html"
+          },
+          {
+            "@type": "ListItem",
+            "position": 2,
+            "name": "สไลด์ พ.ร.บ.คอมพิวเตอร์ 2560",
+            "url": "https://tech-dm-cyber-detective.vercel.app/presentation.html"
+          },
+          {
+            "@type": "ListItem",
+            "position": 3,
+            "name": "สไลด์ PDPA 101",
+            "url": "https://tech-dm-cyber-detective.vercel.app/pdpa_presentation.html"
+          },
+          {
+            "@type": "ListItem",
+            "position": 4,
+            "name": "กระดานสร้างใบงาน PDPA",
+            "url": "https://tech-dm-cyber-detective.vercel.app/pdpa_assignment_board.html"
           }
-        },
-        {
-          "@type": "BreadcrumbList",
-          "itemListElement": [
-            {
-              "@type": "ListItem",
-              "position": 1,
-              "name": "หน้าแรก (Hub)",
-              "item": "https://tech-dm-cyber-detective.vercel.app/"
-            },
-            {
-              "@type": "ListItem",
-              "position": 2,
-              "name": "เกมสืบคดี พ.ร.บ.คอมพิวเตอร์",
-              "item": "https://tech-dm-cyber-detective.vercel.app/cyber_shield_detective.html"
-            },
-            {
-              "@type": "ListItem",
-              "position": 3,
-              "name": "สไลด์สรุป 12 มาตรา",
-              "item": "https://tech-dm-cyber-detective.vercel.app/presentation.html"
-            },
-            {
-              "@type": "ListItem",
-              "position": 4,
-              "name": "ชุดบทเรียน PDPA 101",
-              "item": "https://tech-dm-cyber-detective.vercel.app/pdpa_presentation.html"
-            },
-            {
-              "@type": "ListItem",
-              "position": 5,
-              "name": "คลังคดีและเฉลย",
-              "item": "https://tech-dm-cyber-detective.vercel.app/cases_reference.html"
+        ]
+      },
+      {
+        "@type": "FAQPage",
+        "@id": "https://tech-dm-cyber-detective.vercel.app/#faq",
+        "mainEntity": [
+          {
+            "@type": "Question",
+            "name": "พ.ร.บ.คอมพิวเตอร์กับ PDPA ต่างกันอย่างไร",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "พ.ร.บ.คอมพิวเตอร์เกี่ยวข้องกับการกระทำต่อระบบและข้อมูลคอมพิวเตอร์ ส่วน PDPA เน้นการเก็บ ใช้ และเปิดเผยข้อมูลส่วนบุคคล"
             }
-          ]
-        },
-        {
-          "@type": "FAQPage",
-          "mainEntity": [
-            {
-              "@type": "Question",
-              "name": "พ.ร.บ.คอมพิวเตอร์ 2560 และ PDPA แตกต่างกันอย่างไรสำหรับนักเรียน ม.3?",
-              "acceptedAnswer": {
-                "@type": "Answer",
-                "text": "พ.ร.บ.ว่าด้วยการกระทำความผิดเกี่ยวกับคอมพิวเตอร์ พ.ศ. 2560 เน้นลงโทษการกระทำความผิดทางอาญาที่เกี่ยวกับระบบและข้อมูลคอมพิวเตอร์ เช่น การแฮก แอบดูรหัสผ่าน ดัดแปลงไฟล์ หรือปล่อยไวรัส ส่วน พ.ร.บ.คุ้มครองข้อมูลส่วนบุคคล พ.ศ. 2562 (PDPA) เน้นการคุ้มครองสิทธิความเป็นส่วนตัวและการจัดการข้อมูลส่วนบุคคล เช่น การไม่นำรูปถ่ายหรือเบอร์โทรเพื่อนไปเผยแพร่โดยไม่ได้รับความยินยอม"
-              }
-            },
-            {
-              "@type": "Question",
-              "name": "การแอบใช้รหัสผ่านหรือไอดีเกมของเพื่อนมีความผิดตาม พ.ร.บ.คอมพิวเตอร์ มาตราใด?",
-              "acceptedAnswer": {
-                "@type": "Answer",
-                "text": "มีความผิดตาม พ.ร.บ.คอมพิวเตอร์ มาตรา 5 (การแอบเข้าถึงระบบคอมพิวเตอร์ผู้อื่นโดยมิชอบ มีโทษจำคุกไม่เกิน 6 เดือน หรือปรับไม่เกิน 10,000 บาท หรือทั้งจำทั้งปรับ) และหากแอบเข้าไปดูข้อมูลส่วนตัว ข้อมูลเกม หรือแชท จะผิดมาตรา 7 เพิ่มเติม (จำคุกไม่เกิน 2 ปี หรือปรับไม่เกิน 40,000 บาท)"
-              }
-            },
-            {
-              "@type": "Question",
-              "name": "ข้อมูลส่วนบุคคลทั่วไป และข้อมูลส่วนบุคคลอ่อนไหว (Sensitive Data) ใน PDPA ต่างกันอย่างไร?",
-              "acceptedAnswer": {
-                "@type": "Answer",
-                "text": "ข้อมูลส่วนบุคคลทั่วไป คือ ข้อมูลที่ระบุตัวตนบุคคลได้ เช่น ชื่อ-นามสกุล เบอร์โทร อีเมล เลขบัตรประชาชน ส่วนข้อมูลส่วนบุคคลอ่อนไหว (Sensitive Personal Data) คือ ข้อมูลที่มีความเสี่ยงต่อการเลือกปฏิบัติหรือกระทบต่อเจ้าของข้อมูลอย่างรุนแรง เช่น เชื้อชาติ ศาสนา ข้อมูลสุขภาพ ประวัติอาชญากรรม ข้อมูลพันธุกรรม และข้อมูลอัตลักษณ์ชีวมิติ (Face ID / ลายนิ้วมือ)"
-              }
-            },
-            {
-              "@type": "Question",
-              "name": "การแชร์ข่าวปลอม (Fake News) หรือข้อความหลอกลวง ผิด พ.ร.บ.คอมพิวเตอร์ มาตราใด มีโทษอย่างไร?",
-              "acceptedAnswer": {
-                "@type": "Answer",
-                "text": "การนำเข้าหรือส่งต่อข่าวปลอม ข้อมูลเท็จ หลอกลวง หรือฟิชชิ่ง ที่สร้างความเสียหายแก่ประชาชน มีความผิดตามมาตรา 14(1) มีโทษจำคุกไม่เกิน 5 ปี หรือปรับไม่เกิน 100,000 บาท หรือทั้งจำทั้งปรับ หากกระทบต่อความมั่นคงของประเทศหรือสร้างความตระหนกตกใจแก่ประชาชนจะผิดมาตรา 14(2)"
-              }
-            },
-            {
-              "@type": "Question",
-              "name": "การตัดต่อภาพเพื่อนแล้วโพสต์ให้คนอื่นหัวเราะเยาะหรืออับอาย ผิดกฎหมายมาตราใด?",
-              "acceptedAnswer": {
-                "@type": "Answer",
-                "text": "มีความผิดตาม พ.ร.บ.คอมพิวเตอร์ มาตรา 16 ฐานนำเข้าภาพที่เกิดจากการตัดต่อ ดัดแปลง หรือเติมแต่ง ทำให้ผู้อื่นเสียชื่อเสียง ถูกดูหมิ่น ถูกเกลียดชัง หรือได้รับความอับอาย มีโทษจำคุกไม่เกิน 3 ปี หรือปรับไม่เกิน 200,000 บาท หรือทั้งจำทั้งปรับ"
-              }
+          },
+          {
+            "@type": "Question",
+            "name": "ครูควรใช้สื่อเหล่านี้ในคาบอย่างไร",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "เริ่มด้วยสไลด์ ให้นักเรียนวิเคราะห์สถานการณ์ผ่านเกม และปิดคาบด้วยกระดานสร้างใบงาน PDPA"
             }
-          ]
-        },
-        {
-          "@type": "ItemList",
-          "name": "ชุดเครื่องมือและเกมการเรียนรู้กฎหมายคอมพิวเตอร์และ PDPA",
-          "description": "รายชื่อแอปพลิเคชันและสื่อการสอนอินเทอร์แอคทีฟทั้งหมดในแพลตฟอร์ม",
-          "itemListElement": [
-            {
-              "@type": "ListItem",
-              "position": 1,
-              "name": "Cyber Shield Detective (เวอร์ชันหลัก 6 คดี)",
-              "url": "https://tech-dm-cyber-detective.vercel.app/cyber_shield_detective.html"
-            },
-            {
-              "@type": "ListItem",
-              "position": 2,
-              "name": "Cyber Shield Detective: Fast-Track (3 คดี)",
-              "url": "https://tech-dm-cyber-detective.vercel.app/cyber_shield_detective_3.html"
-            },
-            {
-              "@type": "ListItem",
-              "position": 3,
-              "name": "Quest: ภารกิจพิทักษ์ข้อมูลไซเบอร์ (สไลด์สรุป 12 มาตรา)",
-              "url": "https://tech-dm-cyber-detective.vercel.app/presentation.html"
-            },
-            {
-              "@type": "ListItem",
-              "position": 4,
-              "name": "PDPA 101: คู่มือพิทักษ์ข้อมูลส่วนตัว ม.3 (สไลด์โต้ตอบ)",
-              "url": "https://tech-dm-cyber-detective.vercel.app/pdpa_presentation.html"
-            },
-            {
-              "@type": "ListItem",
-              "position": 5,
-              "name": "กระดานสร้างใบงานสืบคดี PDPA ออนไลน์ (Canvas Board)",
-              "url": "https://tech-dm-cyber-detective.vercel.app/pdpa_assignment_board.html"
-            },
-            {
-              "@type": "ListItem",
-              "position": 6,
-              "name": "PDPA Fast-Pass: สปีดรันพิทักษ์ข้อมูล",
-              "url": "https://tech-dm-cyber-detective.vercel.app/pdpa_fast_pass.html"
-            },
-            {
-              "@type": "ListItem",
-              "position": 7,
-              "name": "Cases & Answer Keys (คลังคดี 12 คดี & เฉลยครู)",
-              "url": "https://tech-dm-cyber-detective.vercel.app/cases_reference.html"
+          },
+          {
+            "@type": "Question",
+            "name": "ต้องติดตั้งโปรแกรมหรือไม่",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "ไม่ต้องติดตั้งแอป สามารถเปิดสื่อและเกมผ่านเว็บเบราว์เซอร์ได้โดยตรง"
             }
-          ]
-        }
-      ]
-    }
-    </script>
+          }
+        ]
+      }
+    ]
+  }
+  </script>
 
+  <!--
+    Production direction: A · Friendly Geometric Candy
+    Form comes from the case-file workflow: choose a role, open a clearly labelled category,
+    then continue from lesson to investigation and student work.
+  -->
 
-    <!-- Optimized Google Fonts (Non-blocking with display=swap) -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Kanit:wght@400;600;700&family=Sarabun:wght@400;600&display=swap">
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Kanit:wght@400;600;700&family=Sarabun:wght@400;600&display=swap" media="print" onload="this.media='all'">
-    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Kanit:wght@400;600;700&family=Sarabun:wght@400;600&display=swap"></noscript>
-
-    <!-- Favicon & App Icon (Optimized WebP with PNG fallback) -->
-    <link rel="icon" type="image/webp" href="favicon.webp">
-    <link rel="alternate icon" type="image/png" href="favicon.png">
-    <link rel="apple-touch-icon" href="favicon.png">
-
-    <!-- Optimized FontAwesome Icons (Non-blocking) -->
-    <link rel="preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" media="print" onload="this.media='all'">
-    <noscript><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"></noscript>
-
-    <!-- Inlined Critical Modern Tech CSS (Zero Network Latency) -->
-    <style>:root{--bg-dark:#070913;--bg-surface:#0e1322;--bg-card:rgba(15,23,42,0.72);--bg-card-hover:rgba(22,32,58,0.85);--border-subtle:rgba(255,255,255,0.08);--border-hover:rgba(56,189,248,0.35);--text-main:#f8fafc;--text-muted:#94a3b8;--text-dim:#64748b;--neon-cyan:#38bdf8;--neon-blue:#3b82f6;--neon-emerald:#10b981;--neon-amber:#f59e0b;--neon-pink:#ec4899;--neon-purple:#8b5cf6;--neon-indigo:#6366f1;--font-main:'Kanit','Sarabun',system-ui,-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;--font-reading:'Sarabun',sans-serif;}*{box-sizing:border-box;margin:0;padding:0;}html{scroll-behavior:smooth;}body{background-color:var(--bg-dark);color:var(--text-main);font-family:var(--font-main);min-height:100vh;display:flex;flex-direction:column;align-items:center;padding:0 0 60px 0;position:relative;overflow-x:hidden;background-image:radial-gradient(circle at 10% 10%,rgba(56,189,248,0.08) 0%,transparent 40%),radial-gradient(circle at 90% 20%,rgba(139,92,246,0.08) 0%,transparent 40%),radial-gradient(circle at 50% 60%,rgba(16,185,129,0.05) 0%,transparent 50%),radial-gradient(circle at 80% 90%,rgba(236,72,153,0.05) 0%,transparent 45%);}body::before{content:'';position:fixed;top:0;left:0;right:0;bottom:0;background-image:radial-gradient(rgba(255,255,255,0.06) 1px,transparent 1px);background-size:32px 32px;z-index:0;pointer-events:none;}.main-container{width:100%;max-width:1240px;padding:0 24px;z-index:1;display:flex;flex-direction:column;align-items:center;gap:40px;}.top-navbar{width:100%;position:sticky;top:0;z-index:100;backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);background:rgba(7,9,19,0.85);border-bottom:1px solid var(--border-subtle);padding:14px 24px;display:flex;justify-content:space-between;align-items:center;}.nav-brand{display:flex;align-items:center;gap:12px;text-decoration:none;color:var(--text-main);}.nav-logo{width:38px;height:38px;border-radius:10px;border:1.5px solid rgba(56,189,248,0.4);box-shadow:0 0 15px rgba(56,189,248,0.25);}.nav-title{font-size:1.1rem;font-weight:700;letter-spacing:-0.2px;background:linear-gradient(135deg,#ffffff 40%,var(--neon-cyan) 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;}.nav-badge{font-size:0.72rem;font-weight:600;padding:2px 8px;border-radius:6px;background:rgba(56,189,248,0.12);color:var(--neon-cyan);border:1px solid rgba(56,189,248,0.3);}.nav-links{display:flex;align-items:center;gap:16px;}.nav-link-btn{display:inline-flex;align-items:center;gap:6px;font-size:0.88rem;font-weight:500;color:var(--text-muted);text-decoration:none;padding:6px 14px;border-radius:8px;transition:all 0.2s ease;border:1px solid transparent;}.nav-link-btn:hover{color:#fff;background:rgba(255,255,255,0.05);border-color:var(--border-subtle);}.hero-section{text-align:center;max-width:880px;display:flex;flex-direction:column;align-items:center;gap:18px;padding-top:30px;}.hero-pill{display:inline-flex;align-items:center;gap:8px;background:rgba(56,189,248,0.08);border:1px solid rgba(56,189,248,0.3);color:var(--neon-cyan);padding:6px 16px;border-radius:100px;font-size:0.85rem;font-weight:600;letter-spacing:0.3px;box-shadow:0 0 20px rgba(56,189,248,0.15);}.hero-title{font-size:3rem;font-weight:900;line-height:1.18;background:linear-gradient(135deg,#ffffff 20%,#e2e8f0 50%,var(--neon-cyan) 85%,var(--neon-purple) 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;letter-spacing:-0.5px;}.hero-desc{font-family:var(--font-reading);font-size:1.15rem;color:var(--text-muted);font-weight:400;line-height:1.65;max-width:760px;}.stats-ribbon{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;width:100%;max-width:980px;margin-top:6px;}.stat-item{background:rgba(15,23,42,0.6);backdrop-filter:blur(12px);border:1px solid var(--border-subtle);border-radius:16px;padding:16px 20px;display:flex;align-items:center;gap:14px;transition:transform 0.25s ease,border-color 0.25s ease;}.stat-item:hover{transform:translateY(-3px);border-color:rgba(56,189,248,0.3);}.stat-icon-wrap{width:44px;height:44px;border-radius:12px;background:rgba(56,189,248,0.1);color:var(--neon-cyan);display:flex;align-items:center;justify-content:center;font-size:1.25rem;flex-shrink:0;}.stat-content{display:flex;flex-direction:column;}.stat-value{font-size:1.2rem;font-weight:800;color:#fff;line-height:1.2;}.stat-label{font-size:0.8rem;color:var(--text-dim);font-family:var(--font-reading);}.filter-tabs-container{width:100%;position:sticky;top:67px;z-index:90;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);background:rgba(7,9,19,0.9);padding:12px 0;border-bottom:1px solid var(--border-subtle);display:flex;justify-content:center;}.filter-tabs{display:flex;align-items:center;gap:8px;overflow-x:auto;padding:4px;max-width:100%;scrollbar-width:none;}.filter-tabs::-webkit-scrollbar{display:none;}.filter-tab{display:inline-flex;align-items:center;gap:8px;padding:9px 18px;border-radius:100px;border:1px solid var(--border-subtle);background:rgba(15,23,42,0.7);color:var(--text-muted);font-size:0.92rem;font-weight:600;cursor:pointer;white-space:nowrap;transition:all 0.25s cubic-bezier(0.4,0,0.2,1);user-select:none;}.filter-tab:hover{color:#fff;background:rgba(30,41,59,0.8);border-color:rgba(255,255,255,0.2);}.filter-tab.active{background:linear-gradient(135deg,rgba(56,189,248,0.2),rgba(59,130,246,0.25));border-color:var(--neon-cyan);color:#fff;box-shadow:0 0 20px rgba(56,189,248,0.25);}.category-section{width:100%;display:flex;flex-direction:column;gap:20px;scroll-margin-top:140px;}.section-header{display:flex;align-items:center;justify-content:space-between;padding-bottom:12px;border-bottom:1px solid rgba(255,255,255,0.06);}.section-title-wrap{display:flex;align-items:center;gap:14px;}.section-icon-box{width:42px;height:42px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:1.25rem;}.section-title{font-size:1.45rem;font-weight:800;color:#fff;letter-spacing:-0.2px;}.section-desc{font-size:0.88rem;color:var(--text-dim);font-family:var(--font-reading);margin-top:2px;}.section-count-badge{font-size:0.8rem;font-weight:700;padding:4px 12px;border-radius:20px;background:rgba(255,255,255,0.05);border:1px solid var(--border-subtle);color:var(--text-muted);}.cards-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(350px,1fr));gap:24px;width:100%;}.modern-card{position:relative;background:var(--bg-card);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border:1.5px solid var(--border-subtle);border-radius:20px;padding:26px;display:flex;flex-direction:column;justify-content:space-between;gap:20px;text-decoration:none;color:inherit;transition:all 0.3s cubic-bezier(0.4,0,0.2,1);overflow:hidden;box-shadow:0 10px 30px rgba(0,0,0,0.35);}.modern-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:var(--accent-color,var(--neon-cyan));opacity:0.6;transition:height 0.3s ease,opacity 0.3s ease;}.modern-card:hover{transform:translateY(-6px);background:var(--bg-card-hover);border-color:var(--accent-color,var(--neon-cyan));box-shadow:0 20px 40px -10px var(--accent-glow,rgba(56,189,248,0.25));}.modern-card:hover::before{height:5px;opacity:1;}.card-header-flex{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;}.card-icon-container{width:52px;height:52px;border-radius:14px;background:rgba(15,23,42,0.9);border:1.5px solid var(--accent-color,var(--neon-cyan));display:flex;justify-content:center;align-items:center;font-size:1.5rem;color:var(--accent-color,var(--neon-cyan));box-shadow:0 4px 15px rgba(0,0,0,0.3);transition:transform 0.3s ease;flex-shrink:0;}.card-icon-container img{width:100%;height:100%;border-radius:12px;object-fit:cover;}.modern-card:hover .card-icon-container{transform:scale(1.08) rotate(-3deg);}.card-tags-wrap{display:flex;flex-wrap:wrap;gap:6px;justify-content:flex-end;}.card-badge{font-size:0.72rem;font-weight:700;padding:3px 10px;border-radius:8px;letter-spacing:0.3px;background:rgba(255,255,255,0.05);border:1px solid var(--border-subtle);color:var(--accent-color,var(--neon-cyan));}.badge-featured{background:rgba(236,72,153,0.15);border-color:rgba(236,72,153,0.4);color:#f472b6;}.badge-new{background:rgba(245,158,11,0.15);border-color:rgba(245,158,11,0.4);color:#fbbf24;}.badge-realtime{background:rgba(16,185,129,0.15);border-color:rgba(16,185,129,0.4);color:#34d399;}.card-body-content{display:flex;flex-direction:column;gap:8px;}.card-main-title{font-size:1.3rem;font-weight:800;color:#fff;line-height:1.35;transition:color 0.2s ease;}.modern-card:hover .card-main-title{color:var(--accent-color,var(--neon-cyan));}.card-main-desc{font-family:var(--font-reading);font-size:0.92rem;color:#cbd5e1;line-height:1.6;font-weight:400;}.card-action-footer{display:flex;align-items:center;justify-content:space-between;padding-top:16px;border-top:1px solid rgba(255,255,255,0.06);font-weight:700;font-size:0.9rem;color:var(--accent-color,var(--neon-cyan));}.card-launch-btn{display:flex;align-items:center;gap:8px;padding:8px 16px;border-radius:10px;background:rgba(255,255,255,0.05);border:1px solid var(--border-subtle);color:#fff;font-size:0.85rem;font-weight:600;transition:all 0.25s ease;}.modern-card:hover .card-launch-btn{background:var(--accent-color,var(--neon-cyan));color:#070913;border-color:transparent;box-shadow:0 0 15px var(--accent-glow,rgba(56,189,248,0.4));}.card-launch-btn i{transition:transform 0.25s ease;}.modern-card:hover .card-launch-btn i{transform:translateX(4px);}.theme-cyan{--accent-color:#38bdf8;--accent-glow:rgba(56,189,248,0.35);}.theme-amber{--accent-color:#f59e0b;--accent-glow:rgba(245,158,11,0.35);}.theme-emerald{--accent-color:#10b981;--accent-glow:rgba(16,185,129,0.35);}.theme-pink{--accent-color:#ec4899;--accent-glow:rgba(236,72,153,0.35);}.theme-purple{--accent-color:#8b5cf6;--accent-glow:rgba(139,92,246,0.35);}.theme-blue{--accent-color:#3b82f6;--accent-glow:rgba(59,130,246,0.35);}.icon-box-games{background:rgba(56,189,248,0.15);color:#38bdf8;border:1px solid rgba(56,189,248,0.3);}.icon-box-pdpa{background:rgba(16,185,129,0.15);color:#10b981;border:1px solid rgba(16,185,129,0.3);}.icon-box-slides{background:rgba(139,92,246,0.15);color:#8b5cf6;border:1px solid rgba(139,92,246,0.3);}.icon-box-teacher{background:rgba(236,72,153,0.15);color:#ec4899;border:1px solid rgba(236,72,153,0.3);}footer{width:100%;max-width:1240px;padding:30px 24px 0 24px;border-top:1px solid var(--border-subtle);display:flex;justify-content:space-between;align-items:center;color:var(--text-dim);font-size:0.88rem;font-family:var(--font-reading);z-index:1;}.footer-links{display:flex;gap:16px;}.footer-links a{color:var(--text-muted);text-decoration:none;transition:color 0.2s ease;}.footer-links a:hover{color:var(--neon-cyan);}@media (max-width:1024px){.stats-ribbon{grid-template-columns:repeat(2,1fr);}}@media (max-width:768px){.hero-title{font-size:2.2rem;}.hero-desc{font-size:1rem;}.stats-ribbon{grid-template-columns:1fr;}.cards-grid{grid-template-columns:1fr;}.top-navbar{padding:12px 16px;}.nav-links{display:none;}footer{flex-direction:column;gap:12px;text-align:center;}}.seo-law-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px;width:100%;}.seo-law-card{background:rgba(15,23,42,0.65);border:1px solid rgba(255,255,255,0.08);border-radius:16px;padding:20px;display:flex;flex-direction:column;gap:10px;transition:all 0.25s ease;backdrop-filter:blur(10px);}.seo-law-card:hover{border-color:rgba(56,189,248,0.35);transform:translateY(-3px);background:rgba(22,32,58,0.8);}.seo-law-header{display:flex;align-items:center;justify-content:space-between;}.seo-law-badge{font-size:0.75rem;font-weight:700;padding:2px 8px;border-radius:6px;background:rgba(56,189,248,0.15);color:var(--neon-cyan);border:1px solid rgba(56,189,248,0.3);}.seo-law-penalty{font-size:0.75rem;color:#fbbf24;font-weight:600;} .seo-law-title{font-size:1.05rem;font-weight:700;color:#fff;} .seo-law-desc{font-size:0.88rem;color:#94a3b8;font-family:var(--font-reading);line-height:1.5;} .seo-faq-wrap{display:flex;flex-direction:column;gap:12px;width:100%;} .seo-faq-item{background:rgba(15,23,42,0.7);border:1px solid rgba(255,255,255,0.08);border-radius:16px;overflow:hidden;transition:all 0.25s ease;} .seo-faq-item:hover{border-color:rgba(139,92,246,0.35);} .seo-faq-item[open]{border-color:rgba(56,189,248,0.4);background:rgba(22,32,58,0.85);} .seo-faq-question{padding:18px 24px;font-size:1.05rem;font-weight:700;color:#fff;cursor:pointer;display:flex;align-items:center;justify-content:space-between;list-style:none;user-select:none;} .seo-faq-question::-webkit-details-marker{display:none;} .seo-faq-question::after{content:"+";font-weight:900;font-size:1.2rem;color:var(--neon-cyan);transition:transform 0.3s ease;} .seo-faq-item[open] .seo-faq-question::after{content:"−";} .seo-faq-answer{padding:0 24px 20px 24px;color:#cbd5e1;font-family:var(--font-reading);font-size:0.95rem;line-height:1.65;border-top:1px solid rgba(255,255,255,0.04);margin-top:4px;padding-top:14px;} .seo-faq-answer strong{color:#fff;} .seo-internal-link{color:var(--neon-cyan);text-decoration:none;font-weight:600;border-bottom:1px dashed rgba(56,189,248,0.5);transition:all 0.2s ease;} .seo-internal-link:hover{color:#fff;border-bottom-style:solid;} .docs-wrapper{display:flex;flex-direction:column;gap:24px;width:100%;}.docs-card{background:rgba(15,23,42,0.75);border:1.5px solid rgba(168,85,247,0.3);border-radius:20px;padding:28px;backdrop-filter:blur(16px);display:flex;flex-direction:column;gap:18px;box-shadow:0 10px 30px rgba(0,0,0,0.35);transition:all 0.25s ease;}.docs-card:hover{border-color:rgba(168,85,247,0.5);box-shadow:0 15px 40px rgba(168,85,247,0.15);}.docs-card-header{display:flex;align-items:center;justify-content:space-between;padding-bottom:14px;border-bottom:1px solid rgba(255,255,255,0.08);flex-wrap:wrap;gap:10px;}.docs-card-title{font-size:1.25rem;font-weight:800;color:#fff;display:flex;align-items:center;gap:10px;}.docs-table-wrap{width:100%;overflow-x:auto;border-radius:12px;border:1px solid rgba(255,255,255,0.08);}.docs-table{width:100%;border-collapse:collapse;font-family:var(--font-reading);font-size:0.9rem;text-align:left;}.docs-table th{background:rgba(30,41,59,0.85);color:#38bdf8;padding:12px 16px;font-weight:700;border-bottom:1px solid rgba(255,255,255,0.1);white-space:nowrap;}.docs-table td{padding:12px 16px;border-bottom:1px solid rgba(255,255,255,0.05);color:#cbd5e1;vertical-align:middle;}.docs-table tr:hover td{background:rgba(168,85,247,0.05);}.docs-code-block{background:#070b14;border:1px solid rgba(255,255,255,0.1);border-radius:12px;padding:16px;font-family:'Consolas','Fira Code',monospace;font-size:0.86rem;color:#38bdf8;overflow-x:auto;line-height:1.6;}.docs-link-pill{display:inline-flex;align-items:center;gap:6px;padding:5px 12px;border-radius:8px;background:rgba(168,85,247,0.15);border:1px solid rgba(168,85,247,0.35);color:#c084fc;text-decoration:none;font-weight:600;font-size:0.82rem;transition:all 0.2s ease;}.docs-link-pill:hover{background:#a855f7;color:#fff;box-shadow:0 0 12px rgba(168,85,247,0.4);}.docs-badge-tag{font-size:0.75rem;padding:3px 8px;border-radius:6px;font-weight:700;display:inline-block;}</style>
-</head>
-
-<body>
-
-    <!-- Top Sticky Navbar -->
-    <header class="top-navbar">
-        <a href="index.html" class="nav-brand">
-            <picture>
-                <source srcset="favicon.webp" type="image/webp">
-                <img src="favicon.png" alt="Cyber Detective Logo" class="nav-logo" width="38" height="38" decoding="async">
-            </picture>
-            <div>
-                <div class="nav-title">Cyber Shield Detective</div>
-            </div>
-            <span class="nav-badge">v4.5</span>
-        </a>
-
-        <nav class="nav-links">
-            <a href="#games" class="nav-link-btn"><i class="fa-solid fa-gamepad"></i> เกมสืบคดี</a>
-            <a href="#pdpa" class="nav-link-btn"><i class="fa-solid fa-shield-halved"></i> กิจกรรม PDPA</a>
-            <a href="#learning" class="nav-link-btn"><i class="fa-solid fa-book-open"></i> สื่อบทเรียน</a>
-            <a href="#teacher" class="nav-link-btn"><i class="fa-solid fa-chalkboard-user"></i> แดชบอร์ดครู</a>
-            <a href="#docs" class="nav-link-btn" style="color: #c084fc; border-color: rgba(192, 132, 252, 0.3);">
-                <i class="fa-solid fa-book-open-reader"></i> คู่มือระบบ (README)
-            </a>
-            <a href="https://github.com/puripong1st/tech-dm-cyber-detective" target="_blank" rel="noopener noreferrer"
-                class="nav-link-btn" style="color: var(--neon-cyan); border-color: rgba(56, 189, 248, 0.3);">
-                <i class="fa-brands fa-github"></i> GitHub
-            </a>
-        </nav>
-    </header>
-
-    <div class="main-container">
-
-        <!-- Hero Section -->
-        <section class="hero-section">
-            <div class="hero-pill">
-                <i class="fa-solid fa-shield-cat"></i>
-                <span>CYBER LAW & PDPA LEARNING PLATFORM</span>
-            </div>
-            <h1 class="hero-title">ศูนย์รวมสื่อ & เกมการเรียนรู้กฎหมายไซเบอร์</h1>
-            <p class="hero-desc">
-                แพลตฟอร์มการจัดการเรียนรู้ พ.ร.บ.คอมพิวเตอร์ 2560 และ PDPA สำหรับนักเรียน ม.3
-                ผสานการสืบคดีการ์ตูน 9 ช่อง ระบบประเมินผลอัตนัยด้วย Gemini AI สไลด์อินเทอร์แอคทีฟ และแดชบอร์ดครูเรียลไทม์
-            </p>
-
-            <!-- Quick Stats Ribbon -->
-            <div class="stats-ribbon">
-                <div class="stat-item">
-                    <div class="stat-icon-wrap" style="background: rgba(56, 189, 248, 0.12); color: #38bdf8;">
-                        <i class="fa-solid fa-masks-theater"></i>
-                    </div>
-                    <div class="stat-content">
-                        <span class="stat-value">12 คดีการ์ตูน</span>
-                        <span class="stat-label">สถานการณ์ 9 ช่องจำลอง</span>
-                    </div>
-                </div>
-
-                <div class="stat-item">
-                    <div class="stat-icon-wrap" style="background: rgba(16, 185, 129, 0.12); color: #10b981;">
-                        <i class="fa-solid fa-brain"></i>
-                    </div>
-                    <div class="stat-content">
-                        <span class="stat-value">Gemini AI Engine</span>
-                        <span class="stat-label">ตรวจอัตนัย 3 บทบาท</span>
-                    </div>
-                </div>
-
-                <div class="stat-item">
-                    <div class="stat-icon-wrap" style="background: rgba(245, 158, 11, 0.12); color: #f59e0b;">
-                        <i class="fa-solid fa-award"></i>
-                    </div>
-                    <div class="stat-content">
-                        <span class="stat-value">4-Tier Rubric</span>
-                        <span class="stat-label">เกณฑ์มาตรฐาน 0 / 5 / 8 / 10</span>
-                    </div>
-                </div>
-
-                <div class="stat-item">
-                    <div class="stat-icon-wrap" style="background: rgba(236, 72, 153, 0.12); color: #ec4899;">
-                        <i class="fa-solid fa-chart-line"></i>
-                    </div>
-                    <div class="stat-content">
-                        <span class="stat-value">Live Override</span>
-                        <span class="stat-label">แดชบอร์ดครูแก้คะแนนสด</span>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- Category Navigation & Filter Bar (Sticky) -->
-        <nav class="filter-tabs-container" aria-label="หมวดหมู่ระบบ">
-            <div class="filter-tabs">
-                <button class="filter-tab active" data-target="all">
-                    <i class="fa-solid fa-layer-group"></i> ทั้งหมด (All Apps)
-                </button>
-                <button class="filter-tab" data-target="games">
-                    <i class="fa-solid fa-gamepad"></i> 1. เกมสืบคดี พ.ร.บ.คอมพ์
-                </button>
-                <button class="filter-tab" data-target="pdpa">
-                    <i class="fa-solid fa-shield-halved"></i> 2. ชุดกิจกรรม PDPA
-                </button>
-                <button class="filter-tab" data-target="learning">
-                    <i class="fa-solid fa-book-bookmark"></i> 3. สื่อบทเรียน & คลังคดี
-                </button>
-                <button class="filter-tab" data-target="teacher">
-                    <i class="fa-solid fa-chalkboard-user"></i> 4. ศูนย์ควบคุมครู
-                </button>
-                <button class="filter-tab" data-target="docs" style="border-color: rgba(168, 85, 247, 0.4); color: #e9d5ff;">
-                    <i class="fa-solid fa-book-open-reader"></i> 5. คู่มือ & เอกสารระบบ (README)
-                </button>
-                <button class="filter-tab" data-target="law-summary">
-                    <i class="fa-solid fa-scale-balanced"></i> 6. สรุป 12 มาตรา & PDPA
-                </button>
-                <button class="filter-tab" data-target="faq">
-                    <i class="fa-solid fa-circle-question"></i> 7. คำถามพบบ่อย (FAQ)
-                </button>
-            </div>
-        </nav>
-
-        <!-- CATEGORY 1: เกมสืบคดี พ.ร.บ.คอมพิวเตอร์ -->
-        <section id="games" class="category-section" data-category="games">
-            <div class="section-header">
-                <div class="section-title-wrap">
-                    <div class="section-icon-box icon-box-games">
-                        <i class="fa-solid fa-gamepad"></i>
-                    </div>
-                    <div>
-                        <h2 class="section-title">1. เกมสืบคดี พ.ร.บ.คอมพิวเตอร์ (Cyber Detective Games)</h2>
-                        <p class="section-desc">เกมจำลองสถานการณ์อาชญากรรมไซเบอร์ วิเคราะห์หลักฐานการ์ตูน 9 ช่อง และประเมินผลอัตนัยด้วย AI</p>
-                    </div>
-                </div>
-                <span class="section-count-badge">3 แอปพลิเคชัน</span>
-            </div>
-
-            <div class="cards-grid">
-
-                <!-- Card 1: Cyber Shield Detective (6 คดี - Flagship) -->
-                <a href="cyber_shield_detective.html" class="modern-card theme-cyan">
-                    <div class="card-header-flex">
-                        <div class="card-icon-container">
-                            <i class="fa-solid fa-shield-halved"></i>
-                        </div>
-                        <div class="card-tags-wrap">
-                            <span class="card-badge badge-featured">⭐ แนะนำชั่วโมงหลัก</span>
-                            <span class="card-badge">6 คดี (180 คะแนน)</span>
-                        </div>
-                    </div>
-                    <div class="card-body-content">
-                        <h3 class="card-main-title">Cyber Shield Detective (เวอร์ชันหลัก 6 คดี)</h3>
-                        <p class="card-main-desc">
-                            เกมสืบคดีอัตนัย 3 บทบาท (นักวิเคราะห์กฎหมาย, ผู้ระงับเหตุเฉพาะหน้า, วิศวกรความปลอดภัย) 
-                            พร้อมการ์ตูน 9 ช่อง ตรวจและประเมินผลด้วย <b>Google Gemini AI + Slang Normalizer</b> แบบเรียลไทม์
-                        </p>
-                    </div>
-                    <div class="card-action-footer">
-                        <span>เข้าสู่เกมหลัก (6 ข้อ)</span>
-                        <div class="card-launch-btn">
-                            <span>เริ่มสืบคดี</span>
-                            <i class="fa-solid fa-bolt"></i>
-                        </div>
-                    </div>
-                </a>
-
-                <!-- Card 2: Cyber Shield Detective Fast-Track (3 คดี) -->
-                <a href="cyber_shield_detective_3.html" class="modern-card theme-amber">
-                    <div class="card-header-flex">
-                        <div class="card-icon-container">
-                            <i class="fa-solid fa-bolt-lightning"></i>
-                        </div>
-                        <div class="card-tags-wrap">
-                            <span class="card-badge badge-new">⚡ คาบสั้น 50 นาที</span>
-                            <span class="card-badge">3 คดี (90 คะแนน)</span>
-                        </div>
-                    </div>
-                    <div class="card-body-content">
-                        <h3 class="card-main-title">Cyber Shield Detective: Fast-Track (3 คดี)</h3>
-                        <p class="card-main-desc">
-                            เกมสืบคดีฉบับกระชับ สุ่มทำเพียง <b>3 คดี</b> (คดีละ 30 คะแนน) เหมาะสำหรับคาบเรียนสั้น 50 นาที 
-                            ประเมินผลอัตนัยด้วย Gemini AI แยกตารางคะแนนเฉพาะไม่ปะปนกับเวอร์ชันหลัก
-                        </p>
-                    </div>
-                    <div class="card-action-footer">
-                        <span>เข้าสู่เกมกระชับ (3 ข้อ)</span>
-                        <div class="card-launch-btn">
-                            <span>เริ่มสืบคดี</span>
-                            <i class="fa-solid fa-play"></i>
-                        </div>
-                    </div>
-                </a>
-
-                <!-- Card 3: Cyber Detective v3 (Multiple Choice) -->
-                <a href="cyber_detective.html" class="modern-card theme-blue">
-                    <div class="card-header-flex">
-                        <div class="card-icon-container">
-                            <i class="fa-solid fa-user-ninja"></i>
-                        </div>
-                        <div class="card-tags-wrap">
-                            <span class="card-badge">🕹️ โหมดปรนัยดั้งเดิม</span>
-                            <span class="card-badge">30 คดี</span>
-                        </div>
-                    </div>
-                    <div class="card-body-content">
-                        <h3 class="card-main-title">Cyber Detective Game v3 (โหมดปรนัย)</h3>
-                        <p class="card-main-desc">
-                            เกมสืบคดีจำลองอาชญากรรมทางเทคโนโลยีรูปแบบเลือกตอบ (Multiple Choice) วิเคราะห์พยานหลักฐาน 
-                            ไต่สวนผู้ต้องสงสัย และชี้ระบุฐานความผิดตามมาตรา พ.ร.บ. คอมพิวเตอร์
-                        </p>
-                    </div>
-                    <div class="card-action-footer">
-                        <span>เข้าสู่เกมปรนัย v3</span>
-                        <div class="card-launch-btn">
-                            <span>เริ่มทำคดี</span>
-                            <i class="fa-solid fa-arrow-right"></i>
-                        </div>
-                    </div>
-                </a>
-
-            </div>
-        </section>
-
-        <!-- CATEGORY 2: ชุดสื่อและกิจกรรม PDPA -->
-        <section id="pdpa" class="category-section" data-category="pdpa">
-            <div class="section-header">
-                <div class="section-title-wrap">
-                    <div class="section-icon-box icon-box-pdpa">
-                        <i class="fa-solid fa-shield-halved"></i>
-                    </div>
-                    <div>
-                        <h2 class="section-title">2. ชุดสื่อและกิจกรรม PDPA (PDPA Learning Suite - ม.3)</h2>
-                        <p class="section-desc">สื่อการสอนเชิงโต้ตอบ กระดานสร้างใบงานสไตล์ Canva และเกม Speedrun พิทักษ์ข้อมูลส่วนบุคคล</p>
-                    </div>
-                </div>
-                <span class="section-count-badge">3 แอปพลิเคชัน</span>
-            </div>
-
-            <div class="cards-grid">
-
-                <!-- Card 4: PDPA 101 Presentation -->
-                <a href="pdpa_presentation.html" class="modern-card theme-cyan">
-                    <div class="card-header-flex">
-                        <div class="card-icon-container">
-                            <picture>
-                                <source srcset="assets/pdpa_icon.webp" type="image/webp">
-                                <img src="assets/pdpa_icon.png" alt="PDPA Icon" width="40" height="40" loading="lazy" decoding="async">
-                            </picture>
-                        </div>
-                        <div class="card-tags-wrap">
-                            <span class="card-badge badge-featured">✨ สไลด์โต้ตอบ</span>
-                            <span class="card-badge">สิทธิ 8 ประการ</span>
-                        </div>
-                    </div>
-                    <div class="card-body-content">
-                        <h3 class="card-main-title">PDPA 101: คู่มือพิทักษ์ข้อมูลส่วนตัว ม.3</h3>
-                        <p class="card-main-desc">
-                            สไลด์นำเสนอเชิงโต้ตอบ มินิมอลคลีนตา สรุปนิยามข้อมูลทั่วไป/อ่อนไหว 8 สิทธิเจ้าของข้อมูล 
-                            กฎความยินยอมผู้เยาว์ 4 กรณีศึกษาจริง และแบบทดสอบรับเกียรติบัตร
-                        </p>
-                    </div>
-                    <div class="card-action-footer">
-                        <span>เข้าสู่สไลด์ PDPA 101</span>
-                        <div class="card-launch-btn">
-                            <span>เปิดสไลด์</span>
-                            <i class="fa-solid fa-arrow-right"></i>
-                        </div>
-                    </div>
-                </a>
-
-                <!-- Card 5: PDPA Assignment Board -->
-                <a href="pdpa_assignment_board.html" class="modern-card theme-emerald">
-                    <div class="card-header-flex">
-                        <div class="card-icon-container">
-                            <picture>
-                                <source srcset="assets/pdpa_icon.webp" type="image/webp">
-                                <img src="assets/pdpa_icon.png" alt="PDPA Board Icon" width="40" height="40" loading="lazy" decoding="async">
-                            </picture>
-                        </div>
-                        <div class="card-tags-wrap">
-                            <span class="card-badge badge-new">🎨 สไตล์ Canva</span>
-                            <span class="card-badge">Export ภาพ HD</span>
-                        </div>
-                    </div>
-                    <div class="card-body-content">
-                        <h3 class="card-main-title">กระดานสร้างใบงานสืบคดี PDPA (Online Canvas)</h3>
-                        <p class="card-main-desc">
-                            เครื่องมือสร้างใบงานออนไลน์สไตล์ Canva สำหรับสรุปวิเคราะห์คดี PDPA ตกแต่งด้วยสติกเกอร์จิบิ 
-                            จัดวางอิสระ และดาวน์โหลดเป็นภาพ <b>PNG ความละเอียดสูง</b> พร้อมส่งครูทันที
-                        </p>
-                    </div>
-                    <div class="card-action-footer">
-                        <span>สร้างใบงานออนไลน์</span>
-                        <div class="card-launch-btn">
-                            <span>เริ่มสร้างใบงาน</span>
-                            <i class="fa-solid fa-wand-magic-sparkles"></i>
-                        </div>
-                    </div>
-                </a>
-
-                <!-- Card 6: PDPA Fast-Pass -->
-                <a href="pdpa_fast_pass.html" class="modern-card theme-cyan">
-                    <div class="card-header-flex">
-                        <div class="card-icon-container">
-                            <picture>
-                                <source srcset="assets/pdpa_icon.webp" type="image/webp">
-                                <img src="assets/pdpa_icon.png" alt="PDPA Fast-Pass Icon" width="40" height="40" loading="lazy" decoding="async">
-                            </picture>
-                        </div>
-                        <div class="card-tags-wrap">
-                            <span class="card-badge badge-new">⚡ Warm-up 60 วินาที</span>
-                            <span class="card-badge">คลัง 45 ข้อ</span>
-                        </div>
-                    </div>
-                    <div class="card-body-content">
-                        <h3 class="card-main-title">PDPA Fast-Pass: สปีดรันพิทักษ์ข้อมูล (ม.3)</h3>
-                        <p class="card-main-desc">
-                            เกม Speedrun 60 วินาที ฝึกทักษะแยกแยะการ์ดข้อมูลส่วนบุคคลทั่วไป vs อ่อนไหว 
-                            สุ่ม 15 ข้อจากคลัง 45 ข้อ รองรับทัชสกรีนบนมือถือ พร้อมคำนวณเกรดความเข้าใจทันที
-                        </p>
-                    </div>
-                    <div class="card-action-footer">
-                        <span>เข้าสู่เกม Fast-Pass</span>
-                        <div class="card-launch-btn">
-                            <span>เริ่มสปีดรัน</span>
-                            <i class="fa-solid fa-play"></i>
-                        </div>
-                    </div>
-                </a>
-
-            </div>
-        </section>
-
-        <!-- CATEGORY 3: สื่อบทเรียน & คลังคดี -->
-        <section id="learning" class="category-section" data-category="learning">
-            <div class="section-header">
-                <div class="section-title-wrap">
-                    <div class="section-icon-box icon-box-slides">
-                        <i class="fa-solid fa-book-bookmark"></i>
-                    </div>
-                    <div>
-                        <h2 class="section-title">3. สื่อบทเรียนและคลังคดีอ้างอิง (Teaching Materials & Case Bank)</h2>
-                        <p class="section-desc">สไลด์สรุปเนื้อหา พ.ร.บ.คอมพิวเตอร์ 12 มาตราสำคัญ และคลังคดีพร้อมระบบปลดล็อกเฉลย</p>
-                    </div>
-                </div>
-                <span class="section-count-badge">2 แอปพลิเคชัน</span>
-            </div>
-
-            <div class="cards-grid">
-
-                <!-- Card 7: Cyber Law Presentation -->
-                <a href="presentation.html" class="modern-card theme-purple">
-                    <div class="card-header-flex">
-                        <div class="card-icon-container">
-                            <i class="fa-solid fa-book-open"></i>
-                        </div>
-                        <div class="card-tags-wrap">
-                            <span class="card-badge">📚 สไลด์ 12 มาตรา</span>
-                            <span class="card-badge">พ.ร.บ. 2560</span>
-                        </div>
-                    </div>
-                    <div class="card-body-content">
-                        <h3 class="card-main-title">Cyber Law Presentation (สไลด์ 12 มาตรา)</h3>
-                        <p class="card-main-desc">
-                            สไลด์บทเรียนปฏิสัมพันธ์ สรุป พ.ร.บ. คอมพิวเตอร์ พ.ศ. 2560 ครอบคลุม 12 มาตราสำคัญ 
-                            อัตราโทษปรับ/จำคุก ตัวอย่างกรณีศึกษาในชีวิตจริง และแบบทดสอบย่อย
-                        </p>
-                    </div>
-                    <div class="card-action-footer">
-                        <span>เข้าสู่เนื้อหาบทเรียน</span>
-                        <div class="card-launch-btn">
-                            <span>เปิดสไลด์</span>
-                            <i class="fa-solid fa-arrow-right"></i>
-                        </div>
-                    </div>
-                </a>
-
-                <!-- Card 8: Cases Reference -->
-                <a href="cases_reference.html" class="modern-card theme-amber">
-                    <div class="card-header-flex">
-                        <div class="card-icon-container">
-                            <i class="fa-solid fa-folder-open"></i>
-                        </div>
-                        <div class="card-tags-wrap">
-                            <span class="card-badge">📂 แฟ้ม 12 คดี</span>
-                            <span class="card-badge">ปลดล็อกเฉลยครู</span>
-                        </div>
-                    </div>
-                    <div class="card-body-content">
-                        <h3 class="card-main-title">Cases & Answer Keys (คลังคดี & เฉลยข้อสอบ)</h3>
-                        <p class="card-main-desc">
-                            รวบรวมแฟ้มคดีสืบสวนทั้งหมด พร้อมคำร้องทุกข์ หลักฐาน และระบบใส่รหัส Passcode 
-                            เพื่อปลดล็อกแนวทางเฉลยคำตอบ 3 บทบาทฉบับสมบูรณ์สำหรับครูผู้สอน
-                        </p>
-                    </div>
-                    <div class="card-action-footer">
-                        <span>ดูคลังคดี & เฉลย</span>
-                        <div class="card-launch-btn">
-                            <span>เปิดคลังคดี</span>
-                            <i class="fa-solid fa-arrow-right"></i>
-                        </div>
-                    </div>
-                </a>
-
-            </div>
-        </section>
-
-        <!-- CATEGORY 4: ศูนย์ควบคุมและแดชบอร์ดครูผู้สอน -->
-        <section id="teacher" class="category-section" data-category="teacher">
-            <div class="section-header">
-                <div class="section-title-wrap">
-                    <div class="section-icon-box icon-box-teacher">
-                        <i class="fa-solid fa-chalkboard-user"></i>
-                    </div>
-                    <div>
-                        <h2 class="section-title">4. ศูนย์ควบคุมและแดชบอร์ดครูผู้สอน (Teacher Command Centers)</h2>
-                        <p class="section-desc">ระบบมอนิเตอร์คะแนนสด ตรวจและปรับแก้คะแนนอัตนัย (Override) และส่งออกรายงาน PDF</p>
-                    </div>
-                </div>
-                <span class="section-count-badge">3 แอปพลิเคชัน</span>
-            </div>
-
-            <div class="cards-grid">
-
-                <!-- Card 9: Teacher Command Center 6 Cases -->
-                <a href="cyber_shield_teacher.html" class="modern-card theme-purple">
-                    <div class="card-header-flex">
-                        <div class="card-icon-container">
-                            <i class="fa-solid fa-chalkboard-user"></i>
-                        </div>
-                        <div class="card-tags-wrap">
-                            <span class="card-badge badge-realtime">🔴 Live Supabase</span>
-                            <span class="card-badge">Override คะแนนได้</span>
-                        </div>
-                    </div>
-                    <div class="card-body-content">
-                        <h3 class="card-main-title">Teacher Command Center (6 คดี - 180 คะแนน)</h3>
-                        <p class="card-main-desc">
-                            แผงควบคุมครูสำหรับเกมหลัก 6 คดี: ติดตามคะแนนสดรายกลุ่มผ่าน Supabase Realtime, 
-                            ตรวจคำตอบอัตนัย 3 บทบาท, ปรับแก้คะแนน (Override) พร้อมคอมเมนต์ และส่งออก PDF (A4)
-                        </p>
-                    </div>
-                    <div class="card-action-footer">
-                        <span>แดชบอร์ดครู (6 คดี)</span>
-                        <div class="card-launch-btn">
-                            <span>เปิดระบบครู</span>
-                            <i class="fa-solid fa-arrow-right"></i>
-                        </div>
-                    </div>
-                </a>
-
-                <!-- Card 10: Teacher Command Center 3 Cases -->
-                <a href="cyber_shield_teacher_3.html" class="modern-card theme-pink">
-                    <div class="card-header-flex">
-                        <div class="card-icon-container">
-                            <i class="fa-solid fa-graduation-cap"></i>
-                        </div>
-                        <div class="card-tags-wrap">
-                            <span class="card-badge badge-new">⚡ เวอร์ชัน 3 คดี</span>
-                            <span class="card-badge">90 คะแนน</span>
-                        </div>
-                    </div>
-                    <div class="card-body-content">
-                        <h3 class="card-main-title">Teacher Command Center (3 คดี - 90 คะแนน)</h3>
-                        <p class="card-main-desc">
-                            แผงควบคุมตรวจคะแนนสดสำหรับเกมเวอร์ชัน Fast-Track 3 คดี: ตรวจคำตอบอัตนัยรายกลุ่ม 
-                            และส่งออกรายงานผลการประเมิน PDF พอดี 1 หน้า A4 ต่อกลุ่มอย่างสวยงาม
-                        </p>
-                    </div>
-                    <div class="card-action-footer">
-                        <span>แดชบอร์ดครู (3 คดี)</span>
-                        <div class="card-launch-btn">
-                            <span>เปิดระบบครู</span>
-                            <i class="fa-solid fa-arrow-right"></i>
-                        </div>
-                    </div>
-                </a>
-
-                <!-- Card 11: Teacher Dashboard v3 -->
-                <a href="teacher_dashboard.html" class="modern-card theme-emerald">
-                    <div class="card-header-flex">
-                        <div class="card-icon-container">
-                            <i class="fa-solid fa-chart-column"></i>
-                        </div>
-                        <div class="card-tags-wrap">
-                            <span class="card-badge">📊 แดชบอร์ดปรนัย</span>
-                            <span class="card-badge">เกม v3</span>
-                        </div>
-                    </div>
-                    <div class="card-body-content">
-                        <h3 class="card-main-title">แดชบอร์ดครู v3 (เกมปรนัย)</h3>
-                        <p class="card-main-desc">
-                            แผงสรุปคะแนนสำหรับเกม Cyber Detective v3 (ปรนัย): ดูคะแนนสดรายบุคคล 
-                            สถิติข้อที่นักเรียนตอบผิดบ่อย และส่งออกรายงานสรุปคะแนนเป็น PDF สำหรับพิมพ์รายงาน
-                        </p>
-                    </div>
-                    <div class="card-action-footer">
-                        <span>แดชบอร์ดเกม v3</span>
-                        <div class="card-launch-btn">
-                            <span>เปิดระบบครู v3</span>
-                            <i class="fa-solid fa-arrow-right"></i>
-                        </div>
-                    </div>
-                </a>
-
-            </div>
-        </section>
-
-
-        <!-- CATEGORY 5: ศูนย์รวมคู่มือและเอกสารเจาะลึก 12 ระบบ (README.md & System Documentation) -->
-        <section id="docs" class="category-section" data-category="docs">
-            <div class="section-header">
-                <div class="section-title-wrap">
-                    <div class="section-icon-box" style="background: rgba(168, 85, 247, 0.18); color: #c084fc; border: 1px solid rgba(168, 85, 247, 0.35);">
-                        <i class="fa-solid fa-book-open-reader"></i>
-                    </div>
-                    <div>
-                        <h2 class="section-title">5. ศูนย์รวมคู่มือและเอกสารเจาะลึก 12 ระบบ (README.md & Documentation Hub)</h2>
-                        <p class="section-desc">คู่มืออธิบายการทำงาน สถาปัตยกรรม AI ตรวจอัตนัย เกณฑ์รูบริก 4 ระดับ และเอกสารระบบฉบับเต็ม</p>
-                    </div>
-                </div>
-                <div style="display: flex; gap: 8px; flex-wrap: wrap;">
-                    <a href="https://github.com/puripong1st/tech-dm-cyber-detective/blob/main/README.md" target="_blank" rel="noopener noreferrer" class="docs-link-pill">
-                        <i class="fa-brands fa-github"></i> ดู README.md บน GitHub
-                    </a>
-                </div>
-            </div>
-
-            <div class="docs-wrapper">
-
-                <!-- Card 1: สรุปภาพรวมโครงการ -->
-                <div class="docs-card">
-                    <div class="docs-card-header">
-                        <h3 class="docs-card-title">
-                            <i class="fa-solid fa-circle-info" style="color: #38bdf8;"></i> 📌 สรุปภาพรวมโครงการ (Project Overview)
-                        </h3>
-                        <span class="docs-badge-tag" style="background: rgba(56, 189, 248, 0.15); color: #38bdf8; border: 1px solid rgba(56, 189, 248, 0.3);">
-                            Cyber Shield Detective v4.5 AI
-                        </span>
-                    </div>
-                    <div style="font-family: var(--font-reading); color: #cbd5e1; line-height: 1.7; font-size: 0.95rem; display: flex; flex-direction: column; gap: 12px;">
-                        <p>
-                            โครงการ <strong>Cyber Shield Detective</strong> เป็นแพลตฟอร์มการจัดการเรียนรู้นวัตกรรมใหม่ สำหรับกลุ่มสาระการเรียนรู้วิทยาศาสตร์และเทคโนโลยี (วิทยาการคำนวณ) ระดับชั้นมัธยมศึกษาปีที่ 3 เพื่อปฏิรูปการเรียนรู้ <strong>พ.ร.บ.ว่าด้วยการกระทำความผิดเกี่ยวกับคอมพิวเตอร์ พ.ศ. 2560</strong> และ <strong>พ.ร.บ.คุ้มครองข้อมูลส่วนบุคคล พ.ศ. 2562 (PDPA)</strong> จากการท่องจำกฎหมายแบบเดิม สู่การสืบคดีจำลองผ่าน <strong>การ์ตูน 9 ช่อง</strong> และวิเคราะห์สถานการณ์ 3 บทบาท พร้อมประเมินผลอัตนัยแบบทันทีด้วย <strong>Google Gemini AI</strong>
-                        </p>
-                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px; margin-top: 6px;">
-                            <div style="background: rgba(30, 41, 59, 0.6); padding: 12px 16px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.06);">
-                                <strong style="color: #38bdf8; display: block; margin-bottom: 4px;">🕵️ 12 คดีการ์ตูน 9 ช่อง</strong>
-                                <span style="font-size: 0.86rem; color: #94a3b8;">จำลองเหตุการณ์ไซเบอร์ในโรงเรียน ครอบคลุม 12 มาตราและ PDPA</span>
-                            </div>
-                            <div style="background: rgba(30, 41, 59, 0.6); padding: 12px 16px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.06);">
-                                <strong style="color: #10b981; display: block; margin-bottom: 4px;">🤖 Gemini AI Evaluator</strong>
-                                <span style="font-size: 0.86rem; color: #94a3b8;">ประเมินคำตอบอัตนัย 3 บทบาท พร้อม Slang Normalizer ภาษาวัยรุ่น</span>
-                            </div>
-                            <div style="background: rgba(30, 41, 59, 0.6); padding: 12px 16px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.06);">
-                                <strong style="color: #f59e0b; display: block; margin-bottom: 4px;">📊 4-Tier Rubric Matrix</strong>
-                                <span style="font-size: 0.86rem; color: #94a3b8;">เกณฑ์รูบริก 4 ระดับ (0 / 5 / 8 / 10) พร้อม Feedback ชี้แนะชัดเจน</span>
-                            </div>
-                            <div style="background: rgba(30, 41, 59, 0.6); padding: 12px 16px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.06);">
-                                <strong style="color: #ec4899; display: block; margin-bottom: 4px;">👩‍🏫 Live Teacher Override</strong>
-                                <span style="font-size: 0.86rem; color: #94a3b8;">ครูตรวจคำตอบสด ปรับแก้คะแนน และพิมพ์รายงาน PDF พอดี 1 หน้า A4</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Card 2: ตารางเอกสารคู่มือเจาะลึก 12 ระบบ -->
-                <div class="docs-card">
-                    <div class="docs-card-header">
-                        <h3 class="docs-card-title">
-                            <i class="fa-solid fa-folder-tree" style="color: #c084fc;"></i> 📚 ตารางศูนย์รวมคู่มือเจาะลึก 12 ระบบ (Detailed System Documentation Hub)
-                        </h3>
-                        <span class="docs-badge-tag" style="background: rgba(168, 85, 247, 0.15); color: #c084fc; border: 1px solid rgba(168, 85, 247, 0.3);">
-                            12 ไฟล์เอกสาร .md ครบวงจร
-                        </span>
-                    </div>
-                    <div class="docs-table-wrap">
-                        <table class="docs-table">
-                            <thead>
-                                <tr>
-                                    <th>แอปพลิเคชัน / ระบบ</th>
-                                    <th>หน้าเว็บสด (Live URL)</th>
-                                    <th>คู่มือเจาะลึก (.md)</th>
-                                    <th>กลุ่มเป้าหมาย</th>
-                                    <th>จุดเด่นและระบบคะแนน</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td><strong>🏠 Main Portal Hub</strong></td>
-                                    <td><a href="index.html" class="seo-internal-link">/index.html</a></td>
-                                    <td><a href="docs/pages/index.md" class="docs-link-pill"><i class="fa-solid fa-file-lines"></i> index.md</a></td>
-                                    <td>ทุกคน</td>
-                                    <td>ศูนย์รวม 12 ระบบ, แถบกรองหมวดหมู่, Microdata JSON-LD</td>
-                                </tr>
-                                <tr>
-                                    <td><strong>🎮 Cyber Shield Detective (6 คดี)</strong></td>
-                                    <td><a href="cyber_shield_detective.html" class="seo-internal-link">/cyber_shield_detective.html</a></td>
-                                    <td><a href="docs/pages/cyber_shield_detective.md" class="docs-link-pill"><i class="fa-solid fa-file-lines"></i> cyber_shield_detective.md</a></td>
-                                    <td>นักเรียน ม.3</td>
-                                    <td>เกมสืบคดี 6 คดี วิเคราะห์ 3 บทบาท (180 คะแนน), Gemini AI</td>
-                                </tr>
-                                <tr>
-                                    <td><strong>⚡ Cyber Shield Fast-Track (3 คดี)</strong></td>
-                                    <td><a href="cyber_shield_detective_3.html" class="seo-internal-link">/cyber_shield_detective_3.html</a></td>
-                                    <td><a href="docs/pages/cyber_shield_detective_3.md" class="docs-link-pill"><i class="fa-solid fa-file-lines"></i> cyber_shield_detective_3.md</a></td>
-                                    <td>นักเรียน ม.3</td>
-                                    <td>เกมสืบคดี 3 คดี เหมาะกับคาบ 50 นาที (90 คะแนน)</td>
-                                </tr>
-                                <tr>
-                                    <td><strong>👩‍🏫 Teacher Command Center (6 คดี)</strong></td>
-                                    <td><a href="cyber_shield_teacher.html" class="seo-internal-link">/cyber_shield_teacher.html</a></td>
-                                    <td><a href="docs/pages/cyber_shield_teacher.md" class="docs-link-pill"><i class="fa-solid fa-file-lines"></i> cyber_shield_teacher.md</a></td>
-                                    <td>ครูผู้สอน</td>
-                                    <td>มอนิเตอร์สด Supabase Realtime, ปรับแก้คะแนน Override, พิมพ์ PDF</td>
-                                </tr>
-                                <tr>
-                                    <td><strong>👩‍🏫 Teacher Command Center (3 คดี)</strong></td>
-                                    <td><a href="cyber_shield_teacher_3.html" class="seo-internal-link">/cyber_shield_teacher_3.html</a></td>
-                                    <td><a href="docs/pages/cyber_shield_teacher_3.md" class="docs-link-pill"><i class="fa-solid fa-file-lines"></i> cyber_shield_teacher_3.md</a></td>
-                                    <td>ครูผู้สอน</td>
-                                    <td>แผงควบคุมตรวจคะแนน 3 คดี รายงานผล PDF พอดี 1 หน้า A4</td>
-                                </tr>
-                                <tr>
-                                    <td><strong>📖 Quest: สไลด์ 12 มาตรา RPG</strong></td>
-                                    <td><a href="presentation.html" class="seo-internal-link">/presentation.html</a></td>
-                                    <td><a href="docs/pages/presentation.md" class="docs-link-pill"><i class="fa-solid fa-file-lines"></i> presentation.md</a></td>
-                                    <td>ครู / นักเรียน</td>
-                                    <td>สไลด์เรโทร RPG, Web Audio API Sound FX, ควิซสะสมพลัง HP</td>
-                                </tr>
-                                <tr>
-                                    <td><strong>🛡️ PDPA 101: สไลด์คู่มือ ม.3</strong></td>
-                                    <td><a href="pdpa_presentation.html" class="seo-internal-link">/pdpa_presentation.html</a></td>
-                                    <td><a href="docs/pages/pdpa_presentation.md" class="docs-link-pill"><i class="fa-solid fa-file-lines"></i> pdpa_presentation.md</a></td>
-                                    <td>ครู / นักเรียน</td>
-                                    <td>สไลด์ PDPA ข้อมูลทั่วไป vs อ่อนไหว สิทธิ 8 ประการ เกียรติบัตร Canvas</td>
-                                </tr>
-                                <tr>
-                                    <td><strong>🎨 PDPA Assignment Board</strong></td>
-                                    <td><a href="pdpa_assignment_board.html" class="seo-internal-link">/pdpa_assignment_board.html</a></td>
-                                    <td><a href="docs/pages/pdpa_assignment_board.md" class="docs-link-pill"><i class="fa-solid fa-file-lines"></i> pdpa_assignment_board.md</a></td>
-                                    <td>นักเรียน ม.3</td>
-                                    <td>กระดานสร้างใบงานสไตล์ Canva สรุปวิเคราะห์คดี ส่งออก PNG HD</td>
-                                </tr>
-                                <tr>
-                                    <td><strong>⚡ PDPA Fast-Pass (Speedrun 60s)</strong></td>
-                                    <td><a href="pdpa_fast_pass.html" class="seo-internal-link">/pdpa_fast_pass.html</a></td>
-                                    <td><a href="docs/pages/pdpa_fast_pass.md" class="docs-link-pill"><i class="fa-solid fa-file-lines"></i> pdpa_fast_pass.md</a></td>
-                                    <td>นักเรียน ม.3</td>
-                                    <td>สปีดรัน 60 วินาที แยกแยะข้อมูลจากการ์ดสุ่ม 45 ข้อ พร้อมระบบคอมโบ</td>
-                                </tr>
-                                <tr>
-                                    <td><strong>📂 Cases & Answer Keys Bank</strong></td>
-                                    <td><a href="cases_reference.html" class="seo-internal-link">/cases_reference.html</a></td>
-                                    <td><a href="docs/pages/cases_reference.md" class="docs-link-pill"><i class="fa-solid fa-file-lines"></i> cases_reference.md</a></td>
-                                    <td>ครูผู้สอน</td>
-                                    <td>คลัง 12 แฟ้มคดีการ์ตูน, ระบบค้นหา และ Passcode Unlock เฉลย 3 บทบาท</td>
-                                </tr>
-                                <tr>
-                                    <td><strong>📊 Realtime Teacher Dashboard v3</strong></td>
-                                    <td><a href="teacher_dashboard.html" class="seo-internal-link">/teacher_dashboard.html</a></td>
-                                    <td><a href="docs/pages/teacher_dashboard.md" class="docs-link-pill"><i class="fa-solid fa-file-lines"></i> teacher_dashboard.md</a></td>
-                                    <td>ครูผู้สอน</td>
-                                    <td>แดชบอร์ดสรุปผล v3 แปลงคะแนนดิบ 1,080 สู่ 10 คะแนน โหมดซ่อนชื่อจริง</td>
-                                </tr>
-                                <tr>
-                                    <td><strong>🕹️ Cyber Detective Quiz 30 คดี</strong></td>
-                                    <td><a href="cyber_detective.html" class="seo-internal-link">/cyber_detective.html</a></td>
-                                    <td><a href="docs/pages/cyber_detective.md" class="docs-link-pill"><i class="fa-solid fa-file-lines"></i> cyber_detective.md</a></td>
-                                    <td>นักเรียน</td>
-                                    <td>แบบทดสอบปรนัยสถานการณ์ 30 คดี พร้อมสมุดโน้ตวิเคราะห์หลักฐาน</td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-
-                <!-- Card 3: สถาปัตยกรรมระบบประเมินผลอัตนัย AI -->
-                <div class="docs-card">
-                    <div class="docs-card-header">
-                        <h3 class="docs-card-title">
-                            <i class="fa-solid fa-brain" style="color: #10b981;"></i> 🤖 สถาปัตยกรรมระบบประเมินผลอัตนัย AI (AI Scoring Architecture)
-                        </h3>
-                        <span class="docs-badge-tag" style="background: rgba(16, 185, 129, 0.15); color: #10b981; border: 1px solid rgba(16, 185, 129, 0.3);">
-                            Gemini 1.5/2.0 API + Slang Normalizer
-                        </span>
-                    </div>
-                    <div style="font-family: var(--font-reading); color: #cbd5e1; line-height: 1.7; font-size: 0.95rem; display: flex; flex-direction: column; gap: 12px;">
-                        <p>
-                            ระบบประเมินผลอัตนัยใช้เทคนิค <strong>Few-Shot Structured Prompting</strong> ร่วมกับ <strong>Thai Slang Normalizer</strong> เพื่อแปลงภาษาพูดและสแลงวัยรุ่น (เช่น <em>"แคปแชทประจาน", "แอบแฮกไอดีเพื่อน", "โพสต์ด่าให้ทัวร์ลง"</em>) ให้อยู่ในรูปศัพท์กฎหมายมาตรฐาน ก่อนส่งให้ Gemini AI ประเมินและส่งกลับผลลัพธ์เป็น JSON Schema:
-                        </p>
-                        <div class="docs-code-block">
-{
-  "score": 10,
-  "rubric_level": "ดีเยี่ยม (9-10 คะแนน)",
-  "criteria_matched": {
-    "section_accuracy": true,
-    "penalty_accuracy": true,
-    "reasoning_sound": true
-  },
-  "feedback_th": "ยอดเยี่ยมมาก! ระบุมาตรา 5 และ 7 ได้ถูกต้องตรงประเด็น พร้อมอธิบายองค์ประกอบความผิดและอัตราโทษครบถ้วน",
-  "teacher_notes": "นักเรียนเข้าใจความแตกต่างระหว่างการเข้าถึงระบบ (ม.5) และการเข้าถึงข้อมูลส่วนบุคคล (ม.7) ชัดเจน"
+  <style>
+:root{--ink:#13233b;--charcoal:#20242a;--blue:#2477d4;--blue-dark:#15589c;--blue-soft:#dcecff;--amber:#f2b544;--amber-dark:#b7760a;--amber-soft:#fff0c9;--mint:#33a77b;--mint-dark:#197557;--mint-soft:#daf2e8;--paper:#f7f4ec;--white:#ffffff;--line:#d8d4ca;--muted:#5d6470;--container:1160px;--font-body:"IBM Plex Sans Thai","Noto Sans Thai","Leelawadee UI",Tahoma,sans-serif;font-synthesis:none;line-break:strict;overflow-wrap:break-word;}
+*,*::before,*::after{box-sizing:border-box;}
+html{scroll-behavior:smooth;scroll-padding-top:92px;}
+body{margin:0;background:var(--paper);color:var(--charcoal);font-family:var(--font-body);font-size:clamp(1rem,0.96rem + 0.18vw,1.0625rem);line-height:1.75;-webkit-font-smoothing:antialiased;}
+body,button,summary{font-family:var(--font-body);}
+img{display:block;max-width:100%;}
+a{color:inherit;text-decoration-thickness:0.1em;text-underline-offset:0.18em;}
+h1,h2,h3,p{margin-top:0;}
+h1,h2,h3{color:var(--ink);line-height:1.25;text-wrap:balance;}
+p{text-wrap:pretty;}
+button,a,summary{-webkit-tap-highlight-color:transparent;}
+:focus-visible{outline:4px solid var(--amber);outline-offset:4px;}
+.skip-link{position:fixed;z-index:100;top:10px;left:10px;padding:10px 16px;background:var(--ink);color:var(--white);transform:translateY(-150%);}
+.skip-link:focus{transform:translateY(0);}
+.container{width:min(var(--container),calc(100% - 40px));margin-inline:auto;}
+.site-header{position:sticky;z-index:50;top:0;background:var(--paper);border-bottom:2px solid var(--ink);}
+.header-inner{min-height:76px;display:flex;align-items:center;justify-content:space-between;gap:28px;}
+.brand{min-width:0;display:inline-flex;align-items:center;gap:11px;color:var(--ink);font-weight:800;line-height:1.15;text-decoration:none;}
+.brand img{width:42px;height:42px;border:2px solid var(--ink);border-radius:12px;}
+.brand small{display:block;margin-top:3px;color:var(--muted);font-size:0.7rem;font-weight:600;}
+.site-nav{display:flex;align-items:center;gap:4px;}
+.site-nav a{min-height:44px;display:inline-flex;align-items:center;padding:8px 12px;color:var(--ink);font-size:0.92rem;font-weight:700;text-decoration:none;}
+.site-nav a:hover{text-decoration:underline;text-decoration-thickness:2px;}
+.site-nav .nav-cta{margin-left:7px;padding-inline:18px;background:var(--blue);color:var(--white);border:2px solid var(--ink);border-radius:12px;box-shadow:0 4px 0 var(--ink);}
+.site-nav .nav-cta:hover{background:var(--blue-dark);text-decoration:none;}
+.site-nav .nav-cta:active{box-shadow:none;transform:translateY(4px);}
+.menu-toggle{display:none;min-width:48px;min-height:44px;align-items:center;justify-content:center;background:var(--white);color:var(--ink);border:2px solid var(--ink);border-radius:10px;font-size:0.85rem;font-weight:800;box-shadow:0 3px 0 var(--ink);cursor:pointer;}
+.menu-toggle:active{box-shadow:none;transform:translateY(3px);}
+.hero{position:relative;overflow:hidden;min-height:calc(720px - 78px);display:grid;align-items:center;border-bottom:2px solid var(--ink);}
+.hero::before,.hero::after{position:absolute;content:"";pointer-events:none;}
+.hero::before{width:120px;height:120px;top:72px;right:-60px;background:var(--amber);border:2px solid var(--ink);border-radius:50%;}
+.hero::after{width:42px;height:42px;bottom:42px;left:4vw;background:var(--mint);border:2px solid var(--ink);transform:rotate(16deg);}
+.hero-grid{position:relative;z-index:1;display:grid;grid-template-columns:minmax(0,1.05fr) minmax(390px,0.95fr);align-items:center;gap:clamp(42px,6vw,84px);padding-block:64px;}
+.eyebrow{display:flex;align-items:center;gap:10px;margin-bottom:20px;color:var(--blue-dark);font-size:0.82rem;font-weight:800;letter-spacing:0.06em;}
+.eyebrow::before{width:13px;height:13px;flex:0 0 auto;background:var(--amber);border:2px solid var(--ink);content:"";transform:rotate(45deg);}
+.hero h1{max-width:12em;margin-bottom:22px;font-size:clamp(2.75rem,4.5vw,4.4rem);font-weight:850;letter-spacing:-0.02em;}
+.hero-lead{max-width:38em;margin-bottom:30px;color:#404650;font-size:clamp(1.05rem,1rem + 0.25vw,1.2rem);line-height:1.75;}
+.hero-actions{display:flex;flex-wrap:wrap;align-items:flex-start;gap:14px;}
+.button{min-height:50px;display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:11px 22px;border:2px solid var(--ink);border-radius:13px;font-weight:800;line-height:1.3;text-decoration:none;transition:transform 120ms ease,box-shadow 120ms ease,background-color 120ms ease;}
+.button-primary{background:var(--blue);color:var(--white);box-shadow:0 5px 0 var(--ink);}
+.button-primary:hover{background:var(--blue-dark);}
+.button-secondary{background:var(--white);color:var(--ink);box-shadow:0 5px 0 var(--amber-dark);}
+.button-secondary:hover{background:var(--amber-soft);}
+.button:active{box-shadow:none;transform:translateY(5px);}
+.trust-line{display:flex;flex-wrap:wrap;gap:6px 20px;margin:24px 0 0;padding:0;color:var(--muted);font-size:0.9rem;font-weight:650;list-style:none;}
+.trust-line li{position:relative;padding-left:17px;}
+.trust-line li::before{position:absolute;top:0.72em;left:0;width:7px;height:7px;background:var(--mint);border:1px solid var(--ink);content:"";transform:translateY(-50%) rotate(45deg);}
+.case-board{position:relative;display:block;padding:34px 30px 28px;background:var(--blue-soft);color:var(--ink);border:3px solid var(--ink);border-radius:24px 24px 14px 14px;box-shadow:0 8px 0 var(--ink);text-decoration:none;transition:transform 150ms ease,box-shadow 150ms ease;}
+.case-board::before{position:absolute;width:146px;height:28px;top:-28px;left:28px;background:var(--blue-soft);border:3px solid var(--ink);border-bottom:0;border-radius:15px 15px 0 0;content:"";}
+.case-board:hover{transform:translateY(-3px);box-shadow:0 11px 0 var(--ink);}
+.case-board:active{transform:translateY(8px);box-shadow:none;}
+.case-kicker{display:flex;justify-content:space-between;gap:16px;margin-bottom:19px;color:var(--blue-dark);font-size:0.78rem;font-weight:850;letter-spacing:0.08em;}
+.case-board h2{max-width:13em;margin-bottom:22px;font-size:clamp(1.65rem,2.4vw,2.2rem);}
+.case-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:11px;}
+.case-token{min-height:72px;display:grid;place-items:center;background:var(--white);border:2px solid var(--ink);border-radius:12px;color:var(--ink);font-size:1.22rem;font-weight:850;box-shadow:0 3px 0 var(--ink);}
+.case-token:nth-child(1),.case-token:nth-child(5){background:var(--amber);}
+.case-token:nth-child(3),.case-token:nth-child(6){background:var(--mint-soft);}
+.case-launch{display:flex;justify-content:space-between;align-items:center;gap:14px;margin-top:22px;padding-top:17px;border-top:2px solid var(--ink);font-weight:800;}
+.section{padding-block:clamp(72px,8vw,112px);}
+.section-head{display:grid;grid-template-columns:minmax(0,0.8fr) minmax(280px,0.45fr);align-items:end;gap:48px;margin-bottom:46px;}
+.section-label{margin-bottom:10px;color:var(--blue-dark);font-size:0.78rem;font-weight:850;letter-spacing:0.08em;}
+.section-head h2{margin-bottom:0;font-size:clamp(2.1rem,3.8vw,3.55rem);letter-spacing:-0.015em;}
+.section-head > p{margin-bottom:3px;color:var(--muted);}
+.roles{background:var(--ink);color:var(--white);}
+.roles .section-label,.roles .section-head h2,.roles .section-head > p{color:var(--white);}
+.role-grid{display:grid;grid-template-columns:1fr 1fr;gap:22px;}
+.role-card{position:relative;min-height:280px;display:grid;grid-template-rows:auto auto 1fr auto;padding:clamp(26px,3.4vw,42px);border:3px solid var(--white);border-radius:30px 10px 30px 10px;color:var(--ink);}
+.role-card.student{background:var(--amber);}
+.role-card.teacher{background:var(--white);}
+.role-index{position:absolute;top:24px;right:26px;font-size:2.4rem;font-weight:850;line-height:1;opacity:0.32;}
+.role-type{margin-bottom:14px;font-size:0.78rem;font-weight:850;letter-spacing:0.08em;}
+.role-card h3{max-width:14em;margin-bottom:14px;font-size:clamp(1.55rem,2.5vw,2.2rem);}
+.role-card p{max-width:37em;margin-bottom:24px;color:#343b44;}
+.text-link{width:fit-content;min-height:44px;display:inline-flex;align-items:center;color:var(--ink);font-weight:850;}
+.text-link:hover{text-decoration-thickness:3px;}
+.tools{background:var(--white);}
+.tool-category-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:22px;align-items:start;}
+.tool-category{overflow:hidden;background:var(--paper);border:2px solid var(--ink);border-radius:18px;box-shadow:0 5px 0 var(--ink);}
+.tool-category:nth-child(2){background:var(--mint-soft);}
+.tool-category:nth-child(3){background:var(--amber-soft);}
+.tool-category-head{min-height:176px;padding:25px 24px 21px;border-bottom:2px solid var(--ink);}
+.category-number{width:42px;height:42px;display:grid;place-items:center;margin-bottom:20px;background:var(--blue);color:var(--white);border:2px solid var(--ink);border-radius:10px;font-weight:850;box-shadow:0 3px 0 var(--ink);}
+.tool-category:nth-child(2) .category-number{background:var(--mint);color:var(--ink);}
+.tool-category:nth-child(3) .category-number{background:var(--amber);color:var(--ink);}
+.tool-category h3{margin-bottom:8px;font-size:clamp(1.35rem,2vw,1.7rem);}
+.tool-category-head p{margin-bottom:0;color:var(--muted);font-size:0.94rem;line-height:1.6;}
+.category-links{margin:0;padding:0 20px;list-style:none;}
+.category-links li+li{border-top:1px solid var(--line);}
+.category-links a{min-height:76px;display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;column-gap:14px;padding:13px 4px;color:var(--ink);text-decoration:none;}
+.category-links a:hover strong,.category-links a:focus-visible strong{color:var(--blue-dark);text-decoration:underline;text-decoration-thickness:2px;}
+.category-links strong,.category-links span{display:block;}
+.category-links strong{font-size:0.96rem;line-height:1.45;}
+.category-links span{margin-top:2px;color:var(--muted);font-size:0.78rem;line-height:1.45;}
+.category-links b{color:var(--blue-dark);font-size:1.15rem;}
+.teaching-path{background:var(--amber-soft);border-block:2px solid var(--ink);}
+.path-grid{position:relative;display:grid;grid-template-columns:repeat(3,1fr);gap:30px;}
+.path-grid::before{position:absolute;z-index:0;top:34px;right:11%;left:11%;height:4px;background:var(--ink);content:"";}
+.path-step{position:relative;z-index:1;padding-top:92px;}
+.step-number{position:absolute;top:0;left:0;width:70px;height:70px;display:grid;place-items:center;background:var(--white);border:3px solid var(--ink);border-radius:50%;font-size:1.25rem;font-weight:850;box-shadow:0 4px 0 var(--ink);}
+.path-step:nth-child(2) .step-number{background:var(--blue-soft);}
+.path-step:nth-child(3) .step-number{background:var(--mint-soft);}
+.path-step h3{margin-bottom:11px;font-size:clamp(1.28rem,2vw,1.65rem);}
+.path-step p{margin-bottom:16px;color:#4c4a45;}
+.knowledge-layout{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,0.9fr);align-items:start;gap:26px;}
+.knowledge-card{padding:clamp(28px,4vw,48px);background:var(--white);border:2px solid var(--ink);border-radius:12px;}
+.knowledge-card:first-child{border-radius:12px 36px 12px 12px;}
+.knowledge-card:last-child{margin-top:56px;background:var(--mint-soft);border-radius:36px 12px 12px 12px;}
+.knowledge-tag{display:block;margin-bottom:16px;color:var(--blue-dark);font-size:0.78rem;font-weight:850;letter-spacing:0.08em;}
+.knowledge-card h3{margin-bottom:16px;font-size:clamp(1.55rem,2.7vw,2.25rem);}
+.knowledge-card p{color:#3e454c;line-height:1.85;}
+.faq{background:var(--white);border-top:2px solid var(--ink);}
+.faq-list{max-width:900px;margin-inline:auto;border-top:2px solid var(--ink);}
+.faq details{border-bottom:2px solid var(--ink);}
+.faq summary{min-height:70px;display:flex;align-items:center;justify-content:space-between;gap:20px;color:var(--ink);font-size:clamp(1.05rem,1.7vw,1.25rem);font-weight:800;cursor:pointer;list-style:none;}
+.faq summary::-webkit-details-marker{display:none;}
+.faq summary::after{width:34px;height:34px;flex:0 0 auto;display:grid;place-items:center;background:var(--amber);border:2px solid var(--ink);border-radius:8px;content:"+";line-height:1;}
+.faq details[open] summary::after{content:"−";}
+.faq details p{max-width:48em;margin-bottom:24px;color:var(--muted);}
+.about{background:var(--ink);color:var(--white);}
+.about-grid{display:grid;grid-template-columns:minmax(0,0.8fr) minmax(420px,1.2fr);gap:clamp(42px,8vw,100px);align-items:center;}
+.about-copy h2{margin-bottom:18px;color:var(--white);font-size:clamp(2rem,3.8vw,3.4rem);}
+.about-copy p{margin-bottom:0;color:#d9e1ec;}
+.shield-mark{width:88px;height:98px;display:grid;place-items:center;margin-bottom:28px;background:var(--mint);color:var(--ink);clip-path:polygon(50% 0,94% 17%,85% 70%,50% 100%,15% 70%,6% 17%);font-size:1.7rem;font-weight:850;}
+.trust-list{margin:0;padding:0;border-top:1px solid #607086;list-style:none;}
+.trust-item{display:grid;grid-template-columns:minmax(150px,0.42fr) 1fr;gap:24px;padding:18px 0;border-bottom:1px solid #607086;}
+.trust-item strong{color:var(--amber);}
+.trust-item span,.trust-item a{color:var(--white);}
+.site-footer{background:#0c1728;color:#d9e1ec;}
+.footer-inner{min-height:126px;display:flex;align-items:center;justify-content:space-between;gap:30px;padding-block:26px;}
+.footer-title{margin-bottom:2px;color:var(--white);font-weight:850;}
+.footer-note{margin-bottom:0;color:#aab6c7;font-size:0.84rem;}
+.footer-nav{display:flex;flex-wrap:wrap;justify-content:flex-end;gap:8px 22px;}
+.footer-nav a{min-height:44px;display:inline-flex;align-items:center;color:var(--white);font-size:0.9rem;font-weight:700;}
+@media (max-width:1000px){.tool-category-grid{grid-template-columns:1fr 1fr;}
 }
-                        </div>
-                    </div>
-                </div>
+@media (max-width:900px){.header-inner{position:relative;}
+.menu-toggle{display:inline-flex;}
+.js .site-nav{position:absolute;top:calc(100% + 2px);right:0;left:0;display:none;align-items:stretch;padding:10px 20px 18px;background:var(--paper);border-bottom:2px solid var(--ink);}
+.js .site-nav.is-open{display:grid;}
+.js .site-nav .nav-cta{margin:5px 0 0;}
+.hero-grid,.section-head,.about-grid{grid-template-columns:1fr;}
+.hero{min-height:auto;}
+.hero-grid{gap:68px;padding-block:76px 88px;}
+.case-board{max-width:560px;}
+.section-head{gap:16px;}
+.about-grid{gap:44px;}
+}
+@media (max-width:720px){.container{width:min(100% - 28px,var(--container));}
+.header-inner{min-height:70px;}
+.brand img{width:38px;height:38px;border-radius:10px;}
+.brand small{display:none;}
+.hero::after{display:none;}
+.hero-grid{gap:62px;padding-block:58px 76px;}
+.hero h1{font-size:clamp(2.45rem,12vw,3.2rem);letter-spacing:-0.015em;}
+.hero-actions{display:grid;}
+.button{width:100%;}
+.case-board{padding:28px 20px 22px;border-radius:20px 20px 12px 12px;}
+.case-board::before{width:118px;left:20px;}
+.case-token{min-height:58px;}
+.section{padding-block:70px;}
+.role-grid,.path-grid,.knowledge-layout{grid-template-columns:1fr;}
+.role-card{min-height:0;border-radius:24px 8px 24px 8px;}
+.tool-category-grid{grid-template-columns:1fr;}
+.tool-category-head{min-height:0;}
+.path-grid{gap:38px;}
+.path-grid::before{top:34px;bottom:38px;left:33px;width:4px;height:auto;}
+.path-step{min-height:72px;padding:0 0 0 92px;}
+.knowledge-card:last-child{margin-top:0;}
+.trust-item{grid-template-columns:1fr;gap:5px;}
+.footer-inner{align-items:flex-start;flex-direction:column;}
+.footer-nav{justify-content:flex-start;}
+}
+@media (max-width:420px){.brand{font-size:0.9rem;}
+.hero-lead{font-size:1rem;}
+.case-kicker{flex-direction:column;gap:2px;}
+.case-grid{gap:8px;}
+.case-token{min-height:54px;font-size:1.05rem;}
+.section-head h2{font-size:2.2rem;}
+}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto;}
+*,*::before,*::after{scroll-behavior:auto !important;transition-duration:0.01ms !important;animation-duration:0.01ms !important;animation-iteration-count:1 !important;}
+}
+  </style>
+  <script>document.documentElement.classList.add('js');</script>
+</head>
+<body id="top">
+  <a class="skip-link" href="#main-content">ข้ามไปยังเนื้อหาหลัก</a>
 
-                <!-- Card 4: เกณฑ์การประเมินรูบริก 4 ระดับ -->
-                <div class="docs-card">
-                    <div class="docs-card-header">
-                        <h3 class="docs-card-title">
-                            <i class="fa-solid fa-award" style="color: #f59e0b;"></i> 📊 เกณฑ์การประเมินรูบริก 4 ระดับ (Master Rubric Matrix)
-                        </h3>
-                        <span class="docs-badge-tag" style="background: rgba(245, 158, 11, 0.15); color: #f59e0b; border: 1px solid rgba(245, 158, 11, 0.3);">
-                            เต็ม 30 คะแนน / คดี
-                        </span>
-                    </div>
-                    <div class="docs-table-wrap">
-                        <table class="docs-table">
-                            <thead>
-                                <tr>
-                                    <th>บทบาทการวิเคราะห์</th>
-                                    <th>ดีเยี่ยม (9 - 10 คะแนน)</th>
-                                    <th>ดี (7 - 8 คะแนน)</th>
-                                    <th>พอใช้ (4 - 6 คะแนน)</th>
-                                    <th>ปรับปรุง (0 - 3 คะแนน)</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td><strong>1. นักวิเคราะห์กฎหมาย (Legal Analyst)</strong></td>
-                                    <td>ระบุเลขมาตราตรงประเด็น 100%, อธิบายพฤติการณ์ครบถ้วน, ระบุโทษจำคุก/ปรับถูกต้อง</td>
-                                    <td>ระบุมาตราถูกต้อง อธิบายพฤติการณ์ได้ดี โทษคลาดเคลื่อนเล็กน้อย</td>
-                                    <td>ระบุมาตราถูกหรือใกล้เคียง แต่อธิบายเหตุผลไม่ชัดเจน หรือไม่ระบุโทษ</td>
-                                    <td>ระบุมาตราผิดทั้งหมด หรือตอบไม่ตรงกับข้อเท็จจริงในคดี</td>
-                                </tr>
-                                <tr>
-                                    <td><strong>2. ผู้ระงับเหตุเฉพาะหน้า (Immediate Responder)</strong></td>
-                                    <td>ระบุขั้นตอนระงับเหตุเชิงเทคนิคได้ 2 วิธีขึ้นไปทันที (รีเซ็ตรหัส, ปิดเน็ต, เก็บ Log)</td>
-                                    <td>ระบุแนวทางแก้ไขเฉพาะหน้าได้ 1-2 วิธี ขาดรายละเอียดเทคนิค</td>
-                                    <td>ระบุวิธีแก้ไขทั่วไป เช่น บอกให้แจ้งครู แต่ไม่ได้ระงับเหตุดิจิทัล</td>
-                                    <td>ตอบไม่ตรงประเด็น หรือเสนอวิธีที่ทำให้หลักฐานสูญหาย</td>
-                                </tr>
-                                <tr>
-                                    <td><strong>3. วิศวกรความปลอดภัย (Security Engineer)</strong></td>
-                                    <td>กำหนดมาตรการป้องกันเชิงระบบระยะยาว (2FA, ติดตั้ง EDR, นโยบายรหัสผ่าน)</td>
-                                    <td>เสนอมาตรการป้องกันได้ดี แต่อาจยังเป็นระดับพื้นฐานทั่วไป</td>
-                                    <td>แนะนำวิธีป้องกันได้บางส่วน ไม่ครอบคลุมความเสี่ยงหลักของคดี</td>
-                                    <td>ไม่สามารถเสนอมาตรการป้องกันที่สมเหตุสมผลได้</td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
+  <header class="site-header">
+    <div class="container header-inner">
+      <a class="brand" href="#top" aria-label="Cyber Shield Detective หน้าแรก">
+        <img src="favicon.png" width="42" height="42" alt="โลโก้ Cyber Shield Detective">
+        <span>
+          Cyber Shield Detective
+          <small>กฎหมายไซเบอร์สำหรับ ม.3</small>
+        </span>
+      </a>
 
-                <!-- Card 5: คู่มือการติดตั้งและรันในเครื่อง -->
-                <div class="docs-card">
-                    <div class="docs-card-header">
-                        <h3 class="docs-card-title">
-                            <i class="fa-solid fa-laptop-code" style="color: #ec4899;"></i> 💻 คู่มือการติดตั้งและรันในเครื่อง (Local Setup & Deployment)
-                        </h3>
-                        <span class="docs-badge-tag" style="background: rgba(236, 72, 153, 0.15); color: #ec4899; border: 1px solid rgba(236, 72, 153, 0.3);">
-                            Node.js / Express / Vercel
-                        </span>
-                    </div>
-                    <div style="font-family: var(--font-reading); color: #cbd5e1; line-height: 1.7; font-size: 0.95rem; display: flex; flex-direction: column; gap: 12px;">
-                        <p>สามารถโคลนและรันโปรเจกต์ในเครื่องได้ง่ายๆ ด้วยคำสั่งต่อไปนี้:</p>
-                        <div class="docs-code-block">
-# 1. โคลนคลังโค้ดจาก GitHub
-git clone https://github.com/puripong1st/tech-dm-cyber-detective.git
-cd tech-dm-cyber-detective
-
-# 2. ติดตั้ง Dependencies ที่จำเป็น
-npm install
-
-# 3. ตั้งค่าไฟล์ .env (Optional: Gemini API & Supabase)
-cp .env.example .env
-
-# 4. สตาร์ตเซิร์ฟเวอร์ Local Development
-npm start
-# เปิดเบราว์เซอร์ที่ http://localhost:3000
-                        </div>
-                    </div>
-                </div>
-
-            </div>
-        </section>
-
-
-        <!-- CATEGORY 6: สรุปสาระสำคัญ พ.ร.บ.คอมพิวเตอร์ 2560 (12 มาตราสำคัญ) & PDPA ม.3 -->
-        <section id="law-summary" class="category-section" data-category="law-summary">
-            <div class="section-header">
-                <div class="section-title-wrap">
-                    <div class="section-icon-box" style="background: rgba(56, 189, 248, 0.15); color: #38bdf8; border: 1px solid rgba(56, 189, 248, 0.3);">
-                        <i class="fa-solid fa-scale-balanced"></i>
-                    </div>
-                    <div>
-                        <h2 class="section-title">6. สรุปสาระสำคัญ พ.ร.บ.คอมพิวเตอร์ 2560 (12 มาตรา) & PDPA ม.3</h2>
-                        <p class="section-desc">สรุปย่อมาตราสำคัญ ฐานความผิด อัตราโทษจำคุก-ปรับ และหลักการคุ้มครองข้อมูลส่วนบุคคลสำหรับนักเรียน</p>
-                    </div>
-                </div>
-                <a href="presentation.html" class="section-count-badge seo-internal-link" style="border: none;">
-                    เปิดสไลด์ฉบับเต็ม <i class="fa-solid fa-arrow-right"></i>
-                </a>
-            </div>
-
-            <div class="seo-law-grid">
-                <div class="seo-law-card">
-                    <div class="seo-law-header">
-                        <span class="seo-law-badge">มาตรา 5</span>
-                        <span class="seo-law-penalty">คุก 6 ด. / ปรับ 10,000 บ.</span>
-                    </div>
-                    <h3 class="seo-law-title">แอบเข้าถึงระบบคอมพิวเตอร์</h3>
-                    <p class="seo-law-desc">การเข้าถึงระบบคอมพิวเตอร์ของผู้อื่นโดยไม่มีสิทธิ หรือแอบล็อกอินเข้าระบบของผู้อื่นโดยไม่ได้รับอนุญาต (ดูตัวอย่างใน <a href="cyber_shield_detective.html" class="seo-internal-link">เกมสืบคดีคดีที่ 1</a>)</p>
-                </div>
-
-                <div class="seo-law-card">
-                    <div class="seo-law-header">
-                        <span class="seo-law-badge">มาตรา 6</span>
-                        <span class="seo-law-penalty">คุก 1 ปี / ปรับ 20,000 บ.</span>
-                    </div>
-                    <h3 class="seo-law-title">แอบล่วงรู้มาตรการป้องกัน</h3>
-                    <p class="seo-law-desc">แอบรู้วิธีการ รหัสผ่าน หรือมาตรการรักษาความปลอดภัย แล้วนำไปเผยแพร่หรือบอกต่อให้ผู้อื่นเข้าถึงระบบได้โดยมิชอบ</p>
-                </div>
-
-                <div class="seo-law-card">
-                    <div class="seo-law-header">
-                        <span class="seo-law-badge">มาตรา 7</span>
-                        <span class="seo-law-penalty">คุก 2 ปี / ปรับ 40,000 บ.</span>
-                    </div>
-                    <h3 class="seo-law-title">แอบเข้าถึงข้อมูลคอมพิวเตอร์</h3>
-                    <p class="seo-law-desc">แอบเปิดอ่านไฟล์ แชทส่วนตัว หรือข้อมูลในเครื่อง/คลาวด์ของผู้อื่นที่มีมาตรการป้องกันไว้</p>
-                </div>
-
-                <div class="seo-law-card">
-                    <div class="seo-law-header">
-                        <span class="seo-law-badge">มาตรา 8</span>
-                        <span class="seo-law-penalty">คุก 3 ปี / ปรับ 60,000 บ.</span>
-                    </div>
-                    <h3 class="seo-law-title">ดักรับข้อมูลคอมพิวเตอร์</h3>
-                    <p class="seo-law-desc">การดักฟัง ดักจับข้อมูลระหว่างที่มีการส่งในเครือข่าย หรือแอบติดตั้งโปรแกรมดักข้อมูล (Sniffing/Keylogger)</p>
-                </div>
-
-                <div class="seo-law-card">
-                    <div class="seo-law-header">
-                        <span class="seo-law-badge">มาตรา 9</span>
-                        <span class="seo-law-penalty">คุก 5 ปี / ปรับ 100,000 บ.</span>
-                    </div>
-                    <h3 class="seo-law-title">แก้ไข ทำลายข้อมูลผู้อื่น</h3>
-                    <p class="seo-law-desc">ทำให้เสียหาย ทำลาย แก้ไข หรือเปลี่ยนแปลงข้อมูลคอมพิวเตอร์ของผู้อื่นโดยมิชอบ เช่น แอบลบไฟล์การบ้าน หรือแก้คะแนนสอบ</p>
-                </div>
-
-                <div class="seo-law-card">
-                    <div class="seo-law-header">
-                        <span class="seo-law-badge">มาตรา 10</span>
-                        <span class="seo-law-penalty">คุก 5 ปี / ปรับ 100,000 บ.</span>
-                    </div>
-                    <h3 class="seo-law-title">รบกวน ขัดขวางการทำงานระบบ (DDoS)</h3>
-                    <p class="seo-law-desc">ทำให้ระบบคอมพิวเตอร์ผู้อื่นหยุดชะงัก ล่ม หรือทำงานไม่ได้ตามปกติ เช่น การยิง DDoS หรือปล่อยไวรัสล็อกเครื่อง</p>
-                </div>
-
-                <div class="seo-law-card">
-                    <div class="seo-law-header">
-                        <span class="seo-law-badge">มาตรา 11</span>
-                        <span class="seo-law-penalty">ปรับไม่เกิน 200,000 บ.</span>
-                    </div>
-                    <h3 class="seo-law-title">ส่งสแปม (Spam) รบกวน</h3>
-                    <p class="seo-law-desc">ส่งอีเมล ข้อความ หรือการแจ้งเตือนโฆษณาอันเป็นการรบกวนผู้รับ โดยไม่มีทางให้ผู้รับบอกเลิกหรือยกเลิกได้โดยง่าย</p>
-                </div>
-
-                <div class="seo-law-card">
-                    <div class="seo-law-header">
-                        <span class="seo-law-badge">มาตรา 14(1)</span>
-                        <span class="seo-law-penalty">คุก 5 ปี / ปรับ 100,000 บ.</span>
-                    </div>
-                    <h3 class="seo-law-title">ข้อมูลเท็จ หลอกลวง ฟิชชิ่ง</h3>
-                    <p class="seo-law-desc">นำเข้าข้อมูลคอมพิวเตอร์ปลอม เท็จ หรือหลอกลวง (Phishing/Scam) ที่น่าจะเกิดความเสียหายแก่ประชาชนหรือผู้อื่น</p>
-                </div>
-
-                <div class="seo-law-card">
-                    <div class="seo-law-header">
-                        <span class="seo-law-badge">มาตรา 14(2)</span>
-                        <span class="seo-law-penalty">คุก 5 ปี / ปรับ 100,000 บ.</span>
-                    </div>
-                    <h3 class="seo-law-title">ข้อมูลเท็จกระทบความมั่นคง</h3>
-                    <p class="seo-law-desc">นำเข้าข่าวปลอม (Fake News) ที่สร้างความตระหนกตกใจแก่ประชาชน หรือกระทบต่อความปลอดภัยสาธารณะและความมั่นคง</p>
-                </div>
-
-                <div class="seo-law-card">
-                    <div class="seo-law-header">
-                        <span class="seo-law-badge">มาตรา 14(4)</span>
-                        <span class="seo-law-penalty">คุก 5 ปี / ปรับ 100,000 บ.</span>
-                    </div>
-                    <h3 class="seo-law-title">ข้อมูลลามกอนาจาร</h3>
-                    <p class="seo-law-desc">นำเข้าหรือเผยแพร่ข้อมูลคอมพิวเตอร์ที่มีลักษณะลามก และประชาชนทั่วไปสามารถเข้าถึงได้</p>
-                </div>
-
-                <div class="seo-law-card">
-                    <div class="seo-law-header">
-                        <span class="seo-law-badge">มาตรา 16</span>
-                        <span class="seo-law-penalty">คุก 3 ปี / ปรับ 200,000 บ.</span>
-                    </div>
-                    <h3 class="seo-law-title">ตัดต่อภาพผู้อื่นให้อับอาย</h3>
-                    <p class="seo-law-desc">นำภาพตัดต่อ ดัดแปลง หรือเติมแต่งเข้าสู่ระบบ ทำให้ผู้อื่นเสียชื่อเสียง ถูกดูหมิ่น ถูกเกลียดชัง หรือได้รับความอับอาย</p>
-                </div>
-
-                <div class="seo-law-card" style="border-color: rgba(16, 185, 129, 0.4);">
-                    <div class="seo-law-header">
-                        <span class="seo-law-badge" style="background: rgba(16, 185, 129, 0.15); color: #10b981; border-color: rgba(16, 185, 129, 0.3);">PDPA ม.3</span>
-                        <span class="seo-law-penalty" style="color: #34d399;">สิทธิ 8 ประการ</span>
-                    </div>
-                    <h3 class="seo-law-title">คุ้มครองข้อมูลส่วนบุคคล</h3>
-                    <p class="seo-law-desc">แยกแยะข้อมูลทั่วไป vs ข้อมูลอ่อนไหว (Sensitive Data) กฎความยินยอมผู้เยาว์ และสิทธิในการเข้าถึง/ขอลบข้อมูล (ทดสอบได้ใน <a href="pdpa_fast_pass.html" class="seo-internal-link">PDPA Fast-Pass</a>)</p>
-                </div>
-            </div>
-        </section>
-
-        <!-- CATEGORY 7: คำถามที่พบบ่อย (Frequently Asked Questions - FAQ) -->
-        <section id="faq" class="category-section" data-category="faq">
-            <div class="section-header">
-                <div class="section-title-wrap">
-                    <div class="section-icon-box" style="background: rgba(139, 92, 246, 0.15); color: #8b5cf6; border: 1px solid rgba(139, 92, 246, 0.3);">
-                        <i class="fa-solid fa-circle-question"></i>
-                    </div>
-                    <div>
-                        <h2 class="section-title">7. คำถามที่พบบ่อย (FAQ - พ.ร.บ.คอมพิวเตอร์ & PDPA)</h2>
-                        <p class="section-desc">คำถามยอดฮิตและข้อสงสัยเกี่ยวกับการใช้กฎหมายไซเบอร์ในชีวิตประจำวันของนักเรียน</p>
-                    </div>
-                </div>
-                <span class="section-count-badge">5 คำถามยอดฮิต</span>
-            </div>
-
-            <div class="seo-faq-wrap">
-                <details class="seo-faq-item" open>
-                    <summary class="seo-faq-question">พ.ร.บ.คอมพิวเตอร์ 2560 และ PDPA แตกต่างกันอย่างไรสำหรับนักเรียน ม.3?</summary>
-                    <div class="seo-faq-answer">
-                        <strong>พ.ร.บ.ว่าด้วยการกระทำความผิดเกี่ยวกับคอมพิวเตอร์ พ.ศ. 2560</strong> เป็นกฎหมายอาญาที่เน้นลงโทษพฤติกรรมความผิดที่กระทำต่อระบบคอมพิวเตอร์และข้อมูล (เช่น การแฮก แอบขโมยรหัสผ่าน ปล่อยไวรัส โพสต์ข่าวปลอม หรือตัดต่อภาพให้อับอาย)<br><br>
-                        ส่วน <strong>พ.ร.บ.คุ้มครองข้อมูลส่วนบุคคล พ.ศ. 2562 (PDPA)</strong> เป็นกฎหมายที่เน้นปกป้องสิทธิความเป็นส่วนตัวของเจ้าของข้อมูล (Data Subject) กำหนดให้การเก็บรวบรวม ใช้ หรือเปิดเผยข้อมูลส่วนบุคคล (เช่น ชื่อ เบอร์โทร เลขประจำตัวประชาชน รูปถ่าย) ต้องได้รับความยินยอมและมีมาตรการความปลอดภัยอย่างเหมาะสม สามารถศึกษาเพิ่มเติมได้ที่ <a href="presentation.html" class="seo-internal-link">สไลด์บทเรียน พ.ร.บ.คอมพ์</a> และ <a href="pdpa_presentation.html" class="seo-internal-link">สไลด์ PDPA 101</a>
-                    </div>
-                </details>
-
-                <details class="seo-faq-item">
-                    <summary class="seo-faq-question">การแอบใช้รหัสผ่านหรือล็อกอินไอดีเกมของเพื่อนมีความผิดตาม พ.ร.บ.คอมพิวเตอร์ หรือไม่?</summary>
-                    <div class="seo-faq-answer">
-                        <strong>มีความผิดตามกฎหมายชัดเจน</strong> โดยเข้าข่าย <strong>มาตรา 5</strong> (การแอบเข้าถึงระบบคอมพิวเตอร์ที่มีมาตรการป้องกันโดยมิชอบ มีโทษจำคุกไม่เกิน 6 เดือน หรือปรับไม่เกิน 10,000 บาท หรือทั้งจำทั้งปรับ) และหากแอบเข้าไปดูแชทส่วนตัว ดูข้อมูลไอเทม หรือข้อมูลบัญชี จะผิด <strong>มาตรา 7</strong> เพิ่มเติม (โทษจำคุกไม่เกิน 2 ปี หรือปรับไม่เกิน 40,000 บาท) และหากแอบนำไอเทมหรือเงินในเกมไปโอนให้ตนเอง จะผิด <strong>มาตรา 9</strong> ฐานแก้ไขทำลายข้อมูลคอมพิวเตอร์ (โทษจำคุกไม่เกิน 5 ปี หรือปรับไม่เกิน 100,000 บาท)
-                    </div>
-                </details>
-
-                <details class="seo-faq-item">
-                    <summary class="seo-faq-question">ข้อมูลส่วนบุคคลทั่วไป และข้อมูลส่วนบุคคลอ่อนไหว (Sensitive Data) ใน PDPA แตกต่างกันอย่างไร?</summary>
-                    <div class="seo-faq-answer">
-                        <strong>1. ข้อมูลส่วนบุคคลทั่วไป (General Personal Data):</strong> ข้อมูลที่สามารถระบุตัวตนบุคคลธรรมดาได้ทั้งทางตรงและทางอ้อม เช่น ชื่อ-นามสกุล, เบอร์โทรศัพท์, อีเมล, หมายเลขบัตรประชาชน, ทะเบียนรถ, ที่อยู่<br>
-                        <strong>2. ข้อมูลส่วนบุคคลอ่อนไหว (Sensitive Personal Data):</strong> ข้อมูลที่มีความละเอียดอ่อนและอาจส่งผลกระทบต่อสิทธิเสรีภาพหรือทำให้ถูกเลือกปฏิบัติอย่างไม่เป็นธรรม เช่น เชื้อชาติ เผ่าพันธุ์ ความคิดเห็นทางการเมือง ความเชื่อทางศาสนา พฤติกรรมทางเพศ ประวัติอาชญากรรม ข้อมูลสุขภาพ ความพิการ ข้อมูลสหภาพแรงงาน ข้อมูลพันธุกรรม และข้อมูลอัตลักษณ์ชีวมิติ (Biometric Data เช่น ลายนิ้วมือ ใบหน้า ม่านตา)<br>
-                        ฝึกแยกแยะข้อมูลทั้งสองประเภทได้ที่ <a href="pdpa_fast_pass.html" class="seo-internal-link">เกม PDPA Fast-Pass สปีดรัน 60 วินาที</a>
-                    </div>
-                </details>
-
-                <details class="seo-faq-item">
-                    <summary class="seo-faq-question">การแชร์ข่าวปลอม (Fake News) หรือข้อความหลอกลวง ผิด พ.ร.บ.คอมพิวเตอร์ มาตราใด มีโทษอย่างไร?</summary>
-                    <div class="seo-faq-answer">
-                        การนำเข้าหรือส่งต่อ (แชร์) ข้อมูลคอมพิวเตอร์ปลอมหรือเท็จทั้งหมดหรือบางส่วน ที่น่าจะเกิดความเสียหายแก่ประชาชน มีความผิดตาม <strong>มาตรา 14(1)</strong> มีโทษจำคุกไม่เกิน 5 ปี หรือปรับไม่เกิน 100,000 บาท หรือทั้งจำทั้งปรับ และหากข่าวนั้นกระทบต่อความมั่นคงปลอดภัยสาธารณะหรือความมั่นคงทางเศรษฐกิจของประเทศ จะผิด <strong>มาตรา 14(2)</strong> ซึ่งผู้ที่ <strong>'แชร์ต่อ'</strong> โดยรู้อยู่แล้วว่าเป็นข้อมูลเท็จก็ต้องรับโทษตาม <strong>มาตรา 14(5)</strong> เช่นเดียวกับผู้นำเข้าข้อมูล
-                    </div>
-                </details>
-
-                <details class="seo-faq-item">
-                    <summary class="seo-faq-question">สื่อการสอนและเกมสืบคดี Cyber Shield Detective สามารถนำไปใช้จัดการเรียนการสอนอย่างไรได้บ้าง?</summary>
-                    <div class="seo-faq-answer">
-                        แพลตฟอร์ม Cyber Shield Detective ออกแบบมาเพื่อสนับสนุนการจัดการเรียนรู้เชิงรุก (Active Learning) ในกลุ่มสาระการเรียนรู้วิทยาศาสตร์และเทคโนโลยี (วิทยาการคำนวณ) ระดับชั้นมัธยมศึกษาปีที่ 3:
-                        <ul style="margin-top: 8px; padding-left: 20px; list-style-type: disc;">
-                            <li><strong>ขั้นนำเข้าสู่บทเรียน:</strong> ใช้ <a href="presentation.html" class="seo-internal-link">สไลด์บทเรียนอินเทอร์แอคทีฟ</a> หรือเกมสปีดรัน <a href="pdpa_fast_pass.html" class="seo-internal-link">PDPA Fast-Pass</a> อุ่นเครื่อง 60 วินาที</li>
-                            <li><strong>ขั้นกิจกรรมสืบคดีกลุ่ม:</strong> ให้นักเรียนจับคู่หรือแบ่งกลุ่มเล่นเกม <a href="cyber_shield_detective.html" class="seo-internal-link">Cyber Shield Detective (6 คดี)</a> หรือเวอร์ชัน <a href="cyber_shield_detective_3.html" class="seo-internal-link">Fast-Track (3 คดี)</a> โดยมี Gemini AI ช่วยประเมินคำตอบอัตนัย 3 บทบาท</li>
-                            <li><strong>ขั้นประเมินผลและสร้างชิ้นงาน:</strong> ใช้กระดาน <a href="pdpa_assignment_board.html" class="seo-internal-link">PDPA Assignment Board</a> สร้างใบงานสรุปคดี และครูสามารถติดตามคะแนนสดพร้อมส่งออก PDF ผ่าน <a href="#teacher" class="seo-internal-link">Teacher Command Center</a></li>
-                        </ul>
-                    </div>
-                </details>
-            </div>
-        </section>
-
+      <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="site-menu">เมนู</button>
+      <nav class="site-nav" id="site-menu" aria-label="เมนูหลัก">
+        <a href="#students">สำหรับนักเรียน</a>
+        <a href="#teachers">สำหรับครู</a>
+        <a href="#knowledge">ความรู้กฎหมาย</a>
+        <a class="nav-cta" href="cyber_shield_detective.html">เริ่มสืบคดี</a>
+      </nav>
     </div>
+  </header>
 
-    <!-- Clean Modern Footer -->
-    <footer>
-        <div>
-            <strong>Cyber Shield Detective Platform</strong> &copy; 2026 • สื่อการสอน พ.ร.บ.คอมพิวเตอร์ & PDPA ระดับชั้น ม.3
+  <main id="main-content">
+    <section class="hero" aria-labelledby="hero-title">
+      <div class="container hero-grid">
+        <div class="hero-copy">
+          <p class="eyebrow">เกมและสื่อการเรียนรู้สำหรับนักเรียน ม.3</p>
+          <h1 id="hero-title">เรียนรู้กฎหมายไซเบอร์ ผ่านคดีที่ได้ลงมือคิด</h1>
+          <p class="hero-lead">สำรวจเกม พ.ร.บ.คอมพิวเตอร์ 2560 และ PDPA สำหรับนักเรียน ม.3 ฝึกวิเคราะห์สถานการณ์ดิจิทัลด้วยตัวเอง พร้อมสื่อที่ครูหยิบไปจัดคาบเรียนได้เป็นขั้นตอน</p>
+
+          <div class="hero-actions" aria-label="ทางเลือกเริ่มต้น">
+            <a class="button button-primary" href="cyber_shield_detective.html">เริ่มเรียนและเล่น <span aria-hidden="true">→</span></a>
+            <a class="button button-secondary" href="#teacher-path">วางแผนการสอน <span aria-hidden="true">↓</span></a>
+          </div>
+
+          <ul class="trust-line" aria-label="ข้อมูลสำคัญ">
+            <li>ใช้ฟรีบนเว็บ</li>
+            <li>เหมาะกับชั้นเรียน</li>
+            <li>ไม่ต้องติดตั้งแอป</li>
+          </ul>
         </div>
-        <div class="footer-links">
-            <a href="presentation.html"><i class="fa-solid fa-book-open"></i> สไลด์บทเรียน</a>
-            <a href="cases_reference.html"><i class="fa-solid fa-folder-open"></i> คลังคดี</a>
-            <a href="https://github.com/puripong1st/tech-dm-cyber-detective" target="_blank" rel="noopener noreferrer">
-                <i class="fa-brands fa-github"></i> GitHub Repository
-            </a>
+
+        <a class="case-board" href="cyber_shield_detective.html" aria-label="เริ่มเกม Cyber Shield Detective เวอร์ชัน 6 คดี">
+          <div class="case-kicker">
+            <span>แฟ้มสืบสวนไซเบอร์</span>
+            <span>เกมหลัก · 6 คดี</span>
+          </div>
+          <h2>เลือกคดี แล้วเริ่มสืบจากหลักฐาน</h2>
+          <div class="case-grid" aria-hidden="true">
+            <span class="case-token">01</span>
+            <span class="case-token">02</span>
+            <span class="case-token">03</span>
+            <span class="case-token">04</span>
+            <span class="case-token">05</span>
+            <span class="case-token">06</span>
+          </div>
+          <span class="case-launch">เปิดเกม 6 คดี <span aria-hidden="true">→</span></span>
+        </a>
+      </div>
+    </section>
+
+    <section class="section roles" aria-labelledby="roles-title">
+      <div class="container">
+        <div class="section-head">
+          <div>
+            <p class="section-label">เลือกเส้นทางของคุณ</p>
+            <h2 id="roles-title">เริ่มต่างกัน แต่เรียนรู้เรื่องเดียวกัน</h2>
+          </div>
+          <p>นักเรียนเริ่มจากการลงมือเล่น ส่วนครูเริ่มจากการจัดลำดับสื่อให้เหมาะกับคาบ</p>
         </div>
-    </footer>
 
-    <!-- Interactive Category Filter Tab Script -->
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            const tabs = document.querySelectorAll('.filter-tab');
-            const sections = document.querySelectorAll('.category-section');
+        <div class="role-grid">
+          <article class="role-card student" id="students">
+            <span class="role-index" aria-hidden="true">01</span>
+            <p class="role-type">ฉันเป็นนักเรียน</p>
+            <h3>เริ่มสืบ 6 คดี แล้วเช็กความเข้าใจของตัวเอง</h3>
+            <p>เข้าเกมหลักเพื่อฝึกคิดจากสถานการณ์ หรือทบทวนต่อด้วยแบบทดสอบปรนัยเมื่อพร้อม</p>
+            <a class="text-link" href="cyber_shield_detective.html">ไปที่เกมหลัก 6 คดี <span aria-hidden="true">→</span></a>
+          </article>
 
-            function switchCategory(target) {
-                tabs.forEach(t => {
-                    if (t.getAttribute('data-target') === target) t.classList.add('active');
-                    else t.classList.remove('active');
-                });
+          <article class="role-card teacher" id="teachers">
+            <span class="role-index" aria-hidden="true">02</span>
+            <p class="role-type">ฉันเป็นครู</p>
+            <h3>จัดคาบจากสไลด์ ไปสู่คดี และจบด้วยชิ้นงาน</h3>
+            <p>ใช้เส้นทางแนะนำ 3 ขั้นเพื่อเลือกสื่อสอน กิจกรรมวิเคราะห์ และใบงานได้โดยไม่ต้องไล่เปิดทุกระบบ</p>
+            <a class="text-link" href="#teacher-path">ดูเส้นทางการสอน 3 ขั้น <span aria-hidden="true">↓</span></a>
+          </article>
+        </div>
+      </div>
+    </section>
 
-                if (target === 'all') {
-                    sections.forEach(sec => { sec.style.display = 'flex'; });
-                } else {
-                    sections.forEach(sec => {
-                        if (sec.getAttribute('data-category') === target) {
-                            sec.style.display = 'flex';
-                        } else {
-                            sec.style.display = 'none';
-                        }
-                    });
-                }
-            }
+    <section class="section tools" id="tools" aria-labelledby="tools-title">
+      <div class="container">
+        <div class="section-head">
+          <div>
+            <p class="section-label">เครื่องมือแนะนำ</p>
+            <h2 id="tools-title">เลือกเครื่องมือตามสิ่งที่ต้องการทำ</h2>
+          </div>
+          <p>ทุกระบบถูกแบ่งเป็น 3 หมวดชัดเจน เพื่อให้นักเรียนและครูไปถึงเครื่องมือที่ต้องการได้ทันที</p>
+        </div>
 
-            tabs.forEach(tab => {
-                tab.addEventListener('click', () => {
-                    const target = tab.getAttribute('data-target');
-                    switchCategory(target);
-                    if (target === 'all') {
-                        window.scrollTo({ top: 320, behavior: 'smooth' });
-                    } else {
-                        const activeSec = document.getElementById(target);
-                        if (activeSec) activeSec.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                    }
-                });
-            });
+        <div class="tool-category-grid">
+          <article class="tool-category" aria-labelledby="student-tools-title">
+            <div class="tool-category-head">
+              <span class="category-number" aria-hidden="true">01</span>
+              <h3 id="student-tools-title">เรียนรู้และเล่น</h3>
+              <p>เกมและแบบทดสอบสำหรับฝึกคิดจากสถานการณ์ดิจิทัล</p>
+            </div>
+            <ul class="category-links">
+              <li><a href="cyber_shield_detective.html"><span><strong>เกมหลัก 6 คดี</strong><span>วิเคราะห์หลักฐานและอธิบายเหตุผล</span></span><b aria-hidden="true">→</b></a></li>
+              <li><a href="cyber_shield_detective_3.html"><span><strong>เกมฉบับเร็ว 3 คดี</strong><span>กิจกรรมแบบย่อสำหรับเวลาจำกัด</span></span><b aria-hidden="true">→</b></a></li>
+              <li><a href="pdpa_fast_pass.html"><span><strong>PDPA Fast-Pass</strong><span>ทบทวนข้อมูลส่วนบุคคลแบบรวดเร็ว</span></span><b aria-hidden="true">→</b></a></li>
+              <li><a href="cyber_detective.html"><span><strong>แบบทดสอบปรนัย</strong><span>เช็กความเข้าใจหลังเรียน</span></span><b aria-hidden="true">→</b></a></li>
+            </ul>
+          </article>
 
-            // Support direct navigation from Top Navbar
-            document.querySelectorAll('.top-navbar a[href^="#"], footer a[href^="#"]').forEach(link => {
-                link.addEventListener('click', (e) => {
-                    const hash = link.getAttribute('href').replace('#', '');
-                    if (hash) {
-                        switchCategory(hash);
-                        const activeSec = document.getElementById(hash);
-                        if (activeSec) {
-                            setTimeout(() => {
-                                activeSec.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                            }, 50);
-                        }
-                    }
-                });
-            });
+          <article class="tool-category" aria-labelledby="media-tools-title">
+            <div class="tool-category-head">
+              <span class="category-number" aria-hidden="true">02</span>
+              <h3 id="media-tools-title">สื่อและชิ้นงาน</h3>
+              <p>สไลด์ปูพื้นความรู้และกระดานสำหรับสร้างผลงานส่งครู</p>
+            </div>
+            <ul class="category-links">
+              <li><a href="presentation.html"><span><strong>สไลด์ พ.ร.บ.คอมพิวเตอร์</strong><span>เรียนรู้กฎหมายผ่านตัวอย่างใกล้ตัว</span></span><b aria-hidden="true">→</b></a></li>
+              <li><a href="pdpa_presentation.html"><span><strong>สไลด์ PDPA 101</strong><span>เข้าใจข้อมูลส่วนบุคคลและความยินยอม</span></span><b aria-hidden="true">→</b></a></li>
+              <li><a href="pdpa_assignment_board.html"><span><strong>กระดานสร้างใบงาน PDPA</strong><span>ออกแบบชิ้นงานและบันทึกส่งเป็น PDF</span></span><b aria-hidden="true">→</b></a></li>
+            </ul>
+          </article>
 
-            // Check URL hash on page load
-            if (window.location.hash) {
-                const initialHash = window.location.hash.replace('#', '');
-                const targetSec = document.getElementById(initialHash);
-                if (targetSec) {
-                    switchCategory(initialHash);
-                    setTimeout(() => targetSec.scrollIntoView({ behavior: 'smooth', block: 'start' }), 200);
-                }
-            }
-        });
-    </script>
+          <article class="tool-category" aria-labelledby="teacher-tools-title">
+            <div class="tool-category-head">
+              <span class="category-number" aria-hidden="true">03</span>
+              <h3 id="teacher-tools-title">เครื่องมือสำหรับครู</h3>
+              <p>หน้าควบคุมผลการเรียนและข้อมูลประกอบการจัดกิจกรรม</p>
+            </div>
+            <ul class="category-links">
+              <li><a href="cyber_shield_teacher.html"><span><strong>ศูนย์ควบคุมเกม 6 คดี</strong><span>ติดตามกิจกรรมเกมหลักในชั้นเรียน</span></span><b aria-hidden="true">→</b></a></li>
+              <li><a href="cyber_shield_teacher_3.html"><span><strong>ศูนย์ควบคุมเกม 3 คดี</strong><span>ติดตามกิจกรรมฉบับย่อ</span></span><b aria-hidden="true">→</b></a></li>
+              <li><a href="teacher_dashboard.html"><span><strong>แดชบอร์ดแบบทดสอบ</strong><span>ดูผลจากเกมปรนัย</span></span><b aria-hidden="true">→</b></a></li>
+              <li><a href="cases_reference.html"><span><strong>คลังคดีและแนวคำตอบ</strong><span>ข้อมูลอ้างอิงสำหรับเตรียมการสอน</span></span><b aria-hidden="true">→</b></a></li>
+            </ul>
+          </article>
+        </div>
+      </div>
+    </section>
 
+    <section class="section teaching-path" id="teacher-path" aria-labelledby="path-title">
+      <div class="container">
+        <div class="section-head">
+          <div>
+            <p class="section-label">เส้นทางสำหรับครู</p>
+            <h2 id="path-title">หนึ่งคาบเรียน เดินเป็น 3 ขั้น</h2>
+          </div>
+          <p>โครงนี้ช่วยลดเวลาตัดสินใจและทำให้ลิงก์แต่ละชิ้นทำหน้าที่ต่อเนื่องกัน</p>
+        </div>
+
+        <div class="path-grid">
+          <article class="path-step">
+            <span class="step-number" aria-hidden="true">01</span>
+            <h3>ปูพื้นด้วยสไลด์</h3>
+            <p>เลือกสไลด์ พ.ร.บ.คอมพิวเตอร์หรือ PDPA ตามหัวข้อของคาบ เพื่อให้ทุกคนมีคำสำคัญร่วมกัน</p>
+            <a class="text-link" href="presentation.html">เปิดสไลด์ พ.ร.บ.คอมพิวเตอร์ <span aria-hidden="true">→</span></a>
+          </article>
+
+          <article class="path-step">
+            <span class="step-number" aria-hidden="true">02</span>
+            <h3>วิเคราะห์คดีด้วยเกม</h3>
+            <p>ให้นักเรียนทดลองตัดสินใจจากสถานการณ์ในเกมหลัก 6 คดี แล้วใช้คำตอบเป็นจุดเริ่มการอภิปราย</p>
+            <a class="text-link" href="cyber_shield_detective.html">เปิดเกมวิเคราะห์คดี <span aria-hidden="true">→</span></a>
+          </article>
+
+          <article class="path-step">
+            <span class="step-number" aria-hidden="true">03</span>
+            <h3>สร้างชิ้นงาน PDPA</h3>
+            <p>ปิดบทเรียนด้วยกระดานใบงาน เพื่อให้นักเรียนเรียบเรียงสิ่งที่เข้าใจเป็นชิ้นงานของตนเอง</p>
+            <a class="text-link" href="pdpa_assignment_board.html">เปิดกระดานสร้างใบงาน <span aria-hidden="true">→</span></a>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="knowledge" aria-labelledby="knowledge-title">
+      <div class="container">
+        <div class="section-head">
+          <div>
+            <p class="section-label">ความรู้กฎหมายไซเบอร์</p>
+            <h2 id="knowledge-title">เข้าใจหลักก่อน แล้วค่อยลงมือกับคดี</h2>
+          </div>
+          <p>หน้าแรกสรุปเฉพาะภาพรวม ส่วนบทเรียนปลายทางช่วยให้ศึกษาแต่ละเรื่องได้ลึกขึ้น</p>
+        </div>
+
+        <div class="knowledge-layout">
+          <article class="knowledge-card">
+            <span class="knowledge-tag">หัวข้อที่ 01</span>
+            <h3>พ.ร.บ.คอมพิวเตอร์คืออะไร</h3>
+            <p>พ.ร.บ.คอมพิวเตอร์ พ.ศ. 2560 เป็นหนึ่งในกรอบกฎหมายที่เกี่ยวข้องกับการกระทำผ่านระบบและข้อมูลคอมพิวเตอร์ สำหรับนักเรียน การเรียนหัวข้อนี้ไม่ควรจบที่การจำชื่อมาตรา แต่ควรฝึกแยกแยะว่าเหตุการณ์ดิจิทัลแบบใดมีความเสี่ยง ใครได้รับผลกระทบ และควรรับผิดชอบต่อการใช้เทคโนโลยีอย่างไร Cyber Shield Detective จึงใช้คดีจำลองเป็นพื้นที่ให้ลองคิด อธิบายเหตุผล และทบทวนคำตอบก่อนนำไปเชื่อมกับเนื้อหากฎหมายในบทเรียน</p>
+            <a class="text-link" href="presentation.html">เรียนต่อด้วยสไลด์ พ.ร.บ.คอมพิวเตอร์ <span aria-hidden="true">→</span></a>
+          </article>
+
+          <article class="knowledge-card">
+            <span class="knowledge-tag">หัวข้อที่ 02</span>
+            <h3>PDPA เกี่ยวข้องกับนักเรียนอย่างไร</h3>
+            <p>PDPA ช่วยให้เข้าใจว่าข้อมูลส่วนบุคคลควรถูกเก็บ ใช้ หรือเปิดเผยอย่างรับผิดชอบ เรื่องนี้อยู่ใกล้ตัวนักเรียนตั้งแต่รูปถ่าย บัญชีออนไลน์ ข้อมูลติดต่อ ไปจนถึงข้อมูลที่ส่งต่อในกลุ่มเรียน การรู้จักสิทธิและหน้าที่จึงช่วยให้ตัดสินใจก่อนโพสต์ ขออนุญาตเมื่อเหมาะสม และระวังผลกระทบต่อผู้อื่น บทเรียน PDPA 101 และกระดานสร้างใบงานถูกจัดไว้ให้เรียนแนวคิดก่อน แล้วเปลี่ยนความเข้าใจเป็นชิ้นงานที่อธิบายได้</p>
+            <a class="text-link" href="pdpa_presentation.html">เรียนต่อด้วยสไลด์ PDPA 101 <span aria-hidden="true">→</span></a>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section faq" aria-labelledby="faq-title">
+      <div class="container">
+        <div class="section-head">
+          <div>
+            <p class="section-label">คำถามก่อนเริ่ม</p>
+            <h2 id="faq-title">รู้เท่านี้ก็เริ่มใช้ได้</h2>
+          </div>
+          <p>คำตอบสั้นสำหรับนักเรียนและครูที่กำลังเลือกกิจกรรม</p>
+        </div>
+
+        <div class="faq-list">
+          <details>
+            <summary>พ.ร.บ.คอมพิวเตอร์กับ PDPA ต่างกันอย่างไร</summary>
+            <p>พ.ร.บ.คอมพิวเตอร์ใช้เรียนรู้เรื่องการกระทำที่เกี่ยวกับระบบและข้อมูลคอมพิวเตอร์ ส่วน PDPA เน้นการเก็บ ใช้ และเปิดเผยข้อมูลส่วนบุคคล ทั้งสองเรื่องเชื่อมโยงกันในชีวิตดิจิทัล แต่มีจุดเน้นต่างกัน จึงแยกบทเรียนและกิจกรรมไว้ให้เลือกอย่างชัดเจน</p>
+          </details>
+          <details>
+            <summary>ครูควรใช้สื่อเหล่านี้ในคาบอย่างไร</summary>
+            <p>เริ่มปูพื้นด้วยสไลด์ จากนั้นให้นักเรียนวิเคราะห์สถานการณ์ผ่านเกม และปิดคาบด้วยกระดานสร้างใบงาน PDPA หากมีเวลาจำกัด สามารถเลือกเกมฉบับเร็ว 3 คดีหรือเกม PDPA แบบเร็วจากรายการเครื่องมือทั้งหมดได้</p>
+          </details>
+          <details>
+            <summary>ต้องติดตั้งโปรแกรมหรือไม่</summary>
+            <p>ไม่ต้องติดตั้งแอป สามารถเปิดสื่อและเกมผ่านเว็บเบราว์เซอร์ได้โดยตรง ฟังก์ชันที่เชื่อมต่อระบบช่วยประเมินคำตอบด้วย Gemini AI จำเป็นต้องใช้งานในสภาพแวดล้อมที่เชื่อมต่ออินเทอร์เน็ตและเซิร์ฟเวอร์ของโครงการ</p>
+          </details>
+        </div>
+      </div>
+    </section>
+
+    <section class="section about" id="about" aria-labelledby="about-title">
+      <div class="container about-grid">
+        <div class="about-copy">
+          <div class="shield-mark" aria-hidden="true">CS</div>
+          <h2 id="about-title">สร้างเพื่อการเรียนรู้ พร้อมบอกขอบเขตอย่างตรงไปตรงมา</h2>
+          <p>เนื้อหาในเว็บไซต์ช่วยให้นักเรียนฝึกคิดและช่วยครูจัดกิจกรรม ไม่ได้ใช้แทนการตรวจข้อเท็จจริงของคดีจริงหรือคำปรึกษาจากผู้เชี่ยวชาญด้านกฎหมาย</p>
+        </div>
+
+        <ul class="trust-list">
+          <li class="trust-item">
+            <strong>ผู้จัดทำ</strong>
+            <span>Cyber Shield Detective Team</span>
+          </li>
+          <li class="trust-item">
+            <strong>ซอร์สโครงการ</strong>
+            <a href="https://github.com/puripong1st/tech-dm-cyber-detective" rel="noopener noreferrer">ดูโค้ดบน GitHub</a>
+          </li>
+          <li class="trust-item">
+            <strong>สถานะเนื้อหา</strong>
+            <span>สื่อเพื่อการเรียนรู้ ไม่ใช่คำปรึกษาทางกฎหมาย</span>
+          </li>
+          <li class="trust-item">
+            <strong>แหล่งอ้างอิงกฎหมาย</strong>
+            <span>พื้นที่สำหรับเพิ่มรายการอ้างอิงที่ผ่านการตรวจทานในรอบใช้งานจริง</span>
+          </li>
+        </ul>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container footer-inner">
+      <div>
+        <p class="footer-title">Cyber Shield Detective</p>
+        <p class="footer-note">เกมและสื่อการเรียนรู้กฎหมายไซเบอร์สำหรับ ม.3</p>
+      </div>
+      <nav class="footer-nav" aria-label="เมนูส่วนท้าย">
+        <a href="#tools">เครื่องมือทั้งหมด</a>
+        <a href="#about">เกี่ยวกับโครงการ</a>
+        <a href="https://github.com/puripong1st/tech-dm-cyber-detective" rel="noopener noreferrer">GitHub</a>
+        <a href="README.md">สถานะเอกสาร</a>
+      </nav>
+    </div>
+  </footer>
+
+  <script>
+    (() => {
+      const button = document.querySelector('.menu-toggle');
+      const menu = document.querySelector('#site-menu');
+      if (!button || !menu) return;
+
+      const setMenu = (open) => {
+        menu.classList.toggle('is-open', open);
+        button.setAttribute('aria-expanded', String(open));
+      };
+
+      button.addEventListener('click', () => {
+        setMenu(button.getAttribute('aria-expanded') !== 'true');
+      });
+
+      menu.addEventListener('click', (event) => {
+        if (event.target.closest('a')) setMenu(false);
+      });
+
+      window.matchMedia('(min-width: 901px)').addEventListener('change', (event) => {
+        if (event.matches) setMenu(false);
+      });
+    })();
+  </script>
 </body>
-
 </html>

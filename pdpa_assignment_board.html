@@ -7,7 +7,7 @@
 
     <!-- SEO Meta Tags -->
     <meta name="google-site-verification" content="O3pc6KHLALRFMBuOyRKW-XdUb04EdGycLs4Iy--7d70" />
-    <meta name="description" content="เครื่องมือสร้างใบงานออนไลน์สไตล์ Canva (Interactive Canvas Assignment Studio) เรื่องกฎหมาย PDPA สำหรับนักเรียน ม.3 ตกแต่งอิสระ โพสต์อิท กล่องข้อความ คลังสติกเกอร์ 60+ ลาย เส้นโยงคดี และส่งออก PDF/PNG คมชัด">
+    <meta name="description" content="เครื่องมือสร้างใบงานออนไลน์สไตล์ Canva เรื่องกฎหมาย PDPA สำหรับนักเรียน ม.3 ตกแต่งอิสระด้วยโพสต์อิท กล่องข้อความ สติกเกอร์ และส่งออกเป็น PDF คมชัด">
     <meta name="keywords" content="กระดานสร้างใบงาน PDPA, ใบงานกฎหมายคอมพิวเตอร์, ใบงาน PDPA ม.3, เครื่องมือสร้างใบงานออนไลน์, สื่อการสอนวิทยาการคำนวณ ม.3, Canvas ใบงาน, Canva ใบงาน">
     <meta name="author" content="Cyber Shield Detective Team">
     <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
@@ -125,8 +125,6 @@
         }
     </script>
     <!-- Libraries -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 
     <style>
@@ -817,9 +815,9 @@
                     <span class="hidden sm:inline">เริ่มคดีใหม่</span>
                 </button>
 
-                <button onclick="exportAssignmentPDF()" class="px-3.5 py-1.5 rounded-lg bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold text-xs shadow-md transition-all flex items-center gap-1.5">
+                <button onclick="exportAssignmentPDF()" class="px-3.5 py-1.5 rounded-lg bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold text-xs shadow-md transition-all flex items-center gap-1.5" title="พิมพ์หรือบันทึกใบงานเป็น PDF คมชัด">
                     <i class="fa-solid fa-file-pdf text-xs"></i>
-                    <span>📄 พิมพ์ / บันทึก PDF</span>
+                    <span>พิมพ์ / บันทึก PDF</span>
                 </button>
             </div>
         </div>
@@ -1701,7 +1699,7 @@
                         </button>
                     </div>
 
-                    <button onclick="exportAssignmentPDF()" class="px-3 py-1 rounded-lg bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold text-xs shadow-sm transition flex items-center gap-1.5">
+                    <button onclick="exportAssignmentPDF()" class="px-3 py-1 rounded-lg bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold text-xs shadow-sm transition flex items-center gap-1.5" title="พิมพ์หรือบันทึกใบงานเป็น PDF คมชัด">
                         <i class="fa-solid fa-file-pdf text-[11px]"></i>
                         <span>พิมพ์ / บันทึก PDF</span>
                     </button>
@@ -1804,9 +1802,9 @@
                                     <span class="font-semibold flex items-center gap-1 shrink-0 text-slate-700 whitespace-nowrap">
                                         <i class="fa-solid fa-link text-blue-500 text-[10px]"></i> ที่มา:
                                     </span>
-                                    <span id="sheetNewsUrl" class="font-mono text-[10px] text-blue-600 truncate max-w-[270px] text-right font-medium">
+                                    <a id="sheetNewsUrl" href="https://news.example.com" target="_blank" rel="noopener noreferrer" class="font-mono text-[10px] text-blue-600 max-w-[300px] text-right font-medium underline decoration-blue-300/60 underline-offset-2 break-all leading-tight">
                                         https://news.example.com
-                                    </span>
+                                    </a>
                                 </div>
                             </div>
 
@@ -2315,7 +2313,14 @@
             const ans2 = document.getElementById('ans2Input').value.trim();
             const ans3 = document.getElementById('ans3Input').value.trim();
 
-            document.getElementById('sheetNewsUrl').textContent = newsUrl || 'https://news.example.com';
+            const sheetNewsUrl = document.getElementById('sheetNewsUrl');
+            const visibleNewsUrl = newsUrl || 'https://news.example.com';
+            sheetNewsUrl.textContent = visibleNewsUrl;
+            if (/^https?:\/\//i.test(visibleNewsUrl)) {
+                sheetNewsUrl.href = visibleNewsUrl;
+            } else {
+                sheetNewsUrl.removeAttribute('href');
+            }
             document.getElementById('sheetNewsSummary').textContent = newsSummary || '(ยังไม่ได้พิมพ์สรุปข่าวสาร สามารถพิมพ์ที่แผงควบคุมฝั่งซ้ายได้เลย...)';
             document.getElementById('sheetAns1').textContent = ans1 || '(รอการบันทึกคำตอบข้อ 1...)';
             document.getElementById('sheetAns2').textContent = ans2 || '(รอการบันทึกคำตอบข้อ 2...)';
@@ -3369,8 +3374,113 @@
             if (display) display.textContent = `${Math.round(AppState.zoom * 100)}%`;
         }
 
-        // High Quality PDF Export
-        function exportAssignmentPDF() {
+        const PRINT_EXPORT_SHEET_STYLES = {
+            'box-sizing': 'border-box',
+            'width': '1123px',
+            'height': '794px',
+            'min-width': '1123px',
+            'min-height': '794px',
+            'max-width': '1123px',
+            'max-height': '794px',
+            'transform': 'none',
+            'transition': 'none',
+            'box-shadow': 'none',
+            'border-radius': '0',
+            'margin': '0',
+            'padding': '14px',
+            'overflow': 'hidden'
+        };
+
+        function setImportantStyles(element, styles) {
+            if (!element) return;
+            Object.entries(styles).forEach(([property, value]) => {
+                element.style.setProperty(property, value, 'important');
+            });
+        }
+
+        function configurePrintableNewsUrl(rootDocument = document) {
+            const urlElement = rootDocument.getElementById('sheetNewsUrl');
+            if (!urlElement) return;
+            setImportantStyles(urlElement, {
+                'display': 'block',
+                'max-width': '300px',
+                'white-space': 'normal',
+                'overflow': 'visible',
+                'text-overflow': 'clip',
+                'overflow-wrap': 'anywhere',
+                'word-break': 'break-all',
+                'line-height': '1.15',
+                'font-size': '9px'
+            });
+        }
+
+        function fitPrintableText(rootDocument = document) {
+            const targetIds = ['sheetNewsSummary', 'sheetAns1', 'sheetAns2', 'sheetAns3'];
+            const view = rootDocument.defaultView || window;
+
+            targetIds.forEach(id => {
+                const textElement = rootDocument.getElementById(id);
+                const box = textElement?.parentElement;
+                if (!textElement || !box) return;
+
+                const boxStyle = view.getComputedStyle(box);
+                const availableHeight = box.clientHeight
+                    - (parseFloat(boxStyle.paddingTop) || 0)
+                    - (parseFloat(boxStyle.paddingBottom) || 0);
+                if (availableHeight <= 0) return;
+                let fontSize = parseFloat(view.getComputedStyle(textElement).fontSize) || 12;
+
+                textElement.style.setProperty('line-height', '1.35', 'important');
+                textElement.style.setProperty('overflow-wrap', 'anywhere', 'important');
+
+                while (textElement.scrollHeight > availableHeight + 1 && fontSize > 7.5) {
+                    fontSize = Math.max(7.5, fontSize - 0.25);
+                    textElement.style.setProperty('font-size', `${fontSize}px`, 'important');
+                }
+            });
+        }
+
+        function applyPrintableSheetLayout(sheet, rootDocument = document) {
+            setImportantStyles(sheet, PRINT_EXPORT_SHEET_STYLES);
+            configurePrintableNewsUrl(rootDocument);
+            fitPrintableText(rootDocument);
+        }
+
+        function preparePrintableSheetLayout(sheet, rootDocument = document) {
+            const trackedElements = [
+                sheet,
+                rootDocument.getElementById('sheetNewsUrl'),
+                rootDocument.getElementById('sheetNewsSummary'),
+                rootDocument.getElementById('sheetAns1'),
+                rootDocument.getElementById('sheetAns2'),
+                rootDocument.getElementById('sheetAns3')
+            ].filter(Boolean);
+            const originalStyles = trackedElements.map(element => ({
+                element,
+                styleAttribute: element.getAttribute('style')
+            }));
+
+            applyPrintableSheetLayout(sheet, rootDocument);
+
+            return () => {
+                originalStyles.forEach(({ element, styleAttribute }) => {
+                    if (styleAttribute === null) element.removeAttribute('style');
+                    else element.setAttribute('style', styleAttribute);
+                });
+            };
+        }
+
+        let activePrintLayoutCleanup = null;
+
+        function cleanupActivePrintLayout() {
+            if (typeof activePrintLayoutCleanup === 'function') {
+                activePrintLayoutCleanup();
+                activePrintLayoutCleanup = null;
+            }
+        }
+
+        // High Quality PDF Export — primary format for printing and submission.
+        async function exportAssignmentPDF() {
             if (!AppState.student.isRegistered) {
                 openRegistrationModal();
                 alert('กรุณากรอกข้อมูลนักเรียนให้ครบถ้วนก่อนพิมพ์/บันทึกใบงาน');
@@ -3385,20 +3495,30 @@
             }
             document.querySelectorAll('canvas:not(#drawingCanvas)').forEach(c => c.remove());
 
+            const sheet = document.getElementById('assignmentSheet');
+            if (!sheet) return;
+            cleanupActivePrintLayout();
+            activePrintLayoutCleanup = preparePrintableSheetLayout(sheet, document);
+            if (document.fonts?.ready) await document.fonts.ready;
+
             // Clean trigger of print dialog
             setTimeout(() => {
-                window.print();
+                try {
+                    window.print();
+                } finally {
+                    // afterprint also runs this; the fallback covers browsers that omit it.
+                    setTimeout(cleanupActivePrintLayout, 0);
+                }
             }, 80);
         }
 
         // Trigger celebratory confetti ONLY after the student finishes or closes the print dialog
         window.addEventListener('afterprint', () => {
+            cleanupActivePrintLayout();
             if (typeof confetti === 'function') {
                 confetti({ particleCount: 70, spread: 60, origin: { y: 0.6 } });
             }
         });
-
-        const exportAssignmentPNG = exportAssignmentPDF;
     </script>
 </body>
 </html>
