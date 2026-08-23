@@ -49,7 +49,7 @@
 
 | แอปพลิเคชัน / สื่อการสอน | ลิงก์เข้าใช้งานสด (Live URL) | คู่มือเจาะลึก (.md) | กลุ่มเป้าหมาย | หน้าที่และจุดเด่นสำคัญ |
 |---|---|:---:|:---:|---|
-| 🏠 **Main Portal Hub** | [`/`](https://tech-dm-cyber-detective.vercel.app/) | [📖 `index.md`](docs/pages/index.md) | ทุกคน | หน้าเริ่มต้นแบบ Friendly Geometric แบ่งชัดเจนเป็นหมวดเรียนรู้ สื่อและชิ้นงาน และเครื่องมือครู |
+| 🏠 **Main Portal Hub** | [`/`](https://tech-dm-cyber-detective.vercel.app/) | [📖 `index.md`](docs/pages/index.md) | ทุกคน | หน้าเริ่มต้นธีมเข้มแบบเดิม จัดสื่อเป็นแท็บสไลด์ งาน เกม แดชบอร์ด เฉลย และโครงสร้างโปรเจกต์ |
 | 🎮 **Cyber Shield Detective (6 คดี)** | [`/cyber_shield_detective.html`](https://tech-dm-cyber-detective.vercel.app/cyber_shield_detective.html) | [📖 `cyber_shield_detective.md`](docs/pages/cyber_shield_detective.md) | นักเรียน ม.3 | เกมสืบคดีการ์ตูน 9 ช่อง วิเคราะห์อัตนัย 3 บทบาท ประเมินผลสดด้วย Gemini AI (180 คะแนน) |
 | ⚡ **Cyber Shield Detective (Fast-Track 3 คดี)** | [`/cyber_shield_detective_3.html`](https://tech-dm-cyber-detective.vercel.app/cyber_shield_detective_3.html) | [📖 `cyber_shield_detective_3.md`](docs/pages/cyber_shield_detective_3.md) | นักเรียน ม.3 | เกมสืบคดีเวอร์ชันรวบรัด 3 คดี เหมาะสำหรับคาบเรียน 50 นาที พร้อมส่งคะแนนสด (90 คะแนน) |
 | 📖 **Quest: สไลด์บทเรียน 12 มาตรา** | [`/presentation.html`](https://tech-dm-cyber-detective.vercel.app/presentation.html) | [📖 `presentation.md`](docs/pages/presentation.md) | ครู / นักเรียน | สไลด์สรุป พ.ร.บ.คอมพิวเตอร์ 2560 ครบ 12 มาตรา พร้อมควิซโต้ตอบและเพลงประกอบแนว RPG |
@@ -68,7 +68,7 @@
 
 เอกสารคู่มือการใช้งานและโครงสร้างสถาปัตยกรรมเชิงลึกทั้ง 12 หน้า จัดเก็บไว้ในโฟลเดอร์ [`docs/pages/`](docs/pages/) ทุกไฟล์ประกอบด้วย **6 ส่วนมาตรฐานเข้มข้น**: 1) ภาพรวม & วัตถุประสงค์ 2) สิ่งที่ครูควรชี้แนะ 3) ขั้นตอนการใช้งานพร้อมภาพแคปจริง 4) เกณฑ์การประเมินรูบริก 5) ผ่าสถาปัตยกรรมโค้ดและการทำงานเชิงลึก 6) การจัดการข้อผิดพลาด (Edge Cases):
 
-1. **[Main Portal Hub (`docs/pages/index.md`)](docs/pages/index.md)** - คู่มือหน้าแรก Direction A เส้นทางนักเรียน/ครู หมวดเครื่องมือ 3 กลุ่ม และ Structured Data JSON-LD
+1. **[Main Portal Hub (`docs/pages/index.md`)](docs/pages/index.md)** - คู่มือหน้าแรกแบบแท็บ สไลด์ งาน เกม แดชบอร์ด เฉลย โครงสร้างโปรเจกต์ และ Structured Data JSON-LD
 2. **[Cyber Shield Detective 6 คดี (`docs/pages/cyber_shield_detective.md`)](docs/pages/cyber_shield_detective.md)** - คู่มือเกมสืบคดีการ์ตูน 9 ช่อง วิเคราะห์อัตนัย 3 บทบาท ตรวจสดด้วย Gemini AI (เต็ม 180 คะแนน)
 3. **[Cyber Shield Detective Fast-Track 3 คดี (`docs/pages/cyber_shield_detective_3.md`)](docs/pages/cyber_shield_detective_3.md)** - คู่มือเกมสืบคดีฉบับรวบรัด 3 คดีหลัก สำหรับคาบเรียน 50 นาที (เต็ม 90 คะแนน)
 4. **[Teacher Command Center 6 คดี (`docs/pages/cyber_shield_teacher.md`)](docs/pages/cyber_shield_teacher.md)** - คู่มือห้องบัญชาการครูผู้สอน มอนิเตอร์คะแนนสดผ่าน Supabase Realtime, ปรับแก้คะแนน Override และ Export PDF
