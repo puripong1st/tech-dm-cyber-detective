@@ -34,20 +34,13 @@
 
 - [📌 สรุปภาพรวมโครงการ (Project Overview)](#-สรุปภาพรวมโครงการ-project-overview)
 - [🎮 1. ระบบแอปพลิเคชันทั้งหมด (Web Applications Hub)](#-1-ระบบแอปพลิเคชันทั้งหมด-web-applications-hub)
-- [📚 2. ศูนย์รวมคู่มือและเอกสารเจาะลึก 12 ระบบ (Detailed System Documentation)](#-2-ศูนย์รวมคู่มือและเอกสารเจาะลึก-12-ระบบ-detailed-system-documentation)
-- [⚖️ 3. สรุปสาระสำคัญ 12 มาตรา พ.ร.บ.คอมพิวเตอร์ 2560 & PDPA (Quick Reference Table)](#️-3-สรุปสาระสำคัญ-12-มาตรา-พรบคอมพิวเตอร์-2560--pdpa-quick-reference-table)
-- [🤖 4. สถาปัตยกรรมระบบประเมินผลอัตนัย AI (AI Scoring & Slang Normalizer Architecture)](#-4-สถาปัตยกรรมระบบประเมินผลอัตนัย-ai-ai-scoring--slang-normalizer-architecture)
-- [📊 5. เกณฑ์การประเมินรูบริก 4 ระดับ (Master Rubric Matrix)](#-5-เกณฑ์การประเมินรูบริก-4-ระดับ-master-rubric-matrix)
-- [❓ 6. คำถามที่พบบ่อย (Frequently Asked Questions - FAQ)](#-6-คำถามที่พบบ่อย-frequently-asked-questions---faq)
-- [🗂️ 7. โครงสร้างโฟลเดอร์โปรเจกต์ (Project Directory Breakdown)](#️-7-โครงสร้างโฟลเดอร์โปรเจกต์-project-directory-breakdown)
-- [💻 8. คู่มือการติดตั้งและรันในเครื่อง (Local Development & Deployment)](#-8-คู่มือการติดตั้งและรันในเครื่อง-local-development--deployment)
-- [📜 9. ลิขสิทธิ์และการอ้างอิง (License & Credits)](#-9-ลิขสิทธิ์และการอ้างอิง-license--credits)
-
----
-
-## 🎮 1. ระบบแอปพลิเคชันทั้งหมด (Web Applications Hub)
-
-| แอปพลิเคชัน / สื่อการสอน | ลิงก์เข้าใช้งานสด (Live URL) | คู่มือเจาะลึก (.md) | กลุ่มเป้าหมาย | หน้าที่และจุดเด่นสำคัญ |
+- [📚 2. ศูนย์รวมคู่มือและเอกสารเจาะลึก 12 ระบบ (Detailed System Documentation)](#-2-ศูนย์รวม�| 📝 **แบบทดสอบกฎหมายดิจิทัล** | [`/law_quiz.html`](https://tech-dm-cyber-detective.vercel.app/law_quiz.html) | [📖 คู่มือตั้งค่า Supabase](docs/SUPABASE_LAW_QUIZ_SETUP.md) | นักเรียน ม.3 | สุ่ม 10 ข้อจากคลัง 60 ข้อ ตาม Bloom’s Taxonomy และบันทึกคะแนนรายบุคคล |
+| 📖 **Quest: สไลด์บทเรียน 12 มาตรา** | [`/presentation.html`](https://tech-dm-cyber-detective.vercel.app/presentation.html) | [📖 `presentation.md`](docs/pages/presentation.md) | ครู / นักเรียน | สไลด์สรุป พ.ร.บ.คอมพิวเตอร์ 2560 ครบ 12 มาตรา พร้อมควิซโต้ตอบและเพลงประกอบแนว RPG |
+| 🛡️ **PDPA 101: สไลด์คู่มือ ม.3** | [`/pdpa_presentation.html`](https://tech-dm-cyber-detective.vercel.app/pdpa_presentation.html) | [📖 `pdpa_presentation.md`](docs/pages/pdpa_presentation.md) | ครู / นักเรียน | สไลด์นำเสนอเชิงโต้ตอบ สรุปข้อมูลทั่วไป vs อ่อนไหว สิทธิ 8 ประการ และแบบทดสอบรับเกียรติบัตร |
+| 🎨 **PDPA Assignment Board** | [`/pdpa_assignment_board.html`](https://tech-dm-cyber-detective.vercel.app/pdpa_assignment_board.html) | [📖 `pdpa_assignment_board.md`](docs/pages/pdpa_assignment_board.md) | นักเรียน ม.3 | กระดานสร้างใบงานออนไลน์สไตล์ Canva สำหรับสรุปวิเคราะห์คดี PDPA พร้อมพิมพ์หรือบันทึก PDF A4 |
+| ⚡ **PDPA Fast-Pass (Speedrun 60s)** | [`/pdpa_fast_pass.html`](https://tech-dm-cyber-detective.vercel.app/pdpa_fast_pass.html) | [📖 `pdpa_fast_pass.md`](docs/pages/pdpa_fast_pass.md) | นักเรียน ม.3 | เกมแยกแยะการ์ดข้อมูลส่วนบุคคลทั่วไป vs อ่อนไหว จับเวลา 60 วินาที สุ่มจากคลัง 45 ข้อ |
+| 📂 **Cases & Answer Keys Bank** | [`/cases_reference.html`](https://tech-dm-cyber-detective.vercel.app/cases_reference.html) | [📖 `cases_reference.md`](docs/pages/cases_reference.md) | ครูผู้สอน | คลังแฟ้มคดีการ์ตูน 12 คดี กฎหมายที่เกี่ยวข้อง และระบบปลดล็อกเฉลย 3 บทบาทสำหรับครู |
+| 📋 **Law Quiz 60 ข้อ & เฉลยละเอียด** | [`/law_quiz_reference.html`](https://tech-dm-cyber-detective.vercel.app/law_quiz_reference.html) | [📖 `law_quiz_reference.html`](law_quiz_reference.html) | ครูผู้สอน / นักเรียน | คลังข้อสอบ พ.ร.บ.คอมพิวเตอร์ 60 ข้อ ตาม Bloom's Taxonomy พร้อมระบบปลดล็อกเฉลยและพิมพ์ PDF |คู่มือเจาะลึก (.md) | กลุ่มเป้าหมาย | หน้าที่และจุดเด่นสำคัญ |
 |---|---|:---:|:---:|---|
 | 🏠 **Main Portal Hub** | [`/`](https://tech-dm-cyber-detective.vercel.app/) | [📖 `index.md`](docs/pages/index.md) | ทุกคน | หน้าเริ่มต้นธีมเข้มแบบเดิม จัดสื่อเป็นแท็บสไลด์ งาน เกม แดชบอร์ด เฉลย และโครงสร้างโปรเจกต์ |
 | 🎮 **Cyber Shield Detective (6 คดี)** | [`/cyber_shield_detective.html`](https://tech-dm-cyber-detective.vercel.app/cyber_shield_detective.html) | [📖 `cyber_shield_detective.md`](docs/pages/cyber_shield_detective.md) | นักเรียน ม.3 | เกมสืบคดีการ์ตูน 9 ช่อง วิเคราะห์อัตนัย 3 บทบาท ประเมินผลสดด้วย Gemini AI (180 คะแนน) |
