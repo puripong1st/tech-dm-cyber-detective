@@ -1,0 +1,382 @@
+<!doctype html>
+<html lang="th">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>PDPA Mission Quest — Design Direction</title>
+  <!--
+    ASSUMPTIONS / DIRECTION NOTES
+    - This is one candidate in the three-direction design gate, anchored to pixel-game side-scroller logic.
+    - The editor remains the product: the A4 landscape canvas is the visual hero, while game language becomes navigation and feedback.
+    - CSS-only shell icons avoid decorative emoji; the existing Thai content model drives every visible component.
+    - Prototype interactions demonstrate tool switching, object-aware controls, zoom, layers, and page switching.
+  -->
+  <style>
+    :root{
+      --ink:#0b0f19; --navy:#0f172a; --panel:#131c2e; --panel2:#18243a;
+      --line:#34435d; --paper:#f8f4e8; --paper2:#eee7d6; --text:#e8edf6;
+      --muted:#93a2ba; --green:#22c55e; --green2:#10b981; --cyan:#06b6d4;
+      --blue:#3b82f6; --amber:#eab308; --red:#ef4444; --shadow:#050810;
+      --ui:"Bai Jamjuree","Prompt",Tahoma,sans-serif; --tech:"Chakra Petch","Bai Jamjuree",monospace;
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%;margin:0;overflow:hidden}
+    body{font-family:var(--ui);background:var(--ink);color:var(--text);font-size:14px}
+    button,input,textarea{font:inherit}
+    button{color:inherit}
+    .app{height:100vh;display:grid;grid-template-rows:56px 48px minmax(0,1fr) 42px;background:var(--navy)}
+
+    .topbar{display:flex;align-items:center;gap:14px;padding:0 16px;border-bottom:2px solid #26344b;background:var(--ink);min-width:0;z-index:8}
+    .brand{display:flex;align-items:center;gap:10px;min-width:235px}
+    .shield{width:30px;height:32px;position:relative;background:var(--green);clip-path:polygon(10% 0,90% 0,90% 67%,50% 100%,10% 67%);filter:drop-shadow(3px 3px 0 #064e3b)}
+    .shield:after{content:"P";position:absolute;inset:4px 7px 8px;background:var(--ink);clip-path:inherit;color:var(--green);display:grid;place-items:center;font:800 13px var(--tech)}
+    .brand strong{display:block;font:700 15px var(--tech);letter-spacing:.04em}
+    .brand small{display:block;color:var(--muted);font-size:11px;margin-top:1px}
+    .top-divider{width:1px;height:24px;background:#2e3b51}
+    .file-name{min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:#cbd5e1;font-weight:600}
+    .file-name .code{font:700 11px var(--tech);color:var(--cyan);border:1px solid #285466;padding:3px 6px;margin-right:7px}
+    .top-actions{margin-left:auto;display:flex;gap:7px;align-items:center}
+    .btn{height:34px;border:1px solid #40506a;background:#172238;padding:0 11px;display:inline-flex;align-items:center;justify-content:center;gap:7px;cursor:pointer;border-radius:3px;font-weight:600;font-size:12px;box-shadow:2px 2px 0 var(--shadow)}
+    .btn:hover{border-color:#7c8da7;background:#1d2b45}
+    .btn:active{transform:translate(1px,1px);box-shadow:1px 1px 0 var(--shadow)}
+    .btn.mini{width:34px;padding:0;font:700 10px var(--tech)}
+    .btn.primary{background:var(--green);border-color:#52e87c;color:#052e16;box-shadow:3px 3px 0 #064e3b;font-weight:800}
+    .btn.flat{box-shadow:none;background:transparent}
+    .save-state{display:flex;align-items:center;gap:7px;color:#a7f3d0;font-size:11px;white-space:nowrap}
+    .save-state:before{content:"";width:7px;height:7px;background:var(--green);box-shadow:0 0 0 2px #123c2d}
+
+    .routebar{display:grid;grid-template-columns:318px minmax(0,1fr) 230px;align-items:center;border-bottom:2px solid #26344b;background:#111a2b}
+    .route-label{padding-left:18px;font:700 11px var(--tech);color:#8ea0bb;letter-spacing:.13em}
+    .route{height:100%;display:flex;align-items:center;justify-content:center;gap:0;min-width:0}
+    .checkpoint{height:30px;min-width:166px;border:1px solid #40506a;background:#131e32;display:flex;align-items:center;gap:9px;padding:0 14px;color:#aebbd0;font-weight:600;font-size:12px;position:relative;cursor:pointer}
+    .checkpoint:not(:last-child):after{content:"";position:absolute;right:-17px;width:16px;height:1px;background:#52637c;z-index:2}
+    .checkpoint+.checkpoint{margin-left:17px}
+    .checkpoint .flag{width:17px;height:17px;border:1px solid currentColor;display:grid;place-items:center;font:800 9px var(--tech)}
+    .checkpoint.active{border-color:var(--green);color:#d9ffe5;background:#173126;box-shadow:3px 3px 0 #071b12}
+    .route-end{font:700 10px var(--tech);color:#718198;text-align:right;padding-right:18px;letter-spacing:.1em}
+
+    .editor{display:grid;grid-template-columns:78px 244px minmax(0,1fr) 220px;min-height:0;background:#111827}
+    .tool-rail{border-right:2px solid #26344b;background:#0d1422;padding:8px 7px;display:flex;flex-direction:column;gap:5px;overflow:auto}
+    .tool{min-height:58px;border:1px solid transparent;background:transparent;color:#91a1ba;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;cursor:pointer;padding:5px 2px;font-size:10px;border-radius:3px}
+    .tool:hover{background:#172238;color:#fff;border-color:#33445d}
+    .tool.active{background:#193128;color:#eaffef;border-color:var(--green);box-shadow:3px 3px 0 #071b12}
+    .tool-icon{width:25px;height:23px;border:2px solid currentColor;display:grid;place-items:center;font:800 9px var(--tech);position:relative}
+    .tool-icon:after{content:"";position:absolute;width:4px;height:4px;background:currentColor;right:-4px;bottom:-4px}
+    .tool-spacer{flex:1}
+
+    .mission-panel{min-width:0;background:var(--panel);border-right:2px solid #26344b;display:flex;flex-direction:column;overflow:hidden}
+    .panel-head{height:56px;padding:10px 12px;border-bottom:1px solid #30405a;background:#162238;display:flex;align-items:center;gap:10px}
+    .mission-id{width:34px;height:34px;border:2px solid var(--cyan);display:grid;place-items:center;color:var(--cyan);font:800 11px var(--tech);box-shadow:3px 3px 0 #082d35}
+    .panel-head strong{display:block;font-size:14px}
+    .panel-head small{display:block;color:#8fa1ba;font:600 10px var(--tech);margin-top:2px;letter-spacing:.06em}
+    .panel-scroll{padding:12px;overflow:auto;scrollbar-color:#3a4a65 transparent;min-height:0}
+    .panel-kicker{font:700 10px var(--tech);color:var(--green);letter-spacing:.12em;margin-bottom:6px}
+    .panel-title{font-size:18px;font-weight:800;line-height:1.25;margin:0 0 6px}
+    .panel-copy{color:#a9b5c7;line-height:1.55;margin:0 0 13px;font-size:12px}
+    .panel-section{border-top:1px solid #33425a;padding-top:12px;margin-top:12px}
+    .section-label{font:700 10px var(--tech);letter-spacing:.1em;color:#8292aa;margin-bottom:8px}
+    .search{width:100%;height:36px;border:1px solid #42536e;background:#0d1627;color:#e5edf8;padding:0 10px;outline:none;border-radius:2px}
+    .search:focus{border-color:var(--cyan)}
+    .asset{width:100%;border:1px solid #3c4c65;background:#18243a;padding:9px;text-align:left;margin:0 0 7px;cursor:pointer;box-shadow:2px 2px 0 #080d17;border-radius:2px}
+    .asset:hover{border-color:#8294ad;background:#1c2a43}
+    .asset strong{display:block;font-size:12px}
+    .asset span{display:block;color:#91a0b5;font-size:10px;margin-top:3px;line-height:1.45}
+    .asset[data-tone="red"]{border-left:4px solid var(--red)}
+    .asset[data-tone="amber"]{border-left:4px solid var(--amber)}
+    .asset[data-tone="green"]{border-left:4px solid var(--green)}
+    .dropzone{border:1px dashed #56708f;background:#101a2c;padding:13px 10px;text-align:center;color:#9aacbf;font-size:11px;cursor:pointer}
+    .dropzone b{display:block;color:#dbeafe;margin-bottom:3px}
+    .swatches{display:grid;grid-template-columns:repeat(5,1fr);gap:7px}
+    .swatch{aspect-ratio:1;border:2px solid #0b0f19;box-shadow:2px 2px 0 #050810;cursor:pointer}
+    .swatch.active{outline:2px solid #fff;outline-offset:2px}
+    .draw-row{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}
+    .draw-choice{height:38px;border:1px solid #42536e;background:#101a2c;font:700 10px var(--tech);cursor:pointer}
+
+    .stage{min-width:0;min-height:0;position:relative;display:grid;grid-template-rows:48px minmax(0,1fr);background-color:#182236;background-image:linear-gradient(#26344d 1px,transparent 1px),linear-gradient(90deg,#26344d 1px,transparent 1px);background-size:24px 24px}
+    .context-bar{display:flex;align-items:center;gap:7px;padding:6px 10px;background:#0f1828;border-bottom:1px solid #34445c;z-index:3;overflow-x:auto}
+    .context-object{display:flex;align-items:center;gap:8px;min-width:158px;margin-right:2px}
+    .select-pip{width:11px;height:11px;background:var(--green);border:2px solid #062d15;box-shadow:2px 2px 0 #050810}
+    .context-object strong{font-size:11px;display:block;white-space:nowrap}
+    .context-object span{font:600 9px var(--tech);color:#7f91a9;display:block}
+    .cmd{height:32px;min-width:52px;padding:0 8px;border:1px solid #3d4c65;background:#172238;color:#cbd5e1;font:700 9px var(--tech);cursor:pointer;border-radius:2px}
+    .cmd:hover{border-color:var(--green);color:#fff}
+    .cmd.danger:hover{border-color:var(--red);color:#fecaca}
+    .context-spacer{flex:1}
+    .keyhint{font:700 9px var(--tech);color:#718198;white-space:nowrap;padding:0 4px}
+    .canvas-viewport{min-height:0;overflow:auto;display:grid;place-items:center;padding:24px 28px;scrollbar-color:#51617a #111827}
+    .paper-shell{position:relative;flex:none}
+    .paper{width:min(820px,calc((100vh - 220px)*1.414),calc(100vw - 600px));min-width:590px;aspect-ratio:1123/794;background:var(--paper);color:#151923;border:2px solid #d3c8af;box-shadow:10px 12px 0 rgba(5,8,16,.42);transform-origin:top left;position:absolute;inset:0;overflow:hidden}
+    .page-sheet{display:none;width:100%;height:100%;padding:2.8%;position:relative;background:var(--paper)}
+    .page-sheet.active{display:grid}
+    .case-page{grid-template-rows:17% 1fr 34%;gap:2.4%}
+    .paper-head{border:2px solid #171b24;background:#111827;color:white;display:grid;grid-template-columns:1fr 30%;align-items:stretch;box-shadow:4px 4px 0 #c9bfa8}
+    .paper-title{padding:2.7% 3%;display:flex;align-items:center;gap:3%}
+    .case-chip{font:800 8px var(--tech);letter-spacing:.1em;color:#72f59a;border:1px solid #22c55e;padding:4px 6px;white-space:nowrap}
+    .paper-title h1{font-size:clamp(15px,1.45vw,23px);margin:0;line-height:1.1}
+    .paper-title p{font-size:8px;color:#a9b4c6;margin:3px 0 0}
+    .student{border-left:1px dashed #61708a;padding:7% 8%;display:flex;flex-direction:column;justify-content:center}
+    .student span{font:700 7px var(--tech);color:#7dd3fc;letter-spacing:.08em}
+    .student strong{font-size:9px;line-height:1.4;margin-top:3px}
+    .evidence-row{display:grid;grid-template-columns:38% 1fr;gap:2.4%;min-height:0}
+    .evidence-card,.summary-card{border:2px solid #222834;background:#fffdf6;position:relative;padding:4%;box-shadow:4px 4px 0 #d2c7af}
+    .evidence-card{display:grid;grid-template-rows:auto 1fr auto;gap:6px}
+    .paper-label{font:800 8px var(--tech);letter-spacing:.09em;color:#4b5563;display:flex;align-items:center;gap:6px}
+    .paper-label:before{content:"";width:10px;height:10px;background:#111827;box-shadow:3px 3px 0 #9ca3af}
+    .evidence-photo{border:1px dashed #758195;background-color:#e4e0d5;background-image:linear-gradient(45deg,#d8d3c8 25%,transparent 25%),linear-gradient(-45deg,#d8d3c8 25%,transparent 25%),linear-gradient(45deg,transparent 75%,#d8d3c8 75%),linear-gradient(-45deg,transparent 75%,#d8d3c8 75%);background-size:12px 12px;background-position:0 0,0 6px,6px -6px,-6px 0;display:grid;place-items:center;color:#374151;text-align:center;font-weight:800;font-size:10px;line-height:1.5;min-height:0}
+    .evidence-link{font:700 7px var(--tech);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:#0369a1}
+    .summary-card h2{font-size:clamp(13px,1.05vw,17px);margin:6px 0 5px}
+    .summary-card p{font-size:clamp(8px,.72vw,11px);line-height:1.58;margin:0;color:#374151}
+    .verification{position:absolute;right:4%;top:10%;border:2px solid #15803d;color:#15803d;padding:4px 7px;font:800 7px var(--tech);transform:rotate(-3deg);opacity:.85}
+    .case-thread{position:absolute;left:2%;right:2%;bottom:7%;border-top:1px dashed #9ca3af}
+    .case-thread:after{content:"พบเหตุ  >  หยุดความเสียหาย  >  ป้องกันระยะยาว";position:absolute;right:0;top:3px;font:700 6px var(--tech);color:#6b7280}
+    .questions{display:grid;grid-template-columns:repeat(3,1fr);gap:2%}
+    .question{border:2px solid #222834;background:#fffdf6;padding:6% 6% 5%;position:relative;box-shadow:4px 4px 0 #d2c7af}
+    .question:before{content:attr(data-q);position:absolute;top:-9px;left:10px;padding:3px 7px;background:var(--tone);color:white;font:800 9px var(--tech);border:2px solid #222834}
+    .question h3{font-size:clamp(9px,.8vw,12px);line-height:1.35;margin:5px 0 7px}
+    .answer-lines{height:54%;background:repeating-linear-gradient(transparent 0,transparent 12px,#cbd5e1 13px);font-size:8px;line-height:13px;color:#6b7280;padding-top:1px}
+    .object{cursor:pointer;transition:filter .12s}
+    .object:hover{filter:brightness(.97)}
+    .object.selected{outline:2px solid var(--blue);outline-offset:3px}
+    .object.selected:after{content:"";position:absolute;width:7px;height:7px;background:#fff;border:2px solid var(--blue);right:-7px;bottom:-7px}
+    .object.locked{outline-color:var(--amber)}
+
+    .answer-page{grid-template-rows:18% 1fr;gap:3%}
+    .answer-head{border:2px solid #171b24;background:#111827;color:white;padding:2.4% 3%;display:flex;align-items:center;justify-content:space-between;box-shadow:4px 4px 0 #c9bfa8}
+    .answer-head h1{font-size:clamp(16px,1.5vw,23px);margin:0}
+    .answer-head p{font-size:8px;color:#a9b4c6;margin:3px 0 0}
+    .answer-stack{display:grid;grid-template-rows:repeat(3,1fr);gap:2.4%}
+    .answer-block{border:2px solid #222834;background:#fffdf6;display:grid;grid-template-columns:70px 1fr;padding:2.2%;gap:2.5%;box-shadow:4px 4px 0 #d2c7af;position:relative}
+    .answer-q{display:grid;place-items:center;background:var(--tone);color:white;font:800 18px var(--tech);border:2px solid #222834}
+    .answer-body h3{font-size:11px;margin:0 0 5px}
+    .answer-body p{font-size:9px;line-height:1.45;margin:0;color:#4b5563}
+
+    .side-hud{background:#0e1625;border-left:2px solid #26344b;min-height:0;display:grid;grid-template-rows:44px minmax(0,1fr)}
+    .hud-tabs{display:grid;grid-template-columns:1fr 1fr;border-bottom:1px solid #34445d}
+    .hud-tab{border:0;border-right:1px solid #34445d;background:#101a2c;color:#8293aa;font:700 10px var(--tech);cursor:pointer}
+    .hud-tab.active{color:#d9ffe5;background:#193128;box-shadow:inset 0 -3px 0 var(--green)}
+    .hud-view{display:none;overflow:auto;padding:10px;min-height:0}
+    .hud-view.active{display:block}
+    .hud-heading{font:700 10px var(--tech);color:#8596ae;letter-spacing:.1em;margin:2px 0 9px}
+    .layer{width:100%;height:41px;border:1px solid #34445d;background:#131e32;margin-bottom:6px;padding:0 7px;display:grid;grid-template-columns:20px 1fr 18px;align-items:center;gap:7px;color:#b9c6d8;text-align:left;cursor:pointer;border-radius:2px}
+    .layer:hover{border-color:#6c7e98}
+    .layer.active{border-color:var(--blue);background:#172b49;color:white}
+    .layer-index{font:700 8px var(--tech);color:#73849c}
+    .layer strong{font-size:10px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .eye{width:12px;height:9px;border:1px solid #8191a7;display:block;position:relative}
+    .eye:after{content:"";position:absolute;width:3px;height:3px;background:#8191a7;left:3px;top:2px}
+    .layer.hidden .eye:after{display:none}
+    .layer.hidden strong{opacity:.45}
+    .hud-note{border-top:1px solid #324159;margin-top:12px;padding-top:10px;color:#78899f;font-size:10px;line-height:1.5}
+    .page-card{width:100%;border:1px solid #3b4a62;background:#131e32;padding:7px;display:grid;grid-template-columns:52px 1fr;gap:9px;margin-bottom:8px;text-align:left;cursor:pointer;color:#bac5d4;border-radius:2px}
+    .page-card.active{border-color:var(--green);box-shadow:3px 3px 0 #071b12}
+    .page-thumb{aspect-ratio:1.414;background:#f6f0df;border:1px solid #6b7280;position:relative}
+    .page-thumb:before{content:"";position:absolute;left:4px;right:4px;top:4px;height:7px;background:#111827}
+    .page-thumb:after{content:"";position:absolute;left:4px;right:4px;top:15px;bottom:4px;background:repeating-linear-gradient(#cbd5e1 0 2px,transparent 2px 6px)}
+    .page-card strong{font-size:10px;display:block;margin-top:2px}
+    .page-card span{font-size:9px;color:#7f90a8;display:block;margin-top:3px}
+
+    .statusbar{border-top:2px solid #26344b;background:#0b111d;display:grid;grid-template-columns:322px 1fr 220px;align-items:center;color:#8191a7;font-size:10px}
+    .mission-status{padding-left:17px;font:700 9px var(--tech);letter-spacing:.06em}
+    .mission-status b{color:#a7f3d0}
+    .zoom-controls{justify-self:center;display:flex;align-items:center;gap:6px}
+    .zoom-btn{width:30px;height:28px;border:1px solid #394961;background:#141f33;cursor:pointer;font:800 12px var(--tech)}
+    .zoom-readout{min-width:54px;text-align:center;font:700 10px var(--tech);color:#d6deea}
+    .fit-btn{height:28px;border:1px solid #394961;background:#141f33;padding:0 9px;cursor:pointer;font:700 9px var(--tech)}
+    .page-status{justify-self:end;padding-right:15px;font:700 9px var(--tech);letter-spacing:.08em}
+
+    .toast{position:fixed;left:50%;bottom:55px;transform:translate(-50%,12px);background:#08120d;border:1px solid var(--green);color:#d9ffe5;padding:9px 13px;font-size:11px;box-shadow:4px 4px 0 #050810;opacity:0;pointer-events:none;transition:.18s;z-index:20}
+    .toast.show{opacity:1;transform:translate(-50%,0)}
+
+    @media(max-width:1320px){
+      .editor{grid-template-columns:72px 218px minmax(0,1fr) 204px}
+      .routebar{grid-template-columns:290px minmax(0,1fr) 204px}
+      .statusbar{grid-template-columns:290px 1fr 204px}
+      .checkpoint{min-width:145px;padding:0 9px}
+      .paper{width:min(760px,calc((100vh - 218px)*1.414),calc(100vw - 570px));min-width:570px}
+      .tool{min-height:54px}.panel-scroll{padding:10px}.btn{padding:0 8px}
+    }
+    @media(max-height:760px){
+      .app{grid-template-rows:52px 42px minmax(0,1fr) 38px}
+      .topbar{padding:0 12px}.route-label{padding-left:14px}.routebar{font-size:11px}
+      .checkpoint{height:27px}.panel-head{height:49px}.tool-rail{padding-top:5px}.tool{min-height:50px;gap:3px}
+      .stage{grid-template-rows:43px minmax(0,1fr)}.context-bar{padding:5px 8px}.cmd{height:30px}
+      .canvas-viewport{padding:15px 20px}.paper{width:min(730px,calc((100vh - 202px)*1.414),calc(100vw - 570px))}
+      .panel-copy{margin-bottom:9px}.panel-section{margin-top:9px;padding-top:9px}.asset{padding:7px}
+    }
+    @media(max-width:1100px){
+      .editor{grid-template-columns:68px 210px minmax(0,1fr)}.side-hud{display:none}
+      .routebar{grid-template-columns:278px 1fr}.route-end{display:none}.statusbar{grid-template-columns:278px 1fr 0}.page-status{display:none}
+      .paper{width:min(780px,calc((100vh - 208px)*1.414),calc(100vw - 340px));min-width:540px}
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <header class="topbar">
+      <div class="brand"><div class="shield" aria-hidden="true"></div><div><strong>PDPA CASE BOARD</strong><small>กระดานวิเคราะห์คดี · ม.3</small></div></div>
+      <div class="top-divider"></div>
+      <div class="file-name"><span class="code">CASE 09</span>ใบงานวิเคราะห์เหตุข้อมูลส่วนบุคคล</div>
+      <div class="top-actions">
+        <button class="btn mini" data-toast="ย้อนกลับ 1 ขั้น">UNDO</button>
+        <button class="btn mini" data-toast="ทำซ้ำ 1 ขั้น">REDO</button>
+        <div class="save-state">บันทึกอัตโนมัติแล้ว</div>
+        <button class="btn" id="previewBtn">FIT / PREVIEW</button>
+        <button class="btn" data-toast="เตรียมไฟล์ PDF สำหรับพิมพ์แล้ว">PDF</button>
+        <button class="btn primary" title="PNG ขนาด A4 แนวนอน 3508 × 2480 px" data-toast="ส่งออก PNG A4 · 3508 × 2480 px · 300 DPI">PNG · A4 300 DPI</button>
+      </div>
+    </header>
+
+    <section class="routebar">
+      <div class="route-label">CASE-STAGE NAVIGATION</div>
+      <div class="route">
+        <button class="checkpoint active"><span class="flag">01</span>พบเหตุ</button>
+        <button class="checkpoint"><span class="flag">02</span>หยุดความเสียหาย</button>
+        <button class="checkpoint"><span class="flag">03</span>ป้องกันระยะยาว</button>
+      </div>
+      <div class="route-end">MISSION QUEST / EDIT MODE</div>
+    </section>
+
+    <div class="editor">
+      <nav class="tool-rail" aria-label="เครื่องมือหลัก">
+        <button class="tool active" data-tool="content"><span class="tool-icon">CT</span><span>เนื้อหา</span></button>
+        <button class="tool" data-tool="text"><span class="tool-icon">TX</span><span>ข้อความ</span></button>
+        <button class="tool" data-tool="elements"><span class="tool-icon">EL</span><span>องค์ประกอบ</span></button>
+        <button class="tool" data-tool="upload"><span class="tool-icon">UP</span><span>อัปโหลด</span></button>
+        <button class="tool" data-tool="style"><span class="tool-icon">ST</span><span>สไตล์</span></button>
+        <button class="tool" data-tool="draw"><span class="tool-icon">DR</span><span>วาด / ไฮไลต์</span></button>
+        <div class="tool-spacer"></div>
+        <button class="tool" id="pageTool"><span class="tool-icon">PG</span><span>หน้า</span></button>
+      </nav>
+
+      <aside class="mission-panel">
+        <div class="panel-head"><div class="mission-id" id="missionId">M1</div><div><strong id="panelName">ชุดภารกิจเนื้อหา</strong><small id="panelMode">TOOL / CONTENT</small></div></div>
+        <div class="panel-scroll" id="panelBody"></div>
+      </aside>
+
+      <main class="stage">
+        <div class="context-bar">
+          <div class="context-object"><span class="select-pip"></span><div><strong id="selectedName">กรอบสรุปเหตุการณ์</strong><span id="selectedMeta">OBJECT / SUMMARY</span></div></div>
+          <button class="cmd" id="duplicateBtn">DUPLICATE</button>
+          <button class="cmd" id="lockBtn">LOCK</button>
+          <button class="cmd" data-toast="จัดกลุ่มวัตถุแล้ว">GROUP</button>
+          <button class="cmd" id="positionBtn">LAYER +</button>
+          <button class="cmd danger" id="deleteBtn">DELETE</button>
+          <div class="context-spacer"></div><span class="keyhint">SELECT OBJECT TO CHANGE HUD</span>
+        </div>
+        <div class="canvas-viewport" id="viewport">
+          <div class="paper-shell" id="paperShell">
+            <article class="paper" id="paper">
+              <section class="page-sheet case-page active" data-page="1">
+                <header class="paper-head object" data-object="header" data-name="หัวแฟ้มคดี" data-meta="OBJECT / CASE HEADER">
+                  <div class="paper-title"><span class="case-chip">EVIDENCE FILE 09</span><div><h1>แฟ้มคดีข้อมูลส่วนบุคคล</h1><p>วิเคราะห์เหตุ · ตรวจสิทธิ · เสนอวิธีป้องกัน</p></div></div>
+                  <div class="student"><span>ผู้จัดทำ</span><strong>ด.ช. นักเรียน ทดสอบ<br>ม.3/1 · เลขที่ 1</strong></div>
+                </header>
+                <div class="evidence-row">
+                  <section class="evidence-card object" data-object="evidence" data-name="กรอบภาพหลักฐาน" data-meta="OBJECT / EVIDENCE">
+                    <div class="paper-label">หลักฐาน A · ภาพ / ลิงก์</div>
+                    <div class="evidence-photo">พื้นที่ภาพหลักฐาน<br><span style="font-weight:500">เลือกจากแผงเนื้อหา</span></div>
+                    <div class="evidence-link">LINK: แหล่งข่าวหรือโพสต์ที่พบเหตุ</div>
+                  </section>
+                  <section class="summary-card object selected" data-object="summary" data-name="กรอบสรุปเหตุการณ์" data-meta="OBJECT / SUMMARY">
+                    <div class="paper-label">สรุปข่าว / เหตุการณ์</div>
+                    <h2>มีการเผยแพร่ภาพบัตรนักเรียนในพื้นที่สาธารณะ</h2>
+                    <p>ภาพมีชื่อ ชั้นเรียน และเลขประจำตัวที่ระบุตัวบุคคลได้ โดยยังไม่ได้รับความยินยอม ผู้เรียนต้องแยกข้อมูลส่วนบุคคล ประเมินความเสียหาย และเสนอการแก้ไขที่ทำได้ทันที</p>
+                    <span class="verification">ตรวจข้อมูลแล้ว</span><span class="case-thread"></span>
+                  </section>
+                </div>
+                <div class="questions">
+                  <section class="question object" style="--tone:#ef4444" data-q="Q1" data-object="q1" data-name="คำถาม Q1 · พบเหตุ" data-meta="OBJECT / QUESTION RED"><h3>ข้อมูลใดเป็นข้อมูลส่วนบุคคล?</h3><div class="answer-lines">ระบุข้อมูลที่มองเห็นจากหลักฐาน...</div></section>
+                  <section class="question object" style="--tone:#eab308" data-q="Q2" data-object="q2" data-name="คำถาม Q2 · หยุดความเสียหาย" data-meta="OBJECT / QUESTION AMBER"><h3>ควรหยุดความเสียหายทันทีอย่างไร?</h3><div class="answer-lines">อธิบายขั้นตอนที่ควรทำก่อน...</div></section>
+                  <section class="question object" style="--tone:#22c55e" data-q="Q3" data-object="q3" data-name="คำถาม Q3 · ป้องกันระยะยาว" data-meta="OBJECT / QUESTION GREEN"><h3>จะป้องกันไม่ให้เกิดซ้ำได้อย่างไร?</h3><div class="answer-lines">เสนอแนวปฏิบัติระยะยาว...</div></section>
+                </div>
+              </section>
+
+              <section class="page-sheet answer-page" data-page="2">
+                <header class="answer-head object" data-object="answer-header" data-name="หัวหน้าคำตอบ" data-meta="OBJECT / ANSWER HEADER"><div><h1>บันทึกคำตอบฉบับเต็ม</h1><p>CASE 09 · ด.ช. นักเรียน ทดสอบ · ม.3/1 · เลขที่ 1</p></div><span class="case-chip">PAGE 02</span></header>
+                <div class="answer-stack">
+                  <section class="answer-block object" style="--tone:#ef4444" data-object="answer1" data-name="คำตอบ Q1" data-meta="OBJECT / LONG ANSWER"><div class="answer-q">Q1</div><div class="answer-body"><h3>ข้อมูลใดเป็นข้อมูลส่วนบุคคล?</h3><p>ชื่อ–นามสกุล ชั้นเรียน เลขประจำตัว และภาพถ่ายที่ทำให้ระบุว่าเป็นใครได้ ถือเป็นข้อมูลส่วนบุคคลที่ต้องใช้อย่างระมัดระวัง</p></div></section>
+                  <section class="answer-block object" style="--tone:#eab308" data-object="answer2" data-name="คำตอบ Q2" data-meta="OBJECT / LONG ANSWER"><div class="answer-q">Q2</div><div class="answer-body"><h3>ควรหยุดความเสียหายทันทีอย่างไร?</h3><p>ลบหรือจำกัดการเข้าถึงโพสต์ แจ้งผู้เผยแพร่และครูผู้ดูแล เก็บหลักฐานเท่าที่จำเป็น และหลีกเลี่ยงการส่งต่อข้อมูลซ้ำ</p></div></section>
+                  <section class="answer-block object" style="--tone:#22c55e" data-object="answer3" data-name="คำตอบ Q3" data-meta="OBJECT / LONG ANSWER"><div class="answer-q">Q3</div><div class="answer-body"><h3>จะป้องกันไม่ให้เกิดซ้ำได้อย่างไร?</h3><p>ตรวจข้อมูลก่อนโพสต์ ปิดบังข้อมูลที่ระบุตัวบุคคล ขอความยินยอมก่อนเผยแพร่ และกำหนดผู้รับผิดชอบเมื่อพบเหตุข้อมูลรั่วไหล</p></div></section>
+                </div>
+              </section>
+            </article>
+          </div>
+        </div>
+      </main>
+
+      <aside class="side-hud">
+        <div class="hud-tabs"><button class="hud-tab active" data-view="layers">LAYERS</button><button class="hud-tab" data-view="pages">PAGES</button></div>
+        <div class="hud-view active" id="layersView">
+          <div class="hud-heading">OBJECT STACK / PAGE 01</div>
+          <button class="layer" data-target="header"><span class="layer-index">01</span><strong>หัวแฟ้มคดี</strong><span class="eye"></span></button>
+          <button class="layer" data-target="evidence"><span class="layer-index">02</span><strong>กรอบภาพหลักฐาน</strong><span class="eye"></span></button>
+          <button class="layer active" data-target="summary"><span class="layer-index">03</span><strong>สรุปเหตุการณ์</strong><span class="eye"></span></button>
+          <button class="layer" data-target="q1"><span class="layer-index">04</span><strong>คำถาม Q1</strong><span class="eye"></span></button>
+          <button class="layer" data-target="q2"><span class="layer-index">05</span><strong>คำถาม Q2</strong><span class="eye"></span></button>
+          <button class="layer" data-target="q3"><span class="layer-index">06</span><strong>คำถาม Q3</strong><span class="eye"></span></button>
+          <div class="hud-note">เลือกวัตถุบนกระดาษหรือจากรายการ เพื่อเปิดคำสั่งที่สัมพันธ์กับวัตถุนั้น</div>
+        </div>
+        <div class="hud-view" id="pagesView">
+          <div class="hud-heading">CASE PAGES</div>
+          <button class="page-card active" data-page-target="1"><span class="page-thumb"></span><span><strong>01 · แฟ้มคดีหลัก</strong><span>หลักฐาน + สรุป + Q1–Q3</span></span></button>
+          <button class="page-card" data-page-target="2"><span class="page-thumb"></span><span><strong>02 · คำตอบฉบับเต็ม</strong><span>พื้นที่อธิบายคำตอบเพิ่มเติม</span></span></button>
+          <button class="btn" style="width:100%;margin-top:5px" data-toast="สร้างสำเนาหน้าแล้ว">DUPLICATE PAGE</button>
+        </div>
+      </aside>
+    </div>
+
+    <footer class="statusbar">
+      <div class="mission-status">STATUS / <b>DRAFT SECURED</b> · คลิกวัตถุแล้วตกแต่งได้อิสระ</div>
+      <div class="zoom-controls"><button class="zoom-btn" id="zoomOut">−</button><span class="zoom-readout" id="zoomReadout">100%</span><button class="zoom-btn" id="zoomIn">+</button><button class="fit-btn" id="fitBtn">FIT</button></div>
+      <div class="page-status" id="pageStatus">PAGE 01 / 02</div>
+    </footer>
+  </div>
+  <div class="toast" id="toast"></div>
+
+  <script>
+    const panels={
+      content:{id:'M1',name:'ชุดภารกิจเนื้อหา',mode:'TOOL / CONTENT',html:`<div class="panel-kicker">MISSION BRIEF</div><h2 class="panel-title">ประกอบและตกแต่งแฟ้มคดี</h2><p class="panel-copy">ลากข้อมูลจริงลงบนกระดาษ แล้วแต่งได้อิสระตามสไตล์ของคุณ ระบบช่วยคงลำดับการวิเคราะห์ให้อ่านง่าย</p><button class="btn primary" style="width:100%;margin-bottom:10px">เริ่มจากโครงพร้อมใช้</button><input class="search" value="ค้นหาเนื้อหาในคดี" aria-label="ค้นหา"><div class="panel-section"><div class="section-label">CASE ASSETS</div><button class="asset"><strong>ภาพหลักฐาน / ลิงก์</strong><span>พื้นที่วางภาพและแหล่งที่มาของเหตุ</span></button><button class="asset"><strong>สรุปข่าว</strong><span>เหตุการณ์ข้อมูลส่วนบุคคลถูกเผยแพร่</span></button></div><div class="panel-section"><div class="section-label">ANALYSIS CARDS</div><button class="asset" data-tone="red"><strong>Q1 · พบเหตุ</strong><span>ข้อมูลใดเป็นข้อมูลส่วนบุคคล?</span></button><button class="asset" data-tone="amber"><strong>Q2 · หยุดความเสียหาย</strong><span>ควรแก้ไขทันทีอย่างไร?</span></button><button class="asset" data-tone="green"><strong>Q3 · ป้องกันระยะยาว</strong><span>จะป้องกันไม่ให้เกิดซ้ำได้อย่างไร?</span></button></div>`},
+      text:{id:'M2',name:'ข้อความในแฟ้มคดี',mode:'TOOL / TEXT',html:`<div class="panel-kicker">TEXT LOADOUT</div><h2 class="panel-title">เพิ่มข้อความบนกระดาษ</h2><p class="panel-copy">ใช้รูปแบบที่อ่านง่ายสำหรับงานพิมพ์และการตรวจงานของครู</p><div class="panel-section"><button class="asset"><strong>เพิ่มหัวเรื่อง</strong><span>ข้อความเด่นสำหรับหัวแฟ้มคดี</span></button><button class="asset"><strong>เพิ่มเนื้อหา</strong><span>ข้อความอธิบายและคำตอบ</span></button><button class="asset"><strong>เพิ่มคำกำกับ</strong><span>รหัสคดี แหล่งที่มา หรือหมายเหตุ</span></button></div><div class="panel-section"><div class="section-label">SELECTED TEXT</div><input class="search" value="สรุปข่าว / เหตุการณ์"><div class="draw-row" style="margin-top:8px"><button class="draw-choice">BOLD</button><button class="draw-choice">ALIGN</button><button class="draw-choice">SPACE</button></div></div>`},
+      elements:{id:'M3',name:'อุปกรณ์และของตกแต่ง',mode:'TOOL / ELEMENTS',html:`<div class="panel-kicker">FREE DECORATION</div><h2 class="panel-title">ตกแต่งได้อิสระ</h2><p class="panel-copy">เพิ่มของตกแต่ง ย้าย ซ้อน ล็อก และจัดกลุ่มได้ตามสไตล์ของคุณ โดยข้อความสำคัญยังอ่านง่ายและพร้อมพิมพ์</p><div class="panel-section"><div class="section-label">CASE COMPONENTS</div><button class="asset"><strong>กรอบหลักฐาน</strong><span>ภาพ / ลิงก์ / หมายเลขหลักฐาน</span></button><button class="asset"><strong>เส้นเชื่อมเหตุการณ์</strong><span>โยง พบเหตุ → แก้ไข → ป้องกัน</span></button><button class="asset"><strong>ตราตรวจสอบ</strong><span>ระบุข้อมูลที่ตรวจแหล่งที่มาแล้ว</span></button></div><div class="panel-section"><div class="section-label">DECORATION KIT</div><button class="asset"><strong>เทปกระดาษและป้ายแฟ้ม</strong><span>ใช้เน้นหัวข้อหรือยึดภาพหลักฐาน</span></button><button class="asset"><strong>กรอบ เส้น และไฮไลต์</strong><span>ปรับสี ขนาด และตำแหน่งได้อิสระ</span></button></div>`},
+      upload:{id:'M4',name:'คลังหลักฐาน',mode:'TOOL / UPLOAD',html:`<div class="panel-kicker">EVIDENCE INTAKE</div><h2 class="panel-title">เพิ่มไฟล์จากเครื่อง</h2><p class="panel-copy">ตรวจว่าไม่มีข้อมูลส่วนบุคคลที่ไม่จำเป็นก่อนนำภาพเข้าสู่ใบงาน</p><div class="dropzone"><b>เลือกภาพหรือวางไฟล์ที่นี่</b>PNG, JPG · ใช้เป็นหลักฐานในคดี</div><div class="panel-section"><div class="section-label">LINK SOURCE</div><input class="search" value="วางลิงก์แหล่งข่าว"><button class="btn" style="width:100%;margin-top:8px">เพิ่มลิงก์หลักฐาน</button></div>`},
+      style:{id:'M5',name:'รูปแบบแฟ้มคดี',mode:'TOOL / STYLE',html:`<div class="panel-kicker">PAPER THEME</div><h2 class="panel-title">กำหนดบรรยากาศกระดาษ</h2><p class="panel-copy">สีของ editor ไม่กระทบสีพิมพ์ ส่วน Q1–Q3 จะคงสีความหมายเดิมเสมอ</p><div class="panel-section"><div class="section-label">PAPER</div><div class="swatches"><button class="swatch active" style="background:#f8f4e8"></button><button class="swatch" style="background:#fce7f3"></button><button class="swatch" style="background:#dbeafe"></button><button class="swatch" style="background:#f8fafc"></button><button class="swatch" style="background:#e7dfc8"></button></div></div><div class="panel-section"><button class="asset"><strong>แฟ้ม Dossier</strong><span>เส้นหมึกเข้ม + กระดาษครีม</span></button><button class="asset"><strong>Cyber Paper</strong><span>ระบบกริด + หัวข้อเชิงเทคนิค</span></button></div>`},
+      draw:{id:'M6',name:'ปากกาเน้นหลักฐาน',mode:'TOOL / DRAW',html:`<div class="panel-kicker">MARKUP KIT</div><h2 class="panel-title">วาดและไฮไลต์</h2><p class="panel-copy">ใช้ขีดเส้นใต้ข้อมูลสำคัญหรือเชื่อมหลักฐานกับคำตอบ โดยไม่บังข้อความ</p><div class="panel-section"><div class="section-label">DRAW MODE</div><div class="draw-row"><button class="draw-choice">PEN</button><button class="draw-choice">MARK</button><button class="draw-choice">ERASE</button></div></div><div class="panel-section"><div class="section-label">LINE WEIGHT</div><input type="range" min="1" max="12" value="4" style="width:100%;accent-color:#22c55e"><div class="swatches" style="margin-top:10px"><button class="swatch" style="background:#ef4444"></button><button class="swatch" style="background:#eab308"></button><button class="swatch active" style="background:#22c55e"></button><button class="swatch" style="background:#06b6d4"></button><button class="swatch" style="background:#111827"></button></div></div>`}
+    };
+
+    const panelBody=document.getElementById('panelBody');
+    function setTool(key){const p=panels[key];document.querySelectorAll('.tool[data-tool]').forEach(x=>x.classList.toggle('active',x.dataset.tool===key));document.getElementById('missionId').textContent=p.id;document.getElementById('panelName').textContent=p.name;document.getElementById('panelMode').textContent=p.mode;panelBody.innerHTML=p.html;bindPanelControls()}
+    document.querySelectorAll('.tool[data-tool]').forEach(b=>b.addEventListener('click',()=>setTool(b.dataset.tool)));
+    function bindPanelControls(){panelBody.querySelectorAll('.asset,.dropzone,.draw-choice,.btn').forEach(b=>b.addEventListener('click',()=>showToast('เพิ่มรายการลงในภารกิจแล้ว')));panelBody.querySelectorAll('.swatch').forEach(s=>s.addEventListener('click',()=>{panelBody.querySelectorAll('.swatch').forEach(x=>x.classList.remove('active'));s.classList.add('active');if(s.style.background)document.documentElement.style.setProperty('--paper',s.style.background);showToast('เปลี่ยนรูปแบบกระดาษแล้ว')}))}
+
+    let selected=document.querySelector('.object.selected');
+    function selectObject(el){if(!el||el.style.display==='none')return;document.querySelectorAll('.object').forEach(x=>x.classList.remove('selected'));el.classList.add('selected');selected=el;document.getElementById('selectedName').textContent=el.dataset.name;document.getElementById('selectedMeta').textContent=el.dataset.meta;document.querySelectorAll('.layer').forEach(x=>x.classList.toggle('active',x.dataset.target===el.dataset.object));document.getElementById('lockBtn').textContent=el.classList.contains('locked')?'UNLOCK':'LOCK'}
+    document.getElementById('paper').addEventListener('click',e=>{const el=e.target.closest('.object');if(el)selectObject(el)});
+    document.querySelectorAll('.layer').forEach(b=>b.addEventListener('click',()=>{const el=document.querySelector(`.page-sheet.active [data-object="${b.dataset.target}"]`);if(el)selectObject(el)}));
+
+    document.getElementById('duplicateBtn').addEventListener('click',()=>{if(!selected)return;const clone=selected.cloneNode(true);clone.classList.remove('selected');clone.dataset.name=selected.dataset.name+' · สำเนา';selected.parentNode.appendChild(clone);showToast('ทำสำเนาวัตถุแล้ว')});
+    document.getElementById('lockBtn').addEventListener('click',()=>{if(!selected)return;selected.classList.toggle('locked');document.getElementById('lockBtn').textContent=selected.classList.contains('locked')?'UNLOCK':'LOCK';showToast(selected.classList.contains('locked')?'ล็อกวัตถุแล้ว':'ปลดล็อกวัตถุแล้ว')});
+    document.getElementById('positionBtn').addEventListener('click',()=>{if(!selected)return;selected.style.zIndex=String((+selected.style.zIndex||1)+1);showToast('เลื่อนวัตถุขึ้นหนึ่งระดับ')});
+    document.getElementById('deleteBtn').addEventListener('click',()=>{if(!selected)return;selected.style.display='none';showToast('ซ่อนวัตถุจากหน้าแล้ว');const next=document.querySelector('.page-sheet.active .object:not([style*="display: none"])');if(next)selectObject(next)});
+
+    document.querySelectorAll('.hud-tab').forEach(t=>t.addEventListener('click',()=>{document.querySelectorAll('.hud-tab').forEach(x=>x.classList.toggle('active',x===t));document.querySelectorAll('.hud-view').forEach(x=>x.classList.remove('active'));document.getElementById(t.dataset.view+'View').classList.add('active')}));
+    document.getElementById('pageTool').addEventListener('click',()=>{document.querySelector('.hud-tab[data-view="pages"]').click();showToast('เปิดแผงหน้าเอกสาร')});
+    function switchPage(page){document.querySelectorAll('.page-sheet').forEach(x=>x.classList.toggle('active',x.dataset.page===page));document.querySelectorAll('.page-card').forEach(x=>x.classList.toggle('active',x.dataset.pageTarget===page));document.getElementById('pageStatus').textContent=`PAGE 0${page} / 02`;if(page==='1'){document.querySelector('.hud-heading').textContent='OBJECT STACK / PAGE 01';selectObject(document.querySelector('[data-object="summary"]'))}else selectObject(document.querySelector('[data-object="answer1"]'));showToast(`เปิดหน้า 0${page} แล้ว`)}
+    document.querySelectorAll('.page-card').forEach(b=>b.addEventListener('click',()=>switchPage(b.dataset.pageTarget)));
+
+    document.querySelectorAll('.checkpoint').forEach((b,i,all)=>b.addEventListener('click',()=>{all.forEach(x=>x.classList.remove('active'));b.classList.add('active');const targets=['q1','q2','q3'];if(document.querySelector('.page-sheet[data-page="1"]').classList.contains('active'))selectObject(document.querySelector(`[data-object="${targets[i]}"]`));showToast(`เข้าสู่ช่วง ${b.textContent.trim().replace(/^0\d/,'')}`)}));
+
+    let zoom=1;const paper=document.getElementById('paper'),shell=document.getElementById('paperShell');
+    function applyZoom(){paper.style.transform=`scale(${zoom})`;shell.style.width=paper.offsetWidth*zoom+'px';shell.style.height=paper.offsetHeight*zoom+'px';document.getElementById('zoomReadout').textContent=Math.round(zoom*100)+'%'}
+    document.getElementById('zoomIn').addEventListener('click',()=>{zoom=Math.min(1.4,zoom+.1);applyZoom()});
+    document.getElementById('zoomOut').addEventListener('click',()=>{zoom=Math.max(.7,zoom-.1);applyZoom()});
+    function fit(){zoom=1;applyZoom();document.getElementById('viewport').scrollTo({left:0,top:0,behavior:'smooth'});showToast('ปรับกระดาษให้พอดีกับพื้นที่แล้ว')}
+    document.getElementById('fitBtn').addEventListener('click',fit);document.getElementById('previewBtn').addEventListener('click',fit);
+    window.addEventListener('resize',applyZoom);requestAnimationFrame(applyZoom);
+
+    const toast=document.getElementById('toast');let toastTimer;
+    function showToast(msg){toast.textContent=msg;toast.classList.add('show');clearTimeout(toastTimer);toastTimer=setTimeout(()=>toast.classList.remove('show'),1500)}
+    document.querySelectorAll('[data-toast]').forEach(b=>b.addEventListener('click',()=>showToast(b.dataset.toast)));
+    setTool('content');
+  </script>
+</body>
+</html>

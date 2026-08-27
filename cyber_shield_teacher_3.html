@@ -707,15 +707,15 @@
                             <thead class="bg-slate-900/90 text-slate-300 font-bold border-b border-slate-700">
                                 <tr>
                                     <th class="p-3 text-center w-12 border-r border-slate-800">#</th>
-                                    <th class="p-3 border-r border-slate-800">🏷️ ชื่อกลุ่มสายสืบ</th>
+                                    <th class="p-3 border-r border-slate-800">🕵️ ผู้ทำภารกิจ</th>
                                     <th class="p-3 text-center w-20 border-r border-slate-800">🏫 ห้อง</th>
-                                    <th class="p-3 border-r border-slate-800" id="th-members-header">👥 สมาชิกในกลุ่ม
+                                    <th class="p-3 border-r border-slate-800" id="th-members-header">👤 ข้อมูลผู้ทำภารกิจ
                                         (เลขที่ / ชื่อ-นามสกุล)</th>
-                                    <th class="p-3 text-center w-28 border-r border-slate-800">🎮 จำนวนคดี</th>
+                                    <th class="p-3 text-center w-28 border-r border-slate-800">🎮 ภารกิจ</th>
                                     <th class="p-3 text-center w-24 border-r border-slate-800">👨‍⚖️ กฎหมาย</th>
                                     <th class="p-3 text-center w-24 border-r border-slate-800">🚑 บรรเทา</th>
                                     <th class="p-3 text-center w-24 border-r border-slate-800">🛡️ ป้องกัน</th>
-                                    <th class="p-3 text-right w-28 border-r border-slate-800">⭐ รวม (90)</th>
+                                    <th class="p-3 text-right w-28 border-r border-slate-800">⭐ รวม (30)</th>
                                     <th class="p-3 text-center w-28">⏱️ ส่งล่าสุด</th>
                                 </tr>
                             </thead>
@@ -1059,7 +1059,7 @@
                         <thead class="bg-slate-900 text-slate-200 font-bold border-b border-slate-700">
                             <tr>
                                 <th class="p-2 text-center w-8 border-r border-slate-800">#</th>
-                                <th class="p-2 text-left border-r border-slate-800 min-w-[130px]">ชื่อกลุ่มสายสืบ</th>
+                                <th class="p-2 text-left border-r border-slate-800 min-w-[130px]">ผู้ทำภารกิจ</th>
                                 <th class="p-2 text-center w-12 border-r border-slate-800">ห้อง</th>
                                 <th class="p-2 text-center w-12 border-r border-slate-800">เลขที่</th>
                                 <th class="p-2 text-center w-14 border-r border-slate-800">คำนำหน้า</th>
@@ -1067,7 +1067,7 @@
                                 <th class="p-2 text-center w-16 border-r border-slate-800">👨‍⚖️ กฎหมาย</th>
                                 <th class="p-2 text-center w-16 border-r border-slate-800">🚑 บรรเทา</th>
                                 <th class="p-2 text-center w-16 border-r border-slate-800">🛡️ ป้องกัน</th>
-                                <th class="p-2 text-right w-24">⭐ รวม (90)</th>
+                                <th class="p-2 text-right w-24">⭐ รวม (30)</th>
                             </tr>
                         </thead>
                         <tbody id="pdf-report-tbody" class="divide-y divide-slate-800">
@@ -1718,7 +1718,7 @@
                     <td class="p-3 border-r border-slate-800">${membersDisplay}</td>
                     <td class="p-3 text-center border-r border-slate-800" title="${casesTooltip}">
                         <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-purple-500/20 text-purple-300 font-mono text-[11px] font-bold border border-purple-500/30">
-                            <i class="fa-solid fa-folder-open"></i> ${row.caseCount} / 3 คดี
+                            <i class="fa-solid fa-folder-open"></i> ${Math.min(row.caseCount, 1)} / 1 คดี
                         </span>
                     </td>
                     <td class="p-3 text-center font-mono font-bold text-amber-400 border-r border-slate-800">${row.legal}</td>
@@ -1757,7 +1757,7 @@
 
             document.getElementById('stat-active-rooms').textContent = rooms.size > 0 ? `${rooms.size} ห้อง` : '0 ห้อง';
             const avg = totalTeams > 0 ? (teamScoreSum / totalTeams).toFixed(1) : '0.0';
-            document.getElementById('stat-avg-score').textContent = `${avg} / 90`;
+            document.getElementById('stat-avg-score').textContent = `${Math.min(Number(avg), 30).toFixed(1)} / 30`;
         }
 
         // --- 12 Solutions Rendering ---
@@ -2515,7 +2515,7 @@
                                             คดี #${item.case_id || globalCaseIdx}: ${caseTitle} ${caseRef.section ? `(${caseRef.section})` : ''}
                                         </span>
                                         <span class="print-case-index px-1.5 py-0.5 rounded bg-slate-200 text-slate-700 font-mono text-[9.5px] font-bold">
-                                            คดีที่ ${globalCaseIdx}/3
+                                            คดีที่ ${globalCaseIdx}/1
                                         </span>
                                     </div>
                                     <span class="print-score-badge text-[9.5px]">

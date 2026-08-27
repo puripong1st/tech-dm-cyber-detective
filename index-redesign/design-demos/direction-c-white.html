@@ -1,0 +1,293 @@
+<!doctype html>
+<!--
+  Direction C — White / editorial case file
+  Assumptions: this is one of three direction prototypes, not the production homepage.
+  Form comes from the content: a case-file index, evidence rules and a three-step learning trail.
+  White space is active reading time. A production og:image and verified legal citations remain pending.
+-->
+<html lang="th">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>เกม พ.ร.บ.คอมพิวเตอร์และ PDPA สำหรับ ม.3 | Cyber Shield Detective</title>
+  <meta name="description" content="เรียนรู้ พ.ร.บ.คอมพิวเตอร์ 2560 และ PDPA ผ่านเกมสืบคดี สไลด์ และใบงานสำหรับนักเรียน ม.3 พร้อมเส้นทางการสอนสำหรับครู">
+  <meta name="robots" content="index,follow">
+  <meta name="theme-color" content="#f7f4ec">
+  <link rel="canonical" href="https://tech-dm-cyber-detective.vercel.app/">
+  <meta property="og:type" content="website">
+  <meta property="og:locale" content="th_TH">
+  <meta property="og:site_name" content="Cyber Shield Detective">
+  <meta property="og:title" content="เกม พ.ร.บ.คอมพิวเตอร์และ PDPA สำหรับ ม.3">
+  <meta property="og:description" content="เกมและสื่อการเรียนรู้กฎหมายไซเบอร์ที่ชวนให้นักเรียนอ่านหลักฐาน คิด และตัดสินใจ">
+  <meta property="og:url" content="https://tech-dm-cyber-detective.vercel.app/">
+  <script type="application/ld+json">
+  {
+    "@context":"https://schema.org",
+    "@graph":[
+      {
+        "@type":"WebSite",
+        "@id":"https://tech-dm-cyber-detective.vercel.app/#website",
+        "url":"https://tech-dm-cyber-detective.vercel.app/",
+        "name":"Cyber Shield Detective",
+        "description":"เกมและสื่อการเรียนรู้กฎหมายไซเบอร์สำหรับนักเรียน ม.3",
+        "inLanguage":"th"
+      },
+      {
+        "@type":"ItemList",
+        "name":"สื่อการเรียนรู้แนะนำ",
+        "numberOfItems":4,
+        "itemListElement":[
+          {"@type":"ListItem","position":1,"name":"เกม Cyber Shield Detective: 6 คดี","url":"https://tech-dm-cyber-detective.vercel.app/cyber_shield_detective.html"},
+          {"@type":"ListItem","position":2,"name":"สไลด์ พ.ร.บ.คอมพิวเตอร์","url":"https://tech-dm-cyber-detective.vercel.app/presentation.html"},
+          {"@type":"ListItem","position":3,"name":"สไลด์ PDPA 101","url":"https://tech-dm-cyber-detective.vercel.app/pdpa_presentation.html"},
+          {"@type":"ListItem","position":4,"name":"กระดานใบงาน PDPA","url":"https://tech-dm-cyber-detective.vercel.app/pdpa_assignment_board.html"}
+        ]
+      }
+    ]
+  }
+  </script>
+  <style>
+    :root{--ink:#13233b;--text:#20242a;--muted:#62666b;--blue:#2477d4;--amber:#f2b544;--mint:#33a77b;--paper:#f7f4ec;--white:#fff;--rule:rgba(19,35,59,.22);--soft:rgba(19,35,59,.1);--sans:"Leelawadee UI",Tahoma,sans-serif;--serif:"Leelawadee UI",Tahoma,sans-serif;--page:min(1180px,calc(100vw - 72px));--space:clamp(86px,10vw,144px)}
+    *,*::before,*::after{box-sizing:border-box}
+    html{scroll-behavior:smooth;scroll-padding-top:96px}
+    body{margin:0;color:var(--text);background-color:var(--paper);background-image:repeating-linear-gradient(0deg,rgba(19,35,59,.018) 0,rgba(19,35,59,.018) 1px,transparent 1px,transparent 6px);font-family:var(--sans);font-size:17px;line-height:1.72;text-rendering:optimizeLegibility}
+    a{color:inherit}img{display:block;max-width:100%}button,a{-webkit-tap-highlight-color:transparent}
+    :focus-visible{outline:3px solid var(--amber);outline-offset:4px}::selection{color:var(--ink);background:rgba(242,181,68,.55)}
+    .skip{position:fixed;z-index:100;top:12px;left:12px;padding:12px 18px;color:#fff;background:var(--ink);transform:translateY(-160%);transition:transform .18s ease}.skip:focus{transform:none}
+    .site-header{position:sticky;z-index:20;top:0;background:rgba(247,244,236,.95);border-bottom:1px solid var(--rule);backdrop-filter:blur(12px)}
+    .nav-shell{position:relative;width:var(--page);min-height:76px;margin:auto;display:grid;grid-template-columns:minmax(220px,1fr) auto auto;align-items:center;gap:30px}
+    .brand{width:fit-content;min-height:52px;display:inline-flex;align-items:center;gap:12px;color:var(--ink);text-decoration:none}.brand img{width:42px;height:42px;border-radius:2px}.brand-copy{display:grid;line-height:1.12}.brand-copy strong{font-family:var(--serif);font-size:1.05rem}.brand-copy small{margin-top:5px;color:var(--muted);font-size:.7rem;letter-spacing:.08em}
+    .primary-nav{display:flex;align-items:center;gap:4px}.primary-nav a,.header-action,.menu-toggle,.mobile-panel a{min-height:44px;display:inline-flex;align-items:center;justify-content:center;padding:8px 13px;font-size:.9rem;font-weight:600;text-decoration:none}.primary-nav a{border-bottom:1px solid transparent}.primary-nav a:hover{border-color:var(--ink)}
+    .header-action{min-width:128px;color:#fff;background:var(--ink);border:1px solid var(--ink);transition:.16s ease}.header-action:hover{color:var(--ink);background:transparent}
+    .menu-toggle{display:none;color:var(--ink);background:transparent;border:1px solid var(--rule);font-family:inherit;cursor:pointer}.menu-toggle::after{content:"+";margin-left:10px;font:1.25rem/1 Georgia,serif}.menu-toggle[aria-expanded="true"]::after{content:"−"}
+    .mobile-panel{position:absolute;top:calc(100% + 1px);right:0;left:0;padding:12px 0 18px;background:var(--paper);border-bottom:1px solid var(--ink)}.mobile-panel[hidden]{display:none}.mobile-panel a{justify-content:space-between;border-bottom:1px solid var(--soft)}
+    main{overflow:clip}.hero{width:var(--page);min-height:calc(100svh - 76px);margin:auto;padding:clamp(64px,9vw,126px) 0 56px;display:grid;grid-template-columns:88px minmax(0,1fr) minmax(240px,.38fr);align-items:start;column-gap:clamp(30px,5vw,76px)}
+    .folio{min-height:320px;display:grid;align-content:space-between;justify-items:start;color:var(--muted);border-right:1px solid var(--rule);font-size:.72rem;letter-spacing:.12em;writing-mode:vertical-rl;text-transform:uppercase}.folio b{color:var(--amber);font:400 2.2rem/1 Georgia,serif}
+    .eyebrow,.kicker,.margin-label,.tool-kind{margin:0;color:var(--muted);font-size:.74rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase}
+    .hero h1{max-width:760px;margin:24px 0 28px;color:var(--ink);font-family:var(--serif);font-size:clamp(3.4rem,5vw,4.8rem);font-weight:600;line-height:1.06;letter-spacing:0;text-wrap:balance}.hero h1 span{display:block;margin-left:clamp(0px,5vw,82px);color:var(--blue);font-style:normal}
+    .hero-dek{max-width:650px;margin:0;color:#383c41;font-size:clamp(1.05rem,1.5vw,1.24rem);line-height:1.8;text-wrap:pretty}.hero-actions{margin-top:34px;display:flex;flex-wrap:wrap;gap:12px 24px}
+    .primary-btn,.text-action,.inline-link,.row-link{min-height:48px;display:inline-flex;align-items:center;gap:13px;font-weight:700;text-decoration:none}.primary-btn{padding:10px 19px;color:#fff;background:var(--blue);border:1px solid var(--blue);transition:.16s ease}.primary-btn:hover{color:var(--blue);background:transparent}.text-action{padding:10px 1px;color:var(--ink);border-bottom:1px solid var(--ink)}
+    .primary-btn::after,.text-action::after,.inline-link::after,.row-link::after{content:"↗";font-family:Georgia,serif;font-weight:400}.text-action[href^="#"]::after,.inline-link[href^="#"]::after{content:"↓"}
+    .trust{margin:25px 0 0;color:var(--muted);font-size:.84rem}.trust span+span::before{content:"/";margin:0 10px;color:var(--amber)}
+    .hero-note{margin-top:clamp(128px,15vw,210px);padding-top:16px;border-top:1px solid var(--ink)}.hero-note p:not(.margin-label){margin:18px 0 0;color:var(--muted);font-size:.92rem}.reading-cue{margin-top:28px;display:flex;align-items:center;gap:9px;color:var(--ink);font-family:var(--serif);font-size:1rem}.reading-cue i{width:18px;height:1px;background:var(--amber)}
+    .section{width:var(--page);margin:auto;padding-block:var(--space);border-top:1px solid var(--rule)}.section-head{margin-bottom:clamp(44px,6vw,78px);display:grid;grid-template-columns:88px minmax(0,720px) 1fr;gap:clamp(30px,5vw,76px);align-items:start}.section-number{color:var(--amber);font:1.35rem Georgia,serif}.section-head h2{margin:0;color:var(--ink);font-family:var(--serif);font-size:clamp(2.4rem,4.8vw,4.7rem);font-weight:600;line-height:1.12;letter-spacing:0;text-wrap:balance}.section-intro{max-width:330px;margin:5px 0 0;color:var(--muted);font-size:.95rem;text-wrap:pretty}
+    .offset{margin-left:calc(88px + clamp(30px,5vw,76px))}.roles{display:grid;grid-template-columns:.82fr 1.18fr;gap:clamp(48px,9vw,128px)}.role{min-height:295px;padding:24px 0 28px;display:flex;flex-direction:column;border-top:2px solid var(--ink);border-bottom:1px solid var(--rule)}.role-index{color:var(--muted);font:.83rem Georgia,serif}.role h3{margin:38px 0 14px;color:var(--ink);font-family:var(--serif);font-size:clamp(2rem,3.5vw,3.4rem);font-weight:500;line-height:1.12}.role p{max-width:510px;margin:0 0 24px;color:var(--muted);text-wrap:pretty}.role .inline-link{margin-top:auto}
+    .inline-link,.row-link{width:fit-content;color:var(--blue);text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:5px}.register{margin:0;padding:0;list-style:none;border-bottom:1px solid var(--ink)}.register-item{display:grid;grid-template-columns:88px minmax(230px,.8fr) minmax(280px,1.35fr) 145px;align-items:center;gap:clamp(22px,4vw,58px);padding:30px 0;border-top:1px solid var(--ink);transition:.16s ease}.register-item:hover,.register-item:focus-within{padding-inline:12px;background:rgba(255,255,255,.55)}.tool-number{align-self:start;color:var(--amber);font:1.4rem Georgia,serif}.tool-title{display:grid;grid-template-columns:auto 1fr;align-items:center;gap:14px}.tool-title.no-icon{grid-template-columns:1fr}.tool-title img{width:48px;height:48px;object-fit:cover}.register h3{margin:5px 0 0;color:var(--ink);font-family:var(--serif);font-size:clamp(1.45rem,2.3vw,2.1rem);line-height:1.2}.tool-description{margin:0;color:var(--muted);text-wrap:pretty}.row-link{justify-self:end}.after-register{margin-top:28px;display:flex;justify-content:flex-end}
+    .teacher-wrap{width:100%;padding-inline:max(36px,calc((100vw - 1180px)/2));background:#fff}.teacher-wrap .section{width:100%}.lesson-path{position:relative;padding-left:clamp(38px,7vw,92px)}.lesson-path::before{content:"";position:absolute;top:14px;bottom:14px;left:8px;width:1px;background:var(--ink)}.lesson-step{position:relative;padding:0 0 58px;display:grid;grid-template-columns:minmax(220px,.8fr) minmax(280px,1fr) 170px;gap:clamp(24px,5vw,72px);align-items:start}.lesson-step:last-child{padding-bottom:0}.lesson-step::before{content:attr(data-step);position:absolute;top:0;left:calc(clamp(38px,7vw,92px)*-1 - 8px);width:32px;height:32px;display:grid;place-items:center;color:#fff;background:var(--ink);border-radius:50%;font:.88rem Georgia,serif;transform:translateX(-50%)}.lesson-step h3{margin:0;color:var(--ink);font-family:var(--serif);font-size:clamp(1.65rem,2.6vw,2.45rem);font-weight:500;line-height:1.2}.lesson-step p{margin:2px 0 0;color:var(--muted);text-wrap:pretty}.lesson-step .row-link{justify-self:start}
+    .knowledge-grid{display:grid;grid-template-columns:1fr 1fr;gap:clamp(52px,10vw,144px)}.knowledge-article{padding-top:22px;border-top:1px solid var(--ink)}.knowledge-article.pdpa{border-top-color:var(--mint)}.knowledge-article.pdpa .kicker{color:var(--mint)}.knowledge-article h3{margin:0 0 24px;color:var(--ink);font-family:var(--serif);font-size:clamp(1.8rem,3vw,2.8rem);font-weight:500;line-height:1.18}.knowledge-article p{margin:0 0 22px;color:#45494e;text-wrap:pretty}
+    .compact-index{display:grid;grid-template-columns:1fr 1fr;column-gap:clamp(52px,9vw,120px);border-top:1px solid var(--ink)}.compact-index article{min-height:148px;padding:24px 0;display:grid;grid-template-columns:48px 1fr;gap:18px;border-bottom:1px solid var(--rule)}.index-mark{color:var(--muted);font:.8rem Georgia,serif}.compact-index h3{margin:0 0 7px;color:var(--ink);font-family:var(--serif);font-size:1.4rem}.compact-index p{margin:0 0 9px;color:var(--muted);font-size:.92rem}.compact-index a{min-height:44px;display:inline-flex;align-items:center;color:var(--blue);font-weight:700;text-underline-offset:5px}
+    .faq-list{border-bottom:1px solid var(--ink)}details{border-top:1px solid var(--ink)}summary{position:relative;min-height:74px;padding:19px 58px 19px 0;display:flex;align-items:center;color:var(--ink);font-family:var(--serif);font-size:clamp(1.25rem,2.1vw,1.75rem);font-weight:600;line-height:1.35;list-style:none;cursor:pointer}summary::-webkit-details-marker{display:none}summary::after{content:"+";position:absolute;right:6px;width:44px;height:44px;display:grid;place-items:center;color:var(--blue);font:1.8rem Georgia,serif}details[open] summary::after{content:"−"}.faq-answer{max-width:790px;padding:0 58px 28px 0;color:var(--muted)}
+    .colophon{display:grid;grid-template-columns:minmax(270px,.8fr) minmax(420px,1.2fr);gap:clamp(58px,11vw,160px)}.colophon-block{padding-top:20px;border-top:1px solid var(--ink)}.colophon-block h3{margin:14px 0 18px;color:var(--ink);font-family:var(--serif);font-size:1.65rem}.colophon-block p{color:var(--muted)}.legal-note{margin-top:30px;padding-top:20px;border-top:1px dashed var(--rule);font-size:.9rem}
+    .site-footer{width:var(--page);margin:auto;padding:32px 0 44px;display:grid;grid-template-columns:1fr auto;gap:24px;color:var(--muted);border-top:1px solid var(--ink);font-size:.82rem}.footer-links{display:flex;flex-wrap:wrap;gap:6px 24px}.footer-links a{min-height:44px;display:inline-flex;align-items:center;color:var(--ink);text-underline-offset:5px}
+    @media(max-width:920px){:root{--page:min(100% - 40px,760px)}.nav-shell{grid-template-columns:1fr auto}.primary-nav,.header-action{display:none}.menu-toggle{display:inline-flex}.hero{min-height:auto;grid-template-columns:56px 1fr;column-gap:28px}.hero-note{grid-column:2;max-width:430px;margin-top:72px}.section-head{grid-template-columns:56px minmax(0,1fr);gap:28px}.section-intro{grid-column:2}.offset{margin-left:84px}.register-item{grid-template-columns:56px minmax(200px,.75fr) minmax(260px,1.25fr)}.register-item .row-link{grid-column:2/-1;justify-self:start}.lesson-step{grid-template-columns:minmax(200px,.8fr) 1fr}.lesson-step .row-link{grid-column:2}.knowledge-grid{gap:50px}.compact-index{grid-template-columns:1fr}.colophon{grid-template-columns:1fr}}
+    @media(max-width:620px){:root{--page:calc(100% - 32px);--space:76px}body{font-size:16px}.site-header{backdrop-filter:none}.nav-shell{min-height:68px;gap:12px}.brand img{width:36px;height:36px}.brand-copy strong{font-size:.92rem}.brand-copy small{display:none}.hero{min-height:calc(100svh - 68px);padding:48px 0 42px;display:block}.folio{display:none}.hero h1{margin:17px 0 25px;font-size:clamp(3.05rem,15vw,4.25rem)}.hero h1 span{margin-left:0}.hero-actions{display:grid;gap:8px}.primary-btn,.text-action{width:100%;justify-content:space-between}.trust{display:grid;gap:2px}.trust span+span::before{content:none}.hero-note{margin-top:52px}.section-head{margin-bottom:40px;grid-template-columns:40px 1fr;gap:16px}.section-head h2{font-size:clamp(2.4rem,12vw,3.3rem)}.section-intro{grid-column:2;margin-top:0}.offset{margin-left:0}.roles{grid-template-columns:1fr;gap:36px}.role{min-height:245px}.register-item{grid-template-columns:40px minmax(0,1fr);gap:10px 16px;padding:24px 0}.register-item:hover,.register-item:focus-within{padding-inline:7px}.tool-number{grid-row:1/span 3}.tool-description,.register-item .row-link{grid-column:2}.tool-title img{width:42px;height:42px}.after-register{justify-content:flex-start}.teacher-wrap{padding-inline:16px}.lesson-path{padding-left:44px}.lesson-step{padding-bottom:50px;display:block}.lesson-step::before{left:-44px}.lesson-step p{margin-top:12px}.lesson-step .row-link{margin-top:14px}.knowledge-grid{grid-template-columns:1fr;gap:48px}.compact-index{grid-template-columns:1fr}.compact-index article{min-height:0}summary{padding-right:50px;font-size:1.2rem}.faq-answer{padding-right:0}.colophon{grid-template-columns:1fr;gap:46px}.site-footer{grid-template-columns:1fr}.footer-links{gap:2px 20px}}
+    @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*,*::before,*::after{scroll-behavior:auto!important;transition-duration:.01ms!important}}
+  </style>
+</head>
+<body>
+  <a class="skip" href="#main-content">ข้ามไปยังเนื้อหาหลัก</a>
+  <header class="site-header">
+    <nav class="nav-shell" aria-label="เมนูหลัก">
+      <a class="brand" href="#top" aria-label="Cyber Shield Detective — กลับสู่ด้านบน">
+        <img src="../../favicon.png" width="192" height="192" alt="โลโก้โล่ Cyber Shield Detective">
+        <span class="brand-copy"><strong>Cyber Shield Detective</strong><small>แฟ้มการเรียนรู้กฎหมายไซเบอร์</small></span>
+      </a>
+      <div class="primary-nav">
+        <a href="#student">สำหรับนักเรียน</a>
+        <a href="#teacher">สำหรับครู</a>
+        <a href="#knowledge">ความรู้กฎหมาย</a>
+      </div>
+      <a class="header-action" href="../../cyber_shield_detective.html">เริ่มกิจกรรม</a>
+      <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="mobile-menu">สารบัญ</button>
+      <div class="mobile-panel" id="mobile-menu" hidden>
+        <a href="#student">สำหรับนักเรียน <span aria-hidden="true">01</span></a>
+        <a href="#teacher">สำหรับครู <span aria-hidden="true">02</span></a>
+        <a href="#knowledge">ความรู้กฎหมาย <span aria-hidden="true">03</span></a>
+        <a href="../../cyber_shield_detective.html">เริ่มกิจกรรม <span aria-hidden="true">↗</span></a>
+      </div>
+    </nav>
+  </header>
+  <main id="main-content">
+    <section class="hero" id="top" aria-labelledby="hero-title">
+      <div class="folio" aria-hidden="true"><span>Learning file / M.3</span><b>00</b></div>
+      <div>
+        <p class="eyebrow">แฟ้มการเรียนรู้ · พ.ร.บ.คอมพิวเตอร์ 2560 + PDPA</p>
+        <h1 id="hero-title">เรียนรู้กฎหมายไซเบอร์ <span>ผ่านคดีที่ได้ลงมือคิด</span></h1>
+        <p class="hero-dek">เกม พ.ร.บ.คอมพิวเตอร์ 2560 และ PDPA สำหรับนักเรียน ม.3 ฝึกอ่านหลักฐาน วิเคราะห์สถานการณ์ และตัดสินใจอย่างรับผิดชอบในโลกดิจิทัล</p>
+        <div class="hero-actions">
+          <a class="primary-btn" href="../../cyber_shield_detective.html">เริ่มสืบคดี 6 คดี</a>
+          <a class="text-action" href="#teacher-track">ดูเส้นทางการสอน</a>
+        </div>
+        <p class="trust"><span>ใช้ได้ฟรีบนเว็บ</span><span>ออกแบบสำหรับชั้นเรียน ม.3</span></p>
+      </div>
+      <aside class="hero-note" aria-label="บันทึกก่อนเริ่ม">
+        <p class="margin-label">บันทึกก่อนเริ่ม</p>
+        <p>ไม่ต้องจำชื่อระบบทั้งหมดก่อน เลือกบทบาทของคุณ แล้วเริ่มจากเครื่องมือเพียงชิ้นเดียว</p>
+        <div class="reading-cue" aria-label="อ่าน คิด และตัดสินใจ"><span>อ่าน</span><i aria-hidden="true"></i><span>คิด</span><i aria-hidden="true"></i><span>ตัดสินใจ</span></div>
+      </aside>
+    </section>
+    <section class="section" id="student" aria-labelledby="role-title">
+      <header class="section-head">
+        <span class="section-number" aria-hidden="true">01</span>
+        <div><p class="kicker">เลือกเส้นทาง</p><h2 id="role-title">วันนี้คุณเข้ามาในฐานะใคร</h2></div>
+        <p class="section-intro">คนเรียนและคนสอนต้องการข้อมูลคนละแบบ หน้าแรกจึงเริ่มด้วยเส้นทาง ไม่ใช่รายชื่อระบบ</p>
+      </header>
+      <div class="roles offset">
+        <article class="role">
+          <span class="role-index">A / นักเรียน</span>
+          <h3>ฉันอยากลองสืบคดี</h3>
+          <p>เข้าสู่เกมหลัก อ่านสถานการณ์ ตรวจหลักฐาน และเลือกคำตอบจาก 6 คดีที่เตรียมไว้</p>
+          <a class="inline-link" href="../../cyber_shield_detective.html">เปิดแฟ้มคดีสำหรับนักเรียน</a>
+        </article>
+        <article class="role" id="teacher">
+          <span class="role-index">B / ครูผู้สอน</span>
+          <h3>ฉันกำลังวางแผนชั้นเรียน</h3>
+          <p>เลือกสไลด์ เกม และกระดานใบงานตามลำดับ เพื่อพานักเรียนจากความเข้าใจไปสู่การลงมือทำ</p>
+          <a class="inline-link" href="#teacher-track">อ่านแผนการสอน 3 ขั้น</a>
+        </article>
+      </div>
+    </section>
+    <section class="section" id="recommended-tools" aria-labelledby="tools-title">
+      <header class="section-head">
+        <span class="section-number" aria-hidden="true">02</span>
+        <div><p class="kicker">ชุดแนะนำ</p><h2 id="tools-title">สี่เครื่องมือที่ควรรู้จักก่อน</h2></div>
+        <p class="section-intro">เลือกจากเป้าหมายของคาบ ไม่จำเป็นต้องเปิดทุกระบบในครั้งเดียว</p>
+      </header>
+      <ol class="register" aria-label="สื่อการเรียนรู้แนะนำ 4 รายการ">
+        <li><article class="register-item">
+          <span class="tool-number" aria-hidden="true">01</span>
+          <div class="tool-title no-icon"><div><p class="tool-kind">เกมแบบโต้ตอบ · 6 คดี</p><h3>Cyber Shield Detective</h3></div></div>
+          <p class="tool-description">เกมหลักสำหรับฝึกวิเคราะห์สถานการณ์และอธิบายเหตุผลจากหลักฐานในแต่ละคดี</p>
+          <a class="row-link" href="../../cyber_shield_detective.html">เริ่มสืบคดี</a>
+        </article></li>
+        <li><article class="register-item">
+          <span class="tool-number" aria-hidden="true">02</span>
+          <div class="tool-title no-icon"><div><p class="tool-kind">สไลด์บทเรียน</p><h3>พ.ร.บ.คอมพิวเตอร์</h3></div></div>
+          <p class="tool-description">ปูแนวคิดสำคัญของกฎหมายคอมพิวเตอร์ก่อนให้นักเรียนเริ่มวิเคราะห์คดี</p>
+          <a class="row-link" href="../../presentation.html">เปิดสไลด์บทเรียน</a>
+        </article></li>
+        <li><article class="register-item">
+          <span class="tool-number" aria-hidden="true">03</span>
+          <div class="tool-title no-icon"><div><p class="tool-kind">สไลด์บทเรียน</p><h3>PDPA 101</h3></div></div>
+          <p class="tool-description">ทำความเข้าใจข้อมูลส่วนบุคคลและการใช้ข้อมูลอย่างเคารพสิทธิในบริบทใกล้ตัวนักเรียน</p>
+          <a class="row-link" href="../../pdpa_presentation.html">เรียน PDPA 101</a>
+        </article></li>
+        <li><article class="register-item">
+          <span class="tool-number" aria-hidden="true">04</span>
+          <div class="tool-title"><img src="../../assets/pdpa_icon.png" width="192" height="192" loading="lazy" alt="สัญลักษณ์โล่ PDPA ของ Cyber Shield Detective"><div><p class="tool-kind">กระดานสร้างชิ้นงาน</p><h3>ใบงาน PDPA</h3></div></div>
+          <p class="tool-description">เปลี่ยนความเข้าใจให้เป็นชิ้นงาน ด้วยกระดานสำหรับจัดโจทย์และสร้างใบงานเรื่องข้อมูลส่วนบุคคล</p>
+          <a class="row-link" href="../../pdpa_assignment_board.html">สร้างใบงาน PDPA</a>
+        </article></li>
+      </ol>
+      <div class="after-register"><a class="text-action" href="#all-tools">ดูเครื่องมือทั้งหมด</a></div>
+    </section>
+    <div class="teacher-wrap">
+      <section class="section" id="teacher-track" aria-labelledby="teacher-title">
+        <header class="section-head">
+          <span class="section-number" aria-hidden="true">03</span>
+          <div><p class="kicker">เส้นทางสำหรับครู</p><h2 id="teacher-title">หนึ่งบทเรียน สามจังหวะของการเรียนรู้</h2></div>
+          <p class="section-intro">เริ่มจากภาษาร่วม ทดลองตัดสินใจ แล้วให้นักเรียนสร้างหลักฐานความเข้าใจของตนเอง</p>
+        </header>
+        <div class="lesson-path offset">
+          <article class="lesson-step" data-step="1">
+            <h3>ปูพื้นด้วยสไลด์</h3><p>เลือกหัวข้อ พ.ร.บ.คอมพิวเตอร์หรือ PDPA เพื่อสร้างคำศัพท์และกรอบคิดร่วมกันก่อนเริ่มกิจกรรม</p>
+            <a class="row-link" href="../../presentation.html">เปิดสไลด์ พ.ร.บ.คอมพิวเตอร์</a>
+          </article>
+          <article class="lesson-step" data-step="2">
+            <h3>วิเคราะห์คดีด้วยเกม</h3><p>ให้นักเรียนอ่านสถานการณ์ แยกหลักฐาน และอภิปรายเหตุผลของคำตอบแทนการจำกฎหมายเพียงอย่างเดียว</p>
+            <a class="row-link" href="../../cyber_shield_detective.html">เข้าสู่เกม 6 คดี</a>
+          </article>
+          <article class="lesson-step" data-step="3">
+            <h3>สร้างชิ้นงาน PDPA</h3><p>สรุปบทเรียนด้วยงานที่เชื่อมกับข้อมูลส่วนบุคคล เพื่อให้ครูมองเห็นทั้งความเข้าใจและการประยุกต์ใช้</p>
+            <a class="row-link" href="../../pdpa_assignment_board.html">เปิดกระดานใบงาน</a>
+          </article>
+        </div>
+      </section>
+    </div>
+    <section class="section" id="knowledge" aria-labelledby="knowledge-title">
+      <header class="section-head">
+        <span class="section-number" aria-hidden="true">04</span>
+        <div><p class="kicker">ความรู้ก่อนลงมือ</p><h2 id="knowledge-title">กฎหมายสองชุดที่พบในชีวิตดิจิทัล</h2></div>
+        <p class="section-intro">อ่านภาพรวมให้พอเห็นขอบเขต แล้วไปต่อในบทเรียนเฉพาะเมื่อพร้อม</p>
+      </header>
+      <div class="knowledge-grid offset">
+        <article class="knowledge-article">
+          <p class="kicker">Computer-related Crime Act</p>
+          <h3>พ.ร.บ.คอมพิวเตอร์คืออะไร</h3>
+          <p>พ.ร.บ.คอมพิวเตอร์ พ.ศ. 2560 เป็นกฎหมายที่เกี่ยวข้องกับการกระทำต่อระบบคอมพิวเตอร์และข้อมูลคอมพิวเตอร์ การเรียนในเว็บไซต์นี้ชวนให้นักเรียนดูสถานการณ์เป็นรายกรณี แยกว่าอะไรคือการเข้าถึง แก้ไข ทำลาย หรือเผยแพร่ข้อมูล และฝึกอธิบายเหตุผลก่อนตัดสินใจ เป้าหมายไม่ใช่การท่องจำเลขมาตรา แต่คือการมองเห็นผลกระทบของการกระทำออนไลน์และใช้เทคโนโลยีอย่างรับผิดชอบ เนื้อหาเป็นสื่อการเรียนรู้เบื้องต้น จึงควรอ่านร่วมกับบทเรียนและแหล่งกฎหมายที่ตรวจสอบแล้ว</p>
+          <a class="inline-link" href="../../presentation.html">อ่านบทเรียน พ.ร.บ.คอมพิวเตอร์</a>
+        </article>
+        <article class="knowledge-article pdpa">
+          <p class="kicker">Personal Data Protection</p>
+          <h3>PDPA เกี่ยวข้องกับนักเรียนอย่างไร</h3>
+          <p>นักเรียนพบข้อมูลส่วนบุคคลทุกวัน ตั้งแต่ชื่อ ภาพถ่าย และข้อมูลติดต่อ ไปจนถึงข้อมูลที่เกิดจากการใช้บริการออนไลน์ PDPA ช่วยให้ตั้งคำถามว่าใครกำลังเก็บ ใช้ หรือเปิดเผยข้อมูล เพื่อวัตถุประสงค์ใด และเจ้าของข้อมูลควรรู้อะไรบ้าง บทเรียนจึงเชื่อมกฎหมายกับเหตุการณ์ใกล้ตัว เช่น การส่งต่อข้อมูล การโพสต์ภาพ และการทำงานร่วมกันในชั้นเรียน เพื่อฝึกเคารพสิทธิของตนเองและผู้อื่น โดยไม่ทำให้กฎหมายกลายเป็นเรื่องน่ากลัวหรือไกลตัว</p>
+          <a class="inline-link" href="../../pdpa_presentation.html">เรียนต่อในสไลด์ PDPA 101</a>
+        </article>
+      </div>
+    </section>
+    <section class="section" id="all-tools" aria-labelledby="all-tools-title">
+      <header class="section-head">
+        <span class="section-number" aria-hidden="true">05</span>
+        <div><p class="kicker">สารบัญเครื่องมือ</p><h2 id="all-tools-title">ตัวเลือกเพิ่มเติมให้พอดีกับเวลา</h2></div>
+        <p class="section-intro">รายการย่อสำหรับกิจกรรมเร็ว การทบทวน และการเปิดคลังคดี โดยไม่แย่งความสำคัญจากชุดแนะนำ</p>
+      </header>
+      <div class="compact-index offset">
+        <article><span class="index-mark">A1</span><div><h3>เกมฉบับเร็ว 3 คดี</h3><p>ทางเลือกแบบย่อของ Cyber Shield Detective</p><a href="../../cyber_shield_detective_3.html">เปิดเกม 3 คดี</a></div></article>
+        <article><span class="index-mark">A2</span><div><h3>PDPA Fast Pass</h3><p>กิจกรรม PDPA ฉบับเร็วสำหรับทบทวน</p><a href="../../pdpa_fast_pass.html">เปิดกิจกรรม PDPA แบบเร็ว</a></div></article>
+        <article><span class="index-mark">A3</span><div><h3>คลังคดีและแนวคำตอบ</h3><p>ใช้ทบทวนสถานการณ์และเตรียมการอภิปราย</p><a href="../../cases_reference.html">เปิดคลังคดี</a></div></article>
+        <article><span class="index-mark">A4</span><div><h3>แบบทดสอบปรนัย</h3><p>ตรวจความเข้าใจหลังจบบทเรียน</p><a href="../../cyber_detective.html">เริ่มแบบทดสอบ</a></div></article>
+      </div>
+    </section>
+    <section class="section" id="faq" aria-labelledby="faq-title">
+      <header class="section-head">
+        <span class="section-number" aria-hidden="true">06</span>
+        <div><p class="kicker">คำถามก่อนเริ่ม</p><h2 id="faq-title">สามเรื่องที่ควรรู้</h2></div>
+        <p class="section-intro">คำตอบสั้นสำหรับนักเรียน ครู และผู้ปกครองที่เพิ่งรู้จักโครงการ</p>
+      </header>
+      <div class="faq-list offset">
+        <details><summary>พ.ร.บ.คอมพิวเตอร์และ PDPA ต่างกันอย่างไร</summary><div class="faq-answer">โดยสรุป พ.ร.บ.คอมพิวเตอร์เน้นการกระทำที่เกี่ยวกับระบบและข้อมูลคอมพิวเตอร์ ส่วน PDPA เน้นการคุ้มครองข้อมูลส่วนบุคคลและหน้าที่ในการเก็บ ใช้ หรือเปิดเผยข้อมูล ทั้งสองเรื่องอาจพบร่วมกันในสถานการณ์ดิจิทัลเดียวกัน</div></details>
+        <details><summary>ครูควรใช้สื่อชุดนี้ในคาบเรียนอย่างไร</summary><div class="faq-answer">เริ่มด้วยสไลด์เพื่อสร้างความเข้าใจร่วม จากนั้นใช้เกมให้ผู้เรียนวิเคราะห์คดี และจบด้วยกระดานใบงาน PDPA เพื่อสร้างชิ้นงาน ครูสามารถเลือกเฉพาะบางขั้นให้เหมาะกับเวลาของชั้นเรียนได้</div></details>
+        <details><summary>ต้องติดตั้งโปรแกรมก่อนใช้งานหรือไม่</summary><div class="faq-answer">ไม่ต้องติดตั้ง โปรแกรมและสื่อหลักเปิดใช้งานผ่านเว็บได้ เลือกเครื่องมือจากสารบัญด้านบนแล้วเริ่มกิจกรรมในเบราว์เซอร์</div></details>
+      </div>
+    </section>
+    <section class="section" id="about" aria-labelledby="about-title">
+      <header class="section-head">
+        <span class="section-number" aria-hidden="true">07</span>
+        <div><p class="kicker">บันทึกท้ายแฟ้ม</p><h2 id="about-title">ที่มา ความโปร่งใส และขอบเขต</h2></div>
+        <p class="section-intro">สื่อกฎหมายที่ดีควรบอกว่าใครจัดทำ อ้างอิงจากไหน และมีขอบเขตเพียงใด</p>
+      </header>
+      <div class="colophon offset">
+        <article class="colophon-block">
+          <p class="kicker">ผู้จัดทำ</p><h3>Cyber Shield Detective Team</h3>
+          <p>ทีมโครงการพัฒนาเกมและสื่อการเรียนรู้กฎหมายไซเบอร์สำหรับนักเรียนระดับ ม.3</p>
+          <a class="inline-link" href="https://github.com/puripong1st/tech-dm-cyber-detective" target="_blank" rel="noopener noreferrer">ดูซอร์สโครงการบน GitHub</a>
+        </article>
+        <article class="colophon-block">
+          <p class="kicker">สถานะเนื้อหา</p><h3>สื่อการเรียนรู้ ไม่ใช่คำปรึกษาทางกฎหมาย</h3>
+          <p>เนื้อหาอธิบายแนวคิดเพื่อใช้ในชั้นเรียนและการเรียนรู้ทั่วไป ไม่ควรใช้แทนคำแนะนำจากผู้เชี่ยวชาญในกรณีจริง หากนำหน้าใหม่นี้ขึ้นใช้งาน ควรเพิ่มผู้ตรวจทาน วันที่ตรวจสอบสาระ วิธีรายงานข้อผิดพลาด และรายการแหล่งอ้างอิงกฎหมายที่ยืนยันแล้ว</p>
+          <p class="legal-note"><strong>พื้นที่แหล่งอ้างอิงกฎหมาย:</strong> รอเพิ่มรายการเอกสารทางการที่ตรวจสอบแล้วในรอบ production</p>
+        </article>
+      </div>
+    </section>
+  </main>
+  <footer class="site-footer">
+    <p>© Cyber Shield Detective Team · สื่อการเรียนรู้กฎหมายไซเบอร์สำหรับ ม.3</p>
+    <nav class="footer-links" aria-label="ลิงก์ท้ายหน้า">
+      <a href="#all-tools">เครื่องมือทั้งหมด</a><a href="#about">เกี่ยวกับโครงการ</a>
+      <a href="https://github.com/puripong1st/tech-dm-cyber-detective" target="_blank" rel="noopener noreferrer">GitHub</a><a href="#about">สถานะเอกสาร</a>
+    </nav>
+  </footer>
+  <script>
+    (()=>{
+      const toggle=document.querySelector('.menu-toggle');
+      const panel=document.getElementById('mobile-menu');
+      if(!toggle||!panel)return;
+      const close=()=>{toggle.setAttribute('aria-expanded','false');panel.hidden=true};
+      toggle.addEventListener('click',()=>{const open=toggle.getAttribute('aria-expanded')!=='true';toggle.setAttribute('aria-expanded',String(open));panel.hidden=!open});
+      panel.querySelectorAll('a').forEach(link=>link.addEventListener('click',close));
+      document.addEventListener('keydown',event=>{if(event.key==='Escape'){close();toggle.focus()}});
+      window.addEventListener('resize',()=>{if(window.innerWidth>920)close()});
+    })();
+  </script>
+</body>
+</html>

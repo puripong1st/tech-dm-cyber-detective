@@ -1,0 +1,469 @@
+<!doctype html>
+<html lang="th">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>PDPA Case Board — Case-file Editorial</title>
+  <!--
+    Direction 03 / Case-file Editorial
+    Assumptions: this is a visual interaction prototype, not production storage/export.
+    Form source: editorial case files, evidence indexing, redaction rules, and a physical A4 dossier.
+    The canvas stays primary; tools behave like labelled book spines and the inspector stays deliberately slim.
+  -->
+  <style>
+    :root{
+      --ink:#171712;--ink-2:#2a2923;--chrome:#e8e0d0;--chrome-2:#d7cdb9;
+      --paper:#f7f0df;--paper-2:#eee2ca;--red:#b74231;--amber:#ca9418;
+      --green:#21734d;--cyan:#176979;--blue:#315f91;--rule:#29271f;
+      --ui:"Bai Jamjuree","Leelawadee UI",Tahoma,sans-serif;
+      --tech:"Chakra Petch","Bai Jamjuree",sans-serif;
+    }
+    *{box-sizing:border-box}
+    html,body{width:100%;height:100%;margin:0;overflow:hidden}
+    body{display:grid;grid-template-rows:64px minmax(0,1fr) 36px;background:var(--chrome);color:var(--ink);font:14px/1.45 var(--ui)}
+    button,input,select{font:inherit;color:inherit}
+    button{border:0;background:none;cursor:pointer}
+    button:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid var(--cyan);outline-offset:2px}
+    .topbar{display:grid;grid-template-columns:minmax(300px,390px) 1fr auto;align-items:stretch;background:var(--ink);color:#f7f0df;border-bottom:4px solid #9a2f25;z-index:20}
+    .brand{display:flex;align-items:center;gap:12px;padding:0 18px;border-right:1px solid #4d493e;min-width:0}
+    .brand img{width:34px;height:34px;object-fit:contain;filter:sepia(.15)}
+    .brand-copy{min-width:0}
+    .brand h1{font-size:17px;line-height:1;margin:0;letter-spacing:.01em;white-space:nowrap}
+    .brand p{margin:5px 0 0;color:#bfb6a5;font:11px/1 var(--tech);letter-spacing:.08em}
+    .file-meta{display:flex;align-items:center;gap:12px;padding:0 18px;min-width:0}
+    .case-stamp{padding:4px 8px;border:1px solid #847a67;color:#e7d7b6;font:10px/1 var(--tech);letter-spacing:.11em;white-space:nowrap}
+    .file-name{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .file-name strong{font-size:13px;font-weight:600}
+    .file-name small{display:block;color:#a8a090;font-size:10px;margin-top:2px}
+    .top-actions{display:flex;align-items:center;gap:4px;padding:0 12px}
+    .top-btn{min-height:42px;padding:0 12px;color:#d8d0c1;border-left:1px solid transparent;border-right:1px solid transparent;font-size:12px;white-space:nowrap}
+    .top-btn:hover{background:#2b2923;color:white}
+    .top-btn.primary{margin-left:8px;background:#efe4cc;color:var(--ink);font-weight:700;border:2px solid #efe4cc}
+    .top-btn.primary:hover{background:#fff6e5}
+    .history-btn{width:42px;padding:0;font:18px/1 var(--tech)}
+
+    .workbench{min-height:0;display:grid;grid-template-columns:76px 260px minmax(520px,1fr) 236px;transition:grid-template-columns .2s ease}
+    body.panel-collapsed .workbench{grid-template-columns:76px 0 minmax(520px,1fr) 236px}
+    .spine{min-height:0;background:#29251f;color:#eee5d3;border-right:4px solid #9b2f25;display:grid;grid-template-rows:62px repeat(6,minmax(68px,1fr));z-index:5}
+    .spine-head{display:grid;place-items:center;border-bottom:1px solid #514a3e;font:9px/1.2 var(--tech);letter-spacing:.16em;color:#bdb29f;text-align:center}
+    .tool-tab{position:relative;display:grid;place-content:center;gap:5px;min-height:58px;color:#cfc5b3;border-bottom:1px solid #514a3e;transition:.16s ease}
+    .tool-tab::after{content:"";position:absolute;right:-4px;top:12px;bottom:12px;width:4px;background:transparent}
+    .tool-tab .index{font:10px/1 var(--tech);color:#8e8371;letter-spacing:.08em}
+    .tool-tab .tool-label{font-size:11px;line-height:1.15;text-align:center;max-width:62px}
+    .tool-tab:hover{background:#39342b;color:white}
+    .tool-tab.active{background:#f2ead9;color:var(--ink)}
+    .tool-tab.active::after{background:var(--amber)}
+    .tool-tab.active .index{color:var(--red)}
+
+    .library{min-width:0;overflow:hidden;background:#f2eadb;border-right:1px solid #a99f8b;transition:opacity .18s ease}
+    body.panel-collapsed .library{opacity:0;pointer-events:none}
+    .library-inner{width:260px;height:100%;display:grid;grid-template-rows:62px minmax(0,1fr)}
+    .panel-head{display:flex;align-items:center;justify-content:space-between;padding:0 14px 0 18px;border-bottom:2px solid var(--rule)}
+    .panel-head small{display:block;font:9px/1 var(--tech);letter-spacing:.14em;color:#776f60;margin-bottom:4px}
+    .panel-head h2{font-size:17px;line-height:1;margin:0}
+    .collapse{width:34px;height:34px;border:1px solid #8f8574;background:#faf3e4;font-size:18px}
+    .tool-panel{display:none;height:100%;overflow:auto;padding:16px 16px 28px}
+    .tool-panel.active{display:block}
+    .panel-intro{font-size:12px;color:#665f53;margin:0 0 16px;text-wrap:pretty}
+    .section-label{display:flex;align-items:center;justify-content:space-between;margin:18px 0 7px;padding-top:10px;border-top:1px solid #a99f8b;font:10px/1 var(--tech);letter-spacing:.1em;text-transform:uppercase}
+    .section-label:first-of-type{margin-top:0;border-top:0;padding-top:0}
+    .section-label button{color:var(--cyan);font-size:11px}
+    .asset-row{display:grid;grid-template-columns:58px 1fr;gap:10px;align-items:center;padding:9px 0;border-bottom:1px solid #cfc4af;text-align:left;width:100%}
+    .asset-row img,.asset-thumb{width:58px;height:46px;object-fit:cover;background:#d5c9b3;border:1px solid #786f60}
+    .asset-row strong{display:block;font-size:12px}
+    .asset-row span{display:block;font-size:10px;color:#756c5e;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .link-field{border:1px solid #988d78;background:#fbf5e9;padding:10px;margin-top:8px;font-size:11px;color:#61594c;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+    .news-copy{margin:0;padding:10px 0;border-top:3px solid var(--ink);border-bottom:1px solid #9d927f;font-size:12px;line-height:1.65;text-wrap:pretty}
+    .q-source{padding:10px 0 10px 12px;border-bottom:1px solid #b9ae99;position:relative}
+    .q-source::before{content:"";position:absolute;left:0;top:10px;bottom:10px;width:4px;background:var(--q)}
+    .q-source b{font:11px/1 var(--tech);color:var(--q)}
+    .q-source p{margin:5px 0 0;font-size:11px;line-height:1.5}
+    .preset{width:100%;text-align:left;padding:12px 2px;border-bottom:1px solid #b9ae99}
+    .preset b{display:block;font-size:var(--size,14px);font-family:var(--font,var(--ui))}
+    .preset small{color:#746b5d}
+    .element-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+    .element-tile{min-height:72px;padding:9px;border:1px solid #9d927f;background:#f8f0df;text-align:left;font-size:11px}
+    .element-tile i{display:block;width:100%;height:18px;margin-bottom:9px;border:2px solid var(--ink);font-style:normal}
+    .dropzone{display:grid;place-items:center;min-height:148px;border:2px dashed #807563;background:#faf3e5;text-align:center;padding:18px;font-size:12px}
+    .dropzone strong{display:block;font-size:14px;margin-bottom:4px}
+    .swatches{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+    .swatch{aspect-ratio:1;border:1px solid #766d5d;background:var(--sw);position:relative}
+    .swatch.active::after{content:"เลือก";position:absolute;inset:auto 4px 4px;background:var(--ink);color:white;font-size:9px;text-align:center;padding:2px}
+    .marker{width:100%;height:42px;margin-bottom:8px;border:1px solid #938873;background:linear-gradient(180deg,transparent 46%,var(--m) 46%,var(--m) 78%,transparent 78%);text-align:left;padding-left:8px;font-size:11px}
+
+    .canvas-shell{min-width:0;min-height:0;display:grid;grid-template-rows:52px minmax(0,1fr);background:#cec6b7;border-right:1px solid #9d9483}
+    .contextbar{display:flex;align-items:center;gap:5px;padding:0 12px;background:#ece5d8;border-bottom:1px solid #9d9483;overflow:hidden}
+    .selection-name{min-width:126px;max-width:190px;padding-right:12px;border-right:2px solid var(--ink)}
+    .selection-name small{display:block;font:9px/1 var(--tech);letter-spacing:.09em;color:#7c7467}
+    .selection-name b{display:block;font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:4px}
+    .context-btn{height:34px;min-width:36px;padding:0 8px;border:1px solid transparent;font-size:11px;white-space:nowrap}
+    .context-btn:hover,.context-btn.active{border-color:#817867;background:#faf4e8}
+    .context-btn.danger{margin-left:auto;color:#9f3026}
+    .stage{position:relative;min-width:0;min-height:0;overflow:auto;background-color:#c8c0b2;background-image:linear-gradient(#b9b0a2 1px,transparent 1px),linear-gradient(90deg,#b9b0a2 1px,transparent 1px);background-size:28px 28px;scrollbar-color:#756e62 #d8d0c2}
+    .stage::before{content:"A4 · WORKING CANVAS";position:sticky;left:12px;top:10px;display:inline-block;z-index:3;background:#25221d;color:#e9dfcc;padding:5px 8px;font:9px/1 var(--tech);letter-spacing:.08em}
+    .canvas-tip{position:absolute;right:12px;top:10px;z-index:4;background:#eee4d1;border:1px solid #736b5e;padding:6px 9px;font-size:10px;box-shadow:2px 2px 0 #8d8373;pointer-events:none}
+    .canvas-tip b{font-family:var(--tech);color:var(--red);margin-right:5px}
+    .stage-inner{min-width:100%;min-height:100%;display:grid;place-items:center;padding:28px 34px 34px}
+    .paper{container-type:inline-size;position:relative;aspect-ratio:1123/794;background:var(--paper);color:#1c1b17;border:1px solid #766e61;box-shadow:0 14px 34px rgba(36,31,23,.22),5px 6px 0 #9b8b70;transition:width .18s ease}
+    .paper::after{content:"CASE 03 / PDPA";position:absolute;right:-31px;top:10%;padding:10px 6px;background:#9b2f25;color:white;font:9px/1 var(--tech);letter-spacing:.1em;writing-mode:vertical-rl}
+    .paper-page{display:none;height:100%;padding:3.8cqw 4.1cqw 3.5cqw;position:relative;overflow:hidden}
+    .paper-page.active{display:grid}
+    .case-page{grid-template-rows:auto minmax(0,1fr)}
+    .case-header{display:grid;grid-template-columns:1fr auto;gap:3cqw;padding-bottom:1.8cqw;border-bottom:.32cqw solid var(--rule)}
+    .case-kicker{font:1.15cqw/1 var(--tech);letter-spacing:.13em;color:#8f2d24;text-transform:uppercase}
+    .case-title{margin:.7cqw 0 0;font-size:4.05cqw;line-height:.98;letter-spacing:-.04em;font-weight:700;text-wrap:balance}
+    .case-subtitle{font-size:1.25cqw;margin:.8cqw 0 0;color:#5b554a}
+    .student-card{align-self:end;min-width:22cqw;padding-left:1.7cqw;border-left:.2cqw solid var(--rule)}
+    .student-card b{display:block;font-size:1.25cqw}
+    .student-card span{font-size:1.05cqw;color:#655e52}
+    .case-body{display:grid;grid-template-columns:34% 1fr;gap:2.8cqw;min-height:0;padding-top:2.3cqw}
+    .evidence{position:relative;display:grid;grid-template-rows:auto 1fr auto;min-height:0;border:.18cqw solid var(--rule);padding:1.25cqw;background:#f3ead7}
+    .evidence-tab{position:absolute;left:1.3cqw;top:-1.05cqw;background:var(--amber);padding:.45cqw 1cqw;font:.95cqw/1 var(--tech);letter-spacing:.08em;border:.15cqw solid var(--rule)}
+    .evidence-head{display:flex;justify-content:space-between;padding:.9cqw 0 .7cqw;border-bottom:.12cqw solid #766e61;font-size:1.05cqw}
+    .evidence-photo{position:relative;margin:1cqw 0;overflow:hidden;background:#d8cdb8;border:.12cqw solid #867d6e}
+    .evidence-photo img{width:100%;height:100%;object-fit:cover;filter:sepia(.16) saturate(.75);display:block}
+    .evidence-photo span{position:absolute;left:.7cqw;bottom:.7cqw;background:#171712;color:#fff5df;padding:.4cqw .7cqw;font:.85cqw/1 var(--tech)}
+    .evidence-link{display:grid;grid-template-columns:auto 1fr;gap:.7cqw;align-items:center;border-top:.12cqw solid #766e61;padding-top:.7cqw;font-size:.92cqw;min-width:0}
+    .evidence-link b{color:var(--cyan);font-family:var(--tech)}
+    .evidence-link span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:#625b50}
+    .analysis-block{display:grid;grid-template-rows:auto 1fr;gap:1.8cqw;min-height:0}
+    .summary{padding:0 0 1.3cqw;border-bottom:.16cqw solid #7d7466}
+    .eyebrow{font:.9cqw/1 var(--tech);letter-spacing:.11em;color:#7c7467}
+    .summary h3{font-size:1.65cqw;line-height:1.15;margin:.55cqw 0}
+    .summary p{font-size:1.13cqw;line-height:1.55;margin:0;color:#39362f;text-wrap:pretty}
+    .questions{display:grid;grid-template-columns:repeat(3,1fr);gap:1.15cqw;min-height:0}
+    .question{position:relative;padding:1.2cqw 1.05cqw .9cqw;border-top:.38cqw solid var(--q);background:#fbf5e7;box-shadow:inset 0 0 0 .1cqw #a99f8e}
+    .question b{display:block;font:1.45cqw/1 var(--tech);color:var(--q)}
+    .question h4{font-size:1.12cqw;line-height:1.25;margin:.65cqw 0 .5cqw}
+    .question p{font-size:.98cqw;line-height:1.45;margin:0;color:#4a453c}
+    .answer-rule{position:absolute;left:1.05cqw;right:1.05cqw;bottom:1cqw;height:1.8cqw;border-top:.1cqw solid #b7ad9b;border-bottom:.1cqw solid #b7ad9b}
+    .selectable{cursor:grab;touch-action:none;transition:box-shadow .12s ease,outline-color .12s ease}
+    .selectable.dragging{cursor:grabbing;transition:none}
+    .selectable:hover{outline:.18cqw dashed #2d6f7d;outline-offset:.3cqw}
+    .selectable.selected{outline:.25cqw solid #176979;outline-offset:.35cqw;box-shadow:0 0 0 .28cqw rgba(247,240,223,.85)}
+    .selectable.locked::after{content:"LOCK";position:absolute;right:.4cqw;top:.4cqw;background:var(--ink);color:white;padding:.25cqw .45cqw;font:.7cqw/1 var(--tech)}
+    .check-page{grid-template-rows:auto 1fr auto}
+    .check-title{display:flex;justify-content:space-between;align-items:end;padding-bottom:2cqw;border-bottom:.35cqw solid var(--rule)}
+    .check-title h2{font-size:4cqw;line-height:1;margin:0}
+    .check-title span{font:1.1cqw/1 var(--tech);letter-spacing:.1em;color:var(--red)}
+    .check-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:2cqw;padding:3cqw 0}
+    .check-col{border-top:.45cqw solid var(--q);padding-top:1.2cqw}
+    .check-col b{font:1.4cqw/1 var(--tech);color:var(--q)}
+    .check-col h3{font-size:1.6cqw;margin:.8cqw 0 1.4cqw}
+    .check-item{display:grid;grid-template-columns:1.6cqw 1fr;gap:.8cqw;padding:1cqw 0;border-top:.1cqw solid #a99f8d;font-size:1.05cqw}
+    .check-box{width:1.4cqw;height:1.4cqw;border:.15cqw solid var(--rule)}
+    .teacher-note{border:1px solid #736b5f;padding:1.2cqw;font-size:1.05cqw;background:#efe5d1}
+
+    .inspector{min-width:0;background:#efe8db;display:grid;grid-template-rows:52px minmax(0,1fr)}
+    .inspector-tabs{display:grid;grid-template-columns:1fr 1fr;border-bottom:2px solid var(--rule)}
+    .inspector-tab{font:11px/1 var(--tech);letter-spacing:.05em;border-right:1px solid #a89e8b}
+    .inspector-tab.active{background:var(--ink);color:#f8eedb}
+    .inspect-view{display:none;overflow:auto;padding:15px}
+    .inspect-view.active{display:block}
+    .object-code{font:9px/1 var(--tech);letter-spacing:.12em;color:var(--red)}
+    .object-title{font-size:17px;line-height:1.2;margin:5px 0 16px;padding-bottom:12px;border-bottom:3px solid var(--ink)}
+    .property{padding:11px 0;border-bottom:1px solid #b7ad9a}
+    .property label{display:block;font-size:10px;color:#71695d;margin-bottom:7px}
+    .prop-row{display:grid;grid-template-columns:1fr 70px;gap:8px;align-items:center}
+    .property select,.property input[type="text"]{width:100%;height:36px;border:1px solid #958b78;background:#faf4e8;padding:0 8px;font-size:11px}
+    .property input[type="range"]{width:100%;accent-color:var(--cyan)}
+    .color-input{width:38px;height:34px;padding:2px;border:1px solid #958b78;background:#faf4e8}
+    .align-grid{display:grid;grid-template-columns:repeat(3,1fr);border:1px solid #958b78}
+    .align-grid button{height:34px;border-right:1px solid #958b78;font:12px/1 var(--tech)}
+    .align-grid button:last-child{border:0}
+    .align-grid button.active{background:var(--ink);color:white}
+    .layer-row{display:grid;grid-template-columns:24px 1fr auto;gap:8px;align-items:center;min-height:42px;border-bottom:1px solid #b7ad9a;text-align:left;width:100%;font-size:11px}
+    .layer-row.active{font-weight:700;color:var(--cyan)}
+    .layer-eye{width:24px;height:24px;border:1px solid #958b78;font:9px/1 var(--tech)}
+    .layer-tag{font:8px/1 var(--tech);color:#82796b}
+
+    .statusbar{display:grid;grid-template-columns:336px 1fr 236px;background:var(--ink);color:#d9d0bf;border-top:1px solid #403c34;font-size:10px;z-index:20}
+    .status-left,.status-right,.status-center{display:flex;align-items:center;min-width:0}
+    .status-left{padding:0 14px;gap:8px;border-right:1px solid #4b463c}
+    .status-center{justify-content:space-between;padding:0 10px;gap:10px}
+    .status-right{justify-content:center;border-left:1px solid #4b463c;color:#bdb4a4}
+    .save-dot{width:7px;height:7px;background:var(--green);border-radius:50%}
+    .page-tabs,.zoom{display:flex;align-items:center;gap:4px}
+    .page-btn,.zoom button{height:26px;min-width:28px;padding:0 8px;color:#d8cfbe;border:1px solid #585247;font-size:10px}
+    .page-btn.active{background:#eee3cd;color:var(--ink);border-color:#eee3cd}
+    .zoom input{width:92px;accent-color:#d5a52c}
+    #zoomLabel{width:38px;text-align:center;font-family:var(--tech)}
+    .toast{position:fixed;left:50%;bottom:52px;transform:translate(-50%,10px);background:var(--ink);color:#f7edd9;border-left:4px solid var(--amber);padding:9px 14px;font-size:11px;opacity:0;pointer-events:none;transition:.18s;z-index:50}
+    .toast.show{opacity:1;transform:translate(-50%,0)}
+    .export-panel{position:fixed;right:14px;top:58px;width:310px;background:#f4ecd9;border:2px solid var(--ink);box-shadow:8px 8px 0 rgba(23,23,18,.28);z-index:60;display:none}
+    .export-panel.open{display:block}
+    .export-head{display:flex;align-items:start;justify-content:space-between;padding:15px;border-bottom:3px solid var(--ink)}
+    .export-head small{font:9px/1 var(--tech);letter-spacing:.12em;color:var(--red)}
+    .export-head h3{font-size:17px;line-height:1.2;margin:5px 0 0}
+    .export-close{width:30px;height:30px;border:1px solid #8d8270}
+    .export-spec{padding:15px;border-bottom:1px solid #a99f8b}
+    .export-spec b{display:block;font:23px/1 var(--tech);letter-spacing:-.03em;margin:5px 0}
+    .export-spec span{font-size:11px;color:#696154}
+    .export-confirm{width:calc(100% - 30px);min-height:46px;margin:15px;background:var(--ink);color:#f7edda;font-weight:700;border-left:5px solid var(--green)}
+
+    @media(max-width:1320px){
+      .workbench{grid-template-columns:70px 226px minmax(500px,1fr) 218px}
+      body.panel-collapsed .workbench{grid-template-columns:70px 0 minmax(500px,1fr) 218px}
+      .library-inner{width:226px}.statusbar{grid-template-columns:296px 1fr 218px}
+      .brand{padding:0 12px}.topbar{grid-template-columns:minmax(270px,330px) 1fr auto}
+      .tool-tab .tool-label{font-size:10px}.context-btn{padding:0 5px}.selection-name{min-width:112px}
+      .top-btn{padding:0 8px}.top-btn.preview-label span{display:none}
+    }
+    @media(max-height:760px){
+      body{grid-template-rows:60px minmax(0,1fr) 34px}.topbar{border-bottom-width:3px}
+      .spine{grid-template-rows:52px repeat(6,minmax(58px,1fr))}.tool-tab{gap:2px}.library-inner{grid-template-rows:52px 1fr}
+      .canvas-shell,.inspector{grid-template-rows:46px 1fr}.contextbar{padding:0 8px}.context-btn{height:30px}
+      .tool-panel{padding-top:12px}.panel-head h2{font-size:15px}.asset-row{padding:6px 0}.asset-row img,.asset-thumb{height:40px}
+      .statusbar{font-size:9px}.stage-inner{padding:20px 32px 28px}
+    }
+    @media(max-width:1080px){
+      .workbench{grid-template-columns:68px 0 minmax(520px,1fr) 212px}.library{opacity:0;pointer-events:none}.statusbar{grid-template-columns:68px 1fr 212px}
+      .file-meta{display:none}.topbar{grid-template-columns:1fr auto}.top-actions{grid-column:2}.brand{border:0}
+    }
+    @media print{
+      body{display:block;background:white;overflow:visible}.topbar,.spine,.library,.inspector,.contextbar,.statusbar,.toast{display:none!important}
+      .workbench,.canvas-shell,.stage,.stage-inner{display:block!important;background:white!important;overflow:visible!important;padding:0!important}
+      .paper{width:1123px!important;box-shadow:none;border:0;margin:0}.paper::after{display:none}
+    }
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">
+      <img src="../../assets/pdpa_icon.png" alt="เครื่องหมาย PDPA Case Board">
+      <div class="brand-copy"><h1>PDPA Case Board</h1><p>กระดานวิเคราะห์คดี · ม.3</p></div>
+    </div>
+    <div class="file-meta">
+      <span class="case-stamp">FREEFORM / A4</span>
+      <div class="file-name"><strong>แฟ้มวิเคราะห์การเผยแพร่ภาพ</strong><small>แก้ไขล่าสุดเมื่อสักครู่ · บันทึกอัตโนมัติ</small></div>
+    </div>
+    <nav class="top-actions" aria-label="คำสั่งเอกสาร">
+      <button class="top-btn history-btn" id="undoBtn" title="ย้อนกลับ">↶</button>
+      <button class="top-btn history-btn" id="redoBtn" title="ทำซ้ำ">↷</button>
+      <button class="top-btn preview-label" id="fitTop">พอดี<span>หน้ากระดาษ</span></button>
+      <button class="top-btn" id="previewBtn">ดูตัวอย่าง</button>
+      <button class="top-btn" id="exportPdf">PDF</button>
+      <button class="top-btn primary" id="exportPng">PNG · 300 DPI</button>
+    </nav>
+  </header>
+
+  <main class="workbench">
+    <nav class="spine" aria-label="เครื่องมือหลัก">
+      <div class="spine-head">CASE<br>TOOLS</div>
+      <button class="tool-tab active" data-tool="content"><span class="index">01</span><span class="tool-label">เนื้อหา</span></button>
+      <button class="tool-tab" data-tool="text"><span class="index">02</span><span class="tool-label">ข้อความ</span></button>
+      <button class="tool-tab" data-tool="elements"><span class="index">03</span><span class="tool-label">องค์ประกอบ</span></button>
+      <button class="tool-tab" data-tool="upload"><span class="index">04</span><span class="tool-label">อัปโหลด</span></button>
+      <button class="tool-tab" data-tool="style"><span class="index">05</span><span class="tool-label">สไตล์</span></button>
+      <button class="tool-tab" data-tool="draw"><span class="index">06</span><span class="tool-label">วาด / ไฮไลต์</span></button>
+    </nav>
+
+    <aside class="library">
+      <div class="library-inner">
+        <div class="panel-head">
+          <div><small id="panelCode">TOOL 01</small><h2 id="panelTitle">เนื้อหา</h2></div>
+          <button class="collapse" id="collapsePanel" title="พับแผง">‹</button>
+        </div>
+        <section class="tool-panel active" data-panel="content">
+          <p class="panel-intro">รวบรวมหลักฐานและคำตอบก่อนจัดลงแฟ้ม ทุกส่วนลากไปวางบนกระดาษได้ในงานจริง</p>
+          <div class="section-label"><span>ภาพหลักฐาน / ลิงก์</span><button data-toast="เปิดคลังหลักฐาน">+ เพิ่ม</button></div>
+          <button class="asset-row" data-toast="เลือกภาพหลักฐานแล้ว"><img src="../../assets/chibi_scan.jpg" alt="ภาพตัวอย่างหลักฐาน"><span><strong>ภาพประกอบหลักฐาน</strong><span>ไฟล์จากคลังของชั้นเรียน</span></span></button>
+          <div class="link-field">วางลิงก์ข่าวต้นฉบับ…</div>
+          <div class="section-label"><span>สรุปข่าว</span><button data-toast="เพิ่มสรุปลงบนกระดาษ">วางลงงาน</button></div>
+          <p class="news-copy">มีการนำภาพนักเรียนจากกิจกรรมโรงเรียนไปเผยแพร่บนสื่อสังคมออนไลน์ โดยยังไม่ชัดเจนว่าได้รับความยินยอมหรือไม่</p>
+          <div class="section-label"><span>คำถามวิเคราะห์</span><span>3 ข้อ</span></div>
+          <div class="q-source" style="--q:var(--red)"><b>Q1 · พบเหตุ</b><p>ข้อมูลส่วนบุคคลใดถูกเปิดเผย และใครคือเจ้าของข้อมูล?</p></div>
+          <div class="q-source" style="--q:var(--amber)"><b>Q2 · หยุดความเสียหาย</b><p>ควรทำอะไรทันทีเมื่อพบการเผยแพร่โดยไม่เหมาะสม?</p></div>
+          <div class="q-source" style="--q:var(--green)"><b>Q3 · ป้องกันระยะยาว</b><p>จะวางกติกาการขอความยินยอมก่อนโพสต์อย่างไร?</p></div>
+        </section>
+        <section class="tool-panel" data-panel="text">
+          <p class="panel-intro">ลำดับตัวอักษรแบบงานบรรณาธิการ เพื่อให้ใบงานอ่านเร็วทั้งบนจอและเมื่อพิมพ์</p>
+          <div class="section-label"><span>รูปแบบข้อความ</span><span>ลากเพื่อเพิ่ม</span></div>
+          <button class="preset" data-toast="เพิ่มหัวแฟ้ม"><b style="--size:21px">หัวแฟ้มคดี</b><small>Bai Jamjuree · หนา</small></button>
+          <button class="preset" data-toast="เพิ่มหัวข้อ"><b style="--size:16px">หัวข้อหลักฐาน</b><small>Bai Jamjuree · กึ่งหนา</small></button>
+          <button class="preset" data-toast="เพิ่มป้ายเทคนิค"><b style="--font:var(--tech);--size:12px">CASE CODE / LABEL</b><small>Chakra Petch · ตัวพิมพ์ข้อมูล</small></button>
+          <button class="preset" data-toast="เพิ่มเนื้อความ"><b style="--size:13px;font-weight:400">เพิ่มเนื้อความ</b><small>เหมาะสำหรับสรุปเหตุการณ์และคำตอบ</small></button>
+        </section>
+        <section class="tool-panel" data-panel="elements">
+          <p class="panel-intro">หยิบ วาง และขยับได้อิสระ เพื่อให้แต่ละแฟ้มมีบุคลิก โดยชิ้นส่วนทุกชิ้นยังช่วยเล่าโครงคดี</p>
+          <div class="section-label"><span>Case evidence system</span></div>
+          <div class="element-grid">
+            <button class="element-tile" data-toast="เพิ่มกรอบหลักฐาน"><i></i>กรอบหลักฐาน</button>
+            <button class="element-tile" data-toast="เพิ่มเส้นเชื่อม"><i style="height:2px;margin-top:9px"></i>เส้นเชื่อม</button>
+            <button class="element-tile" data-toast="เพิ่มหมายเลขแฟ้ม"><i style="width:24px;border-color:var(--red)"></i>หมายเลขแฟ้ม</button>
+            <button class="element-tile" data-toast="เพิ่มตราตรวจแล้ว"><i style="border-style:double;border-color:var(--green)"></i>ตราตรวจแล้ว</button>
+          </div>
+        </section>
+        <section class="tool-panel" data-panel="upload">
+          <p class="panel-intro">อัปโหลดภาพหรือไฟล์หลักฐาน แล้วตรวจแหล่งที่มาก่อนวางลงเอกสาร</p>
+          <button class="dropzone" data-toast="หน้าต่างเลือกไฟล์พร้อมใช้งานในเวอร์ชันจริง"><span><strong>เลือกไฟล์หลักฐาน</strong>PNG, JPG หรือ PDF<br>ไม่เกิน 10 MB</span></button>
+          <div class="section-label"><span>หลักฐานล่าสุด</span></div>
+          <button class="asset-row" data-toast="เลือกไฟล์ล่าสุด"><img src="../../assets/chibi_scan.jpg" alt="ไฟล์ล่าสุด"><span><strong>evidence-01.jpg</strong><span>พร้อมใช้งาน</span></span></button>
+        </section>
+        <section class="tool-panel" data-panel="style">
+          <p class="panel-intro">ธีมกระดาษเปลี่ยนเฉพาะวัสดุและน้ำเสียง โครงข้อมูลยังคงอ่านได้เหมือนเดิม</p>
+          <div class="section-label"><span>กระดาษ</span></div>
+          <div class="swatches">
+            <button class="swatch active" style="--sw:#f7f0df" data-paper="#f7f0df" title="แฟ้มครีม"></button>
+            <button class="swatch" style="--sw:#f5eded" data-paper="#f5eded" title="ชมพูอ่อน"></button>
+            <button class="swatch" style="--sw:#eaf0f1" data-paper="#eaf0f1" title="ฟ้าเทา"></button>
+            <button class="swatch" style="--sw:#f3f3ef" data-paper="#f3f3ef" title="ขาวเทา"></button>
+            <button class="swatch" style="--sw:#e8d9bd" data-paper="#e8d9bd" title="Dossier"></button>
+            <button class="swatch" style="--sw:#dce6df" data-paper="#dce6df" title="Cyber"></button>
+          </div>
+        </section>
+        <section class="tool-panel" data-panel="draw">
+          <p class="panel-intro">ทำเครื่องหมายบนข้อความอย่างเป็นระบบ สีของปากกาสอดคล้องกับ Q1–Q3</p>
+          <div class="section-label"><span>ปากกาเน้นข้อความ</span></div>
+          <button class="marker" style="--m:#e6a39a" data-toast="เลือกปากกาสีแดง">พบเหตุ</button>
+          <button class="marker" style="--m:#ead08b" data-toast="เลือกปากกาสีอำพัน">หยุดความเสียหาย</button>
+          <button class="marker" style="--m:#9bc7ac" data-toast="เลือกปากกาสีเขียว">ป้องกันระยะยาว</button>
+          <div class="property"><label>ความหนาปากกา</label><input type="range" min="2" max="18" value="8"></div>
+        </section>
+      </div>
+    </aside>
+
+    <section class="canvas-shell">
+      <div class="contextbar">
+        <div class="selection-name"><small>SELECTED OBJECT</small><b id="contextName">สรุปเหตุการณ์</b></div>
+        <button class="context-btn" data-action="duplicate">ทำสำเนา</button>
+        <button class="context-btn" data-action="lock">ล็อก</button>
+        <button class="context-btn" data-action="group">จัดกลุ่ม</button>
+        <button class="context-btn" data-action="back">ลงชั้น</button>
+        <button class="context-btn" data-action="front">ขึ้นชั้น</button>
+        <button class="context-btn danger" data-action="delete">ลบ</button>
+      </div>
+      <div class="stage" id="stage">
+          <div class="canvas-tip"><b>ลากได้</b> เลือกวัตถุแล้วจัดวางบนกระดาษอย่างอิสระ</div>
+          <div class="stage-inner">
+          <article class="paper" id="paper" aria-label="กระดาษ A4 แนวนอน">
+            <section class="paper-page case-page active" data-page="1">
+              <header class="case-header selectable" data-object="header">
+                <div><span class="case-kicker">CYBER SHIELD DETECTIVE · CASE 03</span><h2 class="case-title">แฟ้มวิเคราะห์<br>การเผยแพร่ภาพ</h2><p class="case-subtitle">พิจารณาข้อมูลส่วนบุคคล ความยินยอม และแนวทางรับมือ</p></div>
+                <div class="student-card"><b>ด.ช. นักเรียน ทดสอบ</b><span>ม.3/1 · เลขที่ 1</span></div>
+              </header>
+              <div class="case-body">
+                <section class="evidence selectable" data-object="evidence">
+                  <span class="evidence-tab">EVIDENCE 01</span>
+                  <div class="evidence-head"><b>ภาพ / ลิงก์หลักฐาน</b><span>ตรวจแหล่งที่มา</span></div>
+                  <div class="evidence-photo"><img src="../../assets/chibi_scan.jpg" alt="ภาพประกอบหลักฐาน"><span>แนบภาพหลักฐาน</span></div>
+                  <div class="evidence-link"><b>SOURCE</b><span>เพิ่มลิงก์ข่าวต้นฉบับ</span></div>
+                </section>
+                <div class="analysis-block">
+                  <section class="summary selectable selected" data-object="summary"><span class="eyebrow">สรุปเหตุการณ์ / BRIEF</span><h3>ภาพจากกิจกรรมโรงเรียนถูกนำไปเผยแพร่ต่อ</h3><p>มีการนำภาพนักเรียนไปโพสต์บนสื่อสังคมออนไลน์ โดยยังไม่ชัดเจนว่าเจ้าของข้อมูลได้รับแจ้งวัตถุประสงค์และให้ความยินยอมหรือไม่</p></section>
+                  <div class="questions">
+                    <section class="question selectable" data-object="q1" style="--q:var(--red)"><b>Q1</b><h4>พบเหตุ</h4><p>ข้อมูลใดถูกเปิดเผย และใครคือเจ้าของข้อมูล?</p><span class="answer-rule"></span></section>
+                    <section class="question selectable" data-object="q2" style="--q:var(--amber)"><b>Q2</b><h4>หยุดความเสียหาย</h4><p>ควรทำอะไรทันทีเมื่อพบการเผยแพร่ไม่เหมาะสม?</p><span class="answer-rule"></span></section>
+                    <section class="question selectable" data-object="q3" style="--q:var(--green)"><b>Q3</b><h4>ป้องกันระยะยาว</h4><p>จะวางกติกาขอความยินยอมก่อนโพสต์อย่างไร?</p><span class="answer-rule"></span></section>
+                  </div>
+                </div>
+              </div>
+            </section>
+            <section class="paper-page check-page" data-page="2">
+              <header class="check-title"><div><span class="case-kicker">SUBMISSION CHECK / PAGE 02</span><h2>ตรวจความพร้อม<br>ก่อนส่งงาน</h2></div><span>ตรวจแล้วจึงส่งออก PDF</span></header>
+              <div class="check-grid">
+                <section class="check-col" style="--q:var(--red)"><b>01 / พบเหตุ</b><h3>หลักฐานครบหรือยัง</h3><div class="check-item"><i class="check-box"></i><span>มีภาพหรือหลักฐานอ้างอิง</span></div><div class="check-item"><i class="check-box"></i><span>ระบุเจ้าของข้อมูลส่วนบุคคล</span></div></section>
+                <section class="check-col" style="--q:var(--amber)"><b>02 / หยุดความเสียหาย</b><h3>คำตอบชัดเจนหรือยัง</h3><div class="check-item"><i class="check-box"></i><span>เสนอการหยุดเผยแพร่ทันที</span></div><div class="check-item"><i class="check-box"></i><span>อธิบายเหตุผลตามหลัก PDPA</span></div></section>
+                <section class="check-col" style="--q:var(--green)"><b>03 / ป้องกันระยะยาว</b><h3>แนวทางนำไปใช้ได้ไหม</h3><div class="check-item"><i class="check-box"></i><span>มีกติกาขอความยินยอม</span></div><div class="check-item"><i class="check-box"></i><span>ตรวจชื่อ ชั้น และเลขที่แล้ว</span></div></section>
+              </div>
+              <div class="teacher-note"><b>หมายเหตุสำหรับครูผู้ตรวจ</b> · พื้นที่บันทึกข้อเสนอแนะและผลการตรวจแฟ้มวิเคราะห์</div>
+            </section>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <aside class="inspector">
+      <div class="inspector-tabs">
+        <button class="inspector-tab active" data-inspect="properties">คุณสมบัติ</button>
+        <button class="inspector-tab" data-inspect="layers">เลเยอร์</button>
+      </div>
+      <section class="inspect-view active" data-view="properties">
+        <span class="object-code" id="objectCode">TEXT / SUMMARY</span><h2 class="object-title" id="objectTitle">สรุปเหตุการณ์</h2>
+        <div class="property"><label>แบบอักษร</label><select id="fontSelect"><option value="Bai Jamjuree">Bai Jamjuree</option><option value="Prompt">Prompt</option><option value="Chakra Petch">Chakra Petch</option></select></div>
+        <div class="property"><label>ขนาดและสี</label><div class="prop-row"><input id="sizeField" type="text" value="14 px"><input class="color-input" id="colorInput" type="color" value="#171712"></div></div>
+        <div class="property"><label>จัดแนว</label><div class="align-grid"><button data-align="left" class="active">L</button><button data-align="center">C</button><button data-align="right">R</button></div></div>
+        <div class="property"><label>ความทึบ <span id="opacityValue">100%</span></label><input id="opacityRange" type="range" min="20" max="100" value="100"></div>
+        <div class="property"><label>ตำแหน่งบนหน้า</label><div class="prop-row"><input type="text" value="X 422"><input type="text" value="Y 198"></div></div>
+      </section>
+      <section class="inspect-view" data-view="layers">
+        <span class="object-code">PAGE 01 / 6 LAYERS</span><h2 class="object-title">โครงแฟ้มคดี</h2>
+        <button class="layer-row" data-layer="header"><span class="layer-eye">ON</span><span>หัวแฟ้มคดี</span><span class="layer-tag">GROUP</span></button>
+        <button class="layer-row" data-layer="evidence"><span class="layer-eye">ON</span><span>กรอบหลักฐาน</span><span class="layer-tag">IMAGE</span></button>
+        <button class="layer-row active" data-layer="summary"><span class="layer-eye">ON</span><span>สรุปเหตุการณ์</span><span class="layer-tag">TEXT</span></button>
+        <button class="layer-row" data-layer="q1"><span class="layer-eye">ON</span><span>Q1 · พบเหตุ</span><span class="layer-tag">GROUP</span></button>
+        <button class="layer-row" data-layer="q2"><span class="layer-eye">ON</span><span>Q2 · หยุดความเสียหาย</span><span class="layer-tag">GROUP</span></button>
+        <button class="layer-row" data-layer="q3"><span class="layer-eye">ON</span><span>Q3 · ป้องกันระยะยาว</span><span class="layer-tag">GROUP</span></button>
+      </section>
+    </aside>
+  </main>
+
+  <footer class="statusbar">
+    <div class="status-left"><span class="save-dot"></span><span id="saveText">บันทึกอัตโนมัติแล้ว</span></div>
+    <div class="status-center">
+      <div class="page-tabs"><span>หน้า</span><button class="page-btn active" data-page-btn="1">01 · แฟ้มคดี</button><button class="page-btn" data-page-btn="2">02 · ตรวจงาน</button><button class="page-btn" id="addPage">＋</button></div>
+      <div class="zoom"><button id="zoomOut">−</button><input id="zoomRange" type="range" min="65" max="140" value="100"><span id="zoomLabel">100%</span><button id="zoomIn">＋</button><button id="fitBtn">FIT</button></div>
+    </div>
+    <div class="status-right">ด.ช. นักเรียน ทดสอบ · ม.3/1 · เลขที่ 1</div>
+  </footer>
+  <div class="toast" id="toast" role="status"></div>
+  <aside class="export-panel" id="exportPanel" aria-label="ส่งออกภาพความละเอียดสูง">
+    <div class="export-head"><div><small>PRIMARY EXPORT</small><h3>PNG สำหรับพิมพ์คมชัด</h3></div><button class="export-close" id="exportClose">×</button></div>
+    <div class="export-spec"><span>A4 แนวนอน · ความละเอียด 300 DPI</span><b>3508 × 2480 px</b><span>เหมาะสำหรับส่งงานออนไลน์และพิมพ์เต็มหน้ากระดาษ</span></div>
+    <button class="export-confirm" id="exportConfirm">ดาวน์โหลด PNG ความละเอียดสูง</button>
+  </aside>
+
+  <script>
+    (function(){
+      var toolNames={content:['TOOL 01','เนื้อหา'],text:['TOOL 02','ข้อความ'],elements:['TOOL 03','องค์ประกอบ'],upload:['TOOL 04','อัปโหลด'],style:['TOOL 05','สไตล์'],draw:['TOOL 06','วาด / ไฮไลต์']};
+      var objectData={
+        header:{title:'หัวแฟ้มคดี',code:'GROUP / CASE HEADER',size:'32 px'},
+        evidence:{title:'กรอบหลักฐาน',code:'IMAGE / EVIDENCE 01',size:'ภาพ'},
+        summary:{title:'สรุปเหตุการณ์',code:'TEXT / SUMMARY',size:'14 px'},
+        q1:{title:'Q1 · พบเหตุ',code:'GROUP / QUESTION 01',size:'13 px'},
+        q2:{title:'Q2 · หยุดความเสียหาย',code:'GROUP / QUESTION 02',size:'13 px'},
+        q3:{title:'Q3 · ป้องกันระยะยาว',code:'GROUP / QUESTION 03',size:'13 px'}
+      };
+      var selected=document.querySelector('[data-object="summary"]');
+      var zoom=100,baseWidth=720,undoStack=[],redoStack=[],toastTimer;
+      var paper=document.getElementById('paper'),stage=document.getElementById('stage');
+      function toast(message){var el=document.getElementById('toast');el.textContent=message;el.classList.add('show');clearTimeout(toastTimer);toastTimer=setTimeout(function(){el.classList.remove('show')},1500);markSaving()}
+      function markSaving(){var text=document.getElementById('saveText'),dot=document.querySelector('.save-dot');text.textContent='กำลังบันทึก…';dot.style.background='var(--amber)';setTimeout(function(){text.textContent='บันทึกอัตโนมัติแล้ว';dot.style.background='var(--green)'},650)}
+      function fitPaper(){var availableW=stage.clientWidth-76,availableH=stage.clientHeight-64;baseWidth=Math.max(420,Math.min(860,availableW,availableH*(1123/794)));zoom=100;updatePaper();}
+      function updatePaper(){paper.style.width=(baseWidth*zoom/100)+'px';document.getElementById('zoomRange').value=zoom;document.getElementById('zoomLabel').textContent=zoom+'%'}
+      function selectObject(el){if(!el)return;if(selected)selected.classList.remove('selected');selected=el;selected.classList.add('selected');var key=el.dataset.object,data=objectData[key]||{title:'วัตถุ',code:'OBJECT',size:'—'};document.getElementById('contextName').textContent=data.title;document.getElementById('objectTitle').textContent=data.title;document.getElementById('objectCode').textContent=data.code;document.getElementById('sizeField').value=data.size;document.querySelectorAll('.layer-row').forEach(function(row){row.classList.toggle('active',row.dataset.layer===key)});}
+      function record(undo,redo){undoStack.push({undo:undo,redo:redo});redoStack=[];markSaving()}
+      document.querySelectorAll('.tool-tab').forEach(function(btn){btn.addEventListener('click',function(){var key=btn.dataset.tool;document.body.classList.remove('panel-collapsed');document.querySelectorAll('.tool-tab').forEach(function(x){x.classList.toggle('active',x===btn)});document.querySelectorAll('.tool-panel').forEach(function(x){x.classList.toggle('active',x.dataset.panel===key)});document.getElementById('panelCode').textContent=toolNames[key][0];document.getElementById('panelTitle').textContent=toolNames[key][1]})});
+      document.getElementById('collapsePanel').addEventListener('click',function(){document.body.classList.toggle('panel-collapsed');this.textContent=document.body.classList.contains('panel-collapsed')?'›':'‹';setTimeout(fitPaper,220)});
+      document.querySelectorAll('.selectable').forEach(function(el){
+        el.addEventListener('click',function(e){e.stopPropagation();selectObject(el)});
+        el.addEventListener('pointerdown',function(e){if(el.classList.contains('locked'))return;selectObject(el);var sx=e.clientX,sy=e.clientY,startX=Number(el.dataset.x||0),startY=Number(el.dataset.y||0),moved=false;el.setPointerCapture(e.pointerId);el.classList.add('dragging');function move(ev){var dx=(ev.clientX-sx)/(zoom/100),dy=(ev.clientY-sy)/(zoom/100);if(Math.abs(dx)+Math.abs(dy)>3)moved=true;el.dataset.x=startX+dx;el.dataset.y=startY+dy;el.style.transform='translate('+el.dataset.x+'px,'+el.dataset.y+'px)'}function up(ev){el.releasePointerCapture(ev.pointerId);el.classList.remove('dragging');el.removeEventListener('pointermove',move);el.removeEventListener('pointerup',up);if(moved){var endX=Number(el.dataset.x),endY=Number(el.dataset.y);record(function(){el.dataset.x=startX;el.dataset.y=startY;el.style.transform='translate('+startX+'px,'+startY+'px)'},function(){el.dataset.x=endX;el.dataset.y=endY;el.style.transform='translate('+endX+'px,'+endY+'px)'});toast('จัดวางวัตถุใหม่แล้ว')}}el.addEventListener('pointermove',move);el.addEventListener('pointerup',up)});
+      });
+      document.querySelectorAll('.inspector-tab').forEach(function(btn){btn.addEventListener('click',function(){document.querySelectorAll('.inspector-tab').forEach(function(x){x.classList.toggle('active',x===btn)});document.querySelectorAll('.inspect-view').forEach(function(x){x.classList.toggle('active',x.dataset.view===btn.dataset.inspect)})})});
+      document.querySelectorAll('.layer-row').forEach(function(row){row.addEventListener('click',function(e){var el=document.querySelector('[data-object="'+row.dataset.layer+'"]');if(e.target.classList.contains('layer-eye')){var old=el.style.visibility||'visible',next=old==='hidden'?'visible':'hidden';el.style.visibility=next;e.target.textContent=next==='hidden'?'OFF':'ON';record(function(){el.style.visibility=old;e.target.textContent=old==='hidden'?'OFF':'ON'},function(){el.style.visibility=next;e.target.textContent=next==='hidden'?'OFF':'ON'});return}selectObject(el)})});
+      document.querySelectorAll('[data-action]').forEach(function(btn){btn.addEventListener('click',function(){if(!selected)return;var action=btn.dataset.action;if(action==='lock'){var before=selected.classList.contains('locked');selected.classList.toggle('locked');btn.classList.toggle('active',!before);record(function(){selected.classList.toggle('locked',before)},function(){selected.classList.toggle('locked',!before)});toast(before?'ปลดล็อกวัตถุแล้ว':'ล็อกวัตถุแล้ว')}else if(action==='delete'){var target=selected,old=target.style.visibility||'visible';target.style.visibility='hidden';record(function(){target.style.visibility=old},function(){target.style.visibility='hidden'});toast('ซ่อนวัตถุแล้ว · กดย้อนกลับเพื่อคืนค่า')}else{var labels={duplicate:'สร้างสำเนาบนเลเยอร์ถัดไป',group:'จัดกลุ่มวัตถุแล้ว',back:'เลื่อนลงหนึ่งชั้น',front:'เลื่อนขึ้นหนึ่งชั้น'};toast(labels[action])}})});
+      document.getElementById('undoBtn').addEventListener('click',function(){var item=undoStack.pop();if(!item){toast('ไม่มีรายการให้ย้อนกลับ');return}item.undo();redoStack.push(item);toast('ย้อนกลับแล้ว')});
+      document.getElementById('redoBtn').addEventListener('click',function(){var item=redoStack.pop();if(!item){toast('ไม่มีรายการให้ทำซ้ำ');return}item.redo();undoStack.push(item);toast('ทำซ้ำแล้ว')});
+      document.querySelectorAll('[data-page-btn]').forEach(function(btn){btn.addEventListener('click',function(){var page=btn.dataset.pageBtn;document.querySelectorAll('.page-btn[data-page-btn]').forEach(function(x){x.classList.toggle('active',x===btn)});document.querySelectorAll('.paper-page').forEach(function(x){x.classList.toggle('active',x.dataset.page===page)});if(page==='1'){selectObject(document.querySelector('[data-object="summary"]'))}else{document.getElementById('contextName').textContent='หน้า 02 · ตรวจงาน';document.getElementById('objectTitle').textContent='หน้าตรวจความพร้อม';document.getElementById('objectCode').textContent='PAGE / CHECKLIST'};toast('เปิดหน้าที่ '+page)})});
+      document.getElementById('addPage').addEventListener('click',function(){toast('เพิ่มหน้าใหม่ได้ในเวอร์ชันเต็ม')});
+      document.getElementById('zoomRange').addEventListener('input',function(){zoom=Number(this.value);updatePaper()});
+      document.getElementById('zoomOut').addEventListener('click',function(){zoom=Math.max(65,zoom-10);updatePaper()});
+      document.getElementById('zoomIn').addEventListener('click',function(){zoom=Math.min(140,zoom+10);updatePaper()});
+      document.getElementById('fitBtn').addEventListener('click',fitPaper);document.getElementById('fitTop').addEventListener('click',fitPaper);
+      document.getElementById('previewBtn').addEventListener('click',function(){document.body.classList.toggle('panel-collapsed');document.querySelector('.inspector').style.display=document.querySelector('.inspector').style.display==='none'?'grid':'none';setTimeout(fitPaper,220);toast('สลับโหมดดูตัวอย่าง')});
+      document.getElementById('exportPng').addEventListener('click',function(){document.getElementById('exportPanel').classList.toggle('open')});
+      document.getElementById('exportClose').addEventListener('click',function(){document.getElementById('exportPanel').classList.remove('open')});
+      document.getElementById('exportConfirm').addEventListener('click',function(){document.getElementById('exportPanel').classList.remove('open');toast('เตรียม PNG A4 · 3508 × 2480 px · 300 DPI')});
+      document.getElementById('exportPdf').addEventListener('click',function(){window.print()});
+      document.querySelectorAll('[data-toast]').forEach(function(btn){btn.addEventListener('click',function(){toast(btn.dataset.toast)})});
+      document.querySelectorAll('[data-paper]').forEach(function(btn){btn.addEventListener('click',function(){document.documentElement.style.setProperty('--paper',btn.dataset.paper);document.querySelectorAll('[data-paper]').forEach(function(x){x.classList.toggle('active',x===btn)});toast('เปลี่ยนวัสดุกระดาษแล้ว')})});
+      document.getElementById('opacityRange').addEventListener('input',function(){if(selected)selected.style.opacity=this.value/100;document.getElementById('opacityValue').textContent=this.value+'%';markSaving()});
+      document.getElementById('fontSelect').addEventListener('change',function(){if(selected)selected.style.fontFamily=this.value;markSaving()});
+      document.getElementById('colorInput').addEventListener('input',function(){if(selected)selected.style.color=this.value;markSaving()});
+      document.querySelectorAll('[data-align]').forEach(function(btn){btn.addEventListener('click',function(){if(selected)selected.style.textAlign=btn.dataset.align;document.querySelectorAll('[data-align]').forEach(function(x){x.classList.toggle('active',x===btn)});markSaving()})});
+      window.addEventListener('resize',function(){clearTimeout(window.__pdpaResize);window.__pdpaResize=setTimeout(fitPaper,120)});
+      requestAnimationFrame(fitPaper);
+    })();
+  </script>
+</body>
+</html>
