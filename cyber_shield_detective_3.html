@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cyber Shield Detective (3 คดี): ปฏิบัติการสายสืบพิทักษ์ไซเบอร์ | เกมการเรียนรู้กฎหมายคอมพิวเตอร์ & PDPA
+    <title>Cyber Shield Detective (1 คดี): ปฏิบัติการสายสืบพิทักษ์ไซเบอร์ | เกมการเรียนรู้กฎหมายคอมพิวเตอร์ & PDPA
     </title>
 
     <!-- SEO Meta Tags -->
@@ -43,8 +43,8 @@
       "@graph": [
         {
           "@type": "VideoGame",
-          "name": "Cyber Shield Detective: Fast-Track (3 คดี)",
-          "description": "เกมสืบคดีจำลองสถานการณ์ความผิดตาม พ.ร.บ.คอมพิวเตอร์ 2560 และ PDPA เวอร์ชันรวบรัด 3 คดี ประเมินผลอัตนัยด้วย AI สำหรับนักเรียน ม.3",
+          "name": "Cyber Shield Detective: Single Case",
+          "description": "เกมสืบคดีรายบุคคล 1 คดี สำหรับวิเคราะห์ความผิดตาม พ.ร.บ.คอมพิวเตอร์ 2560 และ PDPA สำหรับนักเรียน ม.3",
           "url": "https://tech-dm-cyber-detective.vercel.app/cyber_shield_detective_3.html",
           "genre": ["Educational Game", "Detective", "Cyber Law Simulation"],
           "gamePlatform": "Web Browser",
@@ -68,7 +68,7 @@
             {
               "@type": "ListItem",
               "position": 2,
-              "name": "เกมสืบคดี Fast-Track (3 คดี)",
+              "name": "เกมสืบคดีรายบุคคล (1 คดี)",
               "item": "https://tech-dm-cyber-detective.vercel.app/cyber_shield_detective_3.html"
             }
           ]
@@ -281,7 +281,7 @@
                         </h1>
                         <span
                             class="text-[10px] px-1.5 py-0.2 rounded bg-pink-500/20 text-pink-300 border border-pink-500/40 font-mono font-bold">v4.5
-                            AI (3 คดี)</span>
+                            AI (รายบุคคล · 1 คดี)</span>
                     </div>
                     <p class="text-[10px] text-slate-400 hidden sm:block">สืบคดีอัตนัย ม.3 — ประเมินผลสดด้วย Google
                         Gemini AI</p>
@@ -305,14 +305,14 @@
                 <div
                     class="flex items-center gap-1.5 px-2.5 py-1 rounded-xl bg-slate-900/90 border border-slate-700 text-slate-200 font-mono">
                     <i class="fa-solid fa-folder-open text-pink-400 text-xs"></i>
-                    <span>คดีที่ <b id="label-current-case" class="text-pink-300">1</b> / 3</span>
+                    <span>คดีที่ <b id="label-current-case" class="text-pink-300">1</b> / 1</span>
                 </div>
 
                 <!-- Total Cumulative Score Pill -->
                 <div
                     class="flex items-center gap-1.5 px-3 py-1 rounded-xl bg-slate-900/90 border border-amber-500/40 text-amber-300 font-mono shadow-sm">
                     <i class="fa-solid fa-star text-yellow-400 text-xs"></i>
-                    <span>คะแนน: <b id="label-total-score" class="text-yellow-300 text-sm font-bold">0</b> / 90</span>
+                    <span>คะแนน: <b id="label-total-score" class="text-yellow-300 text-sm font-bold">0</b> / 30</span>
                 </div>
 
                 <!-- Action Controls (Sound, Reset, Home) -->
@@ -400,8 +400,7 @@
                             <span>กำลังโหลดภาพหลักฐาน...</span>
                         </div>
                         <img id="dossier-comic-img" src="assets/chibi_comics/sec_5.png" alt="Comic 9 Panels"
-                            class="w-full h-auto max-h-[260px] sm:max-h-[290px] object-contain mx-auto rounded transition-all duration-300 group-hover:scale-[1.02] bg-white opacity-0 z-0"
-                            onload="onComicImageLoad(this)" onerror="onComicImageError(this)">
+                            class="w-full h-auto max-h-[260px] sm:max-h-[290px] object-contain mx-auto rounded transition-all duration-300 group-hover:scale-[1.02] bg-white opacity-0 z-0">
                         <div
                             class="absolute inset-0 bg-slate-950/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center z-20">
                             <span
@@ -619,7 +618,7 @@
 
     </main>
 
-    <!-- 3. TEAM REGISTRATION MODAL (Opens on new session) -->
+    <!-- 3. INDIVIDUAL REGISTRATION MODAL (Opens on new session) -->
     <div id="modal-register-team"
         class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/90 backdrop-blur-lg overflow-y-auto">
         <div
@@ -634,21 +633,20 @@
                     class="text-xl sm:text-2xl font-black text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-pink-400 to-amber-300">
                     CYBER SHIELD DETECTIVE
                 </h2>
-                <p class="text-xs text-slate-300">ยินดีต้อนรับสู่งานสืบคดีไซเบอร์ ม.3!
-                    โปรดลงทะเบียนทีมสายสืบเพื่อเริ่มปฏิบัติการ</p>
+                <p class="text-xs text-slate-300">ยินดีต้อนรับสู่งานสืบคดีไซเบอร์ ม.3! โปรดลงทะเบียนผู้ทำภารกิจเพื่อเริ่มปฏิบัติการรายบุคคล</p>
             </div>
 
             <form onsubmit="handleRegisterTeam(event)" class="flex flex-col gap-3.5 font-sarabun text-xs">
-                <!-- Team Name -->
+                <!-- Individual name -->
                 <div>
-                    <label class="block font-semibold text-cyan-300 mb-1">🏷️ ชื่อทีมสายสืบ / ชื่อกลุ่ม <span
+                    <label class="block font-semibold text-cyan-300 mb-1">🏷️ ชื่อ-นามสกุลผู้ทำภารกิจ <span
                             class="text-pink-400">*</span></label>
-                    <input type="text" id="reg-team-name" required placeholder="เช่น ทีมพิทักษ์ไซเบอร์ ม.3/1"
+                    <input type="text" id="reg-team-name" required placeholder="เช่น ธนกฤต ใจดี"
                         class="w-full bg-slate-950 border border-slate-700 rounded-xl px-3.5 py-2 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-cyan-400">
                 </div>
 
-                <!-- Room & Member Count Dropdowns -->
-                <div class="grid grid-cols-2 gap-3">
+                <!-- Room -->
+                <div class="grid grid-cols-1 gap-3">
                     <div>
                         <label class="block font-semibold text-slate-300 mb-1">🏫 ห้องเรียน <span
                                 class="text-pink-400">*</span></label>
@@ -666,31 +664,17 @@
                             <option value="ม.3/10">ม.3/10</option>
                             <option value="ม.3/11">ม.3/11</option>
                             <option value="ม.3/12">ม.3/12</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label class="block font-semibold text-slate-300 mb-1">👥 จำนวนสมาชิก <span
-                                class="text-pink-400">*</span></label>
-                        <select id="reg-members-count" onchange="renderMemberInputs(parseInt(this.value))"
-                            class="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-cyan-400">
-                            <option value="1">1 คน</option>
-                            <option value="2">2 คน</option>
-                            <option value="3" selected>3 คน (แนะนำ 3 บทบาท)</option>
-                            <option value="4">4 คน</option>
-                            <option value="5">5 คน</option>
-                            <option value="6">6 คน</option>
-                            <option value="7">7 คน</option>
-                            <option value="8">8 คน</option>
-                            <option value="9">9 คน</option>
-                            <option value="10">10 คน</option>
+                            <option value="ม.3/13">ม.3/13</option>
+                            <option value="ม.3/14">ม.3/14</option>
+                            <option value="ม.3/15">ม.3/15</option>
                         </select>
                     </div>
                 </div>
 
-                <!-- Dynamic Member Roster -->
+                <!-- Individual roster -->
                 <div class="flex flex-col gap-2">
                     <label class="block font-semibold text-cyan-300">
-                        <i class="fa-solid fa-users-gear mr-1"></i> รายชื่อสมาชิก (ระบุเลขที่ คำนำหน้า ชื่อ-นามสกุล)
+                        <i class="fa-solid fa-user-shield mr-1"></i> ข้อมูลผู้ทำภารกิจ (ระบุเลขที่ คำนำหน้า ชื่อ-นามสกุล)
                         <span class="text-pink-400">*</span>
                     </label>
                     <div id="members-inputs-container" class="flex flex-col gap-2 max-h-[220px] overflow-y-auto pr-1">
@@ -728,8 +712,7 @@
                 </div>
                 <img id="lightbox-comic-img" src="" alt="Enlarged Comic"
                     class="w-auto h-auto max-h-[85vh] max-w-full rounded-xl border border-cyan-500/40 shadow-2xl object-contain bg-white opacity-0 transition-opacity duration-300"
-                    onload="this.classList.remove('opacity-0'); document.getElementById('lightbox-spinner')?.classList.add('hidden')"
-                    onerror="onLightboxImageError(this)">
+                    onload="this.classList.remove('opacity-0'); document.getElementById('lightbox-spinner')?.classList.add('hidden')">
             </div>
         </div>
     </div>
@@ -750,15 +733,14 @@
                     class="text-2xl font-black text-transparent bg-clip-text bg-gradient-to-r from-yellow-300 via-amber-300 to-cyan-300 font-kanit">
                     ภารกิจสืบคดีไซเบอร์สำเร็จสมบูรณ์!
                 </h2>
-                <p class="text-xs text-slate-300 mt-1 font-sarabun">ขอแสดงความยินดีกับทีมสายสืบเยาวชนในการไขคดีทั้ง 3
-                    คดีได้อย่างยอดเยี่ยม</p>
+                <p class="text-xs text-slate-300 mt-1 font-sarabun">ขอแสดงความยินดีกับนักสืบเยาวชนที่วิเคราะห์คดีได้อย่างยอดเยี่ยม</p>
             </div>
 
             <!-- Score Summary Card -->
             <div
                 class="w-full p-4 rounded-2xl bg-slate-950/80 border border-yellow-500/40 flex items-center justify-around font-mono">
                 <div>
-                    <div class="text-xs text-slate-400 font-sarabun">ทีมสายสืบ</div>
+                    <div class="text-xs text-slate-400 font-sarabun">นักสืบ</div>
                     <div class="text-sm font-bold text-cyan-300 font-kanit" id="cert-team-name">-</div>
                 </div>
                 <div>
@@ -767,7 +749,7 @@
                 </div>
                 <div>
                     <div class="text-xs text-slate-400 font-sarabun">คะแนนรวมทั้งหมด</div>
-                    <div class="text-xl font-black text-yellow-300 font-mono"><span id="cert-total-score">0</span> / 90
+                    <div class="text-xl font-black text-yellow-300 font-mono"><span id="cert-total-score">0</span> / 30
                     </div>
                 </div>
             </div>
@@ -824,7 +806,7 @@
 
                 <!-- Team & Room Title -->
                 <div class="text-xl font-black text-cyan-950 font-kanit" id="print-cert-team">
-                    ทีมสายสืบเยาวชน
+                    นักสืบเยาวชน
                 </div>
                 <div class="text-xs font-bold text-cyan-800 font-kanit px-3.5 py-0.5 rounded-full bg-cyan-50 border border-cyan-300 inline-block"
                     id="print-cert-room">
@@ -836,7 +818,7 @@
                     class="mt-1 w-full max-w-lg p-2.5 rounded-2xl bg-slate-50 border border-slate-200 flex flex-col gap-1 text-xs text-slate-800">
                     <div
                         class="font-bold text-cyan-900 text-[11px] uppercase tracking-wider flex items-center justify-center gap-1">
-                        <i class="fa-solid fa-users"></i> สมาชิกทีมผู้ร่วมปฏิบัติการสืบคดี:
+                        <i class="fa-solid fa-user-shield"></i> ผู้ทำภารกิจสืบคดี:
                     </div>
                     <div id="print-cert-members"
                         class="grid grid-cols-2 gap-x-4 gap-y-0.5 text-xs text-slate-700 text-left px-3">
@@ -848,7 +830,7 @@
             <!-- Achievement Statement -->
             <div class="max-w-lg mx-auto text-xs text-slate-600 leading-relaxed px-2">
                 ได้ผ่านการทดสอบปฏิบัติการสืบคดีความผิดตาม <b>พ.ร.บ. ว่าด้วยการกระทำความผิดเกี่ยวกับคอมพิวเตอร์</b> และ
-                <b>กฎหมายคุ้มครองข้อมูลส่วนบุคคล (PDPA)</b> ครบทั้ง 3 คดี
+                <b>กฎหมายคุ้มครองข้อมูลส่วนบุคคล (PDPA)</b> ผ่านภารกิจสืบคดีรายบุคคล
                 พร้อมผ่านการประเมินทักษะการคิดวิเคราะห์เชิงลึกด้วยคะแนนอัตนัยจาก <b>Google Gemini AI</b>
             </div>
 
@@ -857,7 +839,7 @@
                 <div
                     class="p-2.5 rounded-2xl bg-amber-50 border-2 border-amber-400 text-center flex flex-col justify-center">
                     <span class="text-[10px] text-amber-800 font-bold uppercase tracking-wider">คะแนนรวมสะสม</span>
-                    <span class="text-lg font-black text-amber-600 font-mono" id="print-cert-score">90 / 90</span>
+                    <span class="text-lg font-black text-amber-600 font-mono" id="print-cert-score">30 / 30</span>
                 </div>
                 <div
                     class="p-2.5 rounded-2xl bg-cyan-50 border-2 border-cyan-500 text-center flex flex-col justify-center">
@@ -1762,11 +1744,11 @@
         };
 
         // --- Game State Definition ---
-        const SAVE_KEY = 'CYBER_SHIELD_3CASES_SESSION';
+        const SAVE_KEY = 'CYBER_SHIELD_SINGLE_CASE_SESSION';
         let GAME_STATE = {
             teamName: '',
             room: 'ม.3/1',
-            membersCount: 3,
+            membersCount: 1,
             members: [],
             sessionCases: [],
             currentCaseIndex: 0,
@@ -1908,7 +1890,7 @@
 
             // If no valid session, open registration modal
             document.getElementById('modal-register-team').classList.remove('hidden');
-            renderMemberInputs(3);
+            renderMemberInputs(1);
         }
 
         function saveSession() {
@@ -1962,10 +1944,10 @@
 
             const teamName = document.getElementById('reg-team-name').value.trim();
             const room = document.getElementById('reg-room').value.trim();
-            const count = parseInt(document.getElementById('reg-members-count').value, 10) || 1;
+            const count = 1;
 
             if (!teamName) {
-                showToast('กรุณาระบุชื่อทีมสายสืบ', 'fa-solid fa-triangle-exclamation text-yellow-400');
+                showToast('กรุณาระบุชื่อ-นามสกุลผู้ทำภารกิจ', 'fa-solid fa-triangle-exclamation text-yellow-400');
                 return;
             }
 
@@ -1984,9 +1966,9 @@
                 members.push({ no: 1, prefix: 'ด.ช.', name: 'นักสืบตัวแทน' });
             }
 
-            // Shuffle 6 cases from 12 cases
+            // Select one random case for an individual mission.
             const shuffled = [...ALL_12_CASES].sort(() => 0.5 - Math.random());
-            const sessionCases = shuffled.slice(0, 3);
+            const sessionCases = shuffled.slice(0, 1);
 
             GAME_STATE.teamName = teamName;
             GAME_STATE.room = room;
@@ -2008,7 +1990,7 @@
             updateHeaderInfo();
             loadCurrentCase();
             preloadSessionImages();
-            showToast('ลงทะเบียนทีมสำเร็จ! เริ่มสืบคดีที่ 1', 'fa-solid fa-circle-check text-emerald-400');
+            showToast('ลงทะเบียนสำเร็จ! เริ่มภารกิจสืบคดีรายบุคคล', 'fa-solid fa-circle-check text-emerald-400');
         }
 
         function updateHeaderInfo() {
@@ -2103,6 +2085,25 @@
                 spinner.classList.remove('hidden');
             }
         }
+
+        // Bind after the functions exist so cached images cannot call an undefined inline handler.
+        function bindComicImageHandlers() {
+            const comicImg = document.getElementById('dossier-comic-img');
+            if (comicImg) {
+                comicImg.addEventListener('load', () => onComicImageLoad(comicImg));
+                comicImg.addEventListener('error', () => onComicImageError(comicImg));
+                if (comicImg.complete) {
+                    comicImg.naturalWidth > 0 ? onComicImageLoad(comicImg) : onComicImageError(comicImg);
+                }
+            }
+
+            const lightboxImg = document.getElementById('lightbox-comic-img');
+            if (lightboxImg) {
+                lightboxImg.addEventListener('error', () => onLightboxImageError(lightboxImg));
+            }
+        }
+
+        bindComicImageHandlers();
 
         // --- Load Current Case ---
         function loadCurrentCase() {
@@ -2455,7 +2456,7 @@
                 if (isLastCase) {
                     btnLabel.textContent = '🏆 สรุปผลคดีทั้งหมดและรับเกียรติบัตร';
                 } else {
-                    btnLabel.textContent = `➡️ สู่คดีถัดไป (คดีที่ ${GAME_STATE.currentCaseIndex + 2} / 3)`;
+                    btnLabel.textContent = `➡️ สู่คดีถัดไป (คดีที่ ${GAME_STATE.currentCaseIndex + 2} / 1)`;
                 }
             }
         }
@@ -2479,7 +2480,7 @@
                     GAME_STATE.currentRole = 'legal';
                     saveSession();
                     loadCurrentCase();
-                    showToast(`เริ่มสืบคดีที่ ${GAME_STATE.currentCaseIndex + 1} / 3`, 'fa-solid fa-folder-open text-cyan-400');
+                    showToast(`เริ่มสืบคดีที่ ${GAME_STATE.currentCaseIndex + 1} / 1`, 'fa-solid fa-folder-open text-cyan-400');
                 }
             }
         }
@@ -2776,16 +2777,16 @@
 
         function printCertificate() {
             // 1. Populate Team & Room
-            document.getElementById('print-cert-team').textContent = GAME_STATE.teamName || 'ทีมสายสืบเยาวชน';
+            document.getElementById('print-cert-team').textContent = GAME_STATE.teamName || 'นักสืบเยาวชน';
             document.getElementById('print-cert-room').textContent = `ระดับชั้นมัธยมศึกษาปีที่ 3 (ห้อง ${GAME_STATE.room || 'ม.3/1'})`;
-            document.getElementById('print-cert-score').textContent = `${GAME_STATE.totalScore || 0} / 90`;
+            document.getElementById('print-cert-score').textContent = `${GAME_STATE.totalScore || 0} / 30`;
 
             // 2. Compute Title / Rank
             const score = GAME_STATE.totalScore || 0;
             let rank = 'CYBER DETECTIVE NOVICE';
-            if (score >= 160) rank = '⭐ CYBER MASTER DETECTIVE (ยอดเยี่ยม)';
-            else if (score >= 130) rank = '⭐ SENIOR CYBER DETECTIVE (ดีเด่น)';
-            else if (score >= 90) rank = '⭐ CYBER INVESTIGATOR (ดี)';
+            if (score >= 27) rank = '⭐ CYBER MASTER DETECTIVE (ยอดเยี่ยม)';
+            else if (score >= 22) rank = '⭐ SENIOR CYBER DETECTIVE (ดีเด่น)';
+            else if (score >= 15) rank = '⭐ CYBER INVESTIGATOR (ดี)';
             document.getElementById('print-cert-rank').textContent = rank;
 
             // 3. Render Student Roster
@@ -2797,7 +2798,7 @@
                 });
                 membersContainer.innerHTML = html;
             } else {
-                membersContainer.innerHTML = '<div>• นักสืบตัวแทนประจำกลุ่ม</div>';
+                membersContainer.innerHTML = '<div>• นักสืบเยาวชน</div>';
             }
 
             // 4. Verification Hash & Formatted Thai Date

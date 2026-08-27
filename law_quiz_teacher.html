@@ -1,0 +1,23 @@
+<!doctype html>
+<html lang="th">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="robots" content="noindex, nofollow"><title>แดชบอร์ดครู · แบบทดสอบกฎหมาย</title>
+  <link rel="icon" href="favicon.png"><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Kanit:wght@400;500;600;700;800&family=Sarabun:wght@400;600;700&display=swap" rel="stylesheet"><link rel="stylesheet" href="css/law_quiz.css"><link rel="stylesheet" href="css/law_quiz_teacher.css">
+</head>
+<body class="teacher-page">
+  <header class="site-header no-print"><a class="brand" href="index.html"><img src="favicon.png" alt="Cyber Shield"><span>TEACHER <b>LAW QUIZ DASHBOARD</b></span></a><a class="back-link" href="index.html">← หน้าหลัก</a></header>
+  <main class="page-shell">
+    <section id="login-view" class="card login-card no-print"><p class="eyebrow">TEACHER ACCESS</p><h1>แดชบอร์ดตรวจข้อสอบกฎหมาย</h1><p>ดูคะแนนและคำตอบรายข้อของนักเรียน</p><form id="login-form"><label>รหัสผ่านครู<input id="passcode" type="password" autocomplete="current-password" required></label><button class="primary" type="submit">เข้าสู่แดชบอร์ด</button></form><small>ตั้งค่า <code>TEACHER_PASSCODE</code> ใน Vercel ก่อนใช้งานจริง</small></section>
+    <section id="dashboard-view" class="hidden">
+      <div class="dashboard-head no-print"><div><p class="eyebrow">LIVE RESULTS · 10 QUESTIONS</p><h1>ผลแบบทดสอบกฎหมาย</h1><p id="updated-at">กำลังโหลดข้อมูล…</p></div><button id="refresh" class="secondary">รีเฟรชข้อมูล</button></div>
+      <div id="stat-cards" class="stats no-print"></div>
+      <div class="filters no-print"><label>ห้อง<select id="filter-room"><option value="">ทุกห้อง</option></select></label><label>ค้นหาชื่อ / เลขที่<input id="filter-search" placeholder="เช่น กานต์ หรือ 12"></label><button id="print-summary" class="secondary">PDF สรุปคะแนน</button><button id="print-all" class="secondary">PDF คำตอบทั้งหมด</button></div>
+      <section class="table-card no-print"><div class="table-scroll"><table><thead><tr><th>ผู้เรียน</th><th>ห้อง</th><th>สถานะ</th><th>คะแนน</th><th>เวลาส่ง</th><th></th></tr></thead><tbody id="attempt-rows"></tbody></table></div></section>
+      <section id="detail-view" class="card detail-view no-print hidden"></section>
+      <section id="print-summary-view" class="print-only"><h1>สรุปผลแบบทดสอบกฎหมายดิจิทัล</h1><p id="print-summary-meta"></p><table class="print-table"><thead><tr><th>ลำดับ</th><th>ชื่อ–นามสกุล</th><th>เลขที่</th><th>ห้อง</th><th>คะแนน</th><th>เวลาส่ง</th></tr></thead><tbody id="print-summary-rows"></tbody></table></section>
+      <section id="print-detail-view" class="print-only"></section><section id="print-all-view" class="print-only"></section>
+    </section>
+  </main>
+  <div id="toast" class="toast hidden" role="status"></div><script src="js/law_quiz_teacher.js"></script>
+</body>
+</html>

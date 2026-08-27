@@ -79,6 +79,7 @@ try {
 
 // Force Vercel Node File Trace (NFT) to bundle cases_data.js in Lambda package
 try { require('./cases_data.js'); } catch(e) {}
+const { LAW_QUIZ_QUESTIONS } = require('./law_quiz_questions.js');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -86,6 +87,12 @@ const PORT = process.env.PORT || 3000;
 // Enable CORS & JSON Body Parser
 app.use(cors());
 app.use(express.json({ limit: '10mb' }));
+
+// The law quiz answer bank is a server-only module; do not expose it through the static site.
+app.use((req, res, next) => {
+    if (req.path === '/law_quiz_questions.js') return res.status(404).send('Not found');
+    next();
+});
 
 // Serve Static Directories with explicit caching
 app.use('/assets', express.static(path.join(__dirname, 'assets'), { maxAge: '1d' }));
@@ -1504,6 +1511,146 @@ const SERVER_SCORES_CACHE_3 = [];
 const DEFAULT_SUPABASE_URL = process.env.SUPABASE_URL || 'https://xbwlzqtvmjwucoqkyvhj.supabase.co';
 const DEFAULT_SUPABASE_ANON_KEY = process.env.SUPABASE_ANON_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inhid2x6cXR2bWp3dWNvcWt5dmhqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQ0NjE3NDEsImV4cCI6MjEwMDAzNzc0MX0.nbIkBfvTZBxBSxxYik3o3gAqlXI8ITGMvof3wvJxA7c';
 
+// Law Quiz: all answer keys remain server-side. Set SUPABASE_SERVICE_ROLE_KEY in Vercel
+// so student names and answer sheets are never read directly from the browser.
+const LAW_QUIZ_TABLE = 'law_quiz_attempts';
+const LAW_QUIZ_ROOMS = Array.from({ length: 15 }, (_, i) => `ม.3/${i + 1}`);
+
+function validTeacherPasscode(passcode) {
+    const validPasscodes = ['admin123', 'teacher123'];
+    if (process.env.TEACHER_PASSCODE) validPasscodes.push(process.env.TEACHER_PASSCODE);
+    return Boolean(passcode && validPasscodes.includes(String(passcode).trim()));
+}
+
+function lawQuizAdminClient() {
+    const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+    if (!serviceKey) {
+        const err = new Error('ตั้งค่า SUPABASE_SERVICE_ROLE_KEY ใน Vercel ก่อนใช้งานระบบข้อสอบ เพื่อปกป้องข้อมูลนักเรียน');
+        err.code = 'SUPABASE_ADMIN_REQUIRED';
+        throw err;
+    }
+    const { createClient } = require('@supabase/supabase-js');
+    return createClient(DEFAULT_SUPABASE_URL, serviceKey, { auth: { persistSession: false } });
+}
+
+function quizText(value, maxLength) {
+    return String(value || '').replace(/[<>]/g, '').trim().slice(0, maxLength);
+}
+
+function quizQuestionForStudent(question) {
+    const { answer, explanation, ...safeQuestion } = question;
+    return safeQuestion;
+}
+
+function pickLawQuizQuestions() {
+    const quotas = { understand: 4, apply: 3, analyze: 3 };
+    const chosen = [];
+    Object.entries(quotas).forEach(([bloom, count]) => {
+        const pool = LAW_QUIZ_QUESTIONS.filter(q => q.bloom === bloom).sort(() => Math.random() - 0.5);
+        chosen.push(...pool.slice(0, count));
+    });
+    return chosen.sort(() => Math.random() - 0.5);
+}
+
+function quizResults(snapshot, submittedAnswers) {
+    const selections = submittedAnswers && typeof submittedAnswers === 'object' ? submittedAnswers : {};
+    return snapshot.map(question => {
+        const selectedOption = ['A', 'B', 'C', 'D'].includes(selections[question.id]) ? selections[question.id] : null;
+        return {
+            questionId: question.id,
+            bloom: question.bloom,
+            topic: question.topic,
+            question: question.question,
+            options: question.options,
+            selectedOption,
+            correctOption: question.answer,
+            isCorrect: selectedOption === question.answer,
+            explanation: question.explanation
+        };
+    });
+}
+
+function quizReportRow(row) {
+    const snapshot = Array.isArray(row.question_snapshot) ? row.question_snapshot : [];
+    const storedItems = row.answers?.items || [];
+    const selectedAnswers = Object.fromEntries(storedItems.map(item => [item.questionId, item.selectedOption]));
+    return { ...row, results: quizResults(snapshot, selectedAnswers) };
+}
+
+app.post('/api/law-quiz/start', async (req, res) => {
+    const prefix = quizText(req.body?.prefix, 20);
+    const firstName = quizText(req.body?.firstName, 80);
+    const lastName = quizText(req.body?.lastName, 100);
+    const studentNo = Number.parseInt(req.body?.studentNo, 10);
+    const room = quizText(req.body?.room, 10);
+    if (!prefix || !firstName || !lastName || !Number.isInteger(studentNo) || studentNo < 1 || studentNo > 99 || !LAW_QUIZ_ROOMS.includes(room)) {
+        return res.status(400).json({ success: false, message: 'กรอกคำนำหน้า ชื่อ นามสกุล เลขที่ และห้อง ม.3/1–ม.3/15 ให้ครบถ้วน' });
+    }
+    try {
+        const snapshot = pickLawQuizQuestions();
+        const supabase = lawQuizAdminClient();
+        const { data, error } = await supabase.from(LAW_QUIZ_TABLE).insert([{
+            attempt_code: `LQ-${Date.now()}-${Math.random().toString(36).slice(2, 7).toUpperCase()}`,
+            prefix, first_name: firstName, last_name: lastName, student_no: studentNo, room,
+            question_snapshot: snapshot, bloom_summary: { understand: 4, apply: 3, analyze: 3 }
+        }]).select('id, attempt_code, prefix, first_name, last_name, student_no, room, started_at').single();
+        if (error) throw error;
+        res.status(201).json({ success: true, attempt: data, questions: snapshot.map(quizQuestionForStudent) });
+    } catch (error) {
+        console.error('Law quiz start failed:', error.message);
+        res.status(error.code === 'SUPABASE_ADMIN_REQUIRED' ? 503 : 500).json({ success: false, message: error.message });
+    }
+});
+
+app.post('/api/law-quiz/submit', async (req, res) => {
+    const attemptId = quizText(req.body?.attemptId, 80);
+    if (!attemptId) return res.status(400).json({ success: false, message: 'ไม่พบรหัสการทำข้อสอบ' });
+    try {
+        const supabase = lawQuizAdminClient();
+        const { data: attempt, error: readError } = await supabase.from(LAW_QUIZ_TABLE)
+            .select('*').eq('id', attemptId).single();
+        if (readError || !attempt) throw (readError || new Error('ไม่พบรายการทำข้อสอบ'));
+        if (attempt.completed_at) return res.json({ success: true, alreadySubmitted: true, attempt: quizReportRow(attempt) });
+        const results = quizResults(attempt.question_snapshot, req.body?.answers);
+        const score = results.filter(result => result.isCorrect).length;
+        const { data: saved, error: saveError } = await supabase.from(LAW_QUIZ_TABLE).update({
+            answers: { items: results.map(({ questionId, selectedOption, correctOption, isCorrect }) => ({ questionId, selectedOption, correctOption, isCorrect })) },
+            score, completed_at: new Date().toISOString()
+        }).eq('id', attemptId).select('*').single();
+        if (saveError) throw saveError;
+        res.json({ success: true, attempt: quizReportRow(saved) });
+    } catch (error) {
+        console.error('Law quiz submit failed:', error.message);
+        res.status(error.code === 'SUPABASE_ADMIN_REQUIRED' ? 503 : 500).json({ success: false, message: error.message });
+    }
+});
+
+app.get('/api/law-quiz/attempts', async (req, res) => {
+    if (!validTeacherPasscode(req.get('x-teacher-passcode'))) return res.status(403).json({ success: false, message: 'รหัสผ่านครูไม่ถูกต้อง' });
+    try {
+        const supabase = lawQuizAdminClient();
+        const { data, error } = await supabase.from(LAW_QUIZ_TABLE).select('*').order('created_at', { ascending: false }).limit(1000);
+        if (error) throw error;
+        res.json({ success: true, data: (data || []).map(quizReportRow) });
+    } catch (error) {
+        console.error('Law quiz teacher list failed:', error.message);
+        res.status(error.code === 'SUPABASE_ADMIN_REQUIRED' ? 503 : 500).json({ success: false, message: error.message });
+    }
+});
+
+app.post('/api/law-quiz/attempts/:id/note', async (req, res) => {
+    if (!validTeacherPasscode(req.get('x-teacher-passcode'))) return res.status(403).json({ success: false, message: 'รหัสผ่านครูไม่ถูกต้อง' });
+    try {
+        const supabase = lawQuizAdminClient();
+        const { data, error } = await supabase.from(LAW_QUIZ_TABLE).update({ teacher_note: quizText(req.body?.teacherNote, 2000) })
+            .eq('id', req.params.id).select('*').single();
+        if (error) throw error;
+        res.json({ success: true, attempt: quizReportRow(data) });
+    } catch (error) {
+        res.status(error.code === 'SUPABASE_ADMIN_REQUIRED' ? 503 : 500).json({ success: false, message: error.message });
+    }
+});
+
 // Helper function to save game score to Supabase & Memory Cache
 async function saveToSupabase(record, tableName = 'game_scores') {
     const row = {
@@ -1638,6 +1785,14 @@ app.get('/cyber_shield_detective_3', (req, res) => {
 });
 app.get('/game_3', (req, res) => {
     res.sendFile(path.join(__dirname, 'cyber_shield_detective_3.html'));
+});
+
+// Individual law quiz and its teacher-only dashboard
+app.get('/law_quiz', (req, res) => {
+    res.sendFile(path.join(__dirname, 'law_quiz.html'));
+});
+app.get('/law_quiz_teacher', (req, res) => {
+    res.sendFile(path.join(__dirname, 'law_quiz_teacher.html'));
 });
 
 app.get('/detective_v4', (req, res) => {
