@@ -10,6 +10,56 @@
     let currentTopic = 'all';
     let searchQuery = '';
 
+    const DEFAULT_LAW_QUESTIONS = [
+        // Understand — รู้และอธิบายหลักกฎหมาย
+        {id:'U01',bloom:'understand',topic:'มาตรา 5',sourceCases:[1],question:'การเข้าถึงระบบคอมพิวเตอร์ของผู้อื่นโดยมิชอบ แม้ระบบนั้นมีมาตรการป้องกันไว้ เข้ากับประเด็นใดมากที่สุด',options:['มาตรา 5 การเข้าถึงระบบคอมพิวเตอร์โดยมิชอบ','มาตรา 11 การส่งข้อความรบกวน','มาตรา 14(2) ข่าวที่ทำให้ตื่นตระหนก','มาตรา 16 การตัดต่อภาพ'],answer:'A',explanation:'มาตรา 5 เกี่ยวกับการเข้าถึงระบบคอมพิวเตอร์ที่มีมาตรการป้องกันโดยมิชอบ'},
+        {id:'U02',bloom:'understand',topic:'มาตรา 7',sourceCases:[1],question:'ข้อใดอธิบายมาตรา 7 ได้ถูกต้องที่สุด',options:['การเข้าถึงข้อมูลคอมพิวเตอร์ที่มีมาตรการป้องกันโดยเฉพาะโดยมิชอบ','การส่งอีเมลโฆษณา','การทำให้ระบบหยุดทำงาน','การโพสต์ภาพตัดต่อ'],answer:'A',explanation:'มาตรา 7 มุ่งคุ้มครองข้อมูลคอมพิวเตอร์ที่มีมาตรการป้องกันการเข้าถึงโดยเฉพาะ'},
+        {id:'U03',bloom:'understand',topic:'มาตรา 8',sourceCases:[4],question:'การลอบดักรับรหัสผ่านหรือข้อมูลที่กำลังส่งผ่านเครือข่ายโดยไม่มีสิทธิ์ สอดคล้องกับมาตราใด',options:['มาตรา 8','มาตรา 10','มาตรา 11','มาตรา 16'],answer:'A',explanation:'มาตรา 8 เกี่ยวกับการดักรับข้อมูลคอมพิวเตอร์ของผู้อื่นที่อยู่ระหว่างการส่งในระบบ'},
+        {id:'U04',bloom:'understand',topic:'มาตรา 10',sourceCases:[7],question:'การปล่อยมัลแวร์จนไฟล์หรือระบบของโรงเรียนเสียหาย เป็นประเด็นสำคัญของมาตราใด',options:['มาตรา 10','มาตรา 13','มาตรา 14(5)','มาตรา 16'],answer:'A',explanation:'มาตรา 10 เกี่ยวกับการทำให้ระบบคอมพิวเตอร์ของผู้อื่นถูกรบกวน เสียหาย ทำลาย หรือใช้การไม่ได้ตามปกติ'},
+        {id:'U05',bloom:'understand',topic:'มาตรา 11',sourceCases:[6],question:'สาระสำคัญของมาตรา 11 ในบริบทข้อความโฆษณารบกวนคือข้อใด',options:['ส่งข้อมูลหรืออีเมลรบกวนโดยไม่เปิดโอกาสให้ปฏิเสธได้โดยง่าย','แอบเข้าระบบของผู้อื่น','ตัดต่อภาพให้ผู้อื่นอับอาย','ดักข้อมูลระหว่างส่ง'],answer:'A',explanation:'มาตรา 11 ครอบคลุมการส่งข้อมูลหรืออีเมลรบกวนผู้อื่นโดยไม่เปิดโอกาสให้บอกเลิกหรือปฏิเสธได้โดยง่าย'},
+        {id:'U06',bloom:'understand',topic:'มาตรา 13',sourceCases:[7],question:'การสร้างหรือเผยแพร่โปรแกรมที่จัดทำขึ้นโดยเฉพาะเพื่อใช้กระทำความผิดเกี่ยวกับคอมพิวเตอร์ เชื่อมโยงกับมาตราใด',options:['มาตรา 13','มาตรา 5','มาตรา 14(2)','มาตรา 16'],answer:'A',explanation:'มาตรา 13 เกี่ยวกับการจำหน่ายหรือเผยแพร่ชุดคำสั่งที่จัดทำขึ้นโดยเฉพาะเพื่อนำไปใช้เป็นเครื่องมือกระทำความผิด'},
+        {id:'U07',bloom:'understand',topic:'มาตรา 14(1)',sourceCases:[4],question:'การสร้างหน้าเว็บปลอมเลียนแบบธนาคารเพื่อหลอกเอารหัสผ่าน มีความเสี่ยงตามหลักใดมากที่สุด',options:['มาตรา 14(1) การนำเข้าข้อมูลปลอมหรือเท็จโดยทุจริตหรือหลอกลวง','มาตรา 11 การส่งสแปม','มาตรา 16 การตัดต่อภาพ','มาตรา 8 การดักรับข้อมูล'],answer:'A',explanation:'กรณีหลอกลวงด้วยข้อมูลหรือหน้าเว็บปลอมเพื่อก่อความเสียหายเข้ากับหลักมาตรา 14(1)'},
+        {id:'U08',bloom:'understand',topic:'มาตรา 14(2)',sourceCases:[5],question:'การโพสต์ข่าวเท็จเรื่องภัยพิบัติจนประชาชนตื่นตระหนก มีความเสี่ยงตามมาตราใด',options:['มาตรา 14(2)','มาตรา 5','มาตรา 7','มาตรา 13'],answer:'A',explanation:'มาตรา 14(2) ครอบคลุมข้อมูลอันเป็นเท็จที่น่าจะเกิดความเสียหายต่อความมั่นคงหรือก่อให้เกิดความตื่นตระหนกแก่ประชาชน'},
+        {id:'U09',bloom:'understand',topic:'มาตรา 14(5)',sourceCases:[5],question:'ข้อใดสื่อถึงหลักของมาตรา 14(5) มากที่สุด',options:['ส่งต่อข้อมูลโดยรู้อยู่แล้วว่าเป็นข้อมูลผิดตามมาตรา 14(1)-(4)','ลืมรหัสผ่านของตนเอง','ใช้คอมพิวเตอร์สาธารณะ','ตั้งรหัสผ่านยาว'],answer:'A',explanation:'การเผยแพร่หรือส่งต่อข้อมูลโดยรู้อยู่แล้วว่าเป็นข้อมูลตามมาตรา 14(1)-(4) มีความเสี่ยงตามมาตรา 14(5)'},
+        {id:'U10',bloom:'understand',topic:'มาตรา 16',sourceCases:[2],question:'การนำภาพของผู้อื่นที่ตัดต่อหรือดัดแปลงไปเผยแพร่จนมีแนวโน้มทำให้เสียชื่อเสียงหรืออับอาย เกี่ยวข้องกับมาตราใด',options:['มาตรา 16','มาตรา 8','มาตรา 10','มาตรา 11'],answer:'A',explanation:'มาตรา 16 มุ่งคุ้มครองผู้ที่ได้รับผลกระทบจากภาพตัดต่อหรือดัดแปลงที่เผยแพร่ต่อสาธารณะจนเสียชื่อเสียงหรืออับอาย'},
+
+        // Apply — นำหลักไปใช้กับสถานการณ์ 6 คดี
+        {id:'P01',bloom:'apply',topic:'คดีแอบเข้าบัญชี',sourceCases:[1],question:'พบว่าเพื่อนล็อกอินบัญชีค้างไว้บนคอมพิวเตอร์โรงเรียน การกระทำใดเหมาะสมที่สุด',options:['เปิดดูข้อความเพราะไม่ได้ตั้งล็อกหน้าจอ','ออกจากบัญชีและแจ้งเจ้าของเครื่อง','เปลี่ยนรหัสผ่านเพื่อแกล้ง','แคปหน้าจอส่งต่อในกลุ่ม'],answer:'B',explanation:'บัญชีที่เปิดค้างไม่ได้เป็นการอนุญาตให้ผู้อื่นเข้าถึง ควรออกจากบัญชีและแจ้งเจ้าของ'},
+        {id:'P02',bloom:'apply',topic:'คดีตัดต่อภาพ',sourceCases:[2],question:'เพื่อนชวนตัดต่อรูปครูแล้วโพสต์สาธารณะเพื่อให้คนหัวเราะ คุณควรทำอย่างไร',options:['โพสต์ได้ถ้าใส่คำว่าแค่ล้อเล่น','ไม่ร่วมเผยแพร่และแจ้งให้ลบหรือรายงานผู้ใหญ่','ตัดต่อให้ตลกกว่าเดิม','ส่งต่อเฉพาะกลุ่มห้อง'],answer:'B',explanation:'การเผยแพร่ภาพตัดต่อที่อาจทำให้ผู้อื่นอับอายหรือเสียชื่อเสียงมีความเสี่ยง ควรหยุดการเผยแพร่'},
+        {id:'P03',bloom:'apply',topic:'คดีฟิชชิง',sourceCases:[4],question:'SMS อ้างว่าเป็นธนาคารให้กดลิงก์และกรอกรหัสผ่านเพื่อรับเงินคืน วิธีที่เหมาะสมที่สุดคือข้อใด',options:['กดลิงก์แล้วกรอกทันที','ไม่กดลิงก์ ติดต่อธนาคารผ่านช่องทางทางการ และไม่บอกรหัสหรือ OTP','ส่งต่อให้เพื่อนช่วยตรวจ','ตอบกลับด้วยเลขบัตรประชาชน'],answer:'B',explanation:'ลิงก์ที่อ้างตัวเป็นธนาคารอาจเป็นฟิชชิง ควรยืนยันผ่านช่องทางทางการและไม่เปิดเผยข้อมูลยืนยันตัวตน'},
+        {id:'P04',bloom:'apply',topic:'คดีข่าวลวง',sourceCases:[5],question:'ได้รับภาพประกาศว่าเขื่อนแตกแต่ไม่มีแหล่งข่าว วันที่ หรือประกาศทางการ คุณควรทำตามลำดับใด',options:['แชร์ก่อนเพื่อเตือนทุกคน','ตรวจช่องทางหน่วยงานทางการก่อน และไม่ส่งต่อจนกว่าจะยืนยัน','เติมข้อความให้น่าตกใจขึ้น','ถามเฉพาะคนที่ส่งภาพมา'],answer:'B',explanation:'ข่าวที่อาจทำให้ตื่นตระหนกควรตรวจสอบกับแหล่งทางการก่อนแชร์'},
+        {id:'P05',bloom:'apply',topic:'คดีสแปม',sourceCases:[6],question:'ร้านเกมส่งข้อความโฆษณาซ้ำ ๆ และไม่มีปุ่มยกเลิกรับข้อความ สิ่งที่ผู้รับทำได้เหมาะสมคือข้อใด',options:['ส่งข้อความรบกวนกลับเป็นร้อยครั้ง','เก็บหลักฐาน บล็อกหรือรายงานช่องทาง และใช้การติดต่อทางการหากจำเป็น','เผยแพร่เบอร์โทรของร้านทันที','สร้างบัญชีปลอมไปด่า'],answer:'B',explanation:'ควรจัดการอย่างปลอดภัย เก็บหลักฐานและใช้เครื่องมือบล็อกหรือรายงาน ไม่ขยายความเสียหาย'},
+        {id:'P06',bloom:'apply',topic:'คดีมัลแวร์',sourceCases:[7],question:'ไฟล์เกรดของโรงเรียนเปิดไม่ได้และมีข้อความเรียกค่าไถ่ สิ่งใดควรทำก่อน',options:['จ่ายเงินทันทีโดยไม่แจ้งใคร','แยกเครื่องที่มีปัญหา แจ้งผู้ดูแลระบบ เก็บหลักฐาน และใช้แผนสำรองข้อมูล','ลบหลักฐานทั้งหมด','ส่งไฟล์ต้องสงสัยต่อให้เพื่อนตรวจ'],answer:'B',explanation:'การแยกเครื่องและแจ้งผู้ดูแลช่วยจำกัดผลกระทบ และหลักฐานจำเป็นต่อการตรวจสอบเหตุการณ์'},
+        {id:'P07',bloom:'apply',topic:'คดีดักข้อมูล',sourceCases:[4],question:'คุณเห็นคนใช้โปรแกรมดักจับข้อมูลบน Wi‑Fi โรงเรียนเพื่อดูรหัสผ่านผู้อื่น ควรทำอย่างไร',options:['ขอโปรแกรมมาใช้ด้วย','หยุดใช้เครือข่ายที่เสี่ยงและแจ้งครูหรือผู้ดูแลระบบพร้อมข้อมูลที่พบ','บอกเพื่อนให้ลองดักข้อมูล','โพสต์กล่าวหาพร้อมชื่อทันทีโดยไม่มีหลักฐาน'],answer:'B',explanation:'ควรลดความเสี่ยงของผู้ใช้และแจ้งผู้รับผิดชอบเพื่อดำเนินการตรวจสอบอย่างเหมาะสม'},
+        {id:'P08',bloom:'apply',topic:'คดีเครื่องมือแฮก',sourceCases:[7],question:'มีคนส่งลิงก์โปรแกรม “ล็อกไฟล์เพื่อน” เพื่อใช้แกล้งกันในห้อง วิธีที่รับผิดชอบคือข้อใด',options:['ดาวน์โหลดเก็บไว้ใช้ยามจำเป็น','ไม่ดาวน์โหลดหรือส่งต่อ และแจ้งผู้ใหญ่หรือผู้ดูแลระบบ','แก้ชื่อไฟล์แล้วส่งต่อ','ทดลองกับเครื่องเพื่อนก่อน'],answer:'B',explanation:'โปรแกรมที่อาจทำให้ข้อมูลหรือระบบผู้อื่นเสียหายไม่ควรถูกทดลองหรือเผยแพร่'},
+        {id:'P09',bloom:'apply',topic:'คดีส่งต่อข่าวเท็จ',sourceCases:[5],question:'คุณทราบจากประกาศโรงเรียนแล้วว่าข่าวปิดเรียนที่เพื่อนส่งมานั้นเป็นข่าวเท็จ สิ่งที่ควรทำคือข้อใด',options:['ส่งต่อพร้อมเขียนว่าไม่แน่ใจ','หยุดส่งต่อ ชี้แจงแหล่งข่าวจริง และลบโพสต์ของตนหากเคยแชร์','โพสต์ด่าคนส่งต่อ','เก็บไว้ส่งในกลุ่มอื่น'],answer:'B',explanation:'เมื่อรู้ว่าเป็นข้อมูลเท็จ ไม่ควรส่งต่อ และควรแก้ไขผลกระทบด้วยข้อมูลจากแหล่งทางการ'},
+        {id:'P10',bloom:'apply',topic:'คดีเข้าถึงข้อมูล',sourceCases:[1],question:'คุณเดารหัสผ่านอีเมลเพื่อนได้และล็อกอินสำเร็จ สิ่งใดถูกต้องที่สุด',options:['อ่านได้เพราะเดารหัสถูก','ออกจากระบบทันที ไม่ดูหรือคัดลอกข้อมูล และแจ้งเจ้าของให้เปลี่ยนรหัสผ่าน','ส่งภาพหน้าจอให้เพื่อนสนิท','ใช้บัญชีตอบข้อความแทนเจ้าของ'],answer:'B',explanation:'การเดารหัสสำเร็จไม่ได้ทำให้มีสิทธิ์เข้าถึงบัญชีหรือข้อมูลของผู้อื่น'},
+
+        // Analyze — เปรียบเทียบองค์ประกอบและผลกระทบ
+        {id:'A01',bloom:'analyze',topic:'มาตรา 5 และ 7',sourceCases:[1],question:'กายใช้รหัสที่ขโมยมาเข้าระบบเรียน แล้วเปิดดูไฟล์คะแนนที่มีการป้องกัน การวิเคราะห์ใดเหมาะสมที่สุด',options:['เกี่ยวกับมาตรา 5 เท่านั้น','อาจมีทั้งประเด็นการเข้าถึงระบบและข้อมูลโดยไม่ได้รับอนุญาต','เป็นเพียงการล้อเล่นจึงไม่เกี่ยวกับกฎหมาย','เกี่ยวกับมาตรา 11 เพราะใช้ข้อความ'],answer:'B',explanation:'ต้องแยกพิจารณาการเข้าถึงตัวระบบและการเข้าถึงข้อมูลที่อยู่ในระบบตามข้อเท็จจริงและมาตรการป้องกัน'},
+        {id:'A02',bloom:'analyze',topic:'มาตรา 14',sourceCases:[4,5],question:'ข้อใดแยกสถานการณ์ฟิชชิงออกจากข่าวลวงที่ทำให้ประชาชนตื่นตระหนกได้ถูกต้องที่สุด',options:['ทั้งสองเป็นเรื่องเดียวกันเสมอ','ฟิชชิงเน้นการหลอกลวงด้วยข้อมูลปลอมเพื่อก่อความเสียหาย ส่วนข่าวลวงต้องพิจารณาผลต่อประชาชนและความตื่นตระหนก','ข่าวลวงไม่เคยอยู่บนอินเทอร์เน็ต','ฟิชชิงเกี่ยวกับภาพตัดต่อเท่านั้น'],answer:'B',explanation:'ทั้งสองอาจเกี่ยวข้องกับข้อมูลเท็จ แต่บริบท เจตนา และผลกระทบต้องพิจารณาแยกตามองค์ประกอบของกฎหมาย'},
+        {id:'A03',bloom:'analyze',topic:'มาตรา 16',sourceCases:[2],question:'นักเรียนตัดต่อรูปเพื่อนและเก็บไว้ในเครื่อง แต่ต่อมาโพสต์ให้คนทั่วไปเข้าถึงพร้อมคำล้อเลียน ประเด็นใดทำให้ความเสี่ยงตามมาตรา 16 ชัดขึ้น',options:['ใช้โทรศัพท์ในการตัดต่อ','ภาพถูกนำเข้าสู่ระบบที่ประชาชนทั่วไปเข้าถึงได้และอาจทำให้เจ้าของภาพอับอาย','รูปมีสีสันมาก','มีคนกดไลก์น้อย'],answer:'B',explanation:'การเผยแพร่ภาพตัดต่อสู่พื้นที่ที่ประชาชนทั่วไปเข้าถึงได้และผลต่อชื่อเสียงหรือความอับอายเป็นประเด็นสำคัญ'},
+        {id:'A04',bloom:'analyze',topic:'มาตรา 10',sourceCases:[7],question:'มัลแวร์ทำให้ไฟล์งานเปิดไม่ได้ แต่ผู้ดูแลมีสำเนาสำรองและกู้คืนได้ในวันเดียว การวิเคราะห์ใดถูกต้อง',options:['ไม่มีความเสี่ยงเพราะกู้คืนได้','ยังควรพิจารณาการรบกวนหรือทำให้ข้อมูล/ระบบใช้การไม่ได้ แม้ผลกระทบจะถูกกู้คืนภายหลัง','เป็นสแปมเท่านั้น','เป็นการตัดต่อภาพ'],answer:'B',explanation:'การกู้คืนข้อมูลลดผลกระทบ แต่ไม่ทำให้การกระทำที่รบกวนหรือทำให้ระบบ/ข้อมูลเสียหายหมดประเด็นไป'},
+        {id:'A05',bloom:'analyze',topic:'มาตรา 11',sourceCases:[6],question:'เพจร้านค้าส่งข้อความโปรโมชันวันละครั้งและมีปุ่ม “ยกเลิกการรับข้อความ” ชัดเจน การวิเคราะห์ใดรอบคอบที่สุด',options:['ผิดมาตรา 11 เสมอเมื่อเป็นโฆษณา','ควรพิจารณาความรบกวนและการเปิดโอกาสให้ปฏิเสธหรือยกเลิกได้โดยง่าย ไม่สรุปจากคำว่าโฆษณาอย่างเดียว','ผิดมาตรา 16','ผิดมาตรา 5'],answer:'B',explanation:'มาตรา 11 มีเงื่อนไขเรื่องการรบกวนและการไม่เปิดโอกาสให้ปฏิเสธได้โดยง่าย'},
+        {id:'A06',bloom:'analyze',topic:'ฟิชชิง',sourceCases:[4],question:'ข้อความธนาคารปลอมมีลิงก์ให้กรอกข้อมูล แต่ผู้รับไม่กดและไม่มีเงินสูญหาย การวิเคราะห์ที่เหมาะสมคือข้อใด',options:['ไม่ต้องตรวจสอบเพราะยังไม่มีผู้เสียหาย','ควรเก็บหลักฐานและรายงาน เพราะลักษณะหลอกลวงยังเป็นความเสี่ยงสำคัญแม้ผู้รับจะไม่หลงเชื่อ','ควรส่งลิงก์ต่อให้เพื่อนทดลอง','ควรเปิดเผยรหัสผ่านเพื่อพิสูจน์ว่าไม่กลัว'],answer:'B',explanation:'การป้องกันเหตุและรายงานลิงก์หลอกลวงช่วยลดความเสี่ยงต่อผู้ใช้อื่น ไม่ควรรอให้เกิดความเสียหายก่อน'},
+        {id:'A07',bloom:'analyze',topic:'มาตรา 8',sourceCases:[4],question:'ผู้ใช้ Wi‑Fi สาธารณะเห็นชื่อเครือข่ายและรหัสผ่านของตนเองในหน้าตั้งค่า แตกต่างจากการดักจับข้อมูลของผู้อื่นระหว่างส่งอย่างไร',options:['ไม่ต่างกันเลย','การดักรับต้องเกี่ยวกับข้อมูลของผู้อื่นที่อยู่ระหว่างการส่งโดยมิชอบ จึงต้องดูข้อเท็จจริงเรื่องเจ้าของข้อมูลและวิธีได้มา','ต่างกันเพราะ Wi‑Fi ไม่ใช่คอมพิวเตอร์','ต่างกันแค่ความเร็วอินเทอร์เน็ต'],answer:'B',explanation:'ต้องวิเคราะห์ว่าเป็นข้อมูลของใคร อยู่ระหว่างการส่งหรือไม่ และได้มาด้วยวิธีที่ไม่ได้รับอนุญาตหรือไม่'},
+        {id:'A08',bloom:'analyze',topic:'มาตรา 13',sourceCases:[7],question:'มีโปรแกรมสำหรับทดสอบความปลอดภัยที่ผู้พัฒนาเผยแพร่พร้อมคู่มือใช้ในระบบที่ได้รับอนุญาต การวิเคราะห์ใดถูกต้องที่สุด',options:['โปรแกรมทุกชนิดผิดตามมาตรา 13','ต้องพิจารณาวัตถุประสงค์ การออกแบบ และการใช้จริง ไม่สรุปว่าผิดเพียงเพราะเป็นเครื่องมือทางเทคนิค','ต้องผิดมาตรา 16','เป็นข่าวลวงเสมอ'],answer:'B',explanation:'การวิเคราะห์เครื่องมือต้องดูว่าจัดทำขึ้นโดยเฉพาะเพื่อใช้เป็นเครื่องมือกระทำความผิดและบริบทการใช้'},
+        {id:'A09',bloom:'analyze',topic:'การจัดการเหตุ',sourceCases:[1,4,7],question:'ห้องเรียนพบทั้งบัญชีถูกยึด ลิงก์ฟิชชิง และไฟล์ถูกมัลแวร์ แผนใดลดความเสียหายได้ครอบคลุมที่สุด',options:['ให้ทุกคนโพสต์รหัสผ่านเพื่อช่วยกันตรวจ','หยุดการเข้าถึงที่เสี่ยง เปลี่ยนรหัสผ่าน/เปิด 2FA แจ้งผู้ดูแล เก็บหลักฐาน และสื่อสารผ่านช่องทางทางการ','ลบทุกบัญชีโดยไม่แจ้งใคร','ส่งไฟล์ต้องสงสัยในกลุ่มใหญ่'],answer:'B',explanation:'แผนที่ดีต้องจำกัดเหตุ ปกป้องบัญชี เก็บหลักฐาน และส่งต่อให้ผู้รับผิดชอบตรวจสอบ'},
+        {id:'A10',bloom:'analyze',topic:'การส่งต่อข้อมูล',sourceCases:[5],question:'นักเรียนคนหนึ่งโพสต์ข่าวลวงโดยไม่ตรวจสอบ ต่อมาคนอื่นรู้ว่าเท็จแต่ยังส่งต่อพร้อมคำว่า “เผื่อไว้” ข้อใดวิเคราะห์ได้เหมาะสมที่สุด',options:['คำว่าเผื่อไว้ทำให้ส่งต่อได้เสมอ','เมื่อรู้ว่าเป็นข้อมูลเท็จ การส่งต่อยังอาจสร้างผลกระทบ จึงควรหยุดเผยแพร่และแก้ไขข้อมูล','ผู้ส่งต่อไม่มีส่วนเกี่ยวข้อง','ควรเพิ่มภาพให้คนเชื่อมากขึ้น'],answer:'B',explanation:'การรู้ว่าเป็นข้อมูลเท็จเป็นสาระสำคัญในการพิจารณาการส่งต่อ และทางเลือกที่รับผิดชอบคือหยุดขยายความเสียหาย'}
+    ];
+
+    // Ensure global assignment
+    if (typeof window !== 'undefined' && (!window.LAW_QUIZ_QUESTIONS || window.LAW_QUIZ_QUESTIONS.length === 0)) {
+        window.LAW_QUIZ_QUESTIONS = DEFAULT_LAW_QUESTIONS;
+    }
+
+    function getAllQuestions() {
+        if (window.LAW_QUIZ_QUESTIONS && Array.isArray(window.LAW_QUIZ_QUESTIONS) && window.LAW_QUIZ_QUESTIONS.length > 0) {
+            return window.LAW_QUIZ_QUESTIONS;
+        }
+        return DEFAULT_LAW_QUESTIONS;
+    }
+
     const bloomLabels = {
         understand: { th: 'เข้าใจ (Understand)', class: 'understand', icon: 'fa-solid fa-lightbulb' },
         apply: { th: 'ประยุกต์ใช้ (Apply)', class: 'apply', icon: 'fa-solid fa-wrench' },
@@ -60,11 +110,10 @@
     }
 
     function populateTopicFilter() {
-        const questions = window.LAW_QUIZ_QUESTIONS || [];
+        const questions = getAllQuestions();
         const topics = new Set();
         questions.forEach(q => {
             if (q.topic) {
-                // Group by main article or category if needed
                 const cleanTopic = q.topic.startsWith('มาตรา') ? q.topic.split('(')[0].trim() : q.topic;
                 topics.add(cleanTopic);
             }
@@ -72,6 +121,8 @@
 
         const select = $('filter-topic');
         if (select) {
+            // Keep first option
+            select.innerHTML = '<option value="all">ทุกมาตรา / ทุกหัวข้อ</option>';
             Array.from(topics).sort().forEach(topic => {
                 const opt = document.createElement('option');
                 opt.value = topic;
@@ -123,7 +174,7 @@
 
         // Reveal / Hide All
         $('btn-show-all').onclick = () => {
-            const questions = window.LAW_QUIZ_QUESTIONS || [];
+            const questions = getAllQuestions();
             questions.forEach(q => revealedSet.add(q.id));
             render();
         };
@@ -139,8 +190,7 @@
 
         // Print PDF
         $('btn-print').onclick = () => {
-            // Reveal all when printing for complete answer sheet
-            const questions = window.LAW_QUIZ_QUESTIONS || [];
+            const questions = getAllQuestions();
             questions.forEach(q => revealedSet.add(q.id));
             render();
             setTimeout(() => window.print(), 100);
@@ -148,55 +198,75 @@
     }
 
     function openAuthModal() {
-        $('modal-auth').style.display = 'flex';
+        $('auth-modal').classList.add('open');
         $('input-passcode').value = '';
-        $('input-passcode').focus();
+        $('auth-error-msg').style.display = 'none';
+        setTimeout(() => $('input-passcode').focus(), 150);
     }
 
     function closeAuthModal() {
-        $('modal-auth').style.display = 'none';
+        $('auth-modal').classList.remove('open');
     }
 
     async function verifyPasscode() {
-        const val = $('input-passcode').value.trim();
-        let valid = (val === 'admin123' || val === 'teacher123');
+        const input = $('input-passcode');
+        const errorMsg = $('auth-error-msg');
+        const val = input.value.trim();
+
+        if (!val) {
+            errorMsg.textContent = 'กรุณากรอกรหัสผ่าน';
+            errorMsg.style.display = 'block';
+            return;
+        }
 
         try {
-            if (window.location.protocol.startsWith('http')) {
-                const res = await fetch('/api/verify-passcode', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ passcode: val })
-                });
-                const data = await res.json();
-                if (data && data.success) valid = true;
-            }
-        } catch(e) {}
+            const res = await fetch('/api/verify-passcode', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ passcode: val })
+            });
 
-        if (valid) {
-            sessionStorage.setItem('teacher_authenticated', 'true');
-            sessionStorage.setItem('law-quiz-teacher-passcode', val);
-            isUnlocked = true;
-            closeAuthModal();
-            updateAuthUI();
-            render();
+            if (res.ok) {
+                const data = await res.json();
+                if (data.valid || data.success) {
+                    onAuthSuccess(val);
+                    return;
+                }
+            }
+        } catch (e) {
+            // Offline / static hosting fallback check
+        }
+
+        // Local fallback check
+        if (val === 'admin123' || val === 'teacher123') {
+            onAuthSuccess(val);
         } else {
-            alert('รหัสผ่านครูผู้สอนไม่ถูกต้อง! กรุณาลองใหม่อีกครั้ง');
+            errorMsg.textContent = 'รหัสผ่านไม่ถูกต้อง (ลองตรวจสอบกับผู้ดูแลระบบ)';
+            errorMsg.style.display = 'block';
         }
     }
 
+    function onAuthSuccess(passcode) {
+        sessionStorage.setItem('teacher_authenticated', 'true');
+        sessionStorage.setItem('law-quiz-teacher-passcode', passcode);
+        isUnlocked = true;
+        closeAuthModal();
+        updateAuthUI();
+        render();
+    }
+
     function getFilteredQuestions() {
-        const questions = window.LAW_QUIZ_QUESTIONS || [];
+        const questions = getAllQuestions();
         return questions.filter(q => {
-            // Bloom filter
+            // Bloom Filter
             if (currentBloom !== 'all' && q.bloom !== currentBloom) return false;
 
-            // Topic filter
+            // Topic Filter
             if (currentTopic !== 'all') {
-                if (!q.topic.includes(currentTopic)) return false;
+                if (!q.topic || !q.topic.includes(currentTopic)) return false;
             }
 
-            // Search query filter
+            // Search Query
             if (searchQuery) {
                 const searchCorpus = [
                     q.id,
@@ -214,7 +284,7 @@
     }
 
     function renderStats() {
-        const questions = window.LAW_QUIZ_QUESTIONS || [];
+        const questions = getAllQuestions();
         const understandCount = questions.filter(q => q.bloom === 'understand').length;
         const applyCount = questions.filter(q => q.bloom === 'apply').length;
         const analyzeCount = questions.filter(q => q.bloom === 'analyze').length;
@@ -229,7 +299,7 @@
         renderStats();
         const container = $('questions-container');
         const list = getFilteredQuestions();
-        const total = (window.LAW_QUIZ_QUESTIONS || []).length;
+        const total = getAllQuestions().length;
 
         $('stat-count').textContent = `แสดง ${list.length} จาก ${total} ข้อ`;
 
@@ -315,9 +385,8 @@
                 if (isUnlocked || revealedSet.has(id)) {
                     revealedSet.delete(id);
                     if (isUnlocked) {
-                        // If fully unlocked, toggling hides just this one by locking mode with all others revealed
                         isUnlocked = false;
-                        (window.LAW_QUIZ_QUESTIONS || []).forEach(item => {
+                        getAllQuestions().forEach(item => {
                             if (item.id !== id) revealedSet.add(item.id);
                         });
                         updateAuthUI();
