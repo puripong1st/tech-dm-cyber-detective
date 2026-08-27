@@ -41,4 +41,9 @@ const LAW_QUIZ_QUESTIONS = [
   {id:'A10',bloom:'analyze',topic:'การส่งต่อข้อมูล',sourceCases:[5],question:'นักเรียนคนหนึ่งโพสต์ข่าวลวงโดยไม่ตรวจสอบ ต่อมาคนอื่นรู้ว่าเท็จแต่ยังส่งต่อพร้อมคำว่า “เผื่อไว้” ข้อใดวิเคราะห์ได้เหมาะสมที่สุด',options:['คำว่าเผื่อไว้ทำให้ส่งต่อได้เสมอ','เมื่อรู้ว่าเป็นข้อมูลเท็จ การส่งต่อยังอาจสร้างผลกระทบ จึงควรหยุดเผยแพร่และแก้ไขข้อมูล','ผู้ส่งต่อไม่มีส่วนเกี่ยวข้อง','ควรเพิ่มภาพให้คนเชื่อมากขึ้น'],answer:'B',explanation:'การรู้ว่าเป็นข้อมูลเท็จเป็นสาระสำคัญในการพิจารณาการส่งต่อ และทางเลือกที่รับผิดชอบคือหยุดขยายความเสียหาย'}
 ];
 
-module.exports = { LAW_QUIZ_QUESTIONS };
+if (typeof window !== 'undefined') {
+  window.LAW_QUIZ_QUESTIONS = LAW_QUIZ_QUESTIONS;
+}
+if (typeof module !== 'undefined' && module.exports) {
+  module.exports = { LAW_QUIZ_QUESTIONS };
+}
