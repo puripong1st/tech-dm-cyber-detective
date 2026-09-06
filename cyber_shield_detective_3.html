@@ -2941,7 +2941,6 @@
             const answers = caseScoreObj.answers || {};
             const scores = caseScoreObj.scores || {};
 
-            // 12-Point Rubric mapping (4 points each, total 12)
             function convertToRubric(score10, hasAns) {
                 const s = Number(score10 || 0);
                 if (!Number.isFinite(s) || s <= 0) return hasAns ? 1 : 0;
@@ -3026,108 +3025,76 @@
                             </p>
                         </div>
 
-                        <!-- Main 2-Column Split Layout: Left = Case Image & Problem Brief | Right = Questions, Answers & AI -->
-                        <div class="print-case-split-grid grid grid-cols-1 md:grid-cols-12 gap-2 items-start mt-1">
-                            
-                            <!-- LEFT COLUMN: Case Problem Image & Details (5 cols) -->
-                            <div class="print-case-left-panel md:col-span-5 flex flex-col gap-1.5 p-2 rounded-lg border border-slate-300 bg-slate-50 text-[9.5px]">
-                                <div class="flex items-center justify-between border-b border-slate-200 pb-1">
-                                    <span class="font-bold text-xs text-slate-900 font-kanit">
+                        <!-- Case Card (Original Full-Width Layout with 3 Roles Grid) -->
+                        <div class="p-2 rounded-lg border border-slate-300 bg-white flex flex-col gap-1.5 mt-1">
+                            <div class="flex items-center justify-between border-b border-slate-200 pb-1">
+                                <div class="flex items-center gap-1.5">
+                                    <span class="font-bold text-xs font-kanit text-slate-900">
                                         คดี #${caseItem.id}: ${escapeH(caseItem.title)}
                                     </span>
-                                    <span class="px-1.5 py-0.5 rounded bg-pink-100 text-pink-800 font-mono font-bold text-[8.5px]">
-                                        ${caseItem.section || 'พ.ร.บ.คอมฯ'}
-                                    </span>
+                                    ${caseItem.section ? `<span class="px-1.5 py-0.5 rounded bg-pink-100 text-pink-800 font-mono font-bold text-[8.5px]">${caseItem.section}</span>` : ''}
                                 </div>
-
-                                <!-- Case Problem Image -->
-                                <div class="w-full flex justify-center bg-white rounded border border-slate-200 p-1">
-                                    <img src="${caseItem.image || 'assets/chibi_comics/sec_5.png'}" 
-                                         alt="ภาพโจทย์คดี" 
-                                         onerror="this.src='assets/chibi_scan.jpg'" 
-                                         class="print-case-img max-h-[135px] w-full object-contain rounded">
-                                </div>
-
-                                <!-- Problem Brief -->
-                                <div class="bg-white p-1.5 rounded border border-slate-200 text-slate-800 leading-tight">
-                                    <div class="font-bold text-slate-900 text-[9.5px] mb-0.5 flex items-center gap-1">
-                                        <i class="fa-solid fa-book-open text-cyan-700"></i> สถานการณ์ปัญหา (โจทย์):
-                                    </div>
-                                    <p class="text-[9px] leading-snug">${escapeH(caseItem.brief || 'ไม่มีข้อมูลรายละเอียดโจทย์')}</p>
-                                </div>
-
-                                <!-- Legal Reference -->
-                                <div class="bg-amber-50/80 p-1.5 rounded border border-amber-200 text-[8.5px] leading-tight text-amber-950 flex flex-col gap-0.5">
-                                    <div><b>⚖️ ฐานความผิด:</b> ${escapeH(caseItem.standard_law || '-')}</div>
-                                    <div><b>⚠️ อัตราโทษ:</b> ${escapeH(caseItem.standard_penalty || '-')}</div>
-                                </div>
+                                <span class="px-2 py-0.5 rounded bg-emerald-100 border border-emerald-300 text-emerald-900 font-mono font-bold text-[9.5px]">
+                                    คะแนนคดีนี้: ${totalScore} / 12 คะแนน (${quality.label})
+                                </span>
                             </div>
 
-                            <!-- RIGHT COLUMN: Questions, Student Answers & AI Analysis (7 cols) -->
-                            <div class="print-case-right-panel md:col-span-7 flex flex-col gap-1.5">
+                            <!-- 3 Roles in 3 Columns Side-by-Side (Grid) -->
+                            <div class="grid grid-cols-3 gap-2">
                                 
-                                <!-- Q1: Legal -->
-                                <div class="print-role-item p-1.5 rounded-lg border border-amber-200 bg-amber-50/40 text-[9px] flex flex-col gap-1">
+                                <!-- Role 1: Legal -->
+                                <div class="p-2 rounded-lg border border-amber-200 bg-amber-50/40 text-[9px] flex flex-col gap-1">
                                     <div class="flex items-center justify-between border-b border-amber-200 pb-0.5">
                                         <span class="font-bold text-amber-900 text-[9.5px]">
-                                            👨‍⚖️ คำถามที่ 1: การระบุฐานความผิด (Legal Analyst)
+                                            👨‍⚖️ 1. กฎหมาย (Legal)
                                         </span>
                                         <span class="px-1.5 py-0.2 rounded bg-amber-100 border border-amber-300 text-amber-900 font-mono font-bold text-[8.5px]">
-                                            คะแนนรูบริก: ${rubricLegal} / 4
+                                            คะแนน: ${rubricLegal} / 4
                                         </span>
                                     </div>
-                                    <div class="text-[8.5px] text-amber-950 leading-tight">
-                                        <b>โจทย์/คำถาม:</b> วิเคราะห์ว่าการกระทำนี้เข้าข่ายผิด พ.ร.บ.คอมพิวเตอร์ มาตราใด ฐานความผิดใด และมีบทลงโทษอย่างไร
-                                    </div>
-                                    <div class="bg-white p-1 rounded border border-slate-200 text-slate-900 text-[9px] leading-snug">
+                                    <div class="bg-white p-1.5 rounded border border-slate-200 text-slate-900 leading-snug min-h-[60px]">
                                         <b class="text-slate-600 text-[8.5px]">คำตอบของนักเรียน:</b><br>
                                         ${answers.legal ? escapeH(answers.legal) : '<span class="text-slate-400 italic">ไม่ได้ระบุคำตอบ</span>'}
                                     </div>
-                                    <div class="bg-purple-50 p-1 rounded border border-purple-200 text-purple-950 text-[8.5px] leading-snug">
+                                    <div class="bg-purple-50 p-1.5 rounded border border-purple-200 text-purple-950 text-[8.5px] leading-snug">
                                         <b class="text-purple-700">🤖 AI วิเคราะห์:</b> ${escapeH(scores.legal?.feedback || ('คะแนนรูบริก ' + rubricLegal + ' / 4'))}
                                     </div>
                                 </div>
 
-                                <!-- Q2: Remedy -->
-                                <div class="print-role-item p-1.5 rounded-lg border border-pink-200 bg-pink-50/40 text-[9px] flex flex-col gap-1">
+                                <!-- Role 2: Remedy -->
+                                <div class="p-2 rounded-lg border border-pink-200 bg-pink-50/40 text-[9px] flex flex-col gap-1">
                                     <div class="flex items-center justify-between border-b border-pink-200 pb-0.5">
                                         <span class="font-bold text-pink-900 text-[9.5px]">
-                                            🚑 คำถามที่ 2: การเสนอแนวทางแก้ไข (Incident Responder)
+                                            🚑 2. การแก้ไข (Remedy)
                                         </span>
                                         <span class="px-1.5 py-0.2 rounded bg-pink-100 border border-pink-300 text-pink-900 font-mono font-bold text-[8.5px]">
-                                            คะแนนรูบริก: ${rubricRemedy} / 4
+                                            คะแนน: ${rubricRemedy} / 4
                                         </span>
                                     </div>
-                                    <div class="text-[8.5px] text-pink-950 leading-tight">
-                                        <b>โจทย์/คำถาม:</b> วิธีการรับมือเฉพาะหน้าทันทีเมื่อเกิดเหตุการณ์ขึ้น เพื่อหยุดยั้งความเสียหายและช่วยเหลือผู้ประสบเหตุ
-                                    </div>
-                                    <div class="bg-white p-1 rounded border border-slate-200 text-slate-900 text-[9px] leading-snug">
+                                    <div class="bg-white p-1.5 rounded border border-slate-200 text-slate-900 leading-snug min-h-[60px]">
                                         <b class="text-slate-600 text-[8.5px]">คำตอบของนักเรียน:</b><br>
                                         ${answers.remedy ? escapeH(answers.remedy) : '<span class="text-slate-400 italic">ไม่ได้ระบุคำตอบ</span>'}
                                     </div>
-                                    <div class="bg-pink-50 p-1 rounded border border-pink-200 text-pink-950 text-[8.5px] leading-snug">
+                                    <div class="bg-pink-50 p-1.5 rounded border border-pink-200 text-pink-950 text-[8.5px] leading-snug">
                                         <b class="text-pink-700">🤖 AI วิเคราะห์:</b> ${escapeH(scores.remedy?.feedback || ('คะแนนรูบริก ' + rubricRemedy + ' / 4'))}
                                     </div>
                                 </div>
 
-                                <!-- Q3: Security -->
-                                <div class="print-role-item p-1.5 rounded-lg border border-teal-200 bg-teal-50/40 text-[9px] flex flex-col gap-1">
+                                <!-- Role 3: Security -->
+                                <div class="p-2 rounded-lg border border-teal-200 bg-teal-50/40 text-[9px] flex flex-col gap-1">
                                     <div class="flex items-center justify-between border-b border-teal-200 pb-0.5">
                                         <span class="font-bold text-teal-900 text-[9.5px]">
-                                            🛡️ คำถามที่ 3: การเสนอแนวทางป้องกัน (Security Engineer)
+                                            🛡️ 3. การป้องกัน (Security)
                                         </span>
                                         <span class="px-1.5 py-0.2 rounded bg-teal-100 border border-teal-300 text-teal-900 font-mono font-bold text-[8.5px]">
-                                            คะแนนรูบริก: ${rubricSecurity} / 4
+                                            คะแนน: ${rubricSecurity} / 4
                                         </span>
                                     </div>
-                                    <div class="text-[8.5px] text-teal-950 leading-tight">
-                                        <b>โจทย์/คำถาม:</b> แนวทางการป้องกันตนเองและระบบไม่ให้เกิดขึ้นซ้ำ ทั้งแนวทางปฏิบัติและการใช้งานเครื่องมือ
-                                    </div>
-                                    <div class="bg-white p-1 rounded border border-slate-200 text-slate-900 text-[9px] leading-snug">
+                                    <div class="bg-white p-1.5 rounded border border-slate-200 text-slate-900 leading-snug min-h-[60px]">
                                         <b class="text-slate-600 text-[8.5px]">คำตอบของนักเรียน:</b><br>
                                         ${answers.security ? escapeH(answers.security) : '<span class="text-slate-400 italic">ไม่ได้ระบุคำตอบ</span>'}
                                     </div>
-                                    <div class="bg-teal-50 p-1 rounded border border-teal-200 text-teal-950 text-[8.5px] leading-snug">
+                                    <div class="bg-teal-50 p-1.5 rounded border border-teal-200 text-teal-950 text-[8.5px] leading-snug">
                                         <b class="text-teal-700">🤖 AI วิเคราะห์:</b> ${escapeH(scores.security?.feedback || ('คะแนนรูบริก ' + rubricSecurity + ' / 4'))}
                                     </div>
                                 </div>
@@ -3136,8 +3103,8 @@
                         </div>
                     </div>
 
-                    <!-- BOTTOM ROW: TEACHER EVALUATION ROW (Rubric K 12 pts + Teacher Grading & Signatures) -->
-                    <div class="print-teacher-eval-row p-2 rounded-lg border-2 border-indigo-400 bg-indigo-50/50 mt-1.5 flex flex-col gap-1.5">
+                    <!-- BOTTOM ROW: TEACHER EVALUATION ROW (Rubric K 12 pts + Teacher Grading & Signature) -->
+                    <div class="print-teacher-eval-row p-2 rounded-lg border-2 border-indigo-400 bg-indigo-50/50 mt-2 flex flex-col gap-1.5">
                         <div class="flex items-center justify-between border-b border-indigo-200 pb-1">
                             <span class="font-bold text-xs font-kanit text-indigo-950 flex items-center gap-1.5">
                                 👨‍🏫 การประเมินผลรูบริก K โดยครูผู้สอน (เกณฑ์ 3 ด้าน เต็ม 12 คะแนน)
@@ -3181,13 +3148,9 @@
                             </div>
                         </div>
 
-                        <!-- Signatures Block -->
-                        <div class="grid grid-cols-2 gap-4 pt-1 border-t border-indigo-200 text-[9.5px] font-sarabun text-slate-800">
-                            <div class="flex flex-col items-center gap-0.5">
-                                <p>ลงชื่อ ............................................................ นักเรียน / ผู้แทนกลุ่ม</p>
-                                <p class="text-[8.5px] text-slate-500">( ............................................................ )</p>
-                            </div>
-                            <div class="flex flex-col items-center gap-0.5">
+                        <!-- Signatures Block: Teacher signature only -->
+                        <div class="flex justify-end pt-1.5 border-t border-indigo-200 text-[9.5px] font-sarabun text-slate-800">
+                            <div class="flex flex-col items-center gap-0.5 min-w-[240px]">
                                 <p>ลงชื่อ ............................................................ ครูผู้สอนประจำวิชา</p>
                                 <p class="text-[8.5px] text-slate-500">( ............................................................ )</p>
                             </div>

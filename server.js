@@ -1445,7 +1445,9 @@ app.post(['/api/teacher/update-case-score', '/api/teacher/update-case-score-3'],
         const previousFeedback = typeof current.ai_feedback === 'object' && current.ai_feedback !== null
             ? current.ai_feedback
             : {};
-        const nextFeedback = {
+        const isReset = !!(req.body && req.body.isReset);
+
+        let nextFeedback = {
             ...previousFeedback,
             legal: {
                 ...(previousFeedback.legal || {}),
@@ -1462,8 +1464,13 @@ app.post(['/api/teacher/update-case-score', '/api/teacher/update-case-score-3'],
                 score: nextSecurity,
                 feedback: previousFeedback.security?.feedback || ''
             },
-            total_score: nextTotal,
-            teacher_override: {
+            total_score: nextTotal
+        };
+
+        if (isReset) {
+            delete nextFeedback.teacher_override;
+        } else {
+            nextFeedback.teacher_override = {
                 legal: nextLegal,
                 remedy: nextRemedy,
                 security: nextSecurity,
@@ -1474,8 +1481,8 @@ app.post(['/api/teacher/update-case-score', '/api/teacher/update-case-score-3'],
                 total_score: nextTotal,
                 comment: String(teacherComment || '').trim(),
                 updated_at: new Date().toISOString()
-            }
-        };
+            };
+        }
 
         const updatePayload = {
             legal_score: nextLegal,
