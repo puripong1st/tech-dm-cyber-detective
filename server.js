@@ -1692,28 +1692,67 @@ async function saveToSupabase(record, tableName = 'game_scores') {
 }
 
 // Helper function to deduplicate scores by team and case ID
-function deduplicateScores(rawScores) {
+function deduplicateScores(rawScores, isSingleCaseMode = false) {
     if (!Array.isArray(rawScores)) return [];
     const teamMap = new Map();
     rawScores.forEach(item => {
-        const teamKey = item.team_name || item.player_id || 'นักสืบเยาวชน';
-        if (!teamMap.has(teamKey)) teamMap.set(teamKey, new Map());
-        const caseKey = item.case_id !== undefined && item.case_id !== null ? `case_${item.case_id}` : (item.case_title || `idx_${Math.random()}`);
-        const existing = teamMap.get(teamKey).get(caseKey);
-        if (!existing) {
-            teamMap.get(teamKey).set(caseKey, item);
+        if (!item) return;
+        const teamKey = (item.team_name || item.player_id || 'นักสืบเยาวชน').trim();
+        if (!teamMap.has(teamKey)) teamMap.set(teamKey, isSingleCaseMode ? [] : new Map());
+        
+        if (isSingleCaseMode) {
+            teamMap.get(teamKey).push(item);
         } else {
-            const tExisting = existing.created_at ? new Date(existing.created_at).getTime() : 0;
-            const tNew = item.created_at ? new Date(item.created_at).getTime() : 0;
-            if (tNew >= tExisting) {
+            const caseKey = item.case_id !== undefined && item.case_id !== null ? `case_${item.case_id}` : (item.case_title || `idx_${Math.random()}`);
+            const existing = teamMap.get(teamKey).get(caseKey);
+            if (!existing) {
                 teamMap.get(teamKey).set(caseKey, item);
+            } else {
+                const tExisting = existing.created_at ? new Date(existing.created_at).getTime() : 0;
+                const tNew = item.created_at ? new Date(item.created_at).getTime() : 0;
+                if (tNew >= tExisting) {
+                    teamMap.get(teamKey).set(caseKey, item);
+                }
             }
         }
     });
+
     const result = [];
-    teamMap.forEach(caseMap => {
-        caseMap.forEach(item => result.push(item));
-    });
+    if (isSingleCaseMode) {
+        teamMap.forEach((items) => {
+            const best = items.reduce((b, c) => {
+                const cLegal = Math.min(10, Math.max(0, Number(c.legal_score || 0)));
+                const cRemedy = Math.min(10, Math.max(0, Number(c.remedy_score || 0)));
+                const cSec = Math.min(10, Math.max(0, Number(c.security_score || 0)));
+                const cTot = Math.min(30, cLegal + cRemedy + cSec);
+
+                const bLegal = Math.min(10, Math.max(0, Number(b.legal_score || 0)));
+                const bRemedy = Math.min(10, Math.max(0, Number(b.remedy_score || 0)));
+                const bSec = Math.min(10, Math.max(0, Number(b.security_score || 0)));
+                const bTot = Math.min(30, bLegal + bRemedy + bSec);
+
+                if (cTot > bTot) return c;
+                if (cTot === bTot) {
+                    const tC = new Date(c.created_at || 0).getTime();
+                    const tB = new Date(b.created_at || 0).getTime();
+                    return tC >= tB ? c : b;
+                }
+                return b;
+            }, items[0]);
+
+            if (best) {
+                best.legal_score = Math.min(10, Math.max(0, Number(best.legal_score || 0)));
+                best.remedy_score = Math.min(10, Math.max(0, Number(best.remedy_score || 0)));
+                best.security_score = Math.min(10, Math.max(0, Number(best.security_score || 0)));
+                best.total_score = Math.min(30, Math.max(0, best.legal_score + best.remedy_score + best.security_score));
+                result.push(best);
+            }
+        });
+    } else {
+        teamMap.forEach(caseMap => {
+            caseMap.forEach(item => result.push(item));
+        });
+    }
     return result;
 }
 
@@ -1754,7 +1793,7 @@ app.get(['/api/leaderboard', '/api/leaderboard-3'], async (req, res) => {
         results = [];
     }
 
-    const cleanResults = deduplicateScores(results);
+    const cleanResults = deduplicateScores(results, is3Cases);
 
     res.json({ success: true, data: cleanResults });
 });
