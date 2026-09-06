@@ -139,22 +139,30 @@
             nav,
             main,
             footer,
+            #main-dashboard-app,
             #modal-auth,
             #modal-cases-ref,
             #modal-team-detail,
             #modal-rubric-detail,
             #modal-system-config,
+            #modal-comic-lightbox,
             #toast-container {
                 display: none !important;
             }
 
+            html,
             body {
                 background: white !important;
                 color: #0f172a !important;
                 padding: 0 !important;
                 margin: 0 !important;
+                width: 100% !important;
+                height: auto !important;
+                min-height: 0 !important;
+                max-height: none !important;
+                display: block !important;
                 font-family: 'Sarabun', 'Kanit', sans-serif !important;
-                line-height: 1.5 !important;
+                line-height: 1.4 !important;
                 word-break: normal !important;
                 overflow-wrap: normal !important;
             }
@@ -402,27 +410,50 @@
                 font-size: 9px !important;
             }
 
-            /* One printed subpage is one group. The case grid is compact enough for 3 cases on A4. */
-            .print-group-subpage {
+            /* A4 Page container: handles 1 or 2 groups per page, perfectly top-aligned */
+            .print-a4-page {
+                box-sizing: border-box !important;
+                width: 100% !important;
+                max-width: 100% !important;
+                margin: 0 !important;
+                padding: 0 !important;
                 break-after: page !important;
                 page-break-after: always !important;
                 break-inside: avoid !important;
                 page-break-inside: avoid !important;
-                width: 100% !important;
                 display: flex !important;
                 flex-direction: column !important;
-                justify-content: space-between !important;
-                box-sizing: border-box !important;
-                margin: 0 !important;
-                padding: 0 !important;
-                height: auto !important;
-                max-height: 280mm !important;
+                justify-content: flex-start !important;
+                gap: 5px !important;
                 overflow: visible !important;
+                height: auto !important;
+                max-height: 285mm !important;
+                background: white !important;
+                color: #0f172a !important;
             }
 
-            .print-group-subpage:last-child {
+            .print-a4-page:last-child {
                 break-after: auto !important;
                 page-break-after: auto !important;
+            }
+
+            .print-group-card {
+                background: white !important;
+                color: #0f172a !important;
+                width: 100% !important;
+                break-inside: avoid !important;
+                page-break-inside: avoid !important;
+                display: flex !important;
+                flex-direction: column !important;
+                justify-content: flex-start !important;
+                gap: 3px !important;
+                box-sizing: border-box !important;
+            }
+
+            .print-page-divider {
+                border-bottom: 2px dashed #94a3b8 !important;
+                margin: 3px 0 !important;
+                width: 100% !important;
             }
 
             .print-group-header {
@@ -1213,6 +1244,12 @@
                             <option value="ALL">📋 ทั้งหมดในห้อง (เรียงตามเลขที่)</option>
                             <option value="SELECTED">🎯 เอาแค่กลุ่มที่เลือกปัจจุบัน (1 กลุ่ม)</option>
                             <option value="CUSTOM">☑️ กำหนดรายชื่อเอง (เลือกลิสต์ด้านล่าง)</option>
+                        </select>
+                        <select id="pdf-group-density" onchange="renderGroupAnswersPdfContent()"
+                            class="bg-slate-950 text-xs text-emerald-400 font-semibold border border-emerald-500/50 rounded-xl px-3 py-1.5 focus:outline-none cursor-pointer"
+                            title="จำนวนกลุ่มต่อ 1 หน้า A4">
+                            <option value="2" selected>📄 2 กลุ่ม / หน้า A4 (ประหยัดกระดาษ)</option>
+                            <option value="1">📄 1 กลุ่ม / หน้า A4 (ขยายเต็มหน้า)</option>
                         </select>
                     </div>
                 </div>
@@ -3143,6 +3180,7 @@
         function renderGroupAnswersPdfContent() {
             const roomFilter = document.getElementById('pdf-group-room-select')?.value || 'ALL';
             const selectMode = document.getElementById('pdf-group-select')?.value || 'ALL';
+            const density = parseInt(document.getElementById('pdf-group-density')?.value || '2', 10);
             const sheet = document.getElementById('printable-group-answers-sheet');
             if (!sheet) return;
 
@@ -3166,210 +3204,233 @@
             const printDateStr = new Date().toLocaleDateString('th-TH', { year: 'numeric', month: 'long', day: 'numeric' });
             const roomLabelText = roomFilter === 'ALL' ? 'ทุกห้องเรียน (ม.3/1 - ม.3/12)' : `ห้อง ${roomFilter}`;
 
-            let fullHtml = '';
-            targetTeams.forEach((tObj, groupIdx) => {
-                const { teamKey, bestItem, p } = tObj;
-                const { answers, feedback } = extractAnswersAndFeedback(bestItem);
-                const caseRef = ALL_12_CASES.find(c => c.id === bestItem.case_id) || {};
-                const caseTitle = bestItem.case_title || caseRef.title || 'คดีปริศนาไซเบอร์';
-                const caseId = String(bestItem.case_id || 1).padStart(2, '0');
+            // Chunk teams according to density (default: 2 groups per A4 page)
+            const pages = [];
+            for (let i = 0; i < targetTeams.length; i += density) {
+                pages.push(targetTeams.slice(i, i + density));
+            }
 
-                const membersStr = p.members.length > 0
-                    ? p.members.map(m => `เลขที่ ${m.no}: ${m.prefix || ''}${m.name}`).join(', ')
-                    : 'ไม่ได้ระบุรายชื่อสมาชิก';
+            let fullHtml = '';
+            pages.forEach((pageTeams, pageIdx) => {
+                fullHtml += `
+                    <!-- A4 Page ${pageIdx + 1} (${pageTeams.length} กลุ่ม/หน้า) -->
+                    <div class="print-a4-page bg-white text-slate-900 font-sarabun flex flex-col justify-start">
+                `;
+
+                pageTeams.forEach((tObj, localIdx) => {
+                    const globalIdx = (pageIdx * density) + localIdx;
+                    if (localIdx > 0) {
+                        fullHtml += `
+                            <div class="print-page-divider border-b-2 border-dashed border-slate-300 my-2"></div>
+                        `;
+                    }
+                    fullHtml += renderSingleGroupCardHtml(tObj, globalIdx, targetTeams.length, roomLabelText, printDateStr, density === 2);
+                });
 
                 fullHtml += `
-                    <!-- 1 Group = Guaranteed 1 Page A4 Portrait (Sorted by เลขที่) -->
-                    <div class="print-group-subpage bg-white text-slate-900 font-sarabun flex flex-col justify-between">
-                        
-                        <div>
-                            <!-- Header Section (Matched to Original Academic Style) -->
-                            <div class="print-group-header text-center flex flex-col items-center gap-0.5 border-b-2 border-slate-800 pb-1.5 relative w-full">
-                                <div class="flex items-center justify-center gap-2">
-                                    <img src="favicon.png" alt="Logo" class="w-6 h-6 rounded object-cover shadow-sm">
-                                    <h2 class="text-sm sm:text-base font-bold font-kanit text-slate-900">
-                                        แบบรายงานผลการสืบคดีและการประเมินผล กิจกรรม Cyber Shield Detective
-                                    </h2>
-                                </div>
-                                <p class="text-[10px] text-slate-600">
-                                    กลุ่มสาระการเรียนรู้วิทยาศาสตร์และเทคโนโลยี ระดับชั้นมัธยมศึกษาปีที่ 3 (ภารกิจสืบคดีรายบุคคล 1 คดี)
-                                </p>
-                                <div class="flex flex-wrap items-center justify-center gap-4 text-[9.5px] text-slate-600 font-mono">
-                                    <span>🏫 ห้องเรียน: <b class="text-slate-900 font-bold">${roomLabelText}</b></span>
-                                    <span>📅 วันที่พิมพ์: <b class="text-slate-900 font-bold">${printDateStr}</b></span>
-                                    <span>👤 ลำดับที่: <b class="text-emerald-700 font-bold">${groupIdx + 1} / ${targetTeams.length}</b></span>
-                                </div>
-                                <div class="absolute top-0 right-0 px-2 py-0.5 rounded bg-slate-100 border border-slate-300 text-slate-700 font-mono text-[9px] font-bold">
-                                    ภารกิจ 1 คดี
-                                </div>
-                            </div>
-
-                            <!-- Student Info Card -->
-                            <div class="print-card bg-slate-50 border border-slate-300 p-2 rounded-lg flex flex-col gap-0.5 mt-1.5 mb-1.5">
-                                <div class="flex items-center justify-between">
-                                    <h3 class="text-xs font-bold font-kanit text-slate-900 truncate">
-                                        🏷️ ผู้ทำภารกิจ / กลุ่มสายสืบ: ${escapeHtml(teamKey)}
-                                    </h3>
-                                    <span class="px-2 py-0.5 rounded bg-indigo-100 border border-indigo-300 text-indigo-900 font-mono text-[10px] font-bold shrink-0">
-                                        ห้อง ${p.room} | คะแนนสุทธิ ${p.total} ${p.hasTeacherOverride ? `(${p.aiTotal})` : ''} / 12 คะแนน (${p.quality.label})
-                                    </span>
-                                </div>
-                                <p class="text-[9.5px] text-slate-700 leading-tight">
-                                    <b>👥 สมาชิกในกลุ่ม:</b> ${escapeHtml(membersStr)}
-                                </p>
-                            </div>
-
-                            <!-- Case Card (Original Full-Width Layout with 3 Roles Grid) -->
-                            <div class="print-card p-2 rounded-lg border border-slate-300 bg-white flex flex-col gap-1.5 mt-1">
-                                <div class="flex items-center justify-between border-b border-slate-200 pb-1">
-                                    <div class="flex items-center gap-1.5">
-                                        <span class="font-bold text-xs font-kanit text-slate-900">
-                                            คดี #${caseId}: ${escapeHtml(caseTitle)}
-                                        </span>
-                                        ${caseRef.section ? `<span class="px-1.5 py-0.5 rounded bg-pink-100 text-pink-800 font-mono font-bold text-[8.5px]">${caseRef.section}</span>` : ''}
-                                    </div>
-                                    <span class="px-2 py-0.5 rounded bg-emerald-100 border border-emerald-300 text-emerald-900 font-mono font-bold text-[9.5px]">
-                                        คะแนนคดีนี้: ${p.total} ${p.hasTeacherOverride ? `(${p.aiTotal})` : ''} / 12 คะแนน (${p.quality.label})
-                                    </span>
-                                </div>
-
-                                <!-- 3 Roles in 3 Columns Side-by-Side (Grid) -->
-                                <div class="grid grid-cols-3 gap-2">
-                                    
-                                    <!-- Role 1: Legal -->
-                                    <div class="p-2 rounded-lg border border-amber-200 bg-amber-50/40 text-[9px] flex flex-col gap-1">
-                                        <div class="flex items-center justify-between border-b border-amber-200 pb-0.5">
-                                            <span class="font-bold text-amber-900 text-[9.5px]">
-                                                👨‍⚖️ 1. กฎหมาย (Legal)
-                                            </span>
-                                            <span class="px-1.5 py-0.2 rounded bg-amber-100 border border-amber-300 text-amber-900 font-mono font-bold text-[8.5px]">
-                                                ${p.hasTeacherOverride && p.legal !== p.aiLegal ? `${p.legal} (${p.aiLegal})` : p.legal} / 4
-                                            </span>
-                                        </div>
-                                        <div class="bg-white p-1.5 rounded border border-slate-200 text-slate-900 leading-snug min-h-[60px]">
-                                            <b class="text-slate-600 text-[8.5px]">คำตอบของนักเรียน:</b><br>
-                                            ${answers.legal ? escapeHtml(answers.legal) : '<span class="text-slate-400 italic">ไม่ได้ระบุคำตอบ</span>'}
-                                        </div>
-                                        <div class="bg-purple-50 p-1.5 rounded border border-purple-200 text-purple-950 text-[8.5px] leading-snug">
-                                            <b class="text-purple-700">🤖 AI วิเคราะห์:</b> ${escapeHtml(feedback.legal.feedback || ('คะแนนรูบริก ' + p.aiLegal + ' / 4'))}
-                                        </div>
-                                    </div>
-
-                                    <!-- Role 2: Remedy -->
-                                    <div class="p-2 rounded-lg border border-pink-200 bg-pink-50/40 text-[9px] flex flex-col gap-1">
-                                        <div class="flex items-center justify-between border-b border-pink-200 pb-0.5">
-                                            <span class="font-bold text-pink-900 text-[9.5px]">
-                                                🚑 2. การแก้ไข (Remedy)
-                                            </span>
-                                            <span class="px-1.5 py-0.2 rounded bg-pink-100 border border-pink-300 text-pink-900 font-mono font-bold text-[8.5px]">
-                                                ${p.hasTeacherOverride && p.remedy !== p.aiRemedy ? `${p.remedy} (${p.aiRemedy})` : p.remedy} / 4
-                                            </span>
-                                        </div>
-                                        <div class="bg-white p-1.5 rounded border border-slate-200 text-slate-900 leading-snug min-h-[60px]">
-                                            <b class="text-slate-600 text-[8.5px]">คำตอบของนักเรียน:</b><br>
-                                            ${answers.remedy ? escapeHtml(answers.remedy) : '<span class="text-slate-400 italic">ไม่ได้ระบุคำตอบ</span>'}
-                                        </div>
-                                        <div class="bg-pink-50 p-1.5 rounded border border-pink-200 text-pink-950 text-[8.5px] leading-snug">
-                                            <b class="text-pink-700">🤖 AI วิเคราะห์:</b> ${escapeHtml(feedback.remedy.feedback || ('คะแนนรูบริก ' + p.aiRemedy + ' / 4'))}
-                                        </div>
-                                    </div>
-
-                                    <!-- Role 3: Security -->
-                                    <div class="p-2 rounded-lg border border-teal-200 bg-teal-50/40 text-[9px] flex flex-col gap-1">
-                                        <div class="flex items-center justify-between border-b border-teal-200 pb-0.5">
-                                            <span class="font-bold text-teal-900 text-[9.5px]">
-                                                🛡️ 3. การป้องกัน (Security)
-                                            </span>
-                                            <span class="px-1.5 py-0.2 rounded bg-teal-100 border border-teal-300 text-teal-900 font-mono font-bold text-[8.5px]">
-                                                ${p.hasTeacherOverride && p.security !== p.aiSecurity ? `${p.security} (${p.aiSecurity})` : p.security} / 4
-                                            </span>
-                                        </div>
-                                        <div class="bg-white p-1.5 rounded border border-slate-200 text-slate-900 leading-snug min-h-[60px]">
-                                            <b class="text-slate-600 text-[8.5px]">คำตอบของนักเรียน:</b><br>
-                                            ${answers.security ? escapeHtml(answers.security) : '<span class="text-slate-400 italic">ไม่ได้ระบุคำตอบ</span>'}
-                                        </div>
-                                        <div class="bg-teal-50 p-1.5 rounded border border-teal-200 text-teal-950 text-[8.5px] leading-snug">
-                                            <b class="text-teal-700">🤖 AI วิเคราะห์:</b> ${escapeHtml(feedback.security.feedback || ('คะแนนรูบริก ' + p.aiSecurity + ' / 4'))}
-                                        </div>
-                                    </div>
-
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- 4. BOTTOM ROW: TEACHER EVALUATION (Rubric K 12 pts + Override + Comments + Signature) -->
-                        <div class="print-teacher-eval-row p-2 rounded-lg border-2 border-indigo-400 bg-indigo-50/50 mt-2 flex flex-col gap-1.5">
-                            <div class="flex items-center justify-between border-b border-indigo-200 pb-1">
-                                <span class="font-bold text-xs font-kanit text-indigo-950 flex items-center gap-1.5">
-                                    👨‍🏫 การประเมินผลรูบริก K โดยครูผู้สอน (เกณฑ์ 3 ด้าน เต็ม 12 คะแนน)
-                                </span>
-                                <span class="text-[9.5px] font-mono text-indigo-800">
-                                    ${p.hasTeacherOverride ? `✏️ มีการแก้ไขคะแนนโดยครูผู้สอน (${p.teacherUpdatedAt})` : '✅ ผลคะแนนยืนยันตามระบบรูบริก'}
-                                </span>
-                            </div>
-
-                            <!-- Teacher Score Breakdown & Overrides (Rubric scale 4 / 4 / 4 / 12) -->
-                            <div class="grid grid-cols-4 gap-2 text-center text-[9.5px]">
-                                <div class="p-1 rounded bg-white border border-amber-200">
-                                    <div class="text-amber-800 font-semibold text-[8.5px]">1. ด้านกฎหมาย</div>
-                                    <div class="font-mono font-bold text-amber-900">
-                                        ${p.legal} ${p.hasTeacherOverride && p.legal !== p.aiLegal ? `(${p.aiLegal})` : ''} / 4
-                                    </div>
-                                </div>
-                                <div class="p-1 rounded bg-white border border-pink-200">
-                                    <div class="text-pink-800 font-semibold text-[8.5px]">2. ด้านการแก้ไข</div>
-                                    <div class="font-mono font-bold text-pink-900">
-                                        ${p.remedy} ${p.hasTeacherOverride && p.remedy !== p.aiRemedy ? `(${p.aiRemedy})` : ''} / 4
-                                    </div>
-                                </div>
-                                <div class="p-1 rounded bg-white border border-teal-200">
-                                    <div class="text-teal-800 font-semibold text-[8.5px]">3. ด้านการป้องกัน</div>
-                                    <div class="font-mono font-bold text-teal-900">
-                                        ${p.security} ${p.hasTeacherOverride && p.security !== p.aiSecurity ? `(${p.aiSecurity})` : ''} / 4
-                                    </div>
-                                </div>
-                                <div class="p-1 rounded bg-indigo-600 text-white font-bold">
-                                    <div class="text-indigo-100 text-[8.5px]">คะแนนรวมรูบริก K</div>
-                                    <div class="font-mono text-xs text-yellow-300">
-                                        ${p.total} ${p.hasTeacherOverride ? `(${p.aiTotal})` : ''} / 12
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- Rubric Quality & Decision Note -->
-                            <div class="flex items-center justify-between text-[9px] bg-white p-1 rounded border border-indigo-200">
-                                <span><b>ระดับคุณภาพ:</b> <b class="text-indigo-900">${p.quality.label}</b> (${p.quality.passed ? 'ผ่านเกณฑ์ ✅' : 'ไม่ผ่านเกณฑ์ ❌'})</span>
-                                <span class="text-slate-500">เกณฑ์ตัดสิน: 10-12 ดีมาก, 7-9 ดี (ผ่าน), 4-6 พอใช้, 0-3 ปรับปรุง</span>
-                            </div>
-
-                            <!-- Teacher Comment Box -->
-                            <div class="bg-white p-1.5 rounded border border-indigo-200 text-[9.5px] leading-snug">
-                                <b class="text-indigo-950 block mb-0.5">💬 ข้อเสนอแนะและคอมเมนต์ของครูผู้สอน:</b>
-                                ${p.teacherComment ? `
-                                <div class="text-slate-800 font-medium">${escapeHtml(p.teacherComment)}</div>
-                                ` : `
-                                <div class="text-slate-400 font-sarabun text-[9.5px] leading-normal">
-                                    ......................................................................................................................................................................................................................................................................................<br>
-                                    ......................................................................................................................................................................................................................................................................................
-                                </div>
-                                `}
-                            </div>
-
-                            <!-- Teacher-Only Signature Block -->
-                            <div class="flex justify-end pt-1.5 border-t border-indigo-200 text-[9.5px] font-sarabun text-slate-800">
-                                <div class="flex flex-col items-center gap-0.5 min-w-[240px]">
-                                    <p>ลงชื่อ ............................................................ ครูผู้สอนประจำวิชา</p>
-                                    <p class="text-[8.5px] text-slate-500">( ............................................................ )</p>
-                                </div>
-                            </div>
-
-                        </div>
-
                     </div>
                 `;
             });
 
             sheet.innerHTML = fullHtml;
+        }
+
+        function renderSingleGroupCardHtml(tObj, groupIdx, totalGroups, roomLabelText, printDateStr, isCompact) {
+            const { teamKey, bestItem, p } = tObj;
+            const { answers, feedback } = extractAnswersAndFeedback(bestItem);
+            const caseRef = ALL_12_CASES.find(c => c.id === bestItem.case_id) || {};
+            const caseTitle = bestItem.case_title || caseRef.title || 'คดีปริศนาไซเบอร์';
+            const caseId = String(bestItem.case_id || 1).padStart(2, '0');
+
+            const membersStr = p.members.length > 0
+                ? p.members.map(m => `เลขที่ ${m.no}: ${m.prefix || ''}${m.name}`).join(', ')
+                : 'ไม่ได้ระบุรายชื่อสมาชิก';
+
+            return `
+                <div class="print-group-card text-slate-900 font-sarabun flex flex-col justify-start ${isCompact ? 'gap-1' : 'gap-1.5'}">
+                    
+                    <!-- Header Section (Matched to Original Academic Style, top-aligned) -->
+                    <div class="print-group-header text-center flex flex-col items-center gap-0.5 border-b-2 border-slate-800 pb-1 relative w-full">
+                        <div class="flex items-center justify-center gap-2">
+                            <img src="favicon.png" alt="Logo" class="${isCompact ? 'w-5 h-5' : 'w-6 h-6'} rounded object-cover shadow-sm">
+                            <h2 class="${isCompact ? 'text-xs sm:text-sm' : 'text-sm sm:text-base'} font-bold font-kanit text-slate-900">
+                                แบบรายงานผลการสืบคดีและการประเมินผล กิจกรรม Cyber Shield Detective
+                            </h2>
+                        </div>
+                        <p class="${isCompact ? 'text-[9px]' : 'text-[10px]'} text-slate-600">
+                            กลุ่มสาระการเรียนรู้วิทยาศาสตร์และเทคโนโลยี ระดับชั้นมัธยมศึกษาปีที่ 3 (ภารกิจสืบคดีรายบุคคล 1 คดี)
+                        </p>
+                        <div class="flex flex-wrap items-center justify-center gap-4 ${isCompact ? 'text-[8.5px]' : 'text-[9.5px]'} text-slate-600 font-mono">
+                            <span>🏫 ห้องเรียน: <b class="text-slate-900 font-bold">${roomLabelText}</b></span>
+                            <span>📅 วันที่พิมพ์: <b class="text-slate-900 font-bold">${printDateStr}</b></span>
+                            <span>👤 ลำดับที่: <b class="text-emerald-700 font-bold">${groupIdx + 1} / ${totalGroups}</b></span>
+                        </div>
+                        <div class="absolute top-0 right-0 px-2 py-0.2 rounded bg-slate-100 border border-slate-300 text-slate-700 font-mono ${isCompact ? 'text-[8px]' : 'text-[9px]'} font-bold">
+                            ภารกิจ 1 คดี
+                        </div>
+                    </div>
+
+                    <!-- Student Info Card -->
+                    <div class="print-card bg-slate-50 border border-slate-300 ${isCompact ? 'p-1.5' : 'p-2'} rounded-lg flex flex-col gap-0.5 mt-0.5">
+                        <div class="flex items-center justify-between">
+                            <h3 class="${isCompact ? 'text-[11px]' : 'text-xs'} font-bold font-kanit text-slate-900 truncate">
+                                🏷️ ผู้ทำภารกิจ / กลุ่มสายสืบ: ${escapeHtml(teamKey)}
+                            </h3>
+                            <span class="px-2 py-0.5 rounded bg-indigo-100 border border-indigo-300 text-indigo-900 font-mono ${isCompact ? 'text-[9px]' : 'text-[10px]'} font-bold shrink-0">
+                                ห้อง ${p.room} | คะแนนสุทธิ ${p.total} ${p.hasTeacherOverride ? `(${p.aiTotal})` : ''} / 12 คะแนน (${p.quality.label})
+                            </span>
+                        </div>
+                        <p class="${isCompact ? 'text-[8.5px]' : 'text-[9.5px]'} text-slate-700 leading-tight">
+                            <b>👥 สมาชิกในกลุ่ม:</b> ${escapeHtml(membersStr)}
+                        </p>
+                    </div>
+
+                    <!-- Case Card (Left: Comic Image, Right: 3 Roles Grid) -->
+                    <div class="print-card ${isCompact ? 'p-1.5' : 'p-2'} rounded-lg border border-slate-300 bg-white flex flex-col gap-1 mt-0.5">
+                        <div class="flex items-center justify-between border-b border-slate-200 pb-0.5">
+                            <div class="flex items-center gap-1.5">
+                                <span class="font-bold ${isCompact ? 'text-[11px]' : 'text-xs'} font-kanit text-slate-900">
+                                    คดี #${caseId}: ${escapeHtml(caseTitle)}
+                                </span>
+                                ${caseRef.law_category ? `<span class="px-1.5 py-0.2 rounded bg-pink-100 border border-pink-300 text-pink-900 text-[8px] font-medium font-sarabun">${escapeHtml(caseRef.law_category)}</span>` : ''}
+                            </div>
+                            <span class="px-2 py-0.5 rounded bg-emerald-100 border border-emerald-300 text-emerald-900 font-mono ${isCompact ? 'text-[8.5px]' : 'text-[9.5px]'} font-bold">
+                                คะแนนคดีนี้: ${p.total} / 12 คะแนน (${p.quality.label})
+                            </span>
+                        </div>
+
+                        <!-- 3 Roles Columns -->
+                        <div class="grid grid-cols-3 gap-1.5 mt-0.5">
+                            
+                            <!-- Law -->
+                            <div class="flex flex-col gap-0.5 ${isCompact ? 'text-[8px]' : 'text-[9px]'}">
+                                <div class="flex items-center justify-between">
+                                    <span class="font-bold text-amber-900 ${isCompact ? 'text-[8.5px]' : 'text-[9.5px]'}">
+                                        👨‍⚖️ 1. กฎหมาย (Legal)
+                                    </span>
+                                    <span class="px-1.5 py-0.2 rounded bg-amber-100 border border-amber-300 text-amber-900 font-mono font-bold ${isCompact ? 'text-[8px]' : 'text-[8.5px]'}">
+                                        ${p.hasTeacherOverride && p.legal !== p.aiLegal ? `${p.legal} (${p.aiLegal})` : p.legal} / 4
+                                    </span>
+                                </div>
+                                <div class="bg-white p-1 rounded border border-slate-200 text-slate-900 leading-tight ${isCompact ? 'min-h-[38px] text-[8px]' : 'min-h-[50px] text-[8.5px]'}">
+                                    <b class="text-slate-600 ${isCompact ? 'text-[7.5px]' : 'text-[8px]'}">คำตอบของนักเรียน:</b><br>
+                                    ${answers.legal ? escapeHtml(answers.legal) : '<span class="text-slate-400 italic">ไม่ได้ระบุคำตอบ</span>'}
+                                </div>
+                                <div class="bg-amber-50 p-1 rounded border border-amber-200 text-amber-950 ${isCompact ? 'text-[7.5px]' : 'text-[8.5px]'} leading-tight">
+                                    <b class="text-amber-700">🤖 AI:</b> ${escapeHtml(feedback.legal.feedback || ('คะแนนรูบริก ' + p.aiLegal + ' / 4'))}
+                                </div>
+                            </div>
+
+                            <!-- Remedy -->
+                            <div class="flex flex-col gap-0.5 ${isCompact ? 'text-[8px]' : 'text-[9px]'}">
+                                <div class="flex items-center justify-between">
+                                    <span class="font-bold text-pink-900 ${isCompact ? 'text-[8.5px]' : 'text-[9.5px]'}">
+                                        🚑 2. การแก้ไข (Remedy)
+                                    </span>
+                                    <span class="px-1.5 py-0.2 rounded bg-pink-100 border border-pink-300 text-pink-900 font-mono font-bold ${isCompact ? 'text-[8px]' : 'text-[8.5px]'}">
+                                        ${p.hasTeacherOverride && p.remedy !== p.aiRemedy ? `${p.remedy} (${p.aiRemedy})` : p.remedy} / 4
+                                    </span>
+                                </div>
+                                <div class="bg-white p-1 rounded border border-slate-200 text-slate-900 leading-tight ${isCompact ? 'min-h-[38px] text-[8px]' : 'min-h-[50px] text-[8.5px]'}">
+                                    <b class="text-slate-600 ${isCompact ? 'text-[7.5px]' : 'text-[8px]'}">คำตอบของนักเรียน:</b><br>
+                                    ${answers.remedy ? escapeHtml(answers.remedy) : '<span class="text-slate-400 italic">ไม่ได้ระบุคำตอบ</span>'}
+                                </div>
+                                <div class="bg-pink-50 p-1 rounded border border-pink-200 text-pink-950 ${isCompact ? 'text-[7.5px]' : 'text-[8.5px]'} leading-tight">
+                                    <b class="text-pink-700">🤖 AI:</b> ${escapeHtml(feedback.remedy.feedback || ('คะแนนรูบริก ' + p.aiRemedy + ' / 4'))}
+                                </div>
+                            </div>
+
+                            <!-- Security -->
+                            <div class="flex flex-col gap-0.5 ${isCompact ? 'text-[8px]' : 'text-[9px]'}">
+                                <div class="flex items-center justify-between">
+                                    <span class="font-bold text-teal-900 ${isCompact ? 'text-[8.5px]' : 'text-[9.5px]'}">
+                                        🛡️ 3. การป้องกัน (Security)
+                                    </span>
+                                    <span class="px-1.5 py-0.2 rounded bg-teal-100 border border-teal-300 text-teal-900 font-mono font-bold ${isCompact ? 'text-[8px]' : 'text-[8.5px]'}">
+                                        ${p.hasTeacherOverride && p.security !== p.aiSecurity ? `${p.security} (${p.aiSecurity})` : p.security} / 4
+                                    </span>
+                                </div>
+                                <div class="bg-white p-1 rounded border border-slate-200 text-slate-900 leading-tight ${isCompact ? 'min-h-[38px] text-[8px]' : 'min-h-[50px] text-[8.5px]'}">
+                                    <b class="text-slate-600 ${isCompact ? 'text-[7.5px]' : 'text-[8px]'}">คำตอบของนักเรียน:</b><br>
+                                    ${answers.security ? escapeHtml(answers.security) : '<span class="text-slate-400 italic">ไม่ได้ระบุคำตอบ</span>'}
+                                </div>
+                                <div class="bg-teal-50 p-1 rounded border border-teal-200 text-teal-950 ${isCompact ? 'text-[7.5px]' : 'text-[8.5px]'} leading-tight">
+                                    <b class="text-teal-700">🤖 AI:</b> ${escapeHtml(feedback.security.feedback || ('คะแนนรูบริก ' + p.aiSecurity + ' / 4'))}
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+
+                    <!-- 4. BOTTOM ROW: TEACHER EVALUATION (Rubric K 12 pts + Override + Comments + Signature) -->
+                    <div class="print-teacher-eval-row ${isCompact ? 'p-1.5' : 'p-2'} rounded-lg border-2 border-indigo-400 bg-indigo-50/50 mt-0.5 flex flex-col gap-1">
+                        <div class="flex items-center justify-between border-b border-indigo-200 pb-0.5">
+                            <span class="font-bold ${isCompact ? 'text-[11px]' : 'text-xs'} font-kanit text-indigo-950 flex items-center gap-1.5">
+                                👨‍🏫 การประเมินผลรูบริก K โดยครูผู้สอน (เกณฑ์ 3 ด้าน เต็ม 12 คะแนน)
+                            </span>
+                            <span class="${isCompact ? 'text-[8px]' : 'text-[9.5px]'} font-mono text-indigo-800">
+                                ${p.hasTeacherOverride ? `✏️ มีการแก้ไขคะแนนโดยครูผู้สอน (${p.teacherUpdatedAt})` : '✅ ผลคะแนนยืนยันตามระบบรูบริก'}
+                            </span>
+                        </div>
+
+                        <!-- Teacher Score Breakdown & Overrides (Rubric scale 4 / 4 / 4 / 12) -->
+                        <div class="grid grid-cols-4 gap-1.5 text-center ${isCompact ? 'text-[8px]' : 'text-[9.5px]'}">
+                            <div class="p-0.5 rounded bg-white border border-amber-200">
+                                <div class="text-amber-800 font-semibold ${isCompact ? 'text-[7px]' : 'text-[8.5px]'}">1. ด้านกฎหมาย</div>
+                                <div class="font-mono font-bold text-amber-900">
+                                    ${p.legal} ${p.hasTeacherOverride && p.legal !== p.aiLegal ? `(${p.aiLegal})` : ''} / 4
+                                </div>
+                            </div>
+                            <div class="p-0.5 rounded bg-white border border-pink-200">
+                                <div class="text-pink-800 font-semibold ${isCompact ? 'text-[7px]' : 'text-[8.5px]'}">2. ด้านการแก้ไข</div>
+                                <div class="font-mono font-bold text-pink-900">
+                                    ${p.remedy} ${p.hasTeacherOverride && p.remedy !== p.aiRemedy ? `(${p.aiRemedy})` : ''} / 4
+                                </div>
+                            </div>
+                            <div class="p-0.5 rounded bg-white border border-teal-200">
+                                <div class="text-teal-800 font-semibold ${isCompact ? 'text-[7px]' : 'text-[8.5px]'}">3. ด้านการป้องกัน</div>
+                                <div class="font-mono font-bold text-teal-900">
+                                    ${p.security} ${p.hasTeacherOverride && p.security !== p.aiSecurity ? `(${p.aiSecurity})` : ''} / 4
+                                </div>
+                            </div>
+                            <div class="p-0.5 rounded bg-indigo-600 text-white font-bold">
+                                <div class="text-indigo-100 ${isCompact ? 'text-[7px]' : 'text-[8.5px]'}">คะแนนรวมรูบริก K</div>
+                                <div class="font-mono ${isCompact ? 'text-[10px]' : 'text-xs'} text-yellow-300">
+                                    ${p.total} ${p.hasTeacherOverride ? `(${p.aiTotal})` : ''} / 12
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Rubric Quality & Decision Note -->
+                        <div class="flex items-center justify-between ${isCompact ? 'text-[8px]' : 'text-[9px]'} bg-white p-0.5 px-1 rounded border border-indigo-200">
+                            <span><b>ระดับคุณภาพ:</b> <b class="text-indigo-900">${p.quality.label}</b> (${p.quality.passed ? 'ผ่านเกณฑ์ ✅' : 'ไม่ผ่านเกณฑ์ ❌'})</span>
+                            <span class="text-slate-500">เกณฑ์ตัดสิน: 10-12 ดีมาก, 7-9 ดี (ผ่าน), 4-6 พอใช้, 0-3 ปรับปรุง</span>
+                        </div>
+
+                        <!-- Teacher Comment Box -->
+                        <div class="bg-white p-1 rounded border border-indigo-200 ${isCompact ? 'text-[8px]' : 'text-[9.5px]'} leading-tight">
+                            <b class="text-indigo-950 block mb-0.5 ${isCompact ? 'text-[7.5px]' : 'text-[8px]'}">💬 ข้อเสนอแนะและคอมเมนต์ของครูผู้สอน:</b>
+                            ${p.teacherComment ? `
+                            <div class="text-slate-800 font-medium">${escapeHtml(p.teacherComment)}</div>
+                            ` : `
+                            <div class="text-slate-400 font-sarabun ${isCompact ? 'text-[8px]' : 'text-[9.5px]'} leading-normal">
+                                ......................................................................................................................................................................................................................................................................................
+                            </div>
+                            `}
+                        </div>
+
+                        <!-- Teacher-Only Signature Block -->
+                        <div class="flex justify-end pt-0.5 border-t border-indigo-200 ${isCompact ? 'text-[8px]' : 'text-[9.5px]'} font-sarabun text-slate-800">
+                            <div class="flex flex-col items-center gap-0.5 ${isCompact ? 'min-w-[200px]' : 'min-w-[240px]'}">
+                                <p>ลงชื่อ ............................................................ ครูผู้สอนประจำวิชา</p>
+                                <p class="${isCompact ? 'text-[7.5px]' : 'text-[8.5px]'} text-slate-500">( ............................................................ )</p>
+                            </div>
+                        </div>
+
+                    </div>
+
+                </div>
+            `;
         }
 
         function renderG8G9AnswerBank() {
