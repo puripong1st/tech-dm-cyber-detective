@@ -299,10 +299,11 @@
             }
 
             .print-case-split-grid {
-                display: grid !important;
-                grid-template-columns: 32% 68% !important;
-                gap: 6px !important;
+                display: flex !important;
+                flex-direction: row !important;
+                gap: 5px !important;
                 align-items: stretch !important;
+                width: 100% !important;
                 margin-top: 2px !important;
                 margin-bottom: 2px !important;
                 page-break-inside: avoid !important;
@@ -310,20 +311,23 @@
             }
 
             .print-case-left-panel {
+                width: 32% !important;
+                max-width: 32% !important;
+                flex: 0 0 32% !important;
                 background: #f8fafc !important;
                 border: 1px solid #cbd5e1 !important;
-                border-radius: 6px !important;
-                padding: 5px 6px !important;
+                border-radius: 4px !important;
+                padding: 3px 4px !important;
                 display: flex !important;
                 flex-direction: column !important;
-                gap: 4px !important;
+                gap: 2px !important;
                 page-break-inside: avoid !important;
                 break-inside: avoid !important;
             }
 
             .print-case-img {
                 width: 100% !important;
-                max-height: 125px !important;
+                max-height: 90px !important;
                 object-fit: contain !important;
                 background: #ffffff !important;
                 border: 1px solid #e2e8f0 !important;
@@ -331,9 +335,12 @@
             }
 
             .print-case-right-panel {
-                display: flex !important;
-                flex-direction: column !important;
-                gap: 4px !important;
+                width: 68% !important;
+                max-width: 68% !important;
+                flex: 0 0 68% !important;
+                display: grid !important;
+                grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+                gap: 3px !important;
                 page-break-inside: avoid !important;
                 break-inside: avoid !important;
             }
@@ -2841,6 +2848,8 @@
                 const caseRef = ALL_12_CASES.find(c => c.id === item.case_id) || {};
                 const timeStr = item.created_at ? new Date(item.created_at).toLocaleString('th-TH') : '-';
                 const safeScoreId = escapeHtml(item.id || '');
+                const caseImage = caseRef.image || `assets/chibi_comics/sec_${caseRef.id || item.case_id || 5}.png`;
+                const caseBrief = caseRef.brief || '';
 
                 return `
                     <div class="glass-panel p-5 rounded-3xl border border-slate-700 flex flex-col gap-4 shadow-xl">
@@ -2862,64 +2871,101 @@
                             </div>
                         </div>
 
-                        <!-- 3 Roles Detailed Breakdown (4 points per role) -->
-                        <div class="flex flex-col gap-3 font-sarabun text-xs">
+                        <!-- 2-Column Split: Left (Problem Image + Scenario Brief + Law) | Right (3 Roles Side-by-Side) -->
+                        <div class="grid grid-cols-1 lg:grid-cols-12 gap-4 items-stretch font-sarabun text-xs">
                             
-                            <!-- Role 1: Legal (4 pts) -->
-                            <div class="p-4 rounded-2xl bg-amber-950/30 border border-amber-500/30 flex flex-col gap-2">
-                                <div class="flex items-center justify-between text-amber-300 font-bold">
-                                    <span class="flex items-center gap-1.5">👨‍⚖️ 1. คำตอบนักวิเคราะห์กฎหมาย (Legal Analyst)</span>
-                                    <span class="px-2.5 py-0.5 rounded-lg bg-amber-500/20 text-amber-300 font-mono text-xs font-bold border border-amber-500/40">
-                                        ${p.hasTeacherOverride && p.legal !== p.aiLegal ? `${p.legal} (${p.aiLegal})` : p.legal} / 4 คะแนน
+                            <!-- LEFT COLUMN: Case Problem Image & Scenario Details (4 cols / ~33%) -->
+                            <div class="lg:col-span-4 flex flex-col gap-2.5 p-3 rounded-2xl bg-slate-900/80 border border-slate-800">
+                                <div class="w-full flex flex-col items-center justify-center bg-slate-950 rounded-xl border border-slate-800 p-2 relative group cursor-pointer"
+                                     onclick="openTeacherLightbox('${caseImage}', '${escapeHtml(caseTitle)}')"
+                                     title="คลิกเพื่อดูภาพขยาย">
+                                    <img src="${caseImage}"
+                                         alt="ภาพโจทย์คดี"
+                                         onerror="this.src='assets/chibi_scan.jpg'"
+                                         class="max-h-[160px] w-full object-contain rounded-lg transition duration-200 group-hover:scale-105">
+                                    <span class="text-[10px] text-slate-400 mt-1.5 flex items-center gap-1">
+                                        <i class="fa-solid fa-magnifying-glass-plus text-purple-400"></i> คลิกเพื่อดูภาพขยาย
                                     </span>
                                 </div>
-                                <div class="bg-slate-950/80 p-3 rounded-xl border border-slate-800 text-slate-200 leading-relaxed">
-                                    <span class="text-slate-400 font-semibold block mb-1">📝 คำตอบของเด็ก:</span>
-                                    ${answers.legal ? answers.legal : '<span class="text-slate-500 italic">ไม่ได้ระบุคำตอบ</span>'}
+                                
+                                ${caseBrief ? `
+                                <div class="bg-slate-950/70 p-2.5 rounded-xl border border-slate-800 text-slate-200 leading-relaxed">
+                                    <b class="text-purple-300 text-xs block mb-1 flex items-center gap-1.5">
+                                        <i class="fa-solid fa-book-open text-cyan-400"></i> โจทย์ / สถานการณ์ปัญหา:
+                                    </b>
+                                    <p class="text-[11.5px] leading-relaxed text-slate-300">${escapeHtml(caseBrief)}</p>
                                 </div>
-                                <div class="bg-amber-950/60 p-3 rounded-xl border border-amber-500/20 text-amber-200 leading-relaxed">
-                                    <span class="text-amber-400 font-semibold block mb-1"><i class="fa-solid fa-robot mr-1"></i> AI ประเมินผล (แปลงตามเกณฑ์รูบริก 4 คะแนน):</span>
-                                    ${feedback.legal.feedback ? feedback.legal.feedback : 'คะแนนประเมิน ' + p.aiLegal + ' / 4 คะแนน'}
+                                ` : ''}
+
+                                ${caseRef.standard_law ? `
+                                <div class="bg-amber-950/30 p-2.5 rounded-xl border border-amber-500/20 text-[11px] leading-snug text-amber-200/90 flex flex-col gap-1">
+                                    <div><b>⚖️ ฐานความผิด:</b> ${escapeHtml(caseRef.standard_law)}</div>
+                                    ${caseRef.standard_penalty ? `<div><b>⚠️ อัตราโทษ:</b> ${escapeHtml(caseRef.standard_penalty)}</div>` : ''}
                                 </div>
+                                ` : ''}
                             </div>
 
-                            <!-- Role 2: Remedy (4 pts) -->
-                            <div class="p-4 rounded-2xl bg-pink-950/30 border border-pink-500/30 flex flex-col gap-2">
-                                <div class="flex items-center justify-between text-pink-300 font-bold">
-                                    <span class="flex items-center gap-1.5">🚑 2. คำตอบเจ้าหน้าที่แก้ไข (Incident Responder)</span>
-                                    <span class="px-2.5 py-0.5 rounded-lg bg-pink-500/20 text-pink-300 font-mono text-xs font-bold border border-pink-500/40">
-                                        ${p.hasTeacherOverride && p.remedy !== p.aiRemedy ? `${p.remedy} (${p.aiRemedy})` : p.remedy} / 4 คะแนน
-                                    </span>
+                            <!-- RIGHT COLUMN: 3 Roles Detailed Breakdown Side-by-Side (8 cols / ~67%) -->
+                            <div class="lg:col-span-8 grid grid-cols-1 md:grid-cols-3 gap-3">
+                                
+                                <!-- Role 1: Legal (4 pts) -->
+                                <div class="p-3.5 rounded-2xl bg-amber-950/30 border border-amber-500/30 flex flex-col gap-2">
+                                    <div class="flex items-center justify-between text-amber-300 font-bold">
+                                        <span class="flex items-center gap-1 text-[11px]">👨‍⚖️ 1. กฎหมาย</span>
+                                        <span class="px-2 py-0.5 rounded-lg bg-amber-500/20 text-amber-300 font-mono text-[11px] font-bold border border-amber-500/40">
+                                            ${p.hasTeacherOverride && p.legal !== p.aiLegal ? `${p.legal} (${p.aiLegal})` : p.legal} / 4
+                                        </span>
+                                    </div>
+                                    <div class="bg-slate-950/80 p-2.5 rounded-xl border border-slate-800 text-slate-200 leading-relaxed flex-1">
+                                        <span class="text-slate-400 font-semibold block mb-0.5 text-[10.5px]">📝 คำตอบของเด็ก:</span>
+                                        ${answers.legal ? escapeHtml(answers.legal) : '<span class="text-slate-500 italic">ไม่ได้ระบุคำตอบ</span>'}
+                                    </div>
+                                    <div class="bg-amber-950/60 p-2 rounded-xl border border-amber-500/20 text-amber-200 leading-relaxed text-[11px]">
+                                        <span class="text-amber-400 font-semibold block mb-0.5"><i class="fa-solid fa-robot mr-1"></i> AI ประเมินผล:</span>
+                                        ${feedback.legal.feedback ? escapeHtml(feedback.legal.feedback) : 'คะแนนประเมิน ' + p.aiLegal + ' / 4 คะแนน'}
+                                    </div>
                                 </div>
-                                <div class="bg-slate-950/80 p-3 rounded-xl border border-slate-800 text-slate-200 leading-relaxed">
-                                    <span class="text-slate-400 font-semibold block mb-1">📝 คำตอบของเด็ก:</span>
-                                    ${answers.remedy ? answers.remedy : '<span class="text-slate-500 italic">ไม่ได้ระบุคำตอบ</span>'}
-                                </div>
-                                <div class="bg-pink-950/60 p-3 rounded-xl border border-pink-500/20 text-pink-200 leading-relaxed">
-                                    <span class="text-pink-400 font-semibold block mb-1"><i class="fa-solid fa-robot mr-1"></i> AI ประเมินผล (แปลงตามเกณฑ์รูบริก 4 คะแนน):</span>
-                                    ${feedback.remedy.feedback ? feedback.remedy.feedback : 'คะแนนประเมิน ' + p.aiRemedy + ' / 4 คะแนน'}
-                                </div>
-                            </div>
 
-                            <!-- Role 3: Security (4 pts) -->
-                            <div class="p-4 rounded-2xl bg-cyan-950/30 border border-cyan-500/30 flex flex-col gap-2">
-                                <div class="flex items-center justify-between text-cyan-300 font-bold">
-                                    <span class="flex items-center gap-1.5">🛡️ 3. คำตอบวิศวกรความปลอดภัย (Security Engineer)</span>
-                                    <span class="px-2.5 py-0.5 rounded-lg bg-cyan-500/20 text-cyan-300 font-mono text-xs font-bold border border-cyan-500/40">
-                                        ${p.hasTeacherOverride && p.security !== p.aiSecurity ? `${p.security} (${p.aiSecurity})` : p.security} / 4 คะแนน
-                                    </span>
+                                <!-- Role 2: Remedy (4 pts) -->
+                                <div class="p-3.5 rounded-2xl bg-pink-950/30 border border-pink-500/30 flex flex-col gap-2">
+                                    <div class="flex items-center justify-between text-pink-300 font-bold">
+                                        <span class="flex items-center gap-1 text-[11px]">🚑 2. การแก้ไข</span>
+                                        <span class="px-2 py-0.5 rounded-lg bg-pink-500/20 text-pink-300 font-mono text-[11px] font-bold border border-pink-500/40">
+                                            ${p.hasTeacherOverride && p.remedy !== p.aiRemedy ? `${p.remedy} (${p.aiRemedy})` : p.remedy} / 4
+                                        </span>
+                                    </div>
+                                    <div class="bg-slate-950/80 p-2.5 rounded-xl border border-slate-800 text-slate-200 leading-relaxed flex-1">
+                                        <span class="text-slate-400 font-semibold block mb-0.5 text-[10.5px]">📝 คำตอบของเด็ก:</span>
+                                        ${answers.remedy ? escapeHtml(answers.remedy) : '<span class="text-slate-500 italic">ไม่ได้ระบุคำตอบ</span>'}
+                                    </div>
+                                    <div class="bg-pink-950/60 p-2 rounded-xl border border-pink-500/20 text-pink-200 leading-relaxed text-[11px]">
+                                        <span class="text-pink-400 font-semibold block mb-0.5"><i class="fa-solid fa-robot mr-1"></i> AI ประเมินผล:</span>
+                                        ${feedback.remedy.feedback ? escapeHtml(feedback.remedy.feedback) : 'คะแนนประเมิน ' + p.aiRemedy + ' / 4 คะแนน'}
+                                    </div>
                                 </div>
-                                <div class="bg-slate-950/80 p-3 rounded-xl border border-slate-800 text-slate-200 leading-relaxed">
-                                    <span class="text-slate-400 font-semibold block mb-1">📝 คำตอบของเด็ก:</span>
-                                    ${answers.security ? answers.security : '<span class="text-slate-500 italic">ไม่ได้ระบุคำตอบ</span>'}
-                                </div>
-                                <div class="bg-cyan-950/60 p-3 rounded-xl border border-cyan-500/20 text-cyan-200 leading-relaxed">
-                                    <span class="text-cyan-400 font-semibold block mb-1"><i class="fa-solid fa-robot mr-1"></i> AI ประเมินผล (แปลงตามเกณฑ์รูบริก 4 คะแนน):</span>
-                                    ${feedback.security.feedback ? feedback.security.feedback : 'คะแนนประเมิน ' + p.aiSecurity + ' / 4 คะแนน'}
-                                </div>
-                            </div>
 
-                            <!-- Teacher Rubric Grading & Override Form (0-4 each, Total 12) -->
+                                <!-- Role 3: Security (4 pts) -->
+                                <div class="p-3.5 rounded-2xl bg-cyan-950/30 border border-cyan-500/30 flex flex-col gap-2">
+                                    <div class="flex items-center justify-between text-cyan-300 font-bold">
+                                        <span class="flex items-center gap-1 text-[11px]">🛡️ 3. การป้องกัน</span>
+                                        <span class="px-2 py-0.5 rounded-lg bg-cyan-500/20 text-cyan-300 font-mono text-[11px] font-bold border border-cyan-500/40">
+                                            ${p.hasTeacherOverride && p.security !== p.aiSecurity ? `${p.security} (${p.aiSecurity})` : p.security} / 4
+                                        </span>
+                                    </div>
+                                    <div class="bg-slate-950/80 p-2.5 rounded-xl border border-slate-800 text-slate-200 leading-relaxed flex-1">
+                                        <span class="text-slate-400 font-semibold block mb-0.5 text-[10.5px]">📝 คำตอบของเด็ก:</span>
+                                        ${answers.security ? escapeHtml(answers.security) : '<span class="text-slate-500 italic">ไม่ได้ระบุคำตอบ</span>'}
+                                    </div>
+                                    <div class="bg-cyan-950/60 p-2 rounded-xl border border-cyan-500/20 text-cyan-200 leading-relaxed text-[11px]">
+                                        <span class="text-cyan-400 font-semibold block mb-0.5"><i class="fa-solid fa-robot mr-1"></i> AI ประเมินผล:</span>
+                                        ${feedback.security.feedback ? escapeHtml(feedback.security.feedback) : 'คะแนนประเมิน ' + p.aiSecurity + ' / 4 คะแนน'}
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+
+                        <!-- Teacher Rubric Grading & Override Form (0-4 each, Total 12) -->
                             <div class="p-4 rounded-2xl bg-indigo-950/40 border-2 border-indigo-500/50 flex flex-col gap-3 mt-1 shadow-lg">
                                 <div class="flex flex-wrap items-center justify-between gap-2">
                                     <div class="flex items-center gap-2 text-indigo-200 font-bold font-kanit text-sm">
@@ -3304,11 +3350,11 @@
                             </span>
                         </div>
 
-                        <!-- 2-Column Split: Left (Image + Scenario Brief) | Right (3 Roles Q&A & AI) -->
-                        <div class="print-case-split-grid grid grid-cols-12 gap-1.5 items-stretch mt-0.5">
+                        <!-- 2-Column Split: Left (Image + Scenario Brief 32%) | Right (3 Roles Q&A & AI 68%) -->
+                        <div class="print-case-split-grid flex flex-row gap-1.5 items-stretch mt-0.5 w-full">
                             
-                            <!-- LEFT COLUMN: Case Problem Image & Scenario Brief (32% / 4 cols) -->
-                            <div class="col-span-4 flex flex-col gap-1 p-1 rounded border border-slate-200 bg-slate-50">
+                            <!-- LEFT COLUMN: Case Problem Image & Scenario Brief (32%) -->
+                            <div class="print-case-left-panel w-[32%] shrink-0 flex flex-col gap-1 p-1 rounded border border-slate-200 bg-slate-50">
                                 <div class="w-full flex justify-center bg-white rounded border border-slate-200 p-0.5">
                                     <img src="${caseImage}"
                                          alt="ภาพโจทย์คดี"
@@ -3327,8 +3373,8 @@
                                 ` : ''}
                             </div>
 
-                            <!-- RIGHT COLUMN: 3 Roles Questions, Answers & AI Analysis (68% / 8 cols) -->
-                            <div class="col-span-8 grid grid-cols-3 gap-1">
+                            <!-- RIGHT COLUMN: 3 Roles Questions, Answers & AI Analysis (68%) -->
+                            <div class="print-case-right-panel w-[68%] grow grid grid-cols-3 gap-1">
                                 
                                 <!-- 1. Legal -->
                                 <div class="flex flex-col gap-0.5 ${isCompact ? 'text-[8px]' : 'text-[8.5px]'}">
