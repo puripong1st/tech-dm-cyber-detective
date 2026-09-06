@@ -1065,159 +1065,65 @@
             class="glass-panel max-w-5xl w-full p-6 sm:p-8 rounded-3xl border border-emerald-400/50 shadow-2xl flex flex-col gap-5 relative my-6 max-h-[94vh] overflow-y-auto">
 
             <!-- Modal Header / Controls (Hidden in print) -->
-            <div class="no-print flex flex-wrap items-center justify-between gap-3 border-b border-slate-800 pb-3">
-                <div>
-                    <h3 class="text-base font-bold text-white font-kanit flex items-center gap-2">
-                        <i class="fa-solid fa-file-pdf text-emerald-400"></i> พิมพ์รายงานสรุปคะแนนนักเรียนรายบุคคล/กลุ่ม
-                        (A4 แนวตั้ง)
-                    </h3>
-                    <p class="text-xs text-slate-400 font-sarabun">เลือกห้องเรียนที่ต้องการออกรายงานสรุปผลคะแนน PDF</p>
-                </div>
-                <div class="flex items-center gap-2">
-                    <label class="text-xs text-slate-300">เลือกห้องเรียน:</label>
-                    <select id="pdf-summary-room-select" onchange="onSummaryPdfRoomChange(this.value)"
-                        class="bg-slate-950 text-xs text-white border border-slate-700 rounded-xl px-3 py-1.5 focus:outline-none cursor-pointer">
-                        <option value="ALL">ทุกห้องเรียน (ม.3/1 - ม.3/12)</option>
-                        <option value="ม.3/1">ม.3/1</option>
-                        <option value="ม.3/2">ม.3/2</option>
-                        <option value="ม.3/3">ม.3/3</option>
-                        <option value="ม.3/4">ม.3/4</option>
-                        <option value="ม.3/5">ม.3/5</option>
-                        <option value="ม.3/6">ม.3/6</option>
-                        <option value="ม.3/7">ม.3/7</option>
-                        <option value="ม.3/8">ม.3/8</option>
-                        <option value="ม.3/9">ม.3/9</option>
-                        <option value="ม.3/10">ม.3/10</option>
-                        <option value="ม.3/11">ม.3/11</option>
-                        <option value="ม.3/12">ม.3/12</option>
-                    </select>
-                </div>
-            </div>
-
-            <!-- Printable Sheet -->
-            <div id="printable-sheet-area" class="print-page flex flex-col gap-5 text-slate-200 font-sarabun">
-
-                <!-- School Header -->
-                <div class="text-center flex flex-col items-center gap-1 border-b-2 border-slate-700 pb-4">
-                    <div class="flex items-center justify-center gap-2 mb-1">
-                        <img src="favicon.png" alt="Logo" class="w-10 h-10 rounded-lg object-cover no-print">
-                        <h2 class="text-lg sm:text-xl font-bold font-kanit text-slate-100 print-text-dark">
-                            แบบรายงานสรุปผลคะแนนกิจกรรมจำลองสถานการณ์สืบคดีกฎหมายคอมพิวเตอร์และ PDPA
-                        </h2>
+            <div class="no-print flex flex-col gap-3 border-b border-slate-800 pb-3">
+                <div class="flex flex-wrap items-center justify-between gap-3">
+                    <div>
+                        <h3 class="text-base font-bold text-white font-kanit flex items-center gap-2">
+                            <i class="fa-solid fa-file-pdf text-emerald-400"></i> พิมพ์รายงานสรุปผลคดีและคำตอบ (1 คน/กลุ่ม = 1 หน้า A4)
+                        </h3>
+                        <p class="text-xs text-slate-400 font-sarabun">ภารกิจ 1 คดี — เรียงตามลำดับเลขที่นักเรียน (1, 2, 3...) หรือเลือกลิสต์รายกลุ่มได้อิสระ</p>
                     </div>
-                    <p class="text-xs text-slate-300 print-text-dark">
-                        กลุ่มสาระการเรียนรู้วิทยาศาสตร์และเทคโนโลยี (วิชาเทคโนโลยี / วิทยาการคำนวณ)
-                        ระดับชั้นมัธยมศึกษาปีที่ 3
-                    </p>
-                    <div
-                        class="flex flex-wrap items-center justify-center gap-6 text-xs text-slate-400 font-mono mt-1 print-text-dark">
-                        <span>🏫 ห้องเรียน: <b id="pdf-room-label"
-                                class="text-cyan-300 font-bold">ทุกห้องเรียน</b></span>
-                        <span>📅 วันที่พิมพ์รายงาน: <b id="pdf-date-label" class="text-slate-200 font-bold">-</b></span>
-                        <span>👥 จำนวนกลุ่มทั้งหมด: <b id="pdf-teams-count" class="text-emerald-400 font-bold">0</b>
-                            กลุ่ม</span>
+                    <div class="flex flex-wrap items-center gap-2">
+                        <select id="pdf-group-room-select" onchange="onPdfRoomOrModeChange()"
+                            class="bg-slate-950 text-xs text-white border border-slate-700 rounded-xl px-3 py-1.5 focus:outline-none cursor-pointer">
+                            <option value="ALL">ทุกห้องเรียน (ม.3/1 - ม.3/12)</option>
+                            <option value="ม.3/1">เฉพาะห้อง ม.3/1</option>
+                            <option value="ม.3/2">เฉพาะห้อง ม.3/2</option>
+                            <option value="ม.3/3">เฉพาะห้อง ม.3/3</option>
+                            <option value="ม.3/4">เฉพาะห้อง ม.3/4</option>
+                            <option value="ม.3/5">เฉพาะห้อง ม.3/5</option>
+                            <option value="ม.3/6">เฉพาะห้อง ม.3/6</option>
+                            <option value="ม.3/7">เฉพาะห้อง ม.3/7</option>
+                            <option value="ม.3/8">เฉพาะห้อง ม.3/8</option>
+                            <option value="ม.3/9">เฉพาะห้อง ม.3/9</option>
+                            <option value="ม.3/10">เฉพาะห้อง ม.3/10</option>
+                            <option value="ม.3/11">เฉพาะห้อง ม.3/11</option>
+                            <option value="ม.3/12">เฉพาะห้อง ม.3/12</option>
+                        </select>
+                        <select id="pdf-group-select" onchange="onPdfRoomOrModeChange()"
+                            class="bg-slate-950 text-xs text-white border border-slate-700 rounded-xl px-3 py-1.5 focus:outline-none cursor-pointer">
+                            <option value="ALL">📋 ทั้งหมดในห้อง (เรียงตามเลขที่)</option>
+                            <option value="SELECTED">🎯 เอาแค่กลุ่มที่เลือกปัจจุบัน (1 กลุ่ม)</option>
+                            <option value="CUSTOM">☑️ กำหนดรายชื่อเอง (เลือกลิสต์ด้านล่าง)</option>
+                        </select>
                     </div>
                 </div>
 
-                <!-- Detailed Roster Table -->
-                <div class="overflow-x-auto rounded-xl border border-slate-700 print-table bg-slate-950/80">
-                    <table class="w-full text-left text-xs border-collapse font-sarabun">
-                        <thead class="bg-slate-900 text-slate-200 font-bold border-b border-slate-700">
-                            <tr>
-                                <th class="p-2 text-center w-8 border-r border-slate-800">#</th>
-                                <th class="p-2 text-left border-r border-slate-800 min-w-[130px]">ผู้ทำภารกิจ</th>
-                                <th class="p-2 text-center w-12 border-r border-slate-800">ห้อง</th>
-                                <th class="p-2 text-center w-12 border-r border-slate-800">เลขที่</th>
-                                <th class="p-2 text-center w-14 border-r border-slate-800">คำนำหน้า</th>
-                                <th class="p-2 text-left border-r border-slate-800 min-w-[140px]">ชื่อ - นามสกุล</th>
-                                <th class="p-2 text-center w-16 border-r border-slate-800">👨‍⚖️ กฎหมาย</th>
-                                <th class="p-2 text-center w-16 border-r border-slate-800">🚑 บรรเทา</th>
-                                <th class="p-2 text-center w-16 border-r border-slate-800">🛡️ ป้องกัน</th>
-                                <th class="p-2 text-right w-24">⭐ รวม (30)</th>
-                            </tr>
-                        </thead>
-                        <tbody id="pdf-report-tbody" class="divide-y divide-slate-800">
-                            <!-- Populated dynamically sorted vertically by room and student number -->
-                        </tbody>
-                    </table>
-                </div>
-
-                <!-- Signatures -->
-                <div
-                    class="grid grid-cols-2 gap-8 pt-6 mt-4 border-t border-slate-700 text-xs font-sarabun print-text-dark">
-                    <div class="flex flex-col items-center gap-1">
-                        <p>ลงชื่อ ............................................................ ผู้รายงาน</p>
-                        <p class="text-[11px] text-slate-400 print-text-dark">(
-                            ............................................................ )</p>
-                        <p class="text-[11px] text-slate-400 print-text-dark">หัวหน้ากลุ่ม / ผู้แทนนักเรียน</p>
+                <!-- Custom Checklist Selector Bar -->
+                <div id="pdf-custom-list-container" class="p-3 rounded-2xl bg-slate-950/90 border border-slate-800 flex flex-col gap-2">
+                    <div class="flex flex-wrap items-center justify-between gap-2 text-xs">
+                        <div class="flex items-center gap-2">
+                            <span class="font-bold text-slate-200 font-kanit flex items-center gap-1.5">
+                                <i class="fa-solid fa-list-check text-cyan-400"></i> เลือกกลุ่มที่จะพิมพ์ (<span id="pdf-selected-count-badge" class="text-emerald-400 font-mono font-bold">0</span> กลุ่ม):
+                            </span>
+                            <span class="text-[11px] text-slate-400 font-mono">เรียงตามเลขที่ 1, 2, 3...</span>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <button onclick="selectAllPdfCustomGroups(true)" class="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-[11px] text-slate-200 font-medium transition cursor-pointer">
+                                <i class="fa-solid fa-check-double text-emerald-400 mr-1"></i> เลือกทั้งหมด
+                            </button>
+                            <button onclick="selectAllPdfCustomGroups(false)" class="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-[11px] text-slate-200 font-medium transition cursor-pointer">
+                                <i class="fa-solid fa-xmark text-pink-400 mr-1"></i> ล้างทั้งหมด
+                            </button>
+                            <button onclick="selectOnlyCurrentPdfGroup()" class="px-2.5 py-1 rounded-lg bg-indigo-900/60 border border-indigo-500/40 hover:bg-indigo-800 text-[11px] text-indigo-200 font-medium transition cursor-pointer">
+                                <i class="fa-solid fa-crosshairs text-amber-400 mr-1"></i> เอาแค่กลุ่มเดียว (ปัจจุบัน)
+                            </button>
+                        </div>
                     </div>
-                    <div class="flex flex-col items-center gap-1">
-                        <p>ลงชื่อ ............................................................ ครูผู้สอน</p>
-                        <p class="text-[11px] text-slate-400 print-text-dark">(
-                            ............................................................ )</p>
-                        <p class="text-[11px] text-slate-400 print-text-dark">ครูผู้สอนประจำวิชา</p>
+                    <!-- Checkbox items container -->
+                    <div id="pdf-custom-checkbox-items" class="flex flex-wrap gap-1.5 max-h-36 overflow-y-auto p-1 text-xs">
+                        <!-- Populated dynamically -->
                     </div>
-                </div>
-
-            </div>
-
-            <!-- Action Buttons (Hidden in Print) -->
-            <div class="no-print flex items-center justify-between gap-3 pt-3 border-t border-slate-800">
-                <button onclick="closePrintPdfModal()"
-                    class="px-4 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-medium transition">
-                    <i class="fa-solid fa-xmark mr-1"></i> ปิด
-                </button>
-                <button onclick="window.print()"
-                    class="px-6 py-2.5 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-bold text-xs shadow-lg shadow-emerald-500/20 transition flex items-center gap-2">
-                    <i class="fa-solid fa-print"></i>
-                    <span>พิมพ์รายงาน / บันทึกเป็น PDF</span>
-                </button>
-            </div>
-
-        </div>
-    </div>
-
-    <!-- 3.5 PRINTABLE GROUP ANSWERS PDF MODAL (A4 Vertical) -->
-    <div id="modal-print-group-answers"
-        class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/95 backdrop-blur-md overflow-y-auto">
-        <div
-            class="glass-panel max-w-4xl w-full p-6 sm:p-8 rounded-3xl border border-emerald-400/50 shadow-2xl flex flex-col gap-5 relative my-6 max-h-[94vh] overflow-y-auto">
-
-            <button onclick="closeGroupAnswersPdfModal()"
-                class="no-print absolute top-4 right-4 text-slate-400 hover:text-white p-2 rounded-lg bg-slate-800/80 border border-slate-700 transition">
-                <i class="fa-solid fa-xmark text-lg"></i>
-            </button>
-
-            <!-- Modal Header / Controls (Hidden in print) -->
-            <div class="no-print flex flex-wrap items-center justify-between gap-3 border-b border-slate-800 pb-3">
-                <div>
-                    <h3 class="text-base font-bold text-white font-kanit flex items-center gap-2">
-                        <i class="fa-solid fa-file-pdf text-emerald-400"></i> พิมพ์รายงานสรุปผลคดีและคำตอบ (1 คน/กลุ่ม = 1 หน้า A4)
-                    </h3>
-                    <p class="text-xs text-slate-400 font-sarabun">ภารกิจ 1 คดี (ซ้าย: รูปโจทย์/สถานการณ์ | ขวา: คำถาม-คำตอบ-AI | ล่าง: การประเมินและคอมเมนต์ของครู)</p>
-                </div>
-                <div class="flex flex-wrap items-center gap-2">
-                    <select id="pdf-group-room-select" onchange="renderGroupAnswersPdfContent()"
-                        class="bg-slate-950 text-xs text-white border border-slate-700 rounded-xl px-3 py-1.5 focus:outline-none cursor-pointer">
-                        <option value="ALL">ทุกห้องเรียน (ม.3/1 - ม.3/12)</option>
-                        <option value="ม.3/1">เฉพาะห้อง ม.3/1</option>
-                        <option value="ม.3/2">เฉพาะห้อง ม.3/2</option>
-                        <option value="ม.3/3">เฉพาะห้อง ม.3/3</option>
-                        <option value="ม.3/4">เฉพาะห้อง ม.3/4</option>
-                        <option value="ม.3/5">เฉพาะห้อง ม.3/5</option>
-                        <option value="ม.3/6">เฉพาะห้อง ม.3/6</option>
-                        <option value="ม.3/7">เฉพาะห้อง ม.3/7</option>
-                        <option value="ม.3/8">เฉพาะห้อง ม.3/8</option>
-                        <option value="ม.3/9">เฉพาะห้อง ม.3/9</option>
-                        <option value="ม.3/10">เฉพาะห้อง ม.3/10</option>
-                        <option value="ม.3/11">เฉพาะห้อง ม.3/11</option>
-                        <option value="ม.3/12">เฉพาะห้อง ม.3/12</option>
-                    </select>
-                    <select id="pdf-group-select" onchange="renderGroupAnswersPdfContent()"
-                        class="bg-slate-950 text-xs text-white border border-slate-700 rounded-xl px-3 py-1.5 focus:outline-none cursor-pointer">
-                        <option value="ALL">รวมทุกกลุ่มในห้องเรียนที่เลือก</option>
-                        <option value="SELECTED">เฉพาะกลุ่มที่เลือกปัจจุบัน</option>
-                    </select>
                 </div>
             </div>
 
@@ -2959,17 +2865,161 @@
 }
 
         // --- PDF Export Modal Handlers for Group Answers (1 Page = 1 Group) ---
+        let pdfSelectedTeamKeys = new Set();
+
+        function getGroupMinStudentNo(p) {
+            if (!p || !Array.isArray(p.members) || p.members.length === 0) return 9999;
+            const nos = p.members.map(m => Number(m.no)).filter(n => Number.isFinite(n) && n > 0);
+            return nos.length > 0 ? Math.min(...nos) : 9999;
+        }
+
+        function getSortedTeamsInRoom(roomFilter) {
+            const teamMap = new Map();
+            allScoresData.forEach(item => {
+                if (!item) return;
+                const teamKey = (item.team_name || item.player_id || 'นักสืบเยาวชน').trim();
+                if (!teamMap.has(teamKey)) teamMap.set(teamKey, []);
+                teamMap.get(teamKey).push(item);
+            });
+
+            const teams = [];
+            teamMap.forEach((items, teamKey) => {
+                const bestItem = getBestScoreItem(items) || items[0];
+                if (!bestItem) return;
+                const p = parseScoreItem(bestItem);
+
+                if (roomFilter !== 'ALL' && p.room !== roomFilter && !teamKey.includes(roomFilter)) {
+                    return;
+                }
+
+                const minNo = getGroupMinStudentNo(p);
+                teams.push({ teamKey, items, bestItem, p, minNo });
+            });
+
+            // Strict sort by student number ascending (1, 2, 3...)
+            teams.sort((a, b) => {
+                if (a.minNo !== b.minNo) return a.minNo - b.minNo;
+                return a.teamKey.localeCompare(b.teamKey, 'th');
+            });
+
+            return teams;
+        }
+
         function openGroupAnswersPdfModal() {
             const currentRoom = document.getElementById('filter-group-room')?.value || document.getElementById('filter-room')?.value || 'ALL';
             const roomSelect = document.getElementById('pdf-group-room-select');
             if (roomSelect) roomSelect.value = currentRoom;
 
-            renderGroupAnswersPdfContent();
+            const modeSelect = document.getElementById('pdf-group-select');
+            if (modeSelect) {
+                modeSelect.value = selectedGroupTeamName ? 'SELECTED' : 'ALL';
+            }
+
+            onPdfRoomOrModeChange();
             document.getElementById('modal-print-group-answers').classList.remove('hidden');
         }
 
         function closeGroupAnswersPdfModal() {
             document.getElementById('modal-print-group-answers').classList.add('hidden');
+        }
+
+        function onPdfRoomOrModeChange() {
+            const roomFilter = document.getElementById('pdf-group-room-select')?.value || 'ALL';
+            const selectMode = document.getElementById('pdf-group-select')?.value || 'ALL';
+            const sortedTeams = getSortedTeamsInRoom(roomFilter);
+
+            if (selectMode === 'SELECTED') {
+                pdfSelectedTeamKeys.clear();
+                if (selectedGroupTeamName && sortedTeams.some(t => t.teamKey === selectedGroupTeamName)) {
+                    pdfSelectedTeamKeys.add(selectedGroupTeamName);
+                } else if (sortedTeams.length > 0) {
+                    pdfSelectedTeamKeys.add(sortedTeams[0].teamKey);
+                }
+            } else if (selectMode === 'ALL') {
+                pdfSelectedTeamKeys = new Set(sortedTeams.map(t => t.teamKey));
+            } else if (selectMode === 'CUSTOM') {
+                if (pdfSelectedTeamKeys.size === 0) {
+                    pdfSelectedTeamKeys = new Set(sortedTeams.map(t => t.teamKey));
+                }
+            }
+
+            renderPdfCheckboxesUI(sortedTeams);
+            renderGroupAnswersPdfContent();
+        }
+
+        function renderPdfCheckboxesUI(sortedTeams) {
+            const container = document.getElementById('pdf-custom-checkbox-items');
+            const countBadge = document.getElementById('pdf-selected-count-badge');
+            if (!container) return;
+
+            if (countBadge) countBadge.textContent = String(pdfSelectedTeamKeys.size);
+
+            container.innerHTML = sortedTeams.map(t => {
+                const isChecked = pdfSelectedTeamKeys.has(t.teamKey);
+                const safeKey = escapeHtml(t.teamKey).replace(/'/g, "\\'");
+                const noStr = t.minNo !== 9999 ? `เลขที่ ${t.minNo}` : 'ไม่มีเลขที่';
+                return `
+                    <label class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-xl transition cursor-pointer text-xs ${isChecked ? 'bg-indigo-950/80 border border-indigo-400/80 text-white font-semibold' : 'bg-slate-900 border border-slate-800 text-slate-400 hover:text-slate-200'}">
+                        <input type="checkbox" ${isChecked ? 'checked' : ''} onchange="togglePdfCustomTeam('${safeKey}', this.checked)" class="rounded text-indigo-600 focus:ring-0 cursor-pointer">
+                        <span class="text-cyan-400 font-mono text-[11px] font-bold">${noStr}:</span>
+                        <span class="truncate max-w-[150px]">${escapeHtml(t.teamKey)}</span>
+                    </label>
+                `;
+            }).join('') || '<span class="text-slate-500 text-xs italic">ไม่พบกลุ่มในห้องนี้</span>';
+        }
+
+        function togglePdfCustomTeam(teamKey, checked) {
+            if (checked) {
+                pdfSelectedTeamKeys.add(teamKey);
+            } else {
+                pdfSelectedTeamKeys.delete(teamKey);
+            }
+
+            const selEl = document.getElementById('pdf-group-select');
+            if (selEl) selEl.value = 'CUSTOM';
+
+            const roomFilter = document.getElementById('pdf-group-room-select')?.value || 'ALL';
+            const sortedTeams = getSortedTeamsInRoom(roomFilter);
+            const countBadge = document.getElementById('pdf-selected-count-badge');
+            if (countBadge) countBadge.textContent = String(pdfSelectedTeamKeys.size);
+
+            renderPdfCheckboxesUI(sortedTeams);
+            renderGroupAnswersPdfContent();
+        }
+
+        function selectAllPdfCustomGroups(selectAll) {
+            const roomFilter = document.getElementById('pdf-group-room-select')?.value || 'ALL';
+            const sortedTeams = getSortedTeamsInRoom(roomFilter);
+
+            if (selectAll) {
+                pdfSelectedTeamKeys = new Set(sortedTeams.map(t => t.teamKey));
+            } else {
+                pdfSelectedTeamKeys.clear();
+            }
+
+            const selEl = document.getElementById('pdf-group-select');
+            if (selEl) selEl.value = selectAll ? 'ALL' : 'CUSTOM';
+
+            renderPdfCheckboxesUI(sortedTeams);
+            renderGroupAnswersPdfContent();
+        }
+
+        function selectOnlyCurrentPdfGroup() {
+            const roomFilter = document.getElementById('pdf-group-room-select')?.value || 'ALL';
+            const sortedTeams = getSortedTeamsInRoom(roomFilter);
+
+            pdfSelectedTeamKeys.clear();
+            if (selectedGroupTeamName && sortedTeams.some(t => t.teamKey === selectedGroupTeamName)) {
+                pdfSelectedTeamKeys.add(selectedGroupTeamName);
+            } else if (sortedTeams.length > 0) {
+                pdfSelectedTeamKeys.add(sortedTeams[0].teamKey);
+            }
+
+            const selEl = document.getElementById('pdf-group-select');
+            if (selEl) selEl.value = 'SELECTED';
+
+            renderPdfCheckboxesUI(sortedTeams);
+            renderGroupAnswersPdfContent();
         }
 
         function renderGroupAnswersPdfContent() {
@@ -2978,43 +3028,29 @@
             const sheet = document.getElementById('printable-group-answers-sheet');
             if (!sheet) return;
 
-            const teamMap = new Map();
-            allScoresData.forEach(item => {
-                const teamKey = item.team_name || item.player_id || 'นักสืบเยาวชน';
-                if (!teamMap.has(teamKey)) teamMap.set(teamKey, []);
-                teamMap.get(teamKey).push(item);
-            });
+            const sortedTeams = getSortedTeamsInRoom(roomFilter);
 
-            const filteredMap = new Map();
-            teamMap.forEach((items, teamKey) => {
-                const p = parseScoreItem(items[0]);
-                if (roomFilter !== 'ALL' && p.room !== roomFilter && !teamKey.includes(roomFilter)) {
-                    return;
-                }
-                filteredMap.set(teamKey, items);
-            });
-
-            const targetTeams = selectMode === 'ACTIVE_ONLY' && selectedGroupTeamName && filteredMap.has(selectedGroupTeamName)
-                ? [selectedGroupTeamName]
-                : Array.from(filteredMap.keys());
-
-            const printDateStr = new Date().toLocaleDateString('th-TH', { year: 'numeric', month: 'long', day: 'numeric' });
-            const roomLabelText = roomFilter === 'ALL' ? 'ทุกห้องเรียน (ม.3/1 - ม.3/12)' : `ห้อง ${roomFilter}`;
+            let targetTeams = [];
+            if (selectMode === 'SELECTED') {
+                const cur = sortedTeams.find(t => t.teamKey === selectedGroupTeamName) || sortedTeams[0];
+                if (cur) targetTeams = [cur];
+            } else if (selectMode === 'CUSTOM') {
+                targetTeams = sortedTeams.filter(t => pdfSelectedTeamKeys.has(t.teamKey));
+            } else {
+                targetTeams = sortedTeams;
+            }
 
             if (targetTeams.length === 0) {
                 sheet.innerHTML = '<div class="p-8 text-center text-slate-500 font-sarabun text-sm">ไม่พบข้อมูลกลุ่มสายสืบสำหรับส่งออก PDF ตามเงื่อนไขที่เลือก</div>';
                 return;
             }
 
+            const printDateStr = new Date().toLocaleDateString('th-TH', { year: 'numeric', month: 'long', day: 'numeric' });
+            const roomLabelText = roomFilter === 'ALL' ? 'ทุกห้องเรียน (ม.3/1 - ม.3/12)' : `ห้อง ${roomFilter}`;
+
             let fullHtml = '';
-            targetTeams.forEach((teamKey, groupIdx) => {
-                const items = filteredMap.get(teamKey);
-                if (!items || items.length === 0) return;
-
-                const bestItem = getBestScoreItem(items) || items[0];
-                if (!bestItem) return;
-
-                const p = parseScoreItem(bestItem);
+            targetTeams.forEach((tObj, groupIdx) => {
+                const { teamKey, bestItem, p } = tObj;
                 const { answers, feedback } = extractAnswersAndFeedback(bestItem);
                 const caseRef = ALL_12_CASES.find(c => c.id === bestItem.case_id) || {};
                 const caseTitle = bestItem.case_title || caseRef.title || 'คดีปริศนาไซเบอร์';
@@ -3025,7 +3061,7 @@
                     : 'ไม่ได้ระบุรายชื่อสมาชิก';
 
                 fullHtml += `
-                    <!-- 1 Group = Guaranteed 1 Page A4 Portrait -->
+                    <!-- 1 Group = Guaranteed 1 Page A4 Portrait (Sorted by เลขที่) -->
                     <div class="print-group-subpage bg-white text-slate-900 font-sarabun flex flex-col justify-between">
                         
                         <div>
@@ -3201,7 +3237,7 @@
                                 `}
                             </div>
 
-                            <!-- Teacher-Only Signature Block (Student signature removed as requested) -->
+                            <!-- Teacher-Only Signature Block -->
                             <div class="flex justify-end pt-1.5 border-t border-indigo-200 text-[9.5px] font-sarabun text-slate-800">
                                 <div class="flex flex-col items-center gap-0.5 min-w-[240px]">
                                     <p>ลงชื่อ ............................................................ ครูผู้สอนประจำวิชา</p>
