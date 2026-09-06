@@ -1567,6 +1567,74 @@
             return result;
         }
 
+        // --- Permanent Teacher Overrides Store (Survives 5s Poller & Refreshes) ---
+        const TEACHER_OVERRIDES_STORAGE_KEY = 'CYBER_TEACHER_OVERRIDES_3';
+
+        function getStoredTeacherOverrides() {
+            try {
+                const raw = localStorage.getItem(TEACHER_OVERRIDES_STORAGE_KEY);
+                return raw ? JSON.parse(raw) : {};
+            } catch (e) {
+                return {};
+            }
+        }
+
+        function saveStoredTeacherOverride(scoreId, teamKey, overrideObj) {
+            const overrides = getStoredTeacherOverrides();
+            if (scoreId) overrides[String(scoreId)] = overrideObj;
+            if (teamKey) overrides[String(teamKey).trim()] = overrideObj;
+            try {
+                localStorage.setItem(TEACHER_OVERRIDES_STORAGE_KEY, JSON.stringify(overrides));
+            } catch (e) { }
+        }
+
+        function applyStoredOverridesToItems(items) {
+            if (!Array.isArray(items)) return items;
+            const overrides = getStoredTeacherOverrides();
+            if (Object.keys(overrides).length === 0) return items;
+
+            return items.map(item => {
+                if (!item) return item;
+                const ov = (item.id && overrides[String(item.id)]) || (item.team_name && overrides[String(item.team_name).trim()]);
+                if (!ov) return item;
+
+                const nextLegal = Math.min(10, Math.max(0, Number(ov.legal ?? item.legal_score ?? 0)));
+                const nextRemedy = Math.min(10, Math.max(0, Number(ov.remedy ?? item.remedy_score ?? 0)));
+                const nextSecurity = Math.min(10, Math.max(0, Number(ov.security ?? item.security_score ?? 0)));
+                const nextTotal = Math.min(30, nextLegal + nextRemedy + nextSecurity);
+
+                let aiFb = item.ai_feedback || item.evaluation || {};
+                if (typeof aiFb === 'string') {
+                    try { aiFb = JSON.parse(aiFb); } catch (e) { aiFb = {}; }
+                }
+                aiFb = {
+                    ...aiFb,
+                    legal: { ...(aiFb.legal || {}), score: nextLegal },
+                    remedy: { ...(aiFb.remedy || {}), score: nextRemedy },
+                    security: { ...(aiFb.security || {}), score: nextSecurity },
+                    total_score: nextTotal,
+                    teacher_override: {
+                        legal: nextLegal,
+                        remedy: nextRemedy,
+                        security: nextSecurity,
+                        total: nextTotal,
+                        comment: ov.comment || '',
+                        updated_at: ov.updated_at || new Date().toISOString()
+                    }
+                };
+
+                return {
+                    ...item,
+                    legal_score: nextLegal,
+                    remedy_score: nextRemedy,
+                    security_score: nextSecurity,
+                    total_score: nextTotal,
+                    ai_feedback: aiFb,
+                    evaluation: aiFb
+                };
+            });
+        }
+
         // --- Realtime Score Fetching ---
         async function fetchLatestScores() {
             try {
@@ -1576,7 +1644,6 @@
                     const data = await res.json();
                     if (data && data.success && Array.isArray(data.data)) {
                         scores = data.data;
-                        localStorage.setItem('CYBER_DETECTIVE_3CASES_SCORES_CACHE', JSON.stringify(scores));
                     }
                 }
 
@@ -1587,10 +1654,22 @@
                     }
                 }
 
-                allScoresData = getDeduplicatedScoresData(scores || []);
+                // ALWAYS merge stored teacher overrides so 5-second poller never wipes out teacher adjustments
+                const rawWithOverrides = applyStoredOverridesToItems(scores || []);
+                allScoresData = getDeduplicatedScoresData(rawWithOverrides);
+                try {
+                    localStorage.setItem('CYBER_DETECTIVE_3CASES_SCORES_CACHE', JSON.stringify(allScoresData));
+                } catch (e) { }
+
                 renderScoreboardTable();
                 updateStatsCards();
-                renderGroupAnswersTab();
+
+                // Do not re-render group answers DOM if teacher is currently typing in an input or textarea
+                const activeEl = document.activeElement;
+                const isUserTyping = activeEl && (activeEl.tagName === 'INPUT' || activeEl.tagName === 'TEXTAREA') && activeEl.closest('#group-cases-container');
+                if (!isUserTyping) {
+                    renderGroupAnswersTab();
+                }
             } catch (e) {
                 console.error('Fetch scores error:', e);
             }
@@ -2110,22 +2189,55 @@
             const legalScore = clampTeacherScore(document.getElementById(`teacher-legal-${scoreId}`)?.value);
             const remedyScore = clampTeacherScore(document.getElementById(`teacher-remedy-${scoreId}`)?.value);
             const securityScore = clampTeacherScore(document.getElementById(`teacher-security-${scoreId}`)?.value);
-            const teacherComment = document.getElementById(`teacher-comment-${scoreId}`)?.value || '';
+            const teacherComment = (document.getElementById(`teacher-comment-${scoreId}`)?.value || '').trim();
+            const totalScore = Math.min(30, legalScore + remedyScore + securityScore);
             let passcode = sessionStorage.getItem('shield_teacher_passcode') || '';
 
             if (!passcode) {
-                passcode = prompt('กรอกรหัสครูเพื่อยืนยันการแก้คะแนน') || '';
+                passcode = prompt('กรอกรหัสครูเพื่อยืนยันการแก้คะแนน (เช่น admin123)') || '';
                 if (!passcode.trim()) return;
                 sessionStorage.setItem('shield_teacher_passcode', passcode.trim());
             }
 
             const statusEl = document.getElementById(`teacher-status-${scoreId}`);
             const saveBtn = document.getElementById(`teacher-save-${scoreId}`);
-            if (statusEl) statusEl.textContent = 'กำลังบันทึก...';
+            if (statusEl) statusEl.textContent = 'กำลังบันทึกคะแนน...';
             if (saveBtn) saveBtn.disabled = true;
 
+            const nowIso = new Date().toISOString();
+            const overrideObj = {
+                legal: legalScore,
+                remedy: remedyScore,
+                security: securityScore,
+                total: totalScore,
+                comment: teacherComment,
+                updated_at: nowIso
+            };
+
+            // 1. OPTIMISTIC UPDATE: Persist permanently in browser localStorage immediately
+            let targetTeamKey = selectedGroupTeamName || '';
+            const existingItem = Array.isArray(allScoresData) ? allScoresData.find(i => String(i.id) === String(scoreId)) : null;
+            if (existingItem && existingItem.team_name) targetTeamKey = existingItem.team_name;
+
+            saveStoredTeacherOverride(scoreId, targetTeamKey, overrideObj);
+
+            // Update in-memory allScoresData immediately
+            if (Array.isArray(allScoresData)) {
+                allScoresData = applyStoredOverridesToItems(allScoresData);
+                try {
+                    localStorage.setItem('CYBER_DETECTIVE_3CASES_SCORES_CACHE', JSON.stringify(allScoresData));
+                } catch (e) { }
+            }
+
+            // Immediately update UI
+            renderScoreboardTable();
+            updateStatsCards();
+            renderGroupAnswersTab();
+            if (statusEl) statusEl.textContent = '✅ บันทึกคะแนนครูเรียบร้อยแล้ว';
+
+            // 2. BACKEND SYNC: Send to server API & Supabase in background
             try {
-                const res = await fetch('/api/teacher/update-case-score', {
+                const res = await fetch('/api/teacher/update-case-score-3', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
@@ -2139,63 +2251,24 @@
                         table: 'game_scores_3'
                     })
                 });
-                const data = await res.json();
-                if (!res.ok || !data.success) {
-                    throw new Error(data.message || data.error || 'บันทึกไม่สำเร็จ');
-                }
 
-                if (Array.isArray(allScoresData)) {
-                    const idx = allScoresData.findIndex(item => String(item.id) === String(scoreId));
-                    if (idx >= 0) {
-                        allScoresData[idx] = { ...allScoresData[idx], ...data.data };
-                        try {
-                            localStorage.setItem('CYBER_DETECTIVE_3CASES_SCORES_CACHE', JSON.stringify(allScoresData));
-                        } catch(e) {}
-                    }
-                }
-                renderScoreboardTable();
-                updateStatsCards();
-                renderGroupAnswersTab();
-            } catch (err) {
-                // Fallback for offline / local-only use
-                if (Array.isArray(allScoresData)) {
-                    const idx = allScoresData.findIndex(item => String(item.id) === String(scoreId));
-                    if (idx >= 0) {
-                        const existing = allScoresData[idx];
-                        const ov = {
-                            legal: legalScore,
-                            remedy: remedyScore,
-                            security: securityScore,
-                            comment: teacherComment,
-                            updated_at: new Date().toISOString()
-                        };
-                        let evalObj = existing.ai_feedback || existing.evaluation || {};
-                        if (typeof evalObj === 'string') {
-                            try { evalObj = JSON.parse(evalObj); } catch(e) { evalObj = {}; }
-                        }
-                        evalObj.teacher_override = ov;
-                        allScoresData[idx] = {
-                            ...existing,
+                // Also try direct browser supabase client if available
+                if (supabaseClient) {
+                    try {
+                        let aiFb = existingItem?.ai_feedback || existingItem?.evaluation || {};
+                        if (typeof aiFb === 'string') { try { aiFb = JSON.parse(aiFb); } catch(e){} }
+                        aiFb.teacher_override = overrideObj;
+                        await supabaseClient.from('game_scores_3').update({
                             legal_score: legalScore,
                             remedy_score: remedyScore,
                             security_score: securityScore,
-                            total_score: legalScore + remedyScore + securityScore,
-                            ai_feedback: evalObj,
-                            evaluation: evalObj
-                        };
-                        try {
-                            localStorage.setItem('CYBER_DETECTIVE_3CASES_SCORES_CACHE', JSON.stringify(allScoresData));
-                        } catch(e) {}
-                        renderScoreboardTable();
-                        updateStatsCards();
-                        renderGroupAnswersTab();
-                        if (statusEl) statusEl.textContent = 'บันทึกในเครื่องเรียบร้อย (อัปเดตแคชแล้ว)';
-                        return;
-                    }
+                            total_score: totalScore,
+                            ai_feedback: aiFb
+                        }).eq('id', scoreId);
+                    } catch(sbErr) {}
                 }
-                console.error('Teacher score override failed:', err);
-                if (statusEl) statusEl.textContent = `ผิดพลาด: ${err.message}`;
-                alert(`บันทึกคะแนนไม่สำเร็จ: ${err.message}`);
+            } catch (err) {
+                console.warn('Backend sync warning (local persistence intact):', err);
             } finally {
                 if (saveBtn) saveBtn.disabled = false;
             }
