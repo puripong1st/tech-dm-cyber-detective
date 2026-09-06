@@ -300,11 +300,11 @@
 
             .print-case-split-grid {
                 display: grid !important;
-                grid-template-columns: 38% 62% !important;
-                gap: 7px !important;
+                grid-template-columns: 32% 68% !important;
+                gap: 6px !important;
                 align-items: stretch !important;
-                margin-top: 3px !important;
-                margin-bottom: 3px !important;
+                margin-top: 2px !important;
+                margin-bottom: 2px !important;
                 page-break-inside: avoid !important;
                 break-inside: avoid !important;
             }
@@ -3241,6 +3241,9 @@
             const caseRef = ALL_12_CASES.find(c => c.id === bestItem.case_id) || {};
             const caseTitle = bestItem.case_title || caseRef.title || 'คดีปริศนาไซเบอร์';
             const caseId = String(bestItem.case_id || 1).padStart(2, '0');
+            const caseImage = caseRef.image || `assets/chibi_comics/sec_${caseRef.id || bestItem.case_id || 5}.png`;
+            const caseBrief = caseRef.brief || '';
+            const caseSection = caseRef.section || 'พ.ร.บ.คอมพิวเตอร์';
 
             const membersStr = p.members.length > 0
                 ? p.members.map(m => `เลขที่ ${m.no}: ${m.prefix || ''}${m.name}`).join(', ')
@@ -3285,80 +3288,106 @@
                         </p>
                     </div>
 
-                    <!-- Case Card (Left: Comic Image, Right: 3 Roles Grid) -->
+                    <!-- Case Card: Left = Problem Image & Brief | Right = 3 Roles (Legal, Remedy, Security) -->
                     <div class="print-card ${isCompact ? 'p-1.5' : 'p-2'} rounded-lg border border-slate-300 bg-white flex flex-col gap-1 mt-0.5">
                         <div class="flex items-center justify-between border-b border-slate-200 pb-0.5">
                             <div class="flex items-center gap-1.5">
                                 <span class="font-bold ${isCompact ? 'text-[11px]' : 'text-xs'} font-kanit text-slate-900">
                                     คดี #${caseId}: ${escapeHtml(caseTitle)}
                                 </span>
-                                ${caseRef.law_category ? `<span class="px-1.5 py-0.2 rounded bg-pink-100 border border-pink-300 text-pink-900 text-[8px] font-medium font-sarabun">${escapeHtml(caseRef.law_category)}</span>` : ''}
+                                <span class="px-1.5 py-0.2 rounded bg-pink-100 border border-pink-300 text-pink-900 text-[8px] font-medium font-sarabun">
+                                    ${escapeHtml(caseSection)}
+                                </span>
                             </div>
-                            <span class="px-2 py-0.5 rounded bg-emerald-100 border border-emerald-300 text-emerald-900 font-mono ${isCompact ? 'text-[8.5px]' : 'text-[9.5px]'} font-bold">
+                            <span class="px-1.5 py-0.2 rounded bg-emerald-100 border border-emerald-300 text-emerald-900 font-mono text-[8.5px] font-bold">
                                 คะแนนคดีนี้: ${p.total} / 12 คะแนน (${p.quality.label})
                             </span>
                         </div>
 
-                        <!-- 3 Roles Columns -->
-                        <div class="grid grid-cols-3 gap-1.5 mt-0.5">
+                        <!-- 2-Column Split: Left (Image + Scenario Brief) | Right (3 Roles Q&A & AI) -->
+                        <div class="print-case-split-grid grid grid-cols-12 gap-1.5 items-stretch mt-0.5">
                             
-                            <!-- Law -->
-                            <div class="flex flex-col gap-0.5 ${isCompact ? 'text-[8px]' : 'text-[9px]'}">
-                                <div class="flex items-center justify-between">
-                                    <span class="font-bold text-amber-900 ${isCompact ? 'text-[8.5px]' : 'text-[9.5px]'}">
-                                        👨‍⚖️ 1. กฎหมาย (Legal)
-                                    </span>
-                                    <span class="px-1.5 py-0.2 rounded bg-amber-100 border border-amber-300 text-amber-900 font-mono font-bold ${isCompact ? 'text-[8px]' : 'text-[8.5px]'}">
-                                        ${p.hasTeacherOverride && p.legal !== p.aiLegal ? `${p.legal} (${p.aiLegal})` : p.legal} / 4
-                                    </span>
+                            <!-- LEFT COLUMN: Case Problem Image & Scenario Brief (32% / 4 cols) -->
+                            <div class="col-span-4 flex flex-col gap-1 p-1 rounded border border-slate-200 bg-slate-50">
+                                <div class="w-full flex justify-center bg-white rounded border border-slate-200 p-0.5">
+                                    <img src="${caseImage}"
+                                         alt="ภาพโจทย์คดี"
+                                         onerror="this.src='assets/chibi_scan.jpg'"
+                                         class="print-case-img ${isCompact ? 'max-h-[85px]' : 'max-h-[110px]'} w-full object-contain rounded">
                                 </div>
-                                <div class="bg-white p-1 rounded border border-slate-200 text-slate-900 leading-tight ${isCompact ? 'min-h-[38px] text-[8px]' : 'min-h-[50px] text-[8.5px]'}">
-                                    <b class="text-slate-600 ${isCompact ? 'text-[7.5px]' : 'text-[8px]'}">คำตอบของนักเรียน:</b><br>
-                                    ${answers.legal ? escapeHtml(answers.legal) : '<span class="text-slate-400 italic">ไม่ได้ระบุคำตอบ</span>'}
+                                ${caseBrief ? `
+                                <div class="bg-white p-1 rounded border border-slate-200 text-slate-800 leading-tight">
+                                    <div class="font-bold text-slate-900 ${isCompact ? 'text-[7.5px]' : 'text-[8.5px]'} mb-0.5 flex items-center gap-1">
+                                        <i class="fa-solid fa-book-open text-cyan-700"></i> โจทย์สถานการณ์:
+                                    </div>
+                                    <p class="${isCompact ? 'text-[7px]' : 'text-[8px]'} leading-snug text-slate-700 line-clamp-3">
+                                        ${escapeHtml(caseBrief)}
+                                    </p>
                                 </div>
-                                <div class="bg-amber-50 p-1 rounded border border-amber-200 text-amber-950 ${isCompact ? 'text-[7.5px]' : 'text-[8.5px]'} leading-tight">
-                                    <b class="text-amber-700">🤖 AI:</b> ${escapeHtml(feedback.legal.feedback || ('คะแนนรูบริก ' + p.aiLegal + ' / 4'))}
-                                </div>
+                                ` : ''}
                             </div>
 
-                            <!-- Remedy -->
-                            <div class="flex flex-col gap-0.5 ${isCompact ? 'text-[8px]' : 'text-[9px]'}">
-                                <div class="flex items-center justify-between">
-                                    <span class="font-bold text-pink-900 ${isCompact ? 'text-[8.5px]' : 'text-[9.5px]'}">
-                                        🚑 2. การแก้ไข (Remedy)
-                                    </span>
-                                    <span class="px-1.5 py-0.2 rounded bg-pink-100 border border-pink-300 text-pink-900 font-mono font-bold ${isCompact ? 'text-[8px]' : 'text-[8.5px]'}">
-                                        ${p.hasTeacherOverride && p.remedy !== p.aiRemedy ? `${p.remedy} (${p.aiRemedy})` : p.remedy} / 4
-                                    </span>
+                            <!-- RIGHT COLUMN: 3 Roles Questions, Answers & AI Analysis (68% / 8 cols) -->
+                            <div class="col-span-8 grid grid-cols-3 gap-1">
+                                
+                                <!-- 1. Legal -->
+                                <div class="flex flex-col gap-0.5 ${isCompact ? 'text-[8px]' : 'text-[8.5px]'}">
+                                    <div class="flex items-center justify-between">
+                                        <span class="font-bold text-amber-900 ${isCompact ? 'text-[8px]' : 'text-[8.5px]'}">
+                                            👨‍⚖️ 1. กฎหมาย
+                                        </span>
+                                        <span class="px-1 py-0.2 rounded bg-amber-100 border border-amber-300 text-amber-900 font-mono font-bold text-[7.5px]">
+                                            ${p.hasTeacherOverride && p.legal !== p.aiLegal ? `${p.legal} (${p.aiLegal})` : p.legal} / 4
+                                        </span>
+                                    </div>
+                                    <div class="bg-white p-1 rounded border border-slate-200 text-slate-900 leading-tight ${isCompact ? 'min-h-[38px] text-[7.5px]' : 'min-h-[48px] text-[8px]'}">
+                                        <b class="text-slate-600 text-[7px]">คำตอบนักเรียน:</b><br>
+                                        ${answers.legal ? escapeHtml(answers.legal) : '<span class="text-slate-400 italic">ไม่ได้ระบุคำตอบ</span>'}
+                                    </div>
+                                    <div class="bg-amber-50 p-1 rounded border border-amber-200 text-amber-950 text-[7px] leading-tight">
+                                        <b class="text-amber-700">🤖 AI:</b> ${escapeHtml(feedback.legal.feedback || ('คะแนนรูบริก ' + p.aiLegal + ' / 4'))}
+                                    </div>
                                 </div>
-                                <div class="bg-white p-1 rounded border border-slate-200 text-slate-900 leading-tight ${isCompact ? 'min-h-[38px] text-[8px]' : 'min-h-[50px] text-[8.5px]'}">
-                                    <b class="text-slate-600 ${isCompact ? 'text-[7.5px]' : 'text-[8px]'}">คำตอบของนักเรียน:</b><br>
-                                    ${answers.remedy ? escapeHtml(answers.remedy) : '<span class="text-slate-400 italic">ไม่ได้ระบุคำตอบ</span>'}
-                                </div>
-                                <div class="bg-pink-50 p-1 rounded border border-pink-200 text-pink-950 ${isCompact ? 'text-[7.5px]' : 'text-[8.5px]'} leading-tight">
-                                    <b class="text-pink-700">🤖 AI:</b> ${escapeHtml(feedback.remedy.feedback || ('คะแนนรูบริก ' + p.aiRemedy + ' / 4'))}
-                                </div>
-                            </div>
 
-                            <!-- Security -->
-                            <div class="flex flex-col gap-0.5 ${isCompact ? 'text-[8px]' : 'text-[9px]'}">
-                                <div class="flex items-center justify-between">
-                                    <span class="font-bold text-teal-900 ${isCompact ? 'text-[8.5px]' : 'text-[9.5px]'}">
-                                        🛡️ 3. การป้องกัน (Security)
-                                    </span>
-                                    <span class="px-1.5 py-0.2 rounded bg-teal-100 border border-teal-300 text-teal-900 font-mono font-bold ${isCompact ? 'text-[8px]' : 'text-[8.5px]'}">
-                                        ${p.hasTeacherOverride && p.security !== p.aiSecurity ? `${p.security} (${p.aiSecurity})` : p.security} / 4
-                                    </span>
+                                <!-- 2. Remedy -->
+                                <div class="flex flex-col gap-0.5 ${isCompact ? 'text-[8px]' : 'text-[8.5px]'}">
+                                    <div class="flex items-center justify-between">
+                                        <span class="font-bold text-pink-900 ${isCompact ? 'text-[8px]' : 'text-[8.5px]'}">
+                                            🚑 2. การแก้ไข
+                                        </span>
+                                        <span class="px-1 py-0.2 rounded bg-pink-100 border border-pink-300 text-pink-900 font-mono font-bold text-[7.5px]">
+                                            ${p.hasTeacherOverride && p.remedy !== p.aiRemedy ? `${p.remedy} (${p.aiRemedy})` : p.remedy} / 4
+                                        </span>
+                                    </div>
+                                    <div class="bg-white p-1 rounded border border-slate-200 text-slate-900 leading-tight ${isCompact ? 'min-h-[38px] text-[7.5px]' : 'min-h-[48px] text-[8px]'}">
+                                        <b class="text-slate-600 text-[7px]">คำตอบนักเรียน:</b><br>
+                                        ${answers.remedy ? escapeHtml(answers.remedy) : '<span class="text-slate-400 italic">ไม่ได้ระบุคำตอบ</span>'}
+                                    </div>
+                                    <div class="bg-pink-50 p-1 rounded border border-pink-200 text-pink-950 text-[7px] leading-tight">
+                                        <b class="text-pink-700">🤖 AI:</b> ${escapeHtml(feedback.remedy.feedback || ('คะแนนรูบริก ' + p.aiRemedy + ' / 4'))}
+                                    </div>
                                 </div>
-                                <div class="bg-white p-1 rounded border border-slate-200 text-slate-900 leading-tight ${isCompact ? 'min-h-[38px] text-[8px]' : 'min-h-[50px] text-[8.5px]'}">
-                                    <b class="text-slate-600 ${isCompact ? 'text-[7.5px]' : 'text-[8px]'}">คำตอบของนักเรียน:</b><br>
-                                    ${answers.security ? escapeHtml(answers.security) : '<span class="text-slate-400 italic">ไม่ได้ระบุคำตอบ</span>'}
-                                </div>
-                                <div class="bg-teal-50 p-1 rounded border border-teal-200 text-teal-950 ${isCompact ? 'text-[7.5px]' : 'text-[8.5px]'} leading-tight">
-                                    <b class="text-teal-700">🤖 AI:</b> ${escapeHtml(feedback.security.feedback || ('คะแนนรูบริก ' + p.aiSecurity + ' / 4'))}
-                                </div>
-                            </div>
 
+                                <!-- 3. Security -->
+                                <div class="flex flex-col gap-0.5 ${isCompact ? 'text-[8px]' : 'text-[8.5px]'}">
+                                    <div class="flex items-center justify-between">
+                                        <span class="font-bold text-teal-900 ${isCompact ? 'text-[8px]' : 'text-[9px]'}">
+                                            🛡️ 3. การป้องกัน
+                                        </span>
+                                        <span class="px-1 py-0.2 rounded bg-teal-100 border border-teal-300 text-teal-900 font-mono font-bold text-[7.5px]">
+                                            ${p.hasTeacherOverride && p.security !== p.aiSecurity ? `${p.security} (${p.aiSecurity})` : p.security} / 4
+                                        </span>
+                                    </div>
+                                    <div class="bg-white p-1 rounded border border-slate-200 text-slate-900 leading-tight ${isCompact ? 'min-h-[38px] text-[7.5px]' : 'min-h-[48px] text-[8px]'}">
+                                        <b class="text-slate-600 text-[7px]">คำตอบนักเรียน:</b><br>
+                                        ${answers.security ? escapeHtml(answers.security) : '<span class="text-slate-400 italic">ไม่ได้ระบุคำตอบ</span>'}
+                                    </div>
+                                    <div class="bg-teal-50 p-1 rounded border border-teal-200 text-teal-950 text-[7px] leading-tight">
+                                        <b class="text-teal-700">🤖 AI:</b> ${escapeHtml(feedback.security.feedback || ('คะแนนรูบริก ' + p.aiSecurity + ' / 4'))}
+                                    </div>
+                                </div>
+
+                            </div>
                         </div>
                     </div>
 
@@ -3432,7 +3461,6 @@
                 </div>
             `;
         }
-
         function renderG8G9AnswerBank() {
             const container = document.getElementById('g8g9-bank-container');
             if (!container) return;
