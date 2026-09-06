@@ -1533,6 +1533,57 @@ app.post(['/api/teacher/update-case-score', '/api/teacher/update-case-score-3'],
 const SERVER_SCORES_CACHE = [];
 const SERVER_SCORES_CACHE_3 = [];
 
+// Teacher update members endpoint: updates both server cache buffer and Supabase
+app.post(['/api/teacher/update-members', '/api/teacher/update-members-3'], async (req, res) => {
+    const { teamKey, scoreId, membersInfo, passcode, mode, table } = req.body || {};
+    const is3Cases = req.path === '/api/teacher/update-members-3' || mode === '3' || table === 'game_scores_3';
+    const targetTable = is3Cases ? 'game_scores_3' : 'game_scores';
+    const targetCache = is3Cases ? SERVER_SCORES_CACHE_3 : SERVER_SCORES_CACHE;
+
+    const validPasscodes = ['admin123', 'teacher123'];
+    if (process.env.TEACHER_PASSCODE) validPasscodes.push(process.env.TEACHER_PASSCODE);
+
+    if (!passcode || !validPasscodes.includes(String(passcode).trim())) {
+        return res.status(403).json({ success: false, message: 'Invalid teacher passcode' });
+    }
+
+    if (!membersInfo) {
+        return res.status(400).json({ success: false, message: 'Missing membersInfo' });
+    }
+
+    // 1. Update in-memory server cache buffer immediately
+    if (Array.isArray(targetCache)) {
+        targetCache.forEach(item => {
+            if ((scoreId && String(item.id) === String(scoreId)) || (teamKey && (item.team_name || item.player_id) === teamKey)) {
+                item.members_info = membersInfo;
+            }
+        });
+    }
+
+    // 2. Update Supabase if available
+    let supabaseUpdated = false;
+    try {
+        const serviceKey = (process.env.SUPABASE_SERVICE_ROLE_KEY || '').trim();
+        const effectiveKey = serviceKey || process.env.SUPABASE_ANON_KEY || DEFAULT_SUPABASE_ANON_KEY;
+        const { createClient } = require('@supabase/supabase-js');
+        const supabaseAdmin = createClient(DEFAULT_SUPABASE_URL, effectiveKey);
+
+        let query = supabaseAdmin.from(targetTable).update({ members_info: membersInfo });
+        if (scoreId) {
+            query = query.eq('id', scoreId);
+        } else if (teamKey) {
+            query = query.eq('team_name', teamKey);
+        }
+        const { error } = await query;
+        if (!error) supabaseUpdated = true;
+    } catch (e) {
+        console.warn('Supabase members update non-fatal:', e.message);
+    }
+
+    res.json({ success: true, savedToSupabase: supabaseUpdated });
+});
+
+
 // Default Supabase Fallback Credentials
 const DEFAULT_SUPABASE_URL = process.env.SUPABASE_URL || 'https://xbwlzqtvmjwucoqkyvhj.supabase.co';
 const DEFAULT_SUPABASE_ANON_KEY = process.env.SUPABASE_ANON_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inhid2x6cXR2bWp3dWNvcWt5dmhqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQ0NjE3NDEsImV4cCI6MjEwMDAzNzc0MX0.nbIkBfvTZBxBSxxYik3o3gAqlXI8ITGMvof3wvJxA7c';

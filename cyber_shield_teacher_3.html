@@ -1660,8 +1660,20 @@
 
         function saveStoredTeacherOverride(scoreId, teamKey, overrideObj) {
             const overrides = getStoredTeacherOverrides();
-            if (scoreId) overrides[String(scoreId)] = overrideObj;
-            if (teamKey) overrides[String(teamKey).trim()] = overrideObj;
+            if (scoreId) {
+                const idStr = String(scoreId);
+                overrides[idStr] = {
+                    ...(overrides[idStr] || {}),
+                    ...overrideObj
+                };
+            }
+            if (teamKey) {
+                const k = String(teamKey).trim();
+                overrides[k] = {
+                    ...(overrides[k] || {}),
+                    ...overrideObj
+                };
+            }
             try {
                 localStorage.setItem(TEACHER_OVERRIDES_STORAGE_KEY, JSON.stringify(overrides));
             } catch (e) { }
@@ -1676,6 +1688,19 @@
                 if (!item) return item;
                 const ov = (item.id && overrides[String(item.id)]) || (item.team_name && overrides[String(item.team_name).trim()]);
                 if (!ov) return item;
+
+                // Restore members_info if stored in override
+                const membersInfo = ov.members_info || item.members_info;
+
+                // ONLY override scores if ov actually contains score override fields!
+                const hasScoreOverride = ov.legal !== undefined || ov.total !== undefined || (typeof ov.comment === 'string' && ov.comment.trim().length > 0);
+
+                if (!hasScoreOverride) {
+                    return {
+                        ...item,
+                        members_info: membersInfo
+                    };
+                }
 
                 const nextLegal = Math.min(4, Math.max(0, Number(ov.legal ?? item.legal_score ?? 0)));
                 const nextRemedy = Math.min(4, Math.max(0, Number(ov.remedy ?? item.remedy_score ?? 0)));
@@ -1701,8 +1726,6 @@
                         updated_at: ov.updated_at || new Date().toISOString()
                     }
                 };
-
-                const membersInfo = ov.members_info || item.members_info;
 
                 return {
                     ...item,
@@ -1736,7 +1759,7 @@
                     }
                 }
 
-                // ALWAYS merge stored teacher overrides so 5-second poller never wipes out teacher adjustments
+                // ALWAYS merge stored teacher overrides so background poller never wipes out teacher adjustments
                 const rawWithOverrides = applyStoredOverridesToItems(scores || []);
                 allScoresData = getDeduplicatedScoresData(rawWithOverrides);
                 try {
@@ -1746,14 +1769,71 @@
                 renderScoreboardTable();
                 updateStatsCards();
 
-                // Do not re-render group answers DOM if teacher is currently typing in an input or textarea
-                const activeEl = document.activeElement;
-                const isUserTyping = activeEl && (activeEl.tagName === 'INPUT' || activeEl.tagName === 'TEXTAREA') && activeEl.closest('#group-cases-container');
-                if (!isUserTyping) {
-                    renderGroupAnswersTab();
-                }
+                // Group answers tab protection:
+                // NEVER wipe out the active case editor container (#group-cases-container) in background!
+                // Only update the left group list badges so teacher can work without interruption.
+                updateGroupAnswersListOnly();
             } catch (e) {
                 console.error('Fetch scores error:', e);
+            }
+        }
+
+        function updateGroupAnswersListOnly() {
+            const listContainer = document.getElementById('group-answers-list');
+            const countLabel = document.getElementById('group-answers-count');
+            if (!listContainer) return;
+
+            const filteredMap = getFilteredGroupMap();
+            if (countLabel) countLabel.textContent = filteredMap.size;
+
+            if (filteredMap.size === 0) {
+                listContainer.innerHTML = `
+                    <div class="glass-panel p-6 rounded-2xl text-center text-slate-500 font-sarabun text-xs border border-slate-800">
+                        ไม่พบข้อมูลกลุ่มสายสืบตามเงื่อนไขที่เลือก
+                    </div>`;
+                return;
+            }
+
+            let htmlList = [];
+            filteredMap.forEach((items, teamKey) => {
+                const bestItem = getBestScoreItem(items) || items[0];
+                const p = parseScoreItem(bestItem);
+                const totalScore = p.total;
+                const isSelected = selectedGroupTeamName === teamKey;
+
+                const membersText = p.members.length > 0
+                    ? p.members.map(m => `เลขที่ ${m.no}: ${m.prefix}${m.name}`).join(', ')
+                    : 'ไม่ระบุสมาชิก';
+
+                const safeTeamKey = teamKey.replace(/'/g, "\\'");
+
+                htmlList.push(`
+                    <div onclick="selectGroupForAnswers('${safeTeamKey}')" class="group-card-item cursor-pointer p-3.5 rounded-2xl border transition flex flex-col gap-2 font-sarabun text-xs ${isSelected ? 'bg-purple-950/70 border-purple-400 shadow-lg shadow-purple-500/20' : 'glass-panel border-slate-800 hover:border-slate-600 hover:bg-slate-900/60'}" data-team="${encodeURIComponent(teamKey)}">
+                        <div class="flex items-center justify-between gap-2">
+                            <span class="font-bold text-slate-100 flex items-center gap-1.5 font-kanit text-sm truncate">
+                                <i class="fa-solid fa-users ${isSelected ? 'text-purple-300' : 'text-purple-400'}"></i> ${teamKey}
+                            </span>
+                            <span class="px-2 py-0.5 rounded-full bg-cyan-500/20 text-cyan-300 font-mono text-[11px] font-bold border border-cyan-500/30">
+                                ${p.room}
+                            </span>
+                        </div>
+                        <div class="text-[11px] text-slate-400 truncate" title="${membersText}">
+                            <i class="fa-solid fa-user-group text-slate-500 mr-1"></i> ${membersText}
+                        </div>
+                        <div class="flex items-center justify-between text-[11px] pt-1 border-t border-slate-800/80">
+                            <span class="text-purple-300 font-mono"><i class="fa-solid fa-folder-open mr-1"></i> 1 คดี</span>
+                            <span class="font-mono font-bold text-yellow-300">${totalScore} ${p.hasTeacherOverride ? `(${p.aiTotal})` : ''} / 12 คะแนน</span>
+                        </div>
+                    </div>
+                `);
+            });
+
+            listContainer.innerHTML = htmlList.join('');
+
+            // If no group was ever selected yet, select the first one once
+            if (!selectedGroupTeamName && filteredMap.size > 0) {
+                const firstKey = Array.from(filteredMap.keys())[0];
+                selectGroupForAnswers(firstKey);
             }
         }
 
@@ -2452,11 +2532,29 @@
             let targetTeamKey = selectedGroupTeamName || '';
             if (existingItem && existingItem.team_name) targetTeamKey = existingItem.team_name;
 
-            // 1. Delete from stored overrides (both by id and by teamName)
+            // 1. Delete score overrides but PRESERVE members_info!
             const overrides = getStoredTeacherOverrides();
-            if (overrides[String(scoreId)]) delete overrides[String(scoreId)];
+            const cleanScoreOverride = (obj) => {
+                if (!obj) return;
+                delete obj.legal;
+                delete obj.remedy;
+                delete obj.security;
+                delete obj.total;
+                delete obj.comment;
+                delete obj.updated_at;
+            };
+
+            if (overrides[String(scoreId)]) {
+                cleanScoreOverride(overrides[String(scoreId)]);
+                if (Object.keys(overrides[String(scoreId)]).length === 0) {
+                    delete overrides[String(scoreId)];
+                }
+            }
             if (targetTeamKey && overrides[String(targetTeamKey).trim()]) {
-                delete overrides[String(targetTeamKey).trim()];
+                cleanScoreOverride(overrides[String(targetTeamKey).trim()]);
+                if (Object.keys(overrides[String(targetTeamKey).trim()]).length === 0) {
+                    delete overrides[String(targetTeamKey).trim()];
+                }
             }
             try {
                 localStorage.setItem(TEACHER_OVERRIDES_STORAGE_KEY, JSON.stringify(overrides));
@@ -2683,6 +2781,7 @@
 
             if (!name) {
                 alert('กรุณากรอกชื่อ-นามสกุลของนักเรียน');
+                nameInput?.focus();
                 return;
             }
 
@@ -2707,6 +2806,14 @@
             parsedMembers.sort((a, b) => (Number(a.no) || 0) - (Number(b.no) || 0));
 
             updateGroupMembersData(teamKey, bestItem, parsedMembers);
+
+            // Clear inputs for next entry
+            if (nameInput) nameInput.value = '';
+            if (noInput) noInput.value = '';
+            setTimeout(() => {
+                const refreshedNameInput = document.getElementById('input-new-member-name');
+                if (refreshedNameInput) refreshedNameInput.focus();
+            }, 50);
         }
 
         function removeGroupMember(teamKey, memberIndex) {
@@ -2735,6 +2842,34 @@
             }
         }
 
+        async function syncGroupMembersToBackend(teamKey, scoreId, membersInfo) {
+            const passcode = sessionStorage.getItem('shield_teacher_passcode') || 'admin123';
+            try {
+                await fetch('/api/teacher/update-members-3', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        teamKey,
+                        scoreId,
+                        membersInfo,
+                        passcode,
+                        mode: '3',
+                        table: 'game_scores_3'
+                    })
+                });
+            } catch (e) {
+                console.warn('syncGroupMembersToBackend warning:', e);
+            }
+
+            if (scoreId && supabaseClient) {
+                try {
+                    await supabaseClient.from('game_scores_3').update({
+                        members_info: membersInfo
+                    }).eq('id', scoreId);
+                } catch (e) { }
+            }
+        }
+
         function updateGroupMembersData(teamKey, bestItem, updatedMembers) {
             const p = parseScoreItem(bestItem);
             const newMembersInfo = { room: p.room, members: updatedMembers };
@@ -2748,29 +2883,28 @@
                 });
             }
 
+            // MERGE into stored teacher overrides without wiping out scores or comments
             const overrides = getStoredTeacherOverrides();
-            if (!overrides[teamKey]) overrides[teamKey] = {};
-            overrides[teamKey].members_info = newMembersInfo;
+            if (teamKey) {
+                const k = String(teamKey).trim();
+                overrides[k] = { ...(overrides[k] || {}), members_info: newMembersInfo };
+            }
             if (bestItem.id) {
-                if (!overrides[String(bestItem.id)]) overrides[String(bestItem.id)] = {};
-                overrides[String(bestItem.id)].members_info = newMembersInfo;
+                const idStr = String(bestItem.id);
+                overrides[idStr] = { ...(overrides[idStr] || {}), members_info: newMembersInfo };
             }
             try {
                 localStorage.setItem(TEACHER_OVERRIDES_STORAGE_KEY, JSON.stringify(overrides));
                 localStorage.setItem('CYBER_DETECTIVE_3CASES_SCORES_CACHE', JSON.stringify(allScoresData));
             } catch (e) { }
 
-            if (bestItem.id && supabaseClient) {
-                try {
-                    supabaseClient.from('game_scores_3').update({
-                        members_info: newMembersInfo
-                    }).eq('id', bestItem.id);
-                } catch (e) { }
-            }
+            // Backend sync: updates server memory cache & Supabase
+            syncGroupMembersToBackend(teamKey, bestItem.id, newMembersInfo);
 
             renderScoreboardTable();
             updateStatsCards();
-            renderGroupAnswersTab();
+            updateGroupAnswersListOnly();
+            selectGroupForAnswers(teamKey);
         }
 
         function selectGroupForAnswers(teamKey) {
@@ -2836,7 +2970,7 @@
                     <!-- Add Member Form Inline -->
                     <div class="flex flex-wrap items-center gap-2 pt-2 border-t border-slate-800/80">
                         <span class="text-slate-300 font-medium shrink-0"><i class="fa-solid fa-user-plus text-emerald-400 mr-1"></i> เพิ่มสมาชิก:</span>
-                        <input type="number" id="input-new-member-no" placeholder="เลขที่" min="1" max="99" class="w-16 rounded-xl bg-slate-950 border border-slate-700 px-2.5 py-1.5 text-white text-xs focus:outline-none focus:border-cyan-400">
+                        <input type="number" id="input-new-member-no" placeholder="เลขที่" min="1" max="99" onkeydown="if(event.key==='Enter'){event.preventDefault();addGroupMember('${safeTeamKey}');}" class="w-16 rounded-xl bg-slate-950 border border-slate-700 px-2.5 py-1.5 text-white text-xs focus:outline-none focus:border-cyan-400">
                         <select id="input-new-member-prefix" class="rounded-xl bg-slate-950 border border-slate-700 px-2 py-1.5 text-white text-xs focus:outline-none focus:border-cyan-400">
                             <option value="ด.ช.">ด.ช.</option>
                             <option value="ด.ญ.">ด.ญ.</option>
@@ -2844,8 +2978,8 @@
                             <option value="น.ส.">น.ส.</option>
                             <option value="">-</option>
                         </select>
-                        <input type="text" id="input-new-member-name" placeholder="ชื่อ - นามสกุล" class="flex-1 min-w-[150px] rounded-xl bg-slate-950 border border-slate-700 px-3 py-1.5 text-white text-xs focus:outline-none focus:border-cyan-400">
-                        <button onclick="addGroupMember('${safeTeamKey}')" class="px-3.5 py-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold font-kanit text-xs transition flex items-center gap-1.5 shadow-md shadow-emerald-500/20 shrink-0 cursor-pointer">
+                        <input type="text" id="input-new-member-name" placeholder="ชื่อ - นามสกุล" onkeydown="if(event.key==='Enter'){event.preventDefault();addGroupMember('${safeTeamKey}');}" class="flex-1 min-w-[150px] rounded-xl bg-slate-950 border border-slate-700 px-3 py-1.5 text-white text-xs focus:outline-none focus:border-cyan-400">
+                        <button type="button" onclick="addGroupMember('${safeTeamKey}')" class="px-3.5 py-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold font-kanit text-xs transition flex items-center gap-1.5 shadow-md shadow-emerald-500/20 shrink-0 cursor-pointer">
                             <i class="fa-solid fa-plus"></i> เพิ่มสมาชิก
                         </button>
                     </div>
