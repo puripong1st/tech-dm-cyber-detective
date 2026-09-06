@@ -1194,7 +1194,7 @@
                     <h3 class="text-base font-bold text-white font-kanit flex items-center gap-2">
                         <i class="fa-solid fa-file-pdf text-emerald-400"></i> พิมพ์รายงานสรุปผลคดีและคำตอบ (1 คน/กลุ่ม = 1 หน้า A4)
                     </h3>
-                    <p class="text-xs text-slate-400 font-sarabun">คัดเลือก 1 คดีที่ดีที่สุด (ซ้าย: รูปโจทย์/สถานการณ์ | ขวา: คำถาม-คำตอบ-AI | ล่าง: การประเมินและคอมเมนต์ของครู)</p>
+                    <p class="text-xs text-slate-400 font-sarabun">ภารกิจ 1 คดี (ซ้าย: รูปโจทย์/สถานการณ์ | ขวา: คำถาม-คำตอบ-AI | ล่าง: การประเมินและคอมเมนต์ของครู)</p>
                 </div>
                 <div class="flex flex-wrap items-center gap-2">
                     <select id="pdf-group-room-select" onchange="renderGroupAnswersPdfContent()"
@@ -2573,7 +2573,7 @@
                             <i class="fa-solid fa-user-group text-slate-500 mr-1"></i> ${membersText}
                         </div>
                         <div class="flex items-center justify-between text-[11px] pt-1 border-t border-slate-800/80">
-                            <span class="text-purple-300 font-mono"><i class="fa-solid fa-folder-open mr-1"></i> 1 คดี (ดีที่สุด)</span>
+                            <span class="text-purple-300 font-mono"><i class="fa-solid fa-folder-open mr-1"></i> 1 คดี</span>
                             <span class="font-mono font-bold text-yellow-300">${totalScore} ${p.hasTeacherOverride ? `(${p.aiTotal})` : ''} / 12 คะแนน</span>
                         </div>
                     </div>
@@ -2725,7 +2725,7 @@
 
             const badge = document.getElementById('detail-team-score-badge');
             badge.classList.remove('hidden');
-            badge.innerHTML = `<i class="fa-solid fa-star text-yellow-400"></i> คะแนนคดีที่ดีที่สุด: <span class="text-yellow-300 font-bold text-sm ml-1">${totalScore} ${p.hasTeacherOverride ? `(${p.aiTotal})` : ''}</span> / 12 คะแนน (${p.quality.label})`;
+            badge.innerHTML = `<i class="fa-solid fa-star text-yellow-400"></i> คะแนนคดี: <span class="text-yellow-300 font-bold text-sm ml-1">${totalScore} ${p.hasTeacherOverride ? `(${p.aiTotal})` : ''}</span> / 12 คะแนน (${p.quality.label})`;
 
             // Display strictly the best case
             const sortedItems = [bestItem];
@@ -2998,6 +2998,9 @@
                 ? [selectedGroupTeamName]
                 : Array.from(filteredMap.keys());
 
+            const printDateStr = new Date().toLocaleDateString('th-TH', { year: 'numeric', month: 'long', day: 'numeric' });
+            const roomLabelText = roomFilter === 'ALL' ? 'ทุกห้องเรียน (ม.3/1 - ม.3/12)' : `ห้อง ${roomFilter}`;
+
             if (targetTeams.length === 0) {
                 sheet.innerHTML = '<div class="p-8 text-center text-slate-500 font-sarabun text-sm">ไม่พบข้อมูลกลุ่มสายสืบสำหรับส่งออก PDF ตามเงื่อนไขที่เลือก</div>';
                 return;
@@ -3026,22 +3029,24 @@
                     <div class="print-group-subpage bg-white text-slate-900 font-sarabun flex flex-col justify-between">
                         
                         <div>
-                            <!-- Header Bar -->
-                            <div class="border-b-2 border-indigo-700 pb-1.5 flex flex-col gap-0.5 relative">
-                                <div class="flex items-center justify-between">
-                                    <div class="flex items-center gap-1.5">
-                                        <span class="font-black text-sm text-indigo-950 font-kanit tracking-wide">
-                                            🛡️ CYBER SHIELD DETECTIVE — รายงานผลการสืบคดีและการประเมินตามเกณฑ์รูบริก K
-                                        </span>
-                                    </div>
-                                    <span class="text-[9.5px] text-slate-500 font-mono">แบบประเมินรายบุคคล/กลุ่ม</span>
+                            <!-- Header Section (Matched to Original Academic Style) -->
+                            <div class="print-group-header text-center flex flex-col items-center gap-0.5 border-b-2 border-slate-800 pb-1.5 relative w-full">
+                                <div class="flex items-center justify-center gap-2">
+                                    <img src="favicon.png" alt="Logo" class="w-6 h-6 rounded object-cover shadow-sm">
+                                    <h2 class="text-sm sm:text-base font-bold font-kanit text-slate-900">
+                                        แบบรายงานผลการสืบคดีและการประเมินผล กิจกรรม Cyber Shield Detective
+                                    </h2>
                                 </div>
-                                <div class="flex items-center justify-between text-[9.5px] text-slate-600">
-                                    <span>กลุ่มสาระการเรียนรู้วิทยาศาสตร์และเทคโนโลยี (ระดับชั้น ม.3)</span>
+                                <p class="text-[10px] text-slate-600">
+                                    กลุ่มสาระการเรียนรู้วิทยาศาสตร์และเทคโนโลยี ระดับชั้นมัธยมศึกษาปีที่ 3 (ภารกิจสืบคดีรายบุคคล 1 คดี)
+                                </p>
+                                <div class="flex flex-wrap items-center justify-center gap-4 text-[9.5px] text-slate-600 font-mono">
+                                    <span>🏫 ห้องเรียน: <b class="text-slate-900 font-bold">${roomLabelText}</b></span>
+                                    <span>📅 วันที่พิมพ์: <b class="text-slate-900 font-bold">${printDateStr}</b></span>
                                     <span>👤 ลำดับที่: <b class="text-emerald-700 font-bold">${groupIdx + 1} / ${targetTeams.length}</b></span>
                                 </div>
                                 <div class="absolute top-0 right-0 px-2 py-0.5 rounded bg-slate-100 border border-slate-300 text-slate-700 font-mono text-[9px] font-bold">
-                                    คดีที่ดีที่สุด (1 คดี)
+                                    ภารกิจ 1 คดี
                                 </div>
                             </div>
 
