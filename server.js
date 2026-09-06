@@ -94,11 +94,32 @@ app.use((req, res, next) => {
     next();
 });
 
-// Serve Static Directories with explicit caching
-app.use('/assets', express.static(path.join(__dirname, 'assets'), { maxAge: '1d' }));
-app.use('/css', express.static(path.join(__dirname, 'css')));
-app.use('/js', express.static(path.join(__dirname, 'js')));
-app.use(express.static(__dirname));
+// Disable all browser and proxy caching so normal F5 always loads the latest version
+app.use((req, res, next) => {
+    res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate, max-age=0');
+    res.setHeader('Pragma', 'no-cache');
+    res.setHeader('Expires', '0');
+    res.setHeader('Surrogate-Control', 'no-store');
+    next();
+});
+
+// Serve Static Directories with strict no-cache options
+const noCacheStaticOptions = {
+    etag: false,
+    lastModified: false,
+    maxAge: 0,
+    setHeaders: (res, path) => {
+        res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate, max-age=0');
+        res.setHeader('Pragma', 'no-cache');
+        res.setHeader('Expires', '0');
+        res.setHeader('Surrogate-Control', 'no-store');
+    }
+};
+
+app.use('/assets', express.static(path.join(__dirname, 'assets'), noCacheStaticOptions));
+app.use('/css', express.static(path.join(__dirname, 'css'), noCacheStaticOptions));
+app.use('/js', express.static(path.join(__dirname, 'js'), noCacheStaticOptions));
+app.use(express.static(__dirname, noCacheStaticOptions));
 
 // Case Reference Database for AI Grounding (12 Cases)
 const CASE_REFERENCES = {
