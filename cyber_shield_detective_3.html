@@ -2941,23 +2941,39 @@
             const answers = caseScoreObj.answers || {};
             const scores = caseScoreObj.scores || {};
 
-            const legalScore = scores.legal?.score || 0;
-            const remedyScore = scores.remedy?.score || 0;
-            const securityScore = scores.security?.score || 0;
-            const totalScore = legalScore + remedyScore + securityScore;
+            // 12-Point Rubric mapping (4 points each, total 12)
+            function convertToRubric(score10, hasAns) {
+                const s = Number(score10 || 0);
+                if (!Number.isFinite(s) || s <= 0) return hasAns ? 1 : 0;
+                if (s >= 8.5) return 4;
+                if (s >= 6.5) return 3;
+                if (s >= 3.5) return 2;
+                return 1;
+            }
+
+            function getQuality(score12) {
+                const s = Number(score12 || 0);
+                if (s >= 10) return { label: 'ดีมาก', passed: true, color: 'text-emerald-700', bg: 'bg-emerald-100', border: 'border-emerald-300' };
+                if (s >= 7) return { label: 'ดี', passed: true, color: 'text-cyan-700', bg: 'bg-cyan-100', border: 'border-cyan-300' };
+                if (s >= 4) return { label: 'พอใช้', passed: false, color: 'text-yellow-700', bg: 'bg-yellow-100', border: 'border-yellow-300' };
+                return { label: 'ปรับปรุง', passed: false, color: 'text-pink-700', bg: 'bg-pink-100', border: 'border-pink-300' };
+            }
+
+            const rawLegal = scores.legal?.score || 0;
+            const rawRemedy = scores.remedy?.score || 0;
+            const rawSecurity = scores.security?.score || 0;
+
+            const rubricLegal = convertToRubric(rawLegal, !!(answers.legal && answers.legal.trim()));
+            const rubricRemedy = convertToRubric(rawRemedy, !!(answers.remedy && answers.remedy.trim()));
+            const rubricSecurity = convertToRubric(rawSecurity, !!(answers.security && answers.security.trim()));
+            const totalScore = rubricLegal + rubricRemedy + rubricSecurity;
+            const quality = getQuality(totalScore);
 
             const membersStr = (GAME_STATE.members && GAME_STATE.members.length > 0)
                 ? GAME_STATE.members.map(m => `เลขที่ ${m.no}: ${m.prefix || ''}${m.name || ''}`).join(', ')
                 : 'ไม่ระบุรายชื่อ';
 
             const printDateStr = new Date().toLocaleDateString('th-TH', { year: 'numeric', month: 'long', day: 'numeric' });
-            
-            let gradeText = 'ระดับดีเยี่ยม';
-            if (totalScore >= 27) gradeText = 'ระดับยอดเยี่ยม (A+)';
-            else if (totalScore >= 22) gradeText = 'ระดับดีเด่น (A)';
-            else if (totalScore >= 16) gradeText = 'ระดับดี (B)';
-            else if (totalScore >= 12) gradeText = 'ผ่านเกณฑ์ (C)';
-            else gradeText = 'ควรปรับปรุง (D)';
 
             function escapeH(str) {
                 if (str === null || str === undefined) return '';
@@ -2970,20 +2986,20 @@
             }
 
             reportEl.innerHTML = `
-                <!-- 1 Page A4 Portrait Student Mission Report -->
+                <!-- 1 Page A4 Portrait Student Mission Report (Rubric K 12 pts) -->
                 <div class="flex flex-col justify-between h-full w-full text-slate-900 font-sarabun bg-white p-3">
                     
                     <div>
                         <!-- Header Section -->
-                        <div class="print-group-header text-center flex flex-col items-center gap-0.5 border-b-2 border-slate-800 pb-1.5 relative w-full">
+                        <div class="print-group-header text-center flex flex-col items-center gap-0.5 border-b-2 border-indigo-700 pb-1.5 relative w-full">
                             <div class="flex items-center justify-center gap-2">
                                 <img src="favicon.png" alt="Logo" class="w-6 h-6 rounded object-cover no-print">
-                                <h2 class="text-sm sm:text-base font-bold font-kanit text-slate-900">
-                                    แบบรายงานผลการสืบคดีและการประเมินผล กิจกรรม Cyber Shield Detective
+                                <h2 class="text-sm sm:text-base font-bold font-kanit text-indigo-950">
+                                    แบบรายงานผลการสืบคดีและการประเมินตามเกณฑ์รูบริก K — Cyber Shield Detective
                                 </h2>
                             </div>
                             <p class="text-[10px] text-slate-600">
-                                กลุ่มสาระการเรียนรู้วิทยาศาสตร์และเทคโนโลยี ระดับชั้นมัธยมศึกษาปีที่ 3 (ภารกิจสืบคดีรายบุคคล 1 คดี)
+                                กลุ่มสาระการเรียนรู้วิทยาศาสตร์และเทคโนโลยี ระดับชั้นมัธยมศึกษาปีที่ 3 (เกณฑ์ 3 ด้าน เต็ม 12 คะแนน)
                             </p>
                             <div class="flex flex-wrap items-center justify-center gap-4 text-[9.5px] text-slate-600 font-mono">
                                 <span>🏫 ห้องเรียน: <b class="text-slate-900 font-bold">${escapeH(GAME_STATE.room || 'ม.3/1')}</b></span>
@@ -3002,11 +3018,11 @@
                                     🏷️ ผู้ทำภารกิจ / นักสืบ: ${escapeH(GAME_STATE.teamName || 'นักสืบเยาวชน')}
                                 </h3>
                                 <span class="px-2 py-0.5 rounded bg-indigo-100 border border-indigo-300 text-indigo-900 font-mono text-[10px] font-bold shrink-0">
-                                    ห้อง ${escapeH(GAME_STATE.room || 'ม.3/1')} | คะแนนประเมิน AI: ${totalScore} / 30 คะแนน (${gradeText})
+                                    ห้อง ${escapeH(GAME_STATE.room || 'ม.3/1')} | คะแนนประเมิน AI: ${totalScore} / 12 คะแนน (${quality.label} ${quality.passed ? '✅' : '❌'})
                                 </span>
                             </div>
                             <p class="text-[9.5px] text-slate-700 leading-tight">
-                                <b>👥 รายชื่อนักสืบ:</b> ${escapeH(membersStr)}
+                                <b>👥 รายชื่อสมาชิก:</b> ${escapeH(membersStr)}
                             </p>
                         </div>
 
@@ -3054,10 +3070,10 @@
                                 <div class="print-role-item p-1.5 rounded-lg border border-amber-200 bg-amber-50/40 text-[9px] flex flex-col gap-1">
                                     <div class="flex items-center justify-between border-b border-amber-200 pb-0.5">
                                         <span class="font-bold text-amber-900 text-[9.5px]">
-                                            👨‍⚖️ คำถามที่ 1: วิเคราะห์ข้อกฎหมาย (Legal Analyst)
+                                            👨‍⚖️ คำถามที่ 1: การระบุฐานความผิด (Legal Analyst)
                                         </span>
                                         <span class="px-1.5 py-0.2 rounded bg-amber-100 border border-amber-300 text-amber-900 font-mono font-bold text-[8.5px]">
-                                            AI: ${legalScore}/10 คะแนน
+                                            คะแนนรูบริก: ${rubricLegal} / 4
                                         </span>
                                     </div>
                                     <div class="text-[8.5px] text-amber-950 leading-tight">
@@ -3068,7 +3084,7 @@
                                         ${answers.legal ? escapeH(answers.legal) : '<span class="text-slate-400 italic">ไม่ได้ระบุคำตอบ</span>'}
                                     </div>
                                     <div class="bg-purple-50 p-1 rounded border border-purple-200 text-purple-950 text-[8.5px] leading-snug">
-                                        <b class="text-purple-700">🤖 AI วิเคราะห์:</b> ${escapeH(scores.legal?.feedback || ('ให้คะแนน ' + legalScore + ' คะแนน'))}
+                                        <b class="text-purple-700">🤖 AI วิเคราะห์:</b> ${escapeH(scores.legal?.feedback || ('คะแนนรูบริก ' + rubricLegal + ' / 4'))}
                                     </div>
                                 </div>
 
@@ -3076,10 +3092,10 @@
                                 <div class="print-role-item p-1.5 rounded-lg border border-pink-200 bg-pink-50/40 text-[9px] flex flex-col gap-1">
                                     <div class="flex items-center justify-between border-b border-pink-200 pb-0.5">
                                         <span class="font-bold text-pink-900 text-[9.5px]">
-                                            🚑 คำถามที่ 2: การรับมือและแก้ไข (Incident Responder)
+                                            🚑 คำถามที่ 2: การเสนอแนวทางแก้ไข (Incident Responder)
                                         </span>
                                         <span class="px-1.5 py-0.2 rounded bg-pink-100 border border-pink-300 text-pink-900 font-mono font-bold text-[8.5px]">
-                                            AI: ${remedyScore}/10 คะแนน
+                                            คะแนนรูบริก: ${rubricRemedy} / 4
                                         </span>
                                     </div>
                                     <div class="text-[8.5px] text-pink-950 leading-tight">
@@ -3090,7 +3106,7 @@
                                         ${answers.remedy ? escapeH(answers.remedy) : '<span class="text-slate-400 italic">ไม่ได้ระบุคำตอบ</span>'}
                                     </div>
                                     <div class="bg-pink-50 p-1 rounded border border-pink-200 text-pink-950 text-[8.5px] leading-snug">
-                                        <b class="text-pink-700">🤖 AI วิเคราะห์:</b> ${escapeH(scores.remedy?.feedback || ('ให้คะแนน ' + remedyScore + ' คะแนน'))}
+                                        <b class="text-pink-700">🤖 AI วิเคราะห์:</b> ${escapeH(scores.remedy?.feedback || ('คะแนนรูบริก ' + rubricRemedy + ' / 4'))}
                                     </div>
                                 </div>
 
@@ -3098,10 +3114,10 @@
                                 <div class="print-role-item p-1.5 rounded-lg border border-teal-200 bg-teal-50/40 text-[9px] flex flex-col gap-1">
                                     <div class="flex items-center justify-between border-b border-teal-200 pb-0.5">
                                         <span class="font-bold text-teal-900 text-[9.5px]">
-                                            🛡️ คำถามที่ 3: การป้องกันภัยระยะยาว (Security Engineer)
+                                            🛡️ คำถามที่ 3: การเสนอแนวทางป้องกัน (Security Engineer)
                                         </span>
                                         <span class="px-1.5 py-0.2 rounded bg-teal-100 border border-teal-300 text-teal-900 font-mono font-bold text-[8.5px]">
-                                            AI: ${securityScore}/10 คะแนน
+                                            คะแนนรูบริก: ${rubricSecurity} / 4
                                         </span>
                                     </div>
                                     <div class="text-[8.5px] text-teal-950 leading-tight">
@@ -3112,7 +3128,7 @@
                                         ${answers.security ? escapeH(answers.security) : '<span class="text-slate-400 italic">ไม่ได้ระบุคำตอบ</span>'}
                                     </div>
                                     <div class="bg-teal-50 p-1 rounded border border-teal-200 text-teal-950 text-[8.5px] leading-snug">
-                                        <b class="text-teal-700">🤖 AI วิเคราะห์:</b> ${escapeH(scores.security?.feedback || ('ให้คะแนน ' + securityScore + ' คะแนน'))}
+                                        <b class="text-teal-700">🤖 AI วิเคราะห์:</b> ${escapeH(scores.security?.feedback || ('คะแนนรูบริก ' + rubricSecurity + ' / 4'))}
                                     </div>
                                 </div>
 
@@ -3120,35 +3136,40 @@
                         </div>
                     </div>
 
-                    <!-- BOTTOM ROW: TEACHER ROW (Comments, Score Editing, Teacher Grading & Signatures) -->
+                    <!-- BOTTOM ROW: TEACHER EVALUATION ROW (Rubric K 12 pts + Teacher Grading & Signatures) -->
                     <div class="print-teacher-eval-row p-2 rounded-lg border-2 border-indigo-400 bg-indigo-50/50 mt-1.5 flex flex-col gap-1.5">
                         <div class="flex items-center justify-between border-b border-indigo-200 pb-1">
                             <span class="font-bold text-xs font-kanit text-indigo-950 flex items-center gap-1.5">
-                                👨‍🏫 การประเมินผลและการให้คะแนนโดยครูผู้สอน (Teacher Assessment & Review)
+                                👨‍🏫 การประเมินผลรูบริก K โดยครูผู้สอน (เกณฑ์ 3 ด้าน เต็ม 12 คะแนน)
                             </span>
                             <span class="text-[9.5px] font-mono text-indigo-800">
-                                ✅ ยืนยันผลคะแนน / แก้ไขคะแนนโดยครูผู้สอน
+                                ✏️ แบบฟอร์มประเมินและลงนามรับรองผล
                             </span>
                         </div>
 
-                        <!-- Teacher Score Breakdown & Overrides -->
+                        <!-- Teacher Score Breakdown & Overrides (Rubric scale 4 / 4 / 4 / 12) -->
                         <div class="grid grid-cols-4 gap-2 text-center text-[9.5px]">
                             <div class="p-1 rounded bg-white border border-amber-200">
                                 <div class="text-amber-800 font-semibold text-[8.5px]">1. ด้านกฎหมาย</div>
-                                <div class="font-mono font-bold text-amber-900">........ / 10</div>
+                                <div class="font-mono font-bold text-amber-900">........ / 4</div>
                             </div>
                             <div class="p-1 rounded bg-white border border-pink-200">
                                 <div class="text-pink-800 font-semibold text-[8.5px]">2. ด้านการแก้ไข</div>
-                                <div class="font-mono font-bold text-pink-900">........ / 10</div>
+                                <div class="font-mono font-bold text-pink-900">........ / 4</div>
                             </div>
                             <div class="p-1 rounded bg-white border border-teal-200">
                                 <div class="text-teal-800 font-semibold text-[8.5px]">3. ด้านการป้องกัน</div>
-                                <div class="font-mono font-bold text-teal-900">........ / 10</div>
+                                <div class="font-mono font-bold text-teal-900">........ / 4</div>
                             </div>
                             <div class="p-1 rounded bg-indigo-600 text-white font-bold">
-                                <div class="text-indigo-100 text-[8.5px]">คะแนนรวมครูให้</div>
-                                <div class="font-mono text-xs text-yellow-300">........ / 30</div>
+                                <div class="text-indigo-100 text-[8.5px]">คะแนนรวมรูบริก K</div>
+                                <div class="font-mono text-xs text-yellow-300">........ / 12</div>
                             </div>
+                        </div>
+
+                        <!-- Rubric Quality & Decision Note -->
+                        <div class="flex items-center justify-between text-[9px] bg-white p-1 rounded border border-indigo-200">
+                            <span><b>ระดับคุณภาพ:</b> [ &nbsp; ] ดีมาก (10-12) &nbsp;&nbsp; [ &nbsp; ] ดี (7-9 ผ่านเกณฑ์) &nbsp;&nbsp; [ &nbsp; ] พอใช้ (4-6) &nbsp;&nbsp; [ &nbsp; ] ปรับปรุง (0-3)</span>
                         </div>
 
                         <!-- Teacher Comment Box -->
@@ -3178,15 +3199,8 @@
             `;
 
             reportEl.classList.remove('hidden');
-
-            const origTitle = document.title;
-            document.title = `รายงานคดี_${GAME_STATE.teamName}_${(GAME_STATE.room || '').replace('/', '-')}`;
             setTimeout(() => {
                 window.print();
-                setTimeout(() => { 
-                    reportEl.classList.add('hidden');
-                    document.title = origTitle; 
-                }, 1200);
             }, 300);
         }
     </script>

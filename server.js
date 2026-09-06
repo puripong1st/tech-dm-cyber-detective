@@ -1414,13 +1414,15 @@ app.post(['/api/teacher/update-case-score', '/api/teacher/update-case-score-3'],
     const clampScore = (value) => {
         const n = Number(value);
         if (!Number.isFinite(n)) return 0;
-        return Math.max(0, Math.min(10, Math.round(n)));
+        const maxScore = is3Cases ? 4 : 10;
+        return Math.max(0, Math.min(maxScore, Math.round(n)));
     };
 
     const nextLegal = clampScore(legalScore);
     const nextRemedy = clampScore(remedyScore);
     const nextSecurity = clampScore(securityScore);
-    const nextTotal = nextLegal + nextRemedy + nextSecurity;
+    const maxTotal = is3Cases ? 12 : 30;
+    const nextTotal = Math.min(maxTotal, nextLegal + nextRemedy + nextSecurity);
 
     const serviceKey = (process.env.SUPABASE_SERVICE_ROLE_KEY || '').trim();
     const effectiveKey = serviceKey || process.env.SUPABASE_ANON_KEY || DEFAULT_SUPABASE_ANON_KEY;
@@ -1462,6 +1464,10 @@ app.post(['/api/teacher/update-case-score', '/api/teacher/update-case-score-3'],
             },
             total_score: nextTotal,
             teacher_override: {
+                legal: nextLegal,
+                remedy: nextRemedy,
+                security: nextSecurity,
+                total: nextTotal,
                 legal_score: nextLegal,
                 remedy_score: nextRemedy,
                 security_score: nextSecurity,
@@ -1733,17 +1739,20 @@ function deduplicateScores(rawScores, isSingleCaseMode = false) {
     const result = [];
     if (isSingleCaseMode) {
         teamMap.forEach((items) => {
+            const getParsedTotal = (item) => {
+                const ov = item.ai_feedback?.teacher_override || item.evaluation?.teacher_override;
+                if (ov && (ov.total !== undefined || ov.total_score !== undefined)) {
+                    return Number(ov.total ?? ov.total_score ?? 0);
+                }
+                const l = Number(item.legal_score ?? item.evaluation?.legal?.score ?? 0);
+                const r = Number(item.remedy_score ?? item.evaluation?.remedy?.score ?? 0);
+                const s = Number(item.security_score ?? item.evaluation?.security?.score ?? 0);
+                return l + r + s;
+            };
+
             const best = items.reduce((b, c) => {
-                const cLegal = Math.min(10, Math.max(0, Number(c.legal_score || 0)));
-                const cRemedy = Math.min(10, Math.max(0, Number(c.remedy_score || 0)));
-                const cSec = Math.min(10, Math.max(0, Number(c.security_score || 0)));
-                const cTot = Math.min(30, cLegal + cRemedy + cSec);
-
-                const bLegal = Math.min(10, Math.max(0, Number(b.legal_score || 0)));
-                const bRemedy = Math.min(10, Math.max(0, Number(b.remedy_score || 0)));
-                const bSec = Math.min(10, Math.max(0, Number(b.security_score || 0)));
-                const bTot = Math.min(30, bLegal + bRemedy + bSec);
-
+                const cTot = getParsedTotal(c);
+                const bTot = getParsedTotal(b);
                 if (cTot > bTot) return c;
                 if (cTot === bTot) {
                     const tC = new Date(c.created_at || 0).getTime();
@@ -1754,10 +1763,6 @@ function deduplicateScores(rawScores, isSingleCaseMode = false) {
             }, items[0]);
 
             if (best) {
-                best.legal_score = Math.min(10, Math.max(0, Number(best.legal_score || 0)));
-                best.remedy_score = Math.min(10, Math.max(0, Number(best.remedy_score || 0)));
-                best.security_score = Math.min(10, Math.max(0, Number(best.security_score || 0)));
-                best.total_score = Math.min(30, Math.max(0, best.legal_score + best.remedy_score + best.security_score));
                 result.push(best);
             }
         });

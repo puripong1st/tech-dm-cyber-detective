@@ -778,10 +778,10 @@
                                     <th class="p-3 border-r border-slate-800" id="th-members-header">👤 ข้อมูลผู้ทำภารกิจ
                                         (เลขที่ / ชื่อ-นามสกุล)</th>
                                     <th class="p-3 text-center w-28 border-r border-slate-800">🎮 ภารกิจ</th>
-                                    <th class="p-3 text-center w-24 border-r border-slate-800">👨‍⚖️ กฎหมาย</th>
-                                    <th class="p-3 text-center w-24 border-r border-slate-800">🚑 บรรเทา</th>
-                                    <th class="p-3 text-center w-24 border-r border-slate-800">🛡️ ป้องกัน</th>
-                                    <th class="p-3 text-right w-28 border-r border-slate-800">⭐ รวม (30)</th>
+                                    <th class="p-3 text-center w-24 border-r border-slate-800">👨‍⚖️ กฎหมาย (4)</th>
+                                    <th class="p-3 text-center w-24 border-r border-slate-800">🚑 บรรเทา (4)</th>
+                                    <th class="p-3 text-center w-24 border-r border-slate-800">🛡️ ป้องกัน (4)</th>
+                                    <th class="p-3 text-right w-36 border-r border-slate-800">⭐ รวม (12) [เกณฑ์ K]</th>
                                     <th class="p-3 text-center w-28">⏱️ ส่งล่าสุด</th>
                                 </tr>
                             </thead>
@@ -1541,7 +1541,6 @@
         function getDeduplicatedScoresData(rawScores) {
             if (!Array.isArray(rawScores)) return [];
 
-            // Group all submissions by team / player name
             const teamMap = new Map();
             rawScores.forEach(item => {
                 if (!item) return;
@@ -1550,7 +1549,7 @@
                 teamMap.get(teamKey).push(item);
             });
 
-            // For 1-case mission: pick ONLY the single best case (max 30 points)
+            // 1-case mission: strictly pick the best case on 12-point scale
             const result = [];
             teamMap.forEach((items, teamKey) => {
                 const best = getBestScoreItem(items);
@@ -1560,6 +1559,7 @@
                     best.remedy_score = p.remedy;
                     best.security_score = p.security;
                     best.total_score = p.total;
+                    best.members_info = { room: p.room, members: p.members };
                     result.push(best);
                 }
             });
@@ -1598,10 +1598,10 @@
                 const ov = (item.id && overrides[String(item.id)]) || (item.team_name && overrides[String(item.team_name).trim()]);
                 if (!ov) return item;
 
-                const nextLegal = Math.min(10, Math.max(0, Number(ov.legal ?? item.legal_score ?? 0)));
-                const nextRemedy = Math.min(10, Math.max(0, Number(ov.remedy ?? item.remedy_score ?? 0)));
-                const nextSecurity = Math.min(10, Math.max(0, Number(ov.security ?? item.security_score ?? 0)));
-                const nextTotal = Math.min(30, nextLegal + nextRemedy + nextSecurity);
+                const nextLegal = Math.min(4, Math.max(0, Number(ov.legal ?? item.legal_score ?? 0)));
+                const nextRemedy = Math.min(4, Math.max(0, Number(ov.remedy ?? item.remedy_score ?? 0)));
+                const nextSecurity = Math.min(4, Math.max(0, Number(ov.security ?? item.security_score ?? 0)));
+                const nextTotal = Math.min(12, nextLegal + nextRemedy + nextSecurity);
 
                 let aiFb = item.ai_feedback || item.evaluation || {};
                 if (typeof aiFb === 'string') {
@@ -1623,6 +1623,8 @@
                     }
                 };
 
+                const membersInfo = ov.members_info || item.members_info;
+
                 return {
                     ...item,
                     legal_score: nextLegal,
@@ -1630,7 +1632,8 @@
                     security_score: nextSecurity,
                     total_score: nextTotal,
                     ai_feedback: aiFb,
-                    evaluation: aiFb
+                    evaluation: aiFb,
+                    members_info: membersInfo
                 };
             });
         }
@@ -1715,6 +1718,27 @@
         }
 
         // --- Universal Score Item Data Parser ---
+        
+        // --- 12-Point Rubric (K-Knowledge) Helpers ---
+        function convertAiScoreToRubric(score10, hasAnswer = true) {
+            if (score10 === undefined || score10 === null) return 0;
+            const s = Number(score10);
+            if (!Number.isFinite(s) || s <= 0) return hasAnswer ? 1 : 0;
+            // Map 10-point AI score to 4-point Rubric
+            if (s >= 8.5) return 4; // ดีมาก (ระบุมาตรา/แนวทางถูกต้อง ครบถ้วน)
+            if (s >= 6.5) return 3; // ดี (ถูกต้อง แต่ยังขาดรายละเอียดบางส่วน)
+            if (s >= 3.5) return 2; // พอใช้ (ระบุได้บางส่วน หรือไม่ตรงประเด็นบางส่วน)
+            return 1;              // ปรับปรุง (ระบุไม่ถูกต้องหรือไม่เชื่อมโยง)
+        }
+
+        function getQualityLevel(score12) {
+            const s = Number(score12 || 0);
+            if (s >= 10) return { label: 'ดีมาก', level: 4, color: 'text-emerald-400', bg: 'bg-emerald-500/20', border: 'border-emerald-500/40', badge: 'bg-emerald-100 text-emerald-800 border-emerald-300', passed: true };
+            if (s >= 7) return { label: 'ดี', level: 3, color: 'text-cyan-400', bg: 'bg-cyan-500/20', border: 'border-cyan-500/40', badge: 'bg-cyan-100 text-cyan-800 border-cyan-300', passed: true };
+            if (s >= 4) return { label: 'พอใช้', level: 2, color: 'text-yellow-400', bg: 'bg-yellow-500/20', border: 'border-yellow-500/40', badge: 'bg-yellow-100 text-yellow-800 border-yellow-300', passed: false };
+            return { label: 'ปรับปรุง', level: 1, color: 'text-pink-400', bg: 'bg-pink-500/20', border: 'border-pink-500/40', badge: 'bg-pink-100 text-pink-800 border-pink-300', passed: false };
+        }
+
         function parseScoreItem(item) {
             let room = 'ม.3/1';
             let members = [];
@@ -1723,13 +1747,13 @@
             if (rawInfo) {
                 if (typeof rawInfo === 'object') {
                     if (rawInfo.room) room = rawInfo.room;
-                    if (Array.isArray(rawInfo.members)) members = rawInfo.members;
+                    if (Array.isArray(rawInfo.members)) members = [...rawInfo.members];
                 } else if (typeof rawInfo === 'string') {
                     try {
                         const parsed = JSON.parse(rawInfo);
                         if (parsed && typeof parsed === 'object') {
                             if (parsed.room) room = parsed.room;
-                            if (Array.isArray(parsed.members)) members = parsed.members;
+                            if (Array.isArray(parsed.members)) members = [...parsed.members];
                         }
                     } catch (e) {
                         const mRoom = rawInfo.match(/ม\.3\/\d+/);
@@ -1743,11 +1767,33 @@
                 if (mRoom) room = mRoom[0];
             }
 
-            let legal = Number(item.legal_score ?? item.evaluation?.legal?.score ?? 0);
-            let remedy = Number(item.remedy_score ?? item.evaluation?.remedy?.score ?? 0);
-            let security = Number(item.security_score ?? item.evaluation?.security?.score ?? 0);
+            // Extract student answers to check if student provided answers
+            let answers = { legal: '', remedy: '', security: '' };
+            const rawAns = item.student_answers || item.studentAnswers || item.answers;
+            if (rawAns) {
+                if (typeof rawAns === 'object') answers = { ...answers, ...rawAns };
+                else if (typeof rawAns === 'string') { try { answers = { ...answers, ...JSON.parse(rawAns) }; } catch (e) { } }
+            }
 
-            // Check if teacher overrode scores
+            // Raw AI Scores (0-10)
+            let rawAiLegal = Number(item.evaluation?.legal?.score ?? item.ai_feedback?.legal?.score ?? item.legal_score ?? 0);
+            let rawAiRemedy = Number(item.evaluation?.remedy?.score ?? item.ai_feedback?.remedy?.score ?? item.remedy_score ?? 0);
+            let rawAiSecurity = Number(item.evaluation?.security?.score ?? item.ai_feedback?.security?.score ?? item.security_score ?? 0);
+
+            // Convert to 12-point Rubric Scale (0-4 each)
+            const aiLegal = convertAiScoreToRubric(rawAiLegal, !!(answers.legal && answers.legal.trim()));
+            const aiRemedy = convertAiScoreToRubric(rawAiRemedy, !!(answers.remedy && answers.remedy.trim()));
+            const aiSecurity = convertAiScoreToRubric(rawAiSecurity, !!(answers.security && answers.security.trim()));
+            const aiTotal = Math.min(12, aiLegal + aiRemedy + aiSecurity);
+
+            // Teacher Override check
+            let hasTeacherOverride = false;
+            let teacherLegal = aiLegal;
+            let teacherRemedy = aiRemedy;
+            let teacherSecurity = aiSecurity;
+            let teacherComment = '';
+            let teacherUpdatedAt = '';
+
             const rawFb = item.ai_feedback || item.aiFeedback || item.evaluation;
             if (rawFb) {
                 let parsedFb = rawFb;
@@ -1756,17 +1802,20 @@
                 }
                 if (typeof parsedFb === 'object' && parsedFb !== null && parsedFb.teacher_override) {
                     const ov = parsedFb.teacher_override;
-                    if (ov.legal !== undefined && ov.legal !== null) legal = Number(ov.legal);
-                    if (ov.remedy !== undefined && ov.remedy !== null) remedy = Number(ov.remedy);
-                    if (ov.security !== undefined && ov.security !== null) security = Number(ov.security);
+                    hasTeacherOverride = true;
+                    if (ov.legal !== undefined && ov.legal !== null) teacherLegal = Math.min(4, Math.max(0, Number(ov.legal)));
+                    if (ov.remedy !== undefined && ov.remedy !== null) teacherRemedy = Math.min(4, Math.max(0, Number(ov.remedy)));
+                    if (ov.security !== undefined && ov.security !== null) teacherSecurity = Math.min(4, Math.max(0, Number(ov.security)));
+                    teacherComment = ov.comment || '';
+                    teacherUpdatedAt = ov.updated_at || '';
                 }
             }
 
-            // Strictly clamp each role to 0-10 for the 1-case mission
-            legal = Math.min(10, Math.max(0, legal));
-            remedy = Math.min(10, Math.max(0, remedy));
-            security = Math.min(10, Math.max(0, security));
-            const total = Math.min(30, Math.max(0, legal + remedy + security));
+            const legal = hasTeacherOverride ? teacherLegal : aiLegal;
+            const remedy = hasTeacherOverride ? teacherRemedy : aiRemedy;
+            const security = hasTeacherOverride ? teacherSecurity : aiSecurity;
+            const total = Math.min(12, Math.max(0, legal + remedy + security));
+            const quality = getQualityLevel(total);
 
             return {
                 room,
@@ -1774,7 +1823,18 @@
                 legal,
                 remedy,
                 security,
-                total
+                total,
+                aiLegal,
+                aiRemedy,
+                aiSecurity,
+                aiTotal,
+                hasTeacherOverride,
+                teacherLegal,
+                teacherRemedy,
+                teacherSecurity,
+                teacherComment,
+                teacherUpdatedAt,
+                quality
             };
         }
 
@@ -1810,6 +1870,13 @@
                     remedy: p.remedy,
                     security: p.security,
                     total: p.total,
+                    aiLegal: p.aiLegal,
+                    aiRemedy: p.aiRemedy,
+                    aiSecurity: p.aiSecurity,
+                    aiTotal: p.aiTotal,
+                    hasTeacherOverride: p.hasTeacherOverride,
+                    teacherUpdatedAt: p.teacherUpdatedAt,
+                    quality: p.quality,
                     latestTime: t,
                     rawItem: bestItem
                 });
@@ -1841,7 +1908,7 @@
                 let membersDisplay = '-';
                 if (row.members.length > 0) {
                     if (displayMode === 'detailed_roster') {
-                        membersDisplay = row.members.map(m => `<span class="inline-block px-1.5 py-0.5 rounded bg-slate-800 border border-slate-700 text-[11px] mr-1 mb-1">เลขที่ ${m.no}: ${m.prefix}${m.name}</span>`).join('');
+                        membersDisplay = row.members.map(m => `<span class="inline-block px-1.5 py-0.5 rounded bg-slate-800 border border-slate-700 text-[11px] mr-1 mb-1">เลขที่ ${m.no}: ${m.prefix || ''}${m.name}</span>`).join('');
                     } else {
                         membersDisplay = `<span class="text-slate-400 font-mono">${row.members.length} คน (คลิกโหมดสมาชิกเพื่อดูเลขที่)</span>`;
                     }
@@ -1849,8 +1916,10 @@
 
                 const timeStr = row.latestTime ? row.latestTime.toLocaleTimeString('th-TH', { hour: '2-digit', minute: '2-digit' }) : '-';
                 const casesTooltip = row.caseNames.length > 0 ? row.caseNames.map((c, i) => `${i + 1}. ${c}`).join('\n') : '-';
-                const pct = row.caseCount > 0 ? Math.round((row.total / (row.caseCount * 30)) * 100) : 0;
-                const scoreColor = pct >= 80 ? 'text-emerald-400' : pct >= 50 ? 'text-yellow-300' : 'text-pink-400';
+                
+                // Quality assessment (10-12: ดีมาก, 7-9: ดี, 4-6: พอใช้, 0-3: ปรับปรุง)
+                const q = row.quality || getQualityLevel(row.total);
+                const scoreColor = q.color;
 
                 return `
                 <tr class="hover:bg-slate-900/60 transition ${idx % 2 === 0 ? 'bg-slate-950/40' : 'bg-slate-900/40'}">
@@ -1865,13 +1934,33 @@
                     <td class="p-3 border-r border-slate-800">${membersDisplay}</td>
                     <td class="p-3 text-center border-r border-slate-800" title="${casesTooltip}">
                         <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-purple-500/20 text-purple-300 font-mono text-[11px] font-bold border border-purple-500/30">
-                            <i class="fa-solid fa-folder-open"></i> 1 / 1 คดี (ดีสุด)
+                            <i class="fa-solid fa-folder-open"></i> 1 / 1 คดี
                         </span>
                     </td>
-                    <td class="p-3 text-center font-mono font-bold text-amber-400 border-r border-slate-800">${row.legal}</td>
-                    <td class="p-3 text-center font-mono font-bold text-pink-400 border-r border-slate-800">${row.remedy}</td>
-                    <td class="p-3 text-center font-mono font-bold text-cyan-400 border-r border-slate-800">${row.security}</td>
-                    <td class="p-3 text-right font-mono font-bold ${scoreColor} text-sm border-r border-slate-800">${row.total} คะแนน</td>
+                    <td class="p-3 text-center font-mono font-bold text-amber-400 border-r border-slate-800">
+                        ${row.hasTeacherOverride && row.legal !== row.aiLegal ? `${row.legal} <span class="text-slate-400 text-[10px] font-normal" title="คะแนน AI เดิม">(${row.aiLegal})</span>` : `${row.legal}`}
+                    </td>
+                    <td class="p-3 text-center font-mono font-bold text-pink-400 border-r border-slate-800">
+                        ${row.hasTeacherOverride && row.remedy !== row.aiRemedy ? `${row.remedy} <span class="text-slate-400 text-[10px] font-normal" title="คะแนน AI เดิม">(${row.aiRemedy})</span>` : `${row.remedy}`}
+                    </td>
+                    <td class="p-3 text-center font-mono font-bold text-cyan-400 border-r border-slate-800">
+                        ${row.hasTeacherOverride && row.security !== row.aiSecurity ? `${row.security} <span class="text-slate-400 text-[10px] font-normal" title="คะแนน AI เดิม">(${row.aiSecurity})</span>` : `${row.security}`}
+                    </td>
+                    <td class="p-3 text-right font-mono border-r border-slate-800">
+                        <div class="flex flex-col items-end gap-0.5">
+                            <div class="flex items-baseline gap-1">
+                                <span class="font-bold text-sm ${scoreColor}">${row.total}</span>
+                                ${row.hasTeacherOverride ? `<span class="text-slate-400 text-xs font-normal" title="คะแนนเดิมที่ AI เคยทำไว้">(${row.aiTotal})</span>` : ''}
+                                <span class="text-xs text-slate-400">/ 12</span>
+                            </div>
+                            <div class="flex items-center gap-1">
+                                <span class="text-[9.5px] px-1.5 py-0.2 rounded ${q.bg} ${q.color} border ${q.border} font-bold">
+                                    ${q.label} ${q.passed ? '✅' : '❌'}
+                                </span>
+                                ${row.hasTeacherOverride ? `<span class="text-[9px] px-1 py-0.2 rounded bg-indigo-500/30 text-indigo-200 border border-indigo-500/40" title="ครูแก้ไขคะแนนแล้ว: ${row.teacherUpdatedAt}">✏️ ครูแก้</span>` : ''}
+                            </div>
+                        </div>
+                    </td>
                     <td class="p-3 text-center font-mono text-slate-400">${timeStr}</td>
                 </tr>`;
             }).join('');
@@ -1901,7 +1990,7 @@
 
             document.getElementById('stat-active-rooms').textContent = rooms.size > 0 ? `${rooms.size} ห้อง` : '0 ห้อง';
             const avg = totalTeams > 0 ? (teamScoreSum / totalTeams).toFixed(1) : '0.0';
-            document.getElementById('stat-avg-score').textContent = `${Math.min(Number(avg), 30).toFixed(1)} / 30`;
+            document.getElementById('stat-avg-score').textContent = `${Math.min(Number(avg), 12).toFixed(1)} / 12`;
         }
 
         // --- 12 Solutions Rendering ---
@@ -2175,9 +2264,9 @@
         }
 
         function clampTeacherScore(value) {
-            const score = Number.parseInt(value, 10);
+            const score = parseInt(value, 10);
             if (Number.isNaN(score)) return 0;
-            return Math.max(0, Math.min(10, score));
+            return Math.max(0, Math.min(4, score));
         }
 
         async function saveTeacherScoreOverride(scoreId) {
@@ -2190,7 +2279,7 @@
             const remedyScore = clampTeacherScore(document.getElementById(`teacher-remedy-${scoreId}`)?.value);
             const securityScore = clampTeacherScore(document.getElementById(`teacher-security-${scoreId}`)?.value);
             const teacherComment = (document.getElementById(`teacher-comment-${scoreId}`)?.value || '').trim();
-            const totalScore = Math.min(30, legalScore + remedyScore + securityScore);
+            const totalScore = Math.min(12, legalScore + remedyScore + securityScore);
             let passcode = sessionStorage.getItem('shield_teacher_passcode') || '';
 
             if (!passcode) {
@@ -2398,7 +2487,7 @@
                         </div>
                         <div class="flex items-center justify-between text-[11px] pt-1 border-t border-slate-800/80">
                             <span class="text-purple-300 font-mono"><i class="fa-solid fa-folder-open mr-1"></i> 1 คดี (ดีที่สุด)</span>
-                            <span class="font-mono font-bold text-yellow-300">${totalScore} / 30 คะแนน</span>
+                            <span class="font-mono font-bold text-yellow-300">${totalScore} ${p.hasTeacherOverride ? `(${p.aiTotal})` : ''} / 12 คะแนน</span>
                         </div>
                     </div>
                 `);
@@ -2413,6 +2502,109 @@
             } else {
                 selectGroupForAnswers(selectedGroupTeamName);
             }
+        }
+
+        
+        // --- Group Member Management (Add / Remove Members) ---
+        function addGroupMember(teamKey) {
+            const noInput = document.getElementById('input-new-member-no');
+            const prefixSelect = document.getElementById('input-new-member-prefix');
+            const nameInput = document.getElementById('input-new-member-name');
+
+            const no = Number(noInput?.value || 0);
+            const prefix = (prefixSelect?.value || '').trim();
+            const name = (nameInput?.value || '').trim();
+
+            if (!name) {
+                alert('กรุณากรอกชื่อ-นามสกุลของนักเรียน');
+                return;
+            }
+
+            const filteredMap = getFilteredGroupMap();
+            const items = filteredMap.get(teamKey);
+            const bestItem = getBestScoreItem(items) || items?.[0];
+            if (!bestItem) return;
+
+            let parsedMembers = [];
+            if (bestItem.members_info) {
+                if (typeof bestItem.members_info === 'object' && Array.isArray(bestItem.members_info.members)) {
+                    parsedMembers = [...bestItem.members_info.members];
+                } else if (typeof bestItem.members_info === 'string') {
+                    try {
+                        const obj = JSON.parse(bestItem.members_info);
+                        if (Array.isArray(obj.members)) parsedMembers = [...obj.members];
+                    } catch (e) { }
+                }
+            }
+
+            parsedMembers.push({ no: no || (parsedMembers.length + 1), prefix, name });
+            parsedMembers.sort((a, b) => (Number(a.no) || 0) - (Number(b.no) || 0));
+
+            updateGroupMembersData(teamKey, bestItem, parsedMembers);
+        }
+
+        function removeGroupMember(teamKey, memberIndex) {
+            if (!confirm('ต้องการลบสมาชิกคนนี้ออกจากกลุ่มใช่หรือไม่?')) return;
+
+            const filteredMap = getFilteredGroupMap();
+            const items = filteredMap.get(teamKey);
+            const bestItem = getBestScoreItem(items) || items?.[0];
+            if (!bestItem) return;
+
+            let parsedMembers = [];
+            if (bestItem.members_info) {
+                if (typeof bestItem.members_info === 'object' && Array.isArray(bestItem.members_info.members)) {
+                    parsedMembers = [...bestItem.members_info.members];
+                } else if (typeof bestItem.members_info === 'string') {
+                    try {
+                        const obj = JSON.parse(bestItem.members_info);
+                        if (Array.isArray(obj.members)) parsedMembers = [...obj.members];
+                    } catch (e) { }
+                }
+            }
+
+            if (memberIndex >= 0 && memberIndex < parsedMembers.length) {
+                parsedMembers.splice(memberIndex, 1);
+                updateGroupMembersData(teamKey, bestItem, parsedMembers);
+            }
+        }
+
+        function updateGroupMembersData(teamKey, bestItem, updatedMembers) {
+            const p = parseScoreItem(bestItem);
+            const newMembersInfo = { room: p.room, members: updatedMembers };
+
+            bestItem.members_info = newMembersInfo;
+            if (Array.isArray(allScoresData)) {
+                allScoresData.forEach(item => {
+                    if ((item.team_name || item.player_id) === teamKey) {
+                        item.members_info = newMembersInfo;
+                    }
+                });
+            }
+
+            const overrides = getStoredTeacherOverrides();
+            if (!overrides[teamKey]) overrides[teamKey] = {};
+            overrides[teamKey].members_info = newMembersInfo;
+            if (bestItem.id) {
+                if (!overrides[String(bestItem.id)]) overrides[String(bestItem.id)] = {};
+                overrides[String(bestItem.id)].members_info = newMembersInfo;
+            }
+            try {
+                localStorage.setItem(TEACHER_OVERRIDES_STORAGE_KEY, JSON.stringify(overrides));
+                localStorage.setItem('CYBER_DETECTIVE_3CASES_SCORES_CACHE', JSON.stringify(allScoresData));
+            } catch (e) { }
+
+            if (bestItem.id && supabaseClient) {
+                try {
+                    supabaseClient.from('game_scores_3').update({
+                        members_info: newMembersInfo
+                    }).eq('id', bestItem.id);
+                } catch (e) { }
+            }
+
+            renderScoreboardTable();
+            updateStatsCards();
+            renderGroupAnswersTab();
         }
 
         function selectGroupForAnswers(teamKey) {
@@ -2446,34 +2638,61 @@
 
             const badge = document.getElementById('detail-team-score-badge');
             badge.classList.remove('hidden');
-            badge.innerHTML = `<i class="fa-solid fa-star text-yellow-400"></i> คะแนนคดีที่ดีที่สุด: <span class="text-yellow-300 font-bold text-sm ml-1">${totalScore}</span> / 30 คะแนน`;
+            badge.innerHTML = `<i class="fa-solid fa-star text-yellow-400"></i> คะแนนคดีที่ดีที่สุด: <span class="text-yellow-300 font-bold text-sm ml-1">${totalScore} ${p.hasTeacherOverride ? `(${p.aiTotal})` : ''}</span> / 12 คะแนน (${p.quality.label})`;
 
             // Display strictly the best case
             const sortedItems = [bestItem];
 
             const casesContainer = document.getElementById('group-cases-container');
+            const safeTeamKey = teamKey.replace(/'/g, "\\'");
+            const memberManagerCardHtml = `
+                <!-- Member Management Card (Add / Remove Members) -->
+                <div class="glass-panel p-4 rounded-2xl border border-indigo-500/40 flex flex-col gap-3 font-sarabun text-xs shadow-lg">
+                    <div class="flex items-center justify-between border-b border-slate-800 pb-2">
+                        <span class="font-bold text-sm text-indigo-200 font-kanit flex items-center gap-2">
+                            <i class="fa-solid fa-user-group text-cyan-400"></i> สมาชิกในกลุ่มสายสืบ (${p.members.length} คน)
+                        </span>
+                        <span class="text-[11px] text-slate-400">คลิก ✖ เพื่อลบสมาชิก หรือกรอกข้อมูลด้านล่างเพื่อเพิ่มสมาชิก</span>
+                    </div>
+
+                    <!-- Current Members List Chips -->
+                    <div class="flex flex-wrap items-center gap-2">
+                        ${p.members.length > 0 ? p.members.map((m, mIdx) => `
+                            <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-xl bg-slate-900 border border-slate-700 text-slate-200 text-xs">
+                                <b class="text-cyan-400">เลขที่ ${m.no || '-'}:</b> ${m.prefix || ''}${m.name || ''}
+                                <button onclick="removeGroupMember('${safeTeamKey}', ${mIdx})" class="text-slate-400 hover:text-pink-400 transition ml-1 cursor-pointer" title="ลบสมาชิกคนนี้">
+                                    <i class="fa-solid fa-xmark font-bold"></i>
+                                </button>
+                            </span>
+                        `).join('') : '<span class="text-slate-500 italic">ยังไม่มีรายชื่อสมาชิกในกลุ่มนี้ (สามารถเพิ่มสมาชิกได้ด้านล่าง)</span>'}
+                    </div>
+
+                    <!-- Add Member Form Inline -->
+                    <div class="flex flex-wrap items-center gap-2 pt-2 border-t border-slate-800/80">
+                        <span class="text-slate-300 font-medium shrink-0"><i class="fa-solid fa-user-plus text-emerald-400 mr-1"></i> เพิ่มสมาชิก:</span>
+                        <input type="number" id="input-new-member-no" placeholder="เลขที่" min="1" max="99" class="w-16 rounded-xl bg-slate-950 border border-slate-700 px-2.5 py-1.5 text-white text-xs focus:outline-none focus:border-cyan-400">
+                        <select id="input-new-member-prefix" class="rounded-xl bg-slate-950 border border-slate-700 px-2 py-1.5 text-white text-xs focus:outline-none focus:border-cyan-400">
+                            <option value="ด.ช.">ด.ช.</option>
+                            <option value="ด.ญ.">ด.ญ.</option>
+                            <option value="นาย">นาย</option>
+                            <option value="น.ส.">น.ส.</option>
+                            <option value="">-</option>
+                        </select>
+                        <input type="text" id="input-new-member-name" placeholder="ชื่อ - นามสกุล" class="flex-1 min-w-[150px] rounded-xl bg-slate-950 border border-slate-700 px-3 py-1.5 text-white text-xs focus:outline-none focus:border-cyan-400">
+                        <button onclick="addGroupMember('${safeTeamKey}')" class="px-3.5 py-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold font-kanit text-xs transition flex items-center gap-1.5 shadow-md shadow-emerald-500/20 shrink-0 cursor-pointer">
+                            <i class="fa-solid fa-plus"></i> เพิ่มสมาชิก
+                        </button>
+                    </div>
+                </div>
+            `;
+
             const caseCardsHtml = sortedItems.map((item, idx) => {
                 const p = parseScoreItem(item);
                 const { answers, feedback } = extractAnswersAndFeedback(item);
                 const caseTitle = item.case_title || `คดีที่ ${item.case_id || (idx + 1)}`;
                 const caseRef = ALL_12_CASES.find(c => c.id === item.case_id) || {};
                 const timeStr = item.created_at ? new Date(item.created_at).toLocaleString('th-TH') : '-';
-                const totalCaseScore = p.legal + p.remedy + p.security;
                 const safeScoreId = escapeHtml(item.id || '');
-                const teacherOverride = feedback.teacher_override || {};
-                const teacherComment = teacherOverride.comment || '';
-                const teacherUpdatedAt = teacherOverride.updated_at ? new Date(teacherOverride.updated_at).toLocaleString('th-TH') : '';
-                const overrideLabel = teacherUpdatedAt
-                    ? `<span class="px-2 py-0.5 rounded-lg bg-indigo-500/20 text-indigo-200 border border-indigo-500/30 font-mono text-[11px]">Teacher override: ${teacherUpdatedAt}</span>`
-                    : `<span class="px-2 py-0.5 rounded-lg bg-slate-800 text-slate-300 border border-slate-700 font-mono text-[11px]">AI score</span>`;
-
-                // Check which roles have been performed/answered
-                const hasLegal = (answers.legal && answers.legal.trim().length > 0) || p.legal > 0 || (feedback.legal && feedback.legal.feedback && feedback.legal.feedback.trim().length > 0);
-                const hasRemedy = (answers.remedy && answers.remedy.trim().length > 0) || p.remedy > 0 || (feedback.remedy && feedback.remedy.feedback && feedback.remedy.feedback.trim().length > 0);
-                const hasSecurity = (answers.security && answers.security.trim().length > 0) || p.security > 0 || (feedback.security && feedback.security.feedback && feedback.security.feedback.trim().length > 0);
-
-                // Show ONLY cases that have at least one performed role
-                if (!hasLegal && !hasRemedy && !hasSecurity) return '';
 
                 return `
                     <div class="glass-panel p-5 rounded-3xl border border-slate-700 flex flex-col gap-4 shadow-xl">
@@ -2490,108 +2709,145 @@
                             <div class="flex items-center gap-3">
                                 <span class="text-[11px] text-slate-400 font-mono"><i class="fa-regular fa-clock mr-1"></i>${timeStr}</span>
                                 <span class="px-3 py-1 rounded-xl bg-emerald-950/80 border border-emerald-500/40 text-emerald-300 font-mono text-xs font-bold">
-                                    คะแนนคดีนี้: ${totalCaseScore} / 30
+                                    คะแนนรวม: ${p.total} ${p.hasTeacherOverride ? `(${p.aiTotal})` : ''} / 12 คะแนน (${p.quality.label})
                                 </span>
                             </div>
                         </div>
 
-                        <!-- 3 Roles Detailed Breakdown (Only performed roles) -->
+                        <!-- 3 Roles Detailed Breakdown (4 points per role) -->
                         <div class="flex flex-col gap-3 font-sarabun text-xs">
                             
-                            ${hasLegal ? `
-                            <!-- Role 1: Legal -->
+                            <!-- Role 1: Legal (4 pts) -->
                             <div class="p-4 rounded-2xl bg-amber-950/30 border border-amber-500/30 flex flex-col gap-2">
                                 <div class="flex items-center justify-between text-amber-300 font-bold">
                                     <span class="flex items-center gap-1.5">👨‍⚖️ 1. คำตอบนักวิเคราะห์กฎหมาย (Legal Analyst)</span>
-                                    <span class="px-2.5 py-0.5 rounded-lg bg-amber-500/20 text-amber-300 font-mono text-xs font-bold border border-amber-500/40">${p.legal} / 10 คะแนน</span>
+                                    <span class="px-2.5 py-0.5 rounded-lg bg-amber-500/20 text-amber-300 font-mono text-xs font-bold border border-amber-500/40">
+                                        ${p.hasTeacherOverride && p.legal !== p.aiLegal ? `${p.legal} (${p.aiLegal})` : p.legal} / 4 คะแนน
+                                    </span>
                                 </div>
                                 <div class="bg-slate-950/80 p-3 rounded-xl border border-slate-800 text-slate-200 leading-relaxed">
                                     <span class="text-slate-400 font-semibold block mb-1">📝 คำตอบของเด็ก:</span>
-                                    ${answers.legal ? answers.legal : '<span class="text-slate-500 italic">ไม่พบบันทึกข้อความคำตอบ (ส่งตรวจก่อนรัน SQL เพิ่มคอลัมน์ใน Supabase)</span>'}
+                                    ${answers.legal ? answers.legal : '<span class="text-slate-500 italic">ไม่ได้ระบุคำตอบ</span>'}
                                 </div>
                                 <div class="bg-amber-950/60 p-3 rounded-xl border border-amber-500/20 text-amber-200 leading-relaxed">
-                                    <span class="text-amber-400 font-semibold block mb-1"><i class="fa-solid fa-robot mr-1"></i> AI ประเมินผล:</span>
-                                    ${feedback.legal.feedback ? feedback.legal.feedback : 'ให้คะแนน ' + p.legal + ' คะแนน'}
+                                    <span class="text-amber-400 font-semibold block mb-1"><i class="fa-solid fa-robot mr-1"></i> AI ประเมินผล (แปลงตามเกณฑ์รูบริก 4 คะแนน):</span>
+                                    ${feedback.legal.feedback ? feedback.legal.feedback : 'คะแนนประเมิน ' + p.aiLegal + ' / 4 คะแนน'}
                                 </div>
-                            </div>` : ''}
+                            </div>
 
-                            ${hasRemedy ? `
-                            <!-- Role 2: Remedy -->
+                            <!-- Role 2: Remedy (4 pts) -->
                             <div class="p-4 rounded-2xl bg-pink-950/30 border border-pink-500/30 flex flex-col gap-2">
                                 <div class="flex items-center justify-between text-pink-300 font-bold">
                                     <span class="flex items-center gap-1.5">🚑 2. คำตอบเจ้าหน้าที่แก้ไข (Incident Responder)</span>
-                                    <span class="px-2.5 py-0.5 rounded-lg bg-pink-500/20 text-pink-300 font-mono text-xs font-bold border border-pink-500/40">${p.remedy} / 10 คะแนน</span>
+                                    <span class="px-2.5 py-0.5 rounded-lg bg-pink-500/20 text-pink-300 font-mono text-xs font-bold border border-pink-500/40">
+                                        ${p.hasTeacherOverride && p.remedy !== p.aiRemedy ? `${p.remedy} (${p.aiRemedy})` : p.remedy} / 4 คะแนน
+                                    </span>
                                 </div>
                                 <div class="bg-slate-950/80 p-3 rounded-xl border border-slate-800 text-slate-200 leading-relaxed">
                                     <span class="text-slate-400 font-semibold block mb-1">📝 คำตอบของเด็ก:</span>
-                                    ${answers.remedy ? answers.remedy : '<span class="text-slate-500 italic">ไม่พบบันทึกข้อความคำตอบ (ส่งตรวจก่อนรัน SQL เพิ่มคอลัมน์ใน Supabase)</span>'}
+                                    ${answers.remedy ? answers.remedy : '<span class="text-slate-500 italic">ไม่ได้ระบุคำตอบ</span>'}
                                 </div>
                                 <div class="bg-pink-950/60 p-3 rounded-xl border border-pink-500/20 text-pink-200 leading-relaxed">
-                                    <span class="text-pink-400 font-semibold block mb-1"><i class="fa-solid fa-robot mr-1"></i> AI ประเมินผล:</span>
-                                    ${feedback.remedy.feedback ? feedback.remedy.feedback : 'ให้คะแนน ' + p.remedy + ' คะแนน'}
+                                    <span class="text-pink-400 font-semibold block mb-1"><i class="fa-solid fa-robot mr-1"></i> AI ประเมินผล (แปลงตามเกณฑ์รูบริก 4 คะแนน):</span>
+                                    ${feedback.remedy.feedback ? feedback.remedy.feedback : 'คะแนนประเมิน ' + p.aiRemedy + ' / 4 คะแนน'}
                                 </div>
-                            </div>` : ''}
+                            </div>
 
-                            ${hasSecurity ? `
-                            <!-- Role 3: Security -->
+                            <!-- Role 3: Security (4 pts) -->
                             <div class="p-4 rounded-2xl bg-cyan-950/30 border border-cyan-500/30 flex flex-col gap-2">
                                 <div class="flex items-center justify-between text-cyan-300 font-bold">
                                     <span class="flex items-center gap-1.5">🛡️ 3. คำตอบวิศวกรความปลอดภัย (Security Engineer)</span>
-                                    <span class="px-2.5 py-0.5 rounded-lg bg-cyan-500/20 text-cyan-300 font-mono text-xs font-bold border border-cyan-500/40">${p.security} / 10 คะแนน</span>
+                                    <span class="px-2.5 py-0.5 rounded-lg bg-cyan-500/20 text-cyan-300 font-mono text-xs font-bold border border-cyan-500/40">
+                                        ${p.hasTeacherOverride && p.security !== p.aiSecurity ? `${p.security} (${p.aiSecurity})` : p.security} / 4 คะแนน
+                                    </span>
                                 </div>
                                 <div class="bg-slate-950/80 p-3 rounded-xl border border-slate-800 text-slate-200 leading-relaxed">
                                     <span class="text-slate-400 font-semibold block mb-1">📝 คำตอบของเด็ก:</span>
-                                    ${answers.security ? answers.security : '<span class="text-slate-500 italic">ไม่พบบันทึกข้อความคำตอบ (ส่งตรวจก่อนรัน SQL เพิ่มคอลัมน์ใน Supabase)</span>'}
+                                    ${answers.security ? answers.security : '<span class="text-slate-500 italic">ไม่ได้ระบุคำตอบ</span>'}
                                 </div>
                                 <div class="bg-cyan-950/60 p-3 rounded-xl border border-cyan-500/20 text-cyan-200 leading-relaxed">
-                                    <span class="text-cyan-400 font-semibold block mb-1"><i class="fa-solid fa-robot mr-1"></i> AI ประเมินผล:</span>
-                                    ${feedback.security.feedback ? feedback.security.feedback : 'ให้คะแนน ' + p.security + ' คะแนน'}
+                                    <span class="text-cyan-400 font-semibold block mb-1"><i class="fa-solid fa-robot mr-1"></i> AI ประเมินผล (แปลงตามเกณฑ์รูบริก 4 คะแนน):</span>
+                                    ${feedback.security.feedback ? feedback.security.feedback : 'คะแนนประเมิน ' + p.aiSecurity + ' / 4 คะแนน'}
                                 </div>
-                            </div>` : ''}
+                            </div>
 
-                            ${feedback.overall_summary ? `
-                            <div class="p-3 rounded-2xl bg-purple-950/40 border border-purple-500/30 text-purple-200 leading-relaxed">
-                                <span class="font-bold text-purple-300 block mb-1"><i class="fa-solid fa-wand-magic-sparkles mr-1"></i> สรุปภาพรวมจาก AI:</span>
-                                ${feedback.overall_summary}
-                            </div>` : ''}
-
-                            <div class="p-4 rounded-2xl bg-indigo-950/30 border border-indigo-500/30 flex flex-col gap-3">
+                            <!-- Teacher Rubric Grading & Override Form (0-4 each, Total 12) -->
+                            <div class="p-4 rounded-2xl bg-indigo-950/40 border-2 border-indigo-500/50 flex flex-col gap-3 mt-1 shadow-lg">
                                 <div class="flex flex-wrap items-center justify-between gap-2">
                                     <div class="flex items-center gap-2 text-indigo-200 font-bold font-kanit text-sm">
                                         <i class="fa-solid fa-pen-to-square text-indigo-300"></i>
-                                        ครูแก้คะแนนและคอมเมนต์
+                                        การประเมินผลรูบริก K โดยครูผู้สอน (ข้อละ 4 คะแนน เต็ม 12)
                                     </div>
-                                    ${overrideLabel}
+                                    ${p.hasTeacherOverride ? `
+                                    <span class="px-2.5 py-1 rounded-lg bg-indigo-500/30 text-indigo-200 border border-indigo-500/50 font-mono text-[11px] flex items-center gap-1.5">
+                                        <i class="fa-solid fa-clock-rotate-left"></i> ครูแก้ไขคะแนนแล้ว: ${p.teacherUpdatedAt}
+                                    </span>
+                                    ` : `
+                                    <span class="px-2.5 py-1 rounded-lg bg-slate-800 text-slate-300 border border-slate-700 font-mono text-[11px]">
+                                        คะแนนประเมินตามระบบ AI
+                                    </span>
+                                    `}
                                 </div>
+
+                                <!-- Alert Notification Banner if Teacher Overridden -->
+                                ${p.hasTeacherOverride ? `
+                                <div class="p-2.5 rounded-xl bg-indigo-900/50 border border-indigo-400/60 text-indigo-200 text-xs flex flex-wrap items-center justify-between gap-2">
+                                    <div class="flex items-center gap-2">
+                                        <i class="fa-solid fa-bell text-amber-300 text-sm"></i>
+                                        <span><b>แจ้งเตือน:</b> มีการแก้ไขคะแนนโดยครูผู้สอน คะแนนใหม่คือ <b class="text-yellow-300">${p.total} / 12 คะแนน</b> (คะแนนเดิมที่ AI เคยทำไว้คือ <b class="text-slate-300">(${p.aiTotal})</b>)</span>
+                                    </div>
+                                    <span class="px-2 py-0.5 rounded ${p.quality.bg} ${p.quality.color} border ${p.quality.border} font-bold text-[11px]">
+                                        ระดับ ${p.quality.label} ${p.quality.passed ? '✅' : '❌'}
+                                    </span>
+                                </div>
+                                ` : ''}
+
                                 <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
                                     <label class="flex flex-col gap-1 text-[11px] text-amber-200 font-semibold">
-                                        Legal Analyst
-                                        <input id="teacher-legal-${safeScoreId}" type="number" min="0" max="10" step="1" value="${p.legal}"
-                                            class="w-full rounded-xl bg-slate-950 border border-amber-500/30 px-3 py-2 text-white font-mono text-sm focus:outline-none focus:ring-2 focus:ring-amber-400">
+                                        1. การระบุฐานความผิด กฎหมาย (เต็ม 4)
+                                        <div class="flex items-center gap-2">
+                                            <input id="teacher-legal-${safeScoreId}" type="number" min="0" max="4" step="1" value="${p.legal}"
+                                                class="w-full rounded-xl bg-slate-950 border border-amber-500/30 px-3 py-2 text-white font-mono text-sm focus:outline-none focus:ring-2 focus:ring-amber-400">
+                                            <span class="text-[11px] text-slate-400 whitespace-nowrap" title="คะแนนเดิมที่ AI เคยทำไว้">AI: (${p.aiLegal})</span>
+                                        </div>
                                     </label>
                                     <label class="flex flex-col gap-1 text-[11px] text-pink-200 font-semibold">
-                                        Incident Responder
-                                        <input id="teacher-remedy-${safeScoreId}" type="number" min="0" max="10" step="1" value="${p.remedy}"
-                                            class="w-full rounded-xl bg-slate-950 border border-pink-500/30 px-3 py-2 text-white font-mono text-sm focus:outline-none focus:ring-2 focus:ring-pink-400">
+                                        2. การเสนอแนวทางแก้ไข (เต็ม 4)
+                                        <div class="flex items-center gap-2">
+                                            <input id="teacher-remedy-${safeScoreId}" type="number" min="0" max="4" step="1" value="${p.remedy}"
+                                                class="w-full rounded-xl bg-slate-950 border border-pink-500/30 px-3 py-2 text-white font-mono text-sm focus:outline-none focus:ring-2 focus:ring-pink-400">
+                                            <span class="text-[11px] text-slate-400 whitespace-nowrap" title="คะแนนเดิมที่ AI เคยทำไว้">AI: (${p.aiRemedy})</span>
+                                        </div>
                                     </label>
                                     <label class="flex flex-col gap-1 text-[11px] text-cyan-200 font-semibold">
-                                        Security Engineer
-                                        <input id="teacher-security-${safeScoreId}" type="number" min="0" max="10" step="1" value="${p.security}"
-                                            class="w-full rounded-xl bg-slate-950 border border-cyan-500/30 px-3 py-2 text-white font-mono text-sm focus:outline-none focus:ring-2 focus:ring-cyan-400">
+                                        3. การเสนอแนวทางป้องกัน (เต็ม 4)
+                                        <div class="flex items-center gap-2">
+                                            <input id="teacher-security-${safeScoreId}" type="number" min="0" max="4" step="1" value="${p.security}"
+                                                class="w-full rounded-xl bg-slate-950 border border-cyan-500/30 px-3 py-2 text-white font-mono text-sm focus:outline-none focus:ring-2 focus:ring-cyan-400">
+                                            <span class="text-[11px] text-slate-400 whitespace-nowrap" title="คะแนนเดิมที่ AI เคยทำไว้">AI: (${p.aiSecurity})</span>
+                                        </div>
                                     </label>
                                 </div>
+
+                                <!-- Rubric Quick Reference Note -->
+                                <div class="p-2 rounded-xl bg-slate-950/70 border border-slate-800 text-[11px] text-slate-300 flex flex-wrap items-center justify-between gap-2">
+                                    <span><b>เกณฑ์รูบริก:</b> 4=ดีมาก (ครบถ้วน), 3=ดี (ขาดรายละเอียด), 2=พอใช้ (บางส่วน), 1=ปรับปรุง</span>
+                                    <span><b>ตัดสินคุณภาพ:</b> 10-12 ดีมาก, 7-9 ดี (ผ่านเกณฑ์), 4-6 พอใช้, 0-3 ปรับปรุง</span>
+                                </div>
+
                                 <label class="flex flex-col gap-1 text-[11px] text-indigo-100 font-semibold">
-                                    คอมเมนต์ครู
+                                    ข้อเสนอแนะและคอมเมนต์ของครู
                                     <textarea id="teacher-comment-${safeScoreId}" rows="2"
                                         class="w-full rounded-xl bg-slate-950 border border-indigo-500/30 px-3 py-2 text-slate-100 font-sarabun text-sm leading-relaxed focus:outline-none focus:ring-2 focus:ring-indigo-400"
-                                        placeholder="เหตุผลการปรับคะแนน หรือข้อเสนอแนะให้นักเรียน">${escapeHtml(teacherComment)}</textarea>
+                                        placeholder="เหตุผลการปรับคะแนน หรือข้อเสนอแนะให้นักเรียน">${escapeHtml(p.teacherComment)}</textarea>
                                 </label>
+
                                 <div class="flex flex-wrap items-center justify-between gap-2">
                                     <span id="teacher-status-${safeScoreId}" class="text-[11px] text-slate-400 font-sarabun">
-                                        คะแนนรวมหลังแก้จะถูกบันทึกกลับ Supabase และใช้ใน leaderboard
+                                        บันทึกคะแนนใหม่เต็ม 12 คะแนน (คะแนนเดิม AI จะแสดงในวงเล็บอ้างอิง)
                                     </span>
                                     <button id="teacher-save-${safeScoreId}" onclick="saveTeacherScoreOverride('${safeScoreId}')"
-                                        class="px-4 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-bold font-kanit text-xs transition disabled:opacity-50 disabled:cursor-wait flex items-center gap-2">
+                                        class="px-4 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-bold font-kanit text-xs transition disabled:opacity-50 disabled:cursor-wait flex items-center gap-2 shadow-lg shadow-indigo-500/25 cursor-pointer">
                                         <i class="fa-solid fa-floppy-disk"></i>
                                         บันทึกคะแนนครู
                                     </button>
@@ -2603,6 +2859,8 @@
                     </div>
                 `;
             }).filter(Boolean).join('');
+
+            casesContainer.innerHTML = memberManagerCardHtml + (caseCardsHtml || `<div class="glass-panel p-8 rounded-2xl border border-slate-800 text-center text-slate-500 font-sarabun text-xs">กลุ่มนี้ยังไม่ได้ส่งตรวจคดีใดๆ</div>`);
 
             casesContainer.innerHTML = caseCardsHtml || `<div class="glass-panel p-8 rounded-2xl border border-slate-800 text-center text-slate-500 font-sarabun text-xs">กลุ่มนี้ยังไม่ได้ทำข้อสอบหรือส่งตรวจคดีใดๆ</div>`;
         }
@@ -2627,7 +2885,6 @@
             const sheet = document.getElementById('printable-group-answers-sheet');
             if (!sheet) return;
 
-            // Group by team_name
             const teamMap = new Map();
             allScoresData.forEach(item => {
                 const teamKey = item.team_name || item.player_id || 'นักสืบเยาวชน';
@@ -2635,85 +2892,59 @@
                 teamMap.get(teamKey).push(item);
             });
 
-            let targetTeams = [];
+            const filteredMap = new Map();
             teamMap.forEach((items, teamKey) => {
-                const firstParsed = parseScoreItem(items[0]);
-
-                // Filter by Room
-                if (roomFilter !== 'ALL' && firstParsed.room !== roomFilter && !teamKey.includes(roomFilter)) {
+                const p = parseScoreItem(items[0]);
+                if (roomFilter !== 'ALL' && p.room !== roomFilter && !teamKey.includes(roomFilter)) {
                     return;
                 }
-
-                // Filter by Group Selection Mode
-                if (selectMode === 'SELECTED' && selectedGroupTeamName && teamKey !== selectedGroupTeamName) {
-                    return;
-                }
-
-                targetTeams.push({ teamKey, items });
+                filteredMap.set(teamKey, items);
             });
 
+            const targetTeams = selectMode === 'ACTIVE_ONLY' && selectedGroupTeamName && filteredMap.has(selectedGroupTeamName)
+                ? [selectedGroupTeamName]
+                : Array.from(filteredMap.keys());
+
             if (targetTeams.length === 0) {
-                sheet.innerHTML = `<div class="p-8 text-center text-slate-500 font-sarabun text-sm">ไม่มีข้อมูลคำตอบสำหรับพิมพ์รายงานในห้องเรียนที่เลือก</div>`;
+                sheet.innerHTML = '<div class="p-8 text-center text-slate-500 font-sarabun text-sm">ไม่พบข้อมูลกลุ่มสายสืบสำหรับส่งออก PDF ตามเงื่อนไขที่เลือก</div>';
                 return;
             }
 
-            const printDateStr = new Date().toLocaleDateString('th-TH', { year: 'numeric', month: 'long', day: 'numeric' });
-            const roomLabelText = roomFilter === 'ALL' ? 'ทุกห้องเรียน (ม.3/1 - ม.3/12)' : `ห้อง ${roomFilter}`;
-
             let fullHtml = '';
+            targetTeams.forEach((teamKey, groupIdx) => {
+                const items = filteredMap.get(teamKey);
+                if (!items || items.length === 0) return;
 
-            targetTeams.forEach(({ teamKey, items }, groupIdx) => {
-                const firstParsed = parseScoreItem(items[0]);
-                const membersStr = firstParsed.members.length > 0
-                    ? firstParsed.members.map(m => `เลขที่ ${m.no}: ${m.prefix}${m.name}`).join(', ')
-                    : 'ไม่ระบุรายชื่อสมาชิก';
-
-                // SELECT ONLY ONE CASE - THE BEST CASE (เอาให้เหลือแค่ข้อเดียว ที่ดีสุด)
-                const bestItem = getBestScoreItem(items);
+                const bestItem = getBestScoreItem(items) || items[0];
                 if (!bestItem) return;
 
                 const p = parseScoreItem(bestItem);
                 const { answers, feedback } = extractAnswersAndFeedback(bestItem);
-                const caseId = bestItem.case_id || 1;
-                const caseRef = ALL_12_CASES.find(c => c.id === caseId) || {};
-                const caseTitle = bestItem.case_title || caseRef.title || `คดีที่ ${caseId}`;
+                const caseRef = ALL_12_CASES.find(c => c.id === bestItem.case_id) || {};
+                const caseTitle = bestItem.case_title || caseRef.title || 'คดีปริศนาไซเบอร์';
+                const caseId = String(bestItem.case_id || 1).padStart(2, '0');
 
-                // Teacher evaluation & overrides
-                const teacherOverride = feedback.teacher_override || {};
-                const teacherComment = (teacherOverride.comment || '').trim();
-                const hasTeacherOverride = teacherOverride && (teacherOverride.legal !== undefined || teacherOverride.remedy !== undefined || teacherOverride.security !== undefined || teacherComment.length > 0);
-
-                const finalLegal = teacherOverride.legal !== undefined ? Number(teacherOverride.legal) : p.legal;
-                const finalRemedy = teacherOverride.remedy !== undefined ? Number(teacherOverride.remedy) : p.remedy;
-                const finalSecurity = teacherOverride.security !== undefined ? Number(teacherOverride.security) : p.security;
-                const finalTotalScore = finalLegal + finalRemedy + finalSecurity;
-
-                let gradeText = 'ระดับดีเยี่ยม';
-                if (finalTotalScore >= 27) gradeText = 'ระดับยอดเยี่ยม (A+)';
-                else if (finalTotalScore >= 22) gradeText = 'ระดับดีเด่น (A)';
-                else if (finalTotalScore >= 16) gradeText = 'ระดับดี (B)';
-                else if (finalTotalScore >= 12) gradeText = 'ผ่านเกณฑ์ (C)';
-                else gradeText = 'ควรปรับปรุง (D)';
+                const membersStr = p.members.length > 0
+                    ? p.members.map(m => `เลขที่ ${m.no}: ${m.prefix || ''}${m.name}`).join(', ')
+                    : 'ไม่ได้ระบุรายชื่อสมาชิก';
 
                 fullHtml += `
-                    <!-- 1 Student / Group = Exactly 1 Page A4 -->
-                    <div class="print-group-subpage flex flex-col justify-between text-slate-900 font-sarabun bg-white p-3 rounded-xl border border-slate-300">
+                    <!-- 1 Group = Guaranteed 1 Page A4 Portrait -->
+                    <div class="print-group-subpage bg-white text-slate-900 font-sarabun flex flex-col justify-between">
                         
                         <div>
-                            <!-- Header Section -->
-                            <div class="print-group-header text-center flex flex-col items-center gap-0.5 border-b-2 border-slate-800 pb-1.5 relative w-full">
-                                <div class="flex items-center justify-center gap-2">
-                                    <img src="favicon.png" alt="Logo" class="w-6 h-6 rounded object-cover no-print">
-                                    <h2 class="text-sm sm:text-base font-bold font-kanit text-slate-900">
-                                        แบบรายงานผลการสืบคดีและการประเมินผล กิจกรรม Cyber Shield Detective
-                                    </h2>
+                            <!-- Header Bar -->
+                            <div class="border-b-2 border-indigo-700 pb-1 flex flex-col gap-0.5 relative">
+                                <div class="flex items-center justify-between">
+                                    <div class="flex items-center gap-1.5">
+                                        <span class="font-black text-sm text-indigo-950 font-kanit tracking-wide">
+                                            🛡️ CYBER SHIELD DETECTIVE — รายงานผลการสืบคดีและการประเมินตามเกณฑ์รูบริก K
+                                        </span>
+                                    </div>
+                                    <span class="text-[9.5px] text-slate-500 font-mono">แบบประเมินรายบุคคล/กลุ่ม</span>
                                 </div>
-                                <p class="text-[10px] text-slate-600">
-                                    กลุ่มสาระการเรียนรู้วิทยาศาสตร์และเทคโนโลยี ระดับชั้นมัธยมศึกษาปีที่ 3 (ภารกิจสืบคดีรายบุคคล 1 คดี)
-                                </p>
-                                <div class="flex flex-wrap items-center justify-center gap-4 text-[9.5px] text-slate-600 font-mono">
-                                    <span>🏫 ห้องเรียน: <b class="text-slate-900 font-bold">${roomLabelText}</b></span>
-                                    <span>📅 วันที่พิมพ์: <b class="text-slate-900 font-bold">${printDateStr}</b></span>
+                                <div class="flex items-center justify-between text-[9.5px] text-slate-600">
+                                    <span>กลุ่มสาระการเรียนรู้วิทยาศาสตร์และเทคโนโลยี (ระดับชั้น ม.3)</span>
                                     <span>👤 ลำดับที่: <b class="text-emerald-700 font-bold">${groupIdx + 1} / ${targetTeams.length}</b></span>
                                 </div>
                                 <div class="absolute top-0 right-0 px-2 py-0.5 rounded bg-slate-100 border border-slate-300 text-slate-700 font-mono text-[9px] font-bold">
@@ -2728,7 +2959,7 @@
                                         🏷️ ผู้ทำภารกิจ / กลุ่มสายสืบ: ${escapeHtml(teamKey)}
                                     </h3>
                                     <span class="px-2 py-0.5 rounded bg-indigo-100 border border-indigo-300 text-indigo-900 font-mono text-[10px] font-bold shrink-0">
-                                        ห้อง ${firstParsed.room} | คะแนนสุทธิ ${finalTotalScore} / 30 คะแนน (${gradeText})
+                                        ห้อง ${p.room} | คะแนนสุทธิ ${p.total} ${p.hasTeacherOverride ? `(${p.aiTotal})` : ''} / 12 คะแนน (${p.quality.label})
                                     </span>
                                 </div>
                                 <p class="text-[9.5px] text-slate-700 leading-tight">
@@ -2737,10 +2968,9 @@
                             </div>
 
                             <!-- Main 2-Column Split Layout -->
-                            <!-- LEFT: Case Image & Problem Brief | RIGHT: Questions, Answers & AI Feedback -->
                             <div class="print-case-split-grid grid grid-cols-1 md:grid-cols-12 gap-2 items-start mt-1">
                                 
-                                <!-- LEFT COLUMN: Case Problem Image & Details (5 cols) -->
+                                <!-- LEFT COLUMN: Case Problem Image & Details (5 cols / ~38%) -->
                                 <div class="print-case-left-panel md:col-span-5 flex flex-col gap-1.5 p-2 rounded-lg border border-slate-300 bg-slate-50 text-[9.5px]">
                                     <div class="flex items-center justify-between border-b border-slate-200 pb-1">
                                         <span class="font-bold text-xs text-slate-900 font-kanit">
@@ -2774,17 +3004,17 @@
                                     </div>
                                 </div>
 
-                                <!-- RIGHT COLUMN: Questions, Student Answers & AI Analysis (7 cols) -->
+                                <!-- RIGHT COLUMN: Questions, Student Answers & AI/Teacher Analysis (7 cols / ~62%) -->
                                 <div class="print-case-right-panel md:col-span-7 flex flex-col gap-1.5">
                                     
                                     <!-- Q1: Legal -->
                                     <div class="print-role-item p-1.5 rounded-lg border border-amber-200 bg-amber-50/40 text-[9px] flex flex-col gap-1">
                                         <div class="flex items-center justify-between border-b border-amber-200 pb-0.5">
                                             <span class="font-bold text-amber-900 text-[9.5px]">
-                                                👨‍⚖️ คำถามที่ 1: วิเคราะห์ข้อกฎหมาย (Legal Analyst)
+                                                👨‍⚖️ คำถามที่ 1: การระบุฐานความผิด (Legal Analyst)
                                             </span>
                                             <span class="px-1.5 py-0.2 rounded bg-amber-100 border border-amber-300 text-amber-900 font-mono font-bold text-[8.5px]">
-                                                AI: ${p.legal}/10 คะแนน
+                                                คะแนน: ${p.hasTeacherOverride && p.legal !== p.aiLegal ? `${p.legal} (${p.aiLegal})` : p.legal} / 4
                                             </span>
                                         </div>
                                         <div class="text-[8.5px] text-amber-950 leading-tight">
@@ -2795,7 +3025,7 @@
                                             ${answers.legal ? escapeHtml(answers.legal) : '<span class="text-slate-400 italic">ไม่ได้ระบุคำตอบ</span>'}
                                         </div>
                                         <div class="bg-purple-50 p-1 rounded border border-purple-200 text-purple-950 text-[8.5px] leading-snug">
-                                            <b class="text-purple-700">🤖 AI วิเคราะห์:</b> ${escapeHtml(feedback.legal.feedback || ('ให้คะแนน ' + p.legal + ' คะแนน'))}
+                                            <b class="text-purple-700">🤖 AI วิเคราะห์:</b> ${escapeHtml(feedback.legal.feedback || ('คะแนนรูบริก ' + p.aiLegal + ' / 4'))}
                                         </div>
                                     </div>
 
@@ -2803,10 +3033,10 @@
                                     <div class="print-role-item p-1.5 rounded-lg border border-pink-200 bg-pink-50/40 text-[9px] flex flex-col gap-1">
                                         <div class="flex items-center justify-between border-b border-pink-200 pb-0.5">
                                             <span class="font-bold text-pink-900 text-[9.5px]">
-                                                🚑 คำถามที่ 2: การรับมือและแก้ไข (Incident Responder)
+                                                🚑 คำถามที่ 2: การเสนอแนวทางแก้ไข (Incident Responder)
                                             </span>
                                             <span class="px-1.5 py-0.2 rounded bg-pink-100 border border-pink-300 text-pink-900 font-mono font-bold text-[8.5px]">
-                                                AI: ${p.remedy}/10 คะแนน
+                                                คะแนน: ${p.hasTeacherOverride && p.remedy !== p.aiRemedy ? `${p.remedy} (${p.aiRemedy})` : p.remedy} / 4
                                             </span>
                                         </div>
                                         <div class="text-[8.5px] text-pink-950 leading-tight">
@@ -2817,7 +3047,7 @@
                                             ${answers.remedy ? escapeHtml(answers.remedy) : '<span class="text-slate-400 italic">ไม่ได้ระบุคำตอบ</span>'}
                                         </div>
                                         <div class="bg-pink-50 p-1 rounded border border-pink-200 text-pink-950 text-[8.5px] leading-snug">
-                                            <b class="text-pink-700">🤖 AI วิเคราะห์:</b> ${escapeHtml(feedback.remedy.feedback || ('ให้คะแนน ' + p.remedy + ' คะแนน'))}
+                                            <b class="text-pink-700">🤖 AI วิเคราะห์:</b> ${escapeHtml(feedback.remedy.feedback || ('คะแนนรูบริก ' + p.aiRemedy + ' / 4'))}
                                         </div>
                                     </div>
 
@@ -2825,10 +3055,10 @@
                                     <div class="print-role-item p-1.5 rounded-lg border border-teal-200 bg-teal-50/40 text-[9px] flex flex-col gap-1">
                                         <div class="flex items-center justify-between border-b border-teal-200 pb-0.5">
                                             <span class="font-bold text-teal-900 text-[9.5px]">
-                                                🛡️ คำถามที่ 3: การป้องกันภัยระยะยาว (Security Engineer)
+                                                🛡️ คำถามที่ 3: การเสนอแนวทางป้องกัน (Security Engineer)
                                             </span>
                                             <span class="px-1.5 py-0.2 rounded bg-teal-100 border border-teal-300 text-teal-900 font-mono font-bold text-[8.5px]">
-                                                AI: ${p.security}/10 คะแนน
+                                                คะแนน: ${p.hasTeacherOverride && p.security !== p.aiSecurity ? `${p.security} (${p.aiSecurity})` : p.security} / 4
                                             </span>
                                         </div>
                                         <div class="text-[8.5px] text-teal-950 leading-tight">
@@ -2839,7 +3069,7 @@
                                             ${answers.security ? escapeHtml(answers.security) : '<span class="text-slate-400 italic">ไม่ได้ระบุคำตอบ</span>'}
                                         </div>
                                         <div class="bg-teal-50 p-1 rounded border border-teal-200 text-teal-950 text-[8.5px] leading-snug">
-                                            <b class="text-teal-700">🤖 AI วิเคราะห์:</b> ${escapeHtml(feedback.security.feedback || ('ให้คะแนน ' + p.security + ' คะแนน'))}
+                                            <b class="text-teal-700">🤖 AI วิเคราะห์:</b> ${escapeHtml(feedback.security.feedback || ('คะแนนรูบริก ' + p.aiSecurity + ' / 4'))}
                                         </div>
                                     </div>
 
@@ -2847,42 +3077,56 @@
                             </div>
                         </div>
 
-                        <!-- 4. BOTTOM ROW: TEACHER ROW (Comments, Score Editing, Teacher Grading & Signatures) -->
+                        <!-- 4. BOTTOM ROW: TEACHER EVALUATION (Rubric K 12 pts + Override + Comments + Signatures) -->
                         <div class="print-teacher-eval-row p-2 rounded-lg border-2 border-indigo-400 bg-indigo-50/50 mt-1.5 flex flex-col gap-1.5">
                             <div class="flex items-center justify-between border-b border-indigo-200 pb-1">
                                 <span class="font-bold text-xs font-kanit text-indigo-950 flex items-center gap-1.5">
-                                    👨‍🏫 การประเมินผลและการให้คะแนนโดยครูผู้สอน (Teacher Assessment & Review)
+                                    👨‍🏫 การประเมินผลรูบริก K โดยครูผู้สอน (เกณฑ์ 3 ด้าน เต็ม 12 คะแนน)
                                 </span>
                                 <span class="text-[9.5px] font-mono text-indigo-800">
-                                    ${hasTeacherOverride ? '✏️ มีการแก้ไขคะแนนโดยครูผู้สอน' : '✅ ผลคะแนนยืนยันตามระบบ AI'}
+                                    ${p.hasTeacherOverride ? `✏️ มีการแก้ไขคะแนนโดยครูผู้สอน (${p.teacherUpdatedAt})` : '✅ ผลคะแนนยืนยันตามระบบรูบริก'}
                                 </span>
                             </div>
 
-                            <!-- Teacher Score Breakdown & Overrides -->
+                            <!-- Teacher Score Breakdown & Overrides (Rubric scale 4 / 4 / 4 / 12) -->
                             <div class="grid grid-cols-4 gap-2 text-center text-[9.5px]">
                                 <div class="p-1 rounded bg-white border border-amber-200">
                                     <div class="text-amber-800 font-semibold text-[8.5px]">1. ด้านกฎหมาย</div>
-                                    <div class="font-mono font-bold text-amber-900">${finalLegal} / 10</div>
+                                    <div class="font-mono font-bold text-amber-900">
+                                        ${p.legal} ${p.hasTeacherOverride && p.legal !== p.aiLegal ? `(${p.aiLegal})` : ''} / 4
+                                    </div>
                                 </div>
                                 <div class="p-1 rounded bg-white border border-pink-200">
                                     <div class="text-pink-800 font-semibold text-[8.5px]">2. ด้านการแก้ไข</div>
-                                    <div class="font-mono font-bold text-pink-900">${finalRemedy} / 10</div>
+                                    <div class="font-mono font-bold text-pink-900">
+                                        ${p.remedy} ${p.hasTeacherOverride && p.remedy !== p.aiRemedy ? `(${p.aiRemedy})` : ''} / 4
+                                    </div>
                                 </div>
                                 <div class="p-1 rounded bg-white border border-teal-200">
                                     <div class="text-teal-800 font-semibold text-[8.5px]">3. ด้านการป้องกัน</div>
-                                    <div class="font-mono font-bold text-teal-900">${finalSecurity} / 10</div>
+                                    <div class="font-mono font-bold text-teal-900">
+                                        ${p.security} ${p.hasTeacherOverride && p.security !== p.aiSecurity ? `(${p.aiSecurity})` : ''} / 4
+                                    </div>
                                 </div>
                                 <div class="p-1 rounded bg-indigo-600 text-white font-bold">
-                                    <div class="text-indigo-100 text-[8.5px]">คะแนนรวมครูให้</div>
-                                    <div class="font-mono text-xs text-yellow-300">${finalTotalScore} / 30</div>
+                                    <div class="text-indigo-100 text-[8.5px]">คะแนนรวมรูบริก K</div>
+                                    <div class="font-mono text-xs text-yellow-300">
+                                        ${p.total} ${p.hasTeacherOverride ? `(${p.aiTotal})` : ''} / 12
+                                    </div>
                                 </div>
+                            </div>
+
+                            <!-- Rubric Quality & Decision Note -->
+                            <div class="flex items-center justify-between text-[9px] bg-white p-1 rounded border border-indigo-200">
+                                <span><b>ระดับคุณภาพ:</b> <b class="text-indigo-900">${p.quality.label}</b> (${p.quality.passed ? 'ผ่านเกณฑ์ ✅' : 'ไม่ผ่านเกณฑ์ ❌'})</span>
+                                <span class="text-slate-500">เกณฑ์ตัดสิน: 10-12 ดีมาก, 7-9 ดี (ผ่าน), 4-6 พอใช้, 0-3 ปรับปรุง</span>
                             </div>
 
                             <!-- Teacher Comment Box -->
                             <div class="bg-white p-1.5 rounded border border-indigo-200 text-[9.5px] leading-snug">
                                 <b class="text-indigo-950 block mb-0.5">💬 ข้อเสนอแนะและคอมเมนต์ของครูผู้สอน:</b>
-                                ${teacherComment.length > 0 ? `
-                                <div class="text-slate-800 font-medium">${escapeHtml(teacherComment)}</div>
+                                ${p.teacherComment ? `
+                                <div class="text-slate-800 font-medium">${escapeHtml(p.teacherComment)}</div>
                                 ` : `
                                 <div class="text-slate-400 font-sarabun text-[9.5px] leading-normal">
                                     ......................................................................................................................................................................................................................................................................................<br>
